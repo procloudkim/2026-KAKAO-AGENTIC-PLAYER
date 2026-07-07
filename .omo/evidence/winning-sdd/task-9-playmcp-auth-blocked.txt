@@ -1,0 +1,1 @@
+BLOCKED: public HTTPS endpoint evidence missing; PlayMCP private registration cannot be truthfully smoked; cleanup=no runtime resources spawned

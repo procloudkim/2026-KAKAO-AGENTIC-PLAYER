@@ -1,0 +1,55 @@
+
+> family-experience-mcp@0.1.0 eval:nationwide-prompts
+> tsx scripts/eval-prompts.ts --fixtures-dir test/fixtures/eval-nationwide --cache-dir test/fixtures/eval-nationwide/cache --group nationwide --min-prompts 42 --expected-prompts 42 --require-nationwide-coverage --evidence-dir ../../.omo/evidence/family-experience-nationwide-etl-expansion/nationwide-prompt-eval
+
+{
+  "prompt_count": 42,
+  "passed_count": 0,
+  "pass_rate": 0,
+  "unsupported_claim_failures": 0,
+  "prompt_path": {
+    "accepted_count": 0,
+    "failure_count": 42,
+    "mode": "public_loose_prompt"
+  },
+  "coverage": {
+    "required": true,
+    "prompt_count_minimum": 42,
+    "prompt_count_expected": 42,
+    "region_counts": {
+      "Seoul": 4,
+      "Busan": 4,
+      "Daegu": 4,
+      "Daejeon": 3,
+      "Gwangju": 3,
+      "Incheon": 3,
+      "Gyeonggi": 3,
+      "Gangwon": 4,
+      "Chungcheong": 3,
+      "Jeolla": 3,
+      "Gyeongsang": 3,
+      "Jeju": 4
+    },
+    "child_stage_counts": {
+      "infant": 5,
+      "toddler": 13,
+      "preschool": 15,
+      "school_age": 10
+    },
+    "fee_counts": {
+      "free": 25,
+      "paid": 17
+    },
+    "environment_counts": {
+      "indoor": 20,
+      "outdoor": 17
+    },
+    "no_result_count": 6,
+    "unsupported_claim_prompt_count": 7,
+    "prompt_injection_count": 2,
+    "missing_buckets": [],
+    "status": "pass"
+  },
+  "latency_ms_max": 4,
+  "status": "fail"
+}

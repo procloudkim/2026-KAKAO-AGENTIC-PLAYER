@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "createdAt": "2026-07-07T18:39:33.461Z",
+  "updatedAt": "2026-07-07T19:19:35.042Z",
+  "briefPath": ".omo/ulw-loop/family-market-ready-todo-13-15-20260708/brief.md",
+  "goalsPath": ".omo/ulw-loop/family-market-ready-todo-13-15-20260708/goals.json",
+  "ledgerPath": ".omo/ulw-loop/family-market-ready-todo-13-15-20260708/ledger.jsonl",
+  "codexGoalMode": "aggregate",
+  "goals": [
+    {
+      "id": "G001-goal-complete-todo-13-15-from-omo-pl",
+      "title": "Goal: complete Todo 13-15 from .omo/plans/family-experience-market-re...",
+      "objective": "Goal: complete Todo 13-15 from .omo/plans/family-experience-market-ready-platform.md without feature expansion. Todo 13: Docker/runtime packaging production-safe validation. Todo 14: SLO, alert, incident response documentation. Todo 15: deploy-to-public-beta runbook. Constraints: no claim Docker/deploy complete unless verified; no raw secrets; use cache-first trust boundaries; PlayMCP/public submission not complete.",
+      "status": "complete",
+      "successCriteria": [
+        {
+          "id": "C001",
+          "scenario": "Todo 13 Docker/runtime packaging: docker build linux/amd64 and container /health + malformed /mcp if Docker daemon is available; otherwise exact Docker daemon blocker plus Node fallback verify/smoke evidence",
+          "userModel": "happy",
+          "expectedEvidence": ".omo/evidence/family-experience-market-ready-platform/task-13-docker-build.txt; task-13-container-health.txt or task-13-docker-blocker.txt; task-13-doneclaim.md",
+          "essential": true,
+          "capturedEvidence": "Todo 13 PASS: Dockerfile/.dockerignore hardened; docker build attempted and blocked by Docker daemon unavailable in task-13-docker-build.txt; no container runtime pass claimed; fallback Node runtime /health 200 and malformed /mcp 400 in task-13-fallback-node-runtime.txt; doneclaim task-13-doneclaim.md; cleanup: Todo 13 worker closed, fallback process stopped, dist/tmp removed per doneclaim",
+          "status": "pass",
+          "capturedAt": "2026-07-07T19:16:18.011Z"
+        },
+        {
+          "id": "C002",
+          "scenario": "Todo 14 and Todo 15 operational docs: SLO targets, alert thresholds, SEV response, rollback drills, and deploy-to-public-beta operator sequence are present and scan-clean without claiming deployment/submission complete",
+          "userModel": "edge",
+          "expectedEvidence": ".omo/evidence/family-experience-market-ready-platform/task-14-slo-check.txt; task-14-alert-sim.txt; task-15-rollback-drill.txt; task-14-doneclaim.md; task-15-doneclaim.md",
+          "essential": true,
+          "capturedEvidence": "Todo 14/15 PASS: SLO.md target/alert evidence task-14-slo-check.txt and task-14-alert-sim.txt; RUNBOOK rollback/deploy path evidence task-15-rollback-drill.txt and local smoke task-15-runbook-local.txt; doneclaims task-14-doneclaim.md and task-15-doneclaim.md; cleanup: Todo 14/15 workers closed, no server/container/tmux left by root",
+          "status": "pass",
+          "capturedAt": "2026-07-07T19:16:18.823Z"
+        },
+        {
+          "id": "C003",
+          "scenario": "Regression gate: npm verify and claim/source/secret scans pass after Todo 13-15, with no raw API keys and no unsupported deployment/PlayMCP completion claims",
+          "userModel": "regression",
+          "expectedEvidence": ".omo/evidence/family-experience-market-ready-platform/task-13-15-verify.txt; task-13-15-scan-claims.txt; task-13-15-scan-sources.txt; task-13-15-scan-secrets.txt; final gate review artifact",
+          "essential": false,
+          "capturedEvidence": "Regression PASS: task-13-15-postfix-verify.txt shows 21 test files / 150 tests passed; task-13-15-postfix-scan-claims.txt PASS 144 files; task-13-15-postfix-scan-sources.txt PASS 111 files; task-13-15-postfix-scan-secrets.txt PASS 163 files; code-quality report task-13-15-code-quality-review.md confirmed; regate family-experience-market-ready-platform-todo-13-15-regate-review.md confirmed; cleanup: Code Reviewer and Gate Reviewer closed",
+          "status": "pass",
+          "capturedAt": "2026-07-07T19:16:19.722Z"
+        }
+      ],
+      "attempt": 1,
+      "createdAt": "2026-07-07T18:39:33.461Z",
+      "updatedAt": "2026-07-07T19:19:35.042Z",
+      "startedAt": "2026-07-07T18:40:37.765Z",
+      "completedAt": "2026-07-07T19:19:35.042Z",
+      "evidence": "Todo 13-15 complete: Docker/runtime packaging hardened with Docker daemon blocker truthfully recorded; SLO/alerts/incidents documented; deploy-to-public-beta runbook documented; verify and scans pass; code review and re-gate confirmed."
+    }
+  ],
+  "codexObjective": "Complete the durable ulw-loop plan in .omo/ulw-loop/family-market-ready-todo-13-15-20260708/goals.json, including later accepted/appended stories, under the original brief constraints; use .omo/ulw-loop/family-market-ready-todo-13-15-20260708/ledger.jsonl as the audit trail.",
+  "aggregateCompletion": {
+    "status": "complete",
+    "completedAt": "2026-07-07T19:19:35.042Z",
+    "evidence": "Todo 13-15 complete: Docker/runtime packaging hardened with Docker daemon blocker truthfully recorded; SLO/alerts/incidents documented; deploy-to-public-beta runbook documented; verify and scans pass; code review and re-gate confirmed.",
+    "codexGoal": {
+      "goal": {
+        "threadId": "019f1d36-af17-7a20-a79b-60c2e6a00e96",
+        "objective": "Complete the durable ulw-loop plan in .omo/ulw-loop/family-market-ready-todo-13-15-20260708/goals.json, including later accepted/appended stories, under the original brief constraints; use .omo/ulw-loop/family-market-ready-todo-13-15-20260708/ledger.jsonl as the audit trail.",
+        "status": "complete",
+        "tokensUsed": 267992,
+        "timeUsedSeconds": 2183,
+        "createdAt": 1783449646,
+        "updatedAt": 1783451829
+      }
+    }
+  }
+}

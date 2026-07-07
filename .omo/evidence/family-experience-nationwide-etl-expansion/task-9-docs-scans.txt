@@ -1,0 +1,182 @@
+TASK 9 DOCS/SCANS EVIDENCE
+timestamp=2026-07-04T07:05:18+09:00
+cwd=/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+artifact=../../.omo/evidence/family-experience-nationwide-etl-expansion/task-9-docs-scans.txt
+classification=lightweight scanner fix
+success_criteria=scan:claims pass; scan:sources pass; scan:secrets pass; typecheck pass; negative unsupported docs probe fail; probe removed; post-probe scans green
+
+## Scoped dirty worktree snapshot
+?? ../../.omo/evidence/family-experience-nationwide-etl-expansion/task-9-docs-scans.txt
+?? scripts/scan-claims.ts
+?? test/scanClaims.test.ts
+
+## focused regression: claim scanner fixture allowance boundary
+invocation=npm test -- --run test/scanClaims.test.ts
+exit=0 expected=0
+--- stdout
+
+> family-experience-mcp@0.1.0 test
+> vitest --run test/scanClaims.test.ts
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.9 [39m[90mD:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp[39m
+
+ [32m✓[39m test/scanClaims.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+[2m   Start at [22m 07:05:19
+[2m   Duration [22m 141ms[2m (transform 23ms, setup 0ms, import 33ms, tests 3ms, environment 0ms)[22m
+
+--- stderr
+
+## final gate: npm run scan:claims
+invocation=npm run scan:claims
+exit=0 expected=0
+--- stdout
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 117
+}
+--- stderr
+
+## final gate: npm run scan:sources
+invocation=npm run scan:sources
+exit=0 expected=0
+--- stdout
+
+> family-experience-mcp@0.1.0 scan:sources
+> tsx scripts/scan-sources.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 84
+}
+--- stderr
+
+## final gate: npm run scan:secrets
+invocation=npm run scan:secrets
+exit=0 expected=0
+--- stdout
+
+> family-experience-mcp@0.1.0 scan:secrets
+> tsx scripts/scan-secrets.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 136
+}
+--- stderr
+
+## final gate: npm run typecheck
+invocation=npm run typecheck
+exit=0 expected=0
+--- stdout
+
+> family-experience-mcp@0.1.0 typecheck
+> tsc --noEmit
+
+--- stderr
+
+## Negative probe setup
+created=docs/todo9-negative-probe.tmp.md
+
+## negative probe: scan:claims must reject unsupported docs claim
+invocation=npm run scan:claims
+exit=1 expected=1
+--- stdout
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts
+
+--- stderr
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\docs\\todo9-negative-probe.tmp.md",
+      "line": 1,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\docs\\todo9-negative-probe.tmp.md",
+      "line": 1,
+      "claim": "scraper integration"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\docs\\todo9-negative-probe.tmp.md",
+      "line": 1,
+      "claim": "browser parser"
+    }
+  ]
+}
+
+## negative probe: scan:sources must reject scraper/browser parser dependency token
+invocation=npm run scan:sources
+exit=1 expected=1
+--- stdout
+
+> family-experience-mcp@0.1.0 scan:sources
+> tsx scripts/scan-sources.ts
+
+--- stderr
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\docs\\todo9-negative-probe.tmp.md",
+      "line": 1,
+      "rule": "scraper-browser-parser-dependency",
+      "value": "playwright"
+    }
+  ]
+}
+removed=docs/todo9-negative-probe.tmp.md
+
+## post-probe clean: npm run scan:claims
+invocation=npm run scan:claims
+exit=0 expected=0
+--- stdout
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 117
+}
+--- stderr
+
+## post-probe clean: npm run scan:sources
+invocation=npm run scan:sources
+exit=0 expected=0
+--- stdout
+
+> family-experience-mcp@0.1.0 scan:sources
+> tsx scripts/scan-sources.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 84
+}
+--- stderr
+
+## post-probe clean: npm run scan:secrets
+invocation=npm run scan:secrets
+exit=0 expected=0
+--- stdout
+
+> family-experience-mcp@0.1.0 scan:secrets
+> tsx scripts/scan-secrets.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 136
+}
+--- stderr
+
+summary_status=PASS

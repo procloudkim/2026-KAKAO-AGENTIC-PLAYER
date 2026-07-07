@@ -1,0 +1,13 @@
+file`tsha256
+apps/family-experience-mcp/src/etl/cacheContract.ts	43bdaf78c13d70458284072dd6102bae8bb1b6e07ceab5698d3a899db7028eed
+apps/family-experience-mcp/test/etlNationwide.test.ts	4ec6a667c0433369926c336a284afd694b482dad4df5b852de4bff3d2b870397
+.omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-RED.txt	b6779570557d758e940dbb1f10d6e3e426322d23fe3625b87bcd3af6a08385a5
+.omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-test-RED.txt	d4dee0f649ae3e374abb2d27fc76b9b0a1db763b5d2583cce69c6e15e4581101
+.omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-focused-tests.txt	65ae33368e39f0a5b07bce8a096b3d219ac3fc6a9d47348e7f26e1e772ec252d
+.omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-verify.txt	10f064ce2517702d3a9f0b479688ab84cb5678951b06351e67a05250d39119d2
+.omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-manual-probe.txt	e226850ff096326ce031c781955ab93afa832b905555cb29684f27cc59bdee64
+.omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-loc.tsv	67812c392927a0af74f5562778ddcf1ede351e404b1fa4e75092458f962782d3
+.omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-escape-hatch-scan.txt	4f3387c1b5219bafbc4a68b78e7ea6edb282879a8014518abad56c8b94a0911e
+.omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-cleanup.txt	160a6c002a46335ac0150151f2aabbea6c05e403e7fd4ae785ec504df4ca0916
+.omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-code-quality-review.md	5916df932df214dab6d3df5fdea20d603cf4b8a7592d0b8d9ecd82c32639c316
+.omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-doneclaim.md	e826aae7f26afbf9fa415ffe13568f26277fd839b9ad6b8f517df38ce96d0a0f

@@ -1,0 +1,8 @@
+
+> family-experience-mcp@0.1.0 scan:sources
+> tsx scripts/scan-sources.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 110
+}

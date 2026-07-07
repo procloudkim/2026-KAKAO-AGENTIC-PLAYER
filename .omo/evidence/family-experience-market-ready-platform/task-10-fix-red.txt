@@ -1,0 +1,104 @@
+
+> family-experience-mcp@0.1.0 test
+> vitest --run test/httpJson.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+stdout | test/httpJson.test.ts
+family-experience-mcp listening on 127.0.0.1:3345
+
+ ❯ test/httpJson.test.ts (8 tests | 6 failed) 55782ms
+     × rejects invalid JSON with a safe parse-error shape 8308ms
+     × rejects oversized JSON bodies before MCP tool dispatch 8009ms
+     × returns request_timeout when the MCP JSON body stalls 21644ms
+     × returns internal_error when an unexpected MCP HTTP route error escapes 1ms
+     × rejects overlong prompt requests with a safe JSON-RPC error 8798ms
+     × rate limits rapid repeated MCP requests per process 9006ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/httpJson.test.ts > Family experience MCP HTTP request limits > rejects invalid JSON with a safe parse-error shape
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ test/httpJson.test.ts:283:3
+    281|
+    282| describe("Family experience MCP HTTP request limits", () => {
+    283|   it("rejects invalid JSON with a safe parse-error shape", async () =>…
+       |   ^
+    284|     // Given: the public MCP HTTP endpoint receives malformed JSON.
+    285|     const server = await startMcpHttpServer()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  test/httpJson.test.ts > Family experience MCP HTTP request limits > rejects oversized JSON bodies before MCP tool dispatch
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ test/httpJson.test.ts:296:3
+    294|   })
+    295|
+    296|   it("rejects oversized JSON bodies before MCP tool dispatch", async (…
+       |   ^
+    297|     // Given: the public MCP HTTP endpoint receives a body larger than…
+    298|     const server = await startMcpHttpServer()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  test/httpJson.test.ts > Family experience MCP HTTP request limits > returns request_timeout when the MCP JSON body stalls
+Error: Test timed out in 20000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ test/httpJson.test.ts:319:3
+    317|   })
+    318|
+    319|   it("returns request_timeout when the MCP JSON body stalls", async ()…
+       |   ^
+    320|     // Given: the public MCP HTTP endpoint receives headers and a part…
+    321|     const server = await startMcpHttpServer()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  test/httpJson.test.ts > Family experience MCP HTTP request limits > returns internal_error when an unexpected MCP HTTP route error escapes
+TypeError: createFamilyExperienceHttpServer is not a function
+ ❯ test/httpJson.test.ts:336:7
+    334|     // Given: the MCP HTTP server route has an unexpected internal fai…
+    335|     const server = await listenOnLocalhost(
+    336|       createFamilyExperienceHttpServer({
+       |       ^
+    337|         routeRequest: async () => {
+    338|           throw new Error("simulated internal failure")
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  test/httpJson.test.ts > Family experience MCP HTTP request limits > rejects overlong prompt requests with a safe JSON-RPC error
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ test/httpJson.test.ts:353:3
+    351|   })
+    352|
+    353|   it("rejects overlong prompt requests with a safe JSON-RPC error", as…
+       |   ^
+    354|     // Given: the public MCP HTTP endpoint receives a prompt larger th…
+    355|     const server = await startMcpHttpServer()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  test/httpJson.test.ts > Family experience MCP HTTP request limits > rate limits rapid repeated MCP requests per process
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ test/httpJson.test.ts:379:3
+    377|   })
+    378|
+    379|   it("rate limits rapid repeated MCP requests per process", async () =…
+       |   ^
+    380|     // Given: one client sends rapid repeated requests to the public M…
+    381|     const server = await startMcpHttpServer()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 2 passed (8)
+   Start at  17:28:41
+   Duration  64.54s (transform 178ms, setup 0ms, import 1.96s, tests 55.78s, environment 0ms)
+
+EXIT_CODE=1

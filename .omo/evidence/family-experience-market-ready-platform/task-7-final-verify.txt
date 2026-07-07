@@ -1,0 +1,126 @@
+
+> family-experience-mcp@0.1.0 verify
+> npm run typecheck && npm test -- --run
+
+
+> family-experience-mcp@0.1.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.1.0 test
+> vitest --run
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/golden.test.ts (6 tests | 3 failed) 28ms
+     × locks Korean missing-age guidance without SDK validation text 6ms
+     × locks no-result safety and one-constraint relaxation 2ms
+     × locks source-failure safety 4ms
+ ❯ test/scanClaims.test.ts (18 tests | 2 failed) 2372ms
+     × allows explicit include with a public unsupported-claim caveat 195ms
+     × allows explicit include with an English live-now caveat only 204ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/golden.test.ts > Todo 7 golden evidence semantics > locks Korean missing-age guidance without SDK validation text
+AssertionError: expected '' to match /아이 나이|발달 단계/
+
+- Expected:
+/아이 나이|발달 단계/
+
++ Received:
+""
+
+ ❯ test/golden.test.ts:169:36
+    167|     // When / Then: it asks for child age or stage in Korean and retur…
+    168|     expect(artifact.response.isError).toBe(true)
+    169|     expect(artifact.response.text).toMatch(/아이 나이|발달 단계/)
+       |                                    ^
+    170|     expect(artifact.response.text).not.toMatch(/Input validation error…
+    171|     expect(artifact.response.structuredContent?.ok).toBe(false)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  test/golden.test.ts > Todo 7 golden evidence semantics > locks no-result safety and one-constraint relaxation
+AssertionError: expected undefined to be false // Object.is equality
+
+- Expected:
+false
+
++ Received:
+undefined
+
+ ❯ test/golden.test.ts:180:53
+    178|     // When / Then: it fabricates no candidates and suggests relaxing …
+    179|     expect(artifact.response.isError).toBe(true)
+    180|     expect(artifact.response.structuredContent?.ok).toBe(false)
+       |                                                     ^
+    181|     expect(artifact.response.action_cards).toHaveLength(0)
+    182|     expect(artifact.response.text).toMatch(/날짜 범위 하나만/)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  test/golden.test.ts > Todo 7 golden evidence semantics > locks source-failure safety
+AssertionError: expected '조건에 맞는 근거 있는 후보를 찾지 못했어요. 후보를 임의로 만들지…' to match /현재 설정|공식 데이터|fixture 모드/
+
+- Expected:
+/현재 설정|공식 데이터|fixture 모드/
+
++ Received:
+"조건에 맞는 근거 있는 후보를 찾지 못했어요. 후보를 임의로 만들지 않았습니다. 다음에는 날짜 범위 하나만 넓혀서 다시 요청해 주세요."
+
+ ❯ test/golden.test.ts:194:36
+    192|     expect(artifact.response.structuredContent?.ok).toBe(false)
+    193|     expect(artifact.response.action_cards).toHaveLength(0)
+    194|     expect(artifact.response.text).toMatch(/현재 설정|공식 데이터|fixture 모드/)
+       |                                    ^
+    195|     expect(JSON.stringify(artifact)).not.toMatch(/SEOUL_OPEN_DATA_KEY|…
+    196|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  test/scanClaims.test.ts > claim scanner > allows explicit include with a public unsupported-claim caveat
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/scanClaims.test.ts:232:29
+    230|
+    231|       // Then: explicit caveat language is accepted.
+    232|       expect(result.status).toBe(0)
+       |                             ^
+    233|       expect(result.stdout).toContain('"status": "PASS"')
+    234|     } finally {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  test/scanClaims.test.ts > claim scanner > allows explicit include with an English live-now caveat only
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/scanClaims.test.ts:251:29
+    249|
+    250|       // Then: caveat-only launch copy is accepted.
+    251|       expect(result.status).toBe(0)
+       |                             ^
+    252|       expect(result.stdout).toContain('"status": "PASS"')
+    253|     } finally {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  2 failed | 16 passed (18)
+      Tests  5 failed | 128 passed (133)
+   Start at  19:12:23
+   Duration  26.75s (transform 2.01s, setup 0ms, import 4.01s, tests 30.72s, environment 2ms)
+

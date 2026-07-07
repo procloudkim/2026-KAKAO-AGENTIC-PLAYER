@@ -1,0 +1,15 @@
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include .omo/tmp/market-plan-fix4/korean-cross-scope.md
+
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\tmp\\market-plan-fix4\\korean-cross-scope.md",
+      "line": 1,
+      "claim": "실시간"
+    }
+  ]
+}
+EXIT_CODE=1

@@ -1,0 +1,13 @@
+
+> family-experience-mcp@0.1.0 test
+> vitest pipeline
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  02:37:28
+   Duration  248ms (transform 58ms, setup 0ms, import 94ms, tests 37ms, environment 0ms)
+

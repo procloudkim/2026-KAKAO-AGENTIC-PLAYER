@@ -1,0 +1,17 @@
+
+> family-experience-mcp@0.1.0 smoke:live
+> tsx scripts/smoke-live.ts --expect-missing-key
+
+{
+  "ok": true,
+  "status": "missing_key",
+  "config": {
+    "port": 3345,
+    "allowFixture": false,
+    "toolMode": "live",
+    "seoulOpenDataBaseUrl": "http://openapi.seoul.go.kr:8088",
+    "seoulOpenDataKey": "missing"
+  },
+  "probes": []
+}
+cleanup=no runtime resources spawned

@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "createdAt": "2026-07-03T03:06:02.612Z",
+  "updatedAt": "2026-07-03T03:31:07.126Z",
+  "briefPath": ".omo/ulw-loop/token-api-security-20260703/brief.md",
+  "goalsPath": ".omo/ulw-loop/token-api-security-20260703/goals.json",
+  "ledgerPath": ".omo/ulw-loop/token-api-security-20260703/ledger.jsonl",
+  "codexGoalMode": "aggregate",
+  "goals": [
+    {
+      "id": "G001-complete-token-api-security-manageme",
+      "title": "Complete token/API security management items 1-7 for the active famil...",
+      "objective": "Complete token/API security management items 1-7 for the active family-experience MCP repo after the user created apps/family-experience-mcp/.env and confirmed .env.example content. Deliverables: verify local .env/.env.example and .gitignore policy; ensure secrets stay server-side; harden secret scanning so real keys in allowed-context lines and SEOUL_OPEN_DATA_KEY assignments are caught; ensure keyed URLs/logs remain redacted; document deployment/secret-manager mapping and key separation; run scans/tests; run the MCP real HTTP surface from .env and capture evidence. Do not expose secret values.",
+      "status": "complete",
+      "successCriteria": [
+        {
+          "id": "C001",
+          "scenario": "Auxiliary CLI surface: PowerShell checks apps/family-experience-mcp/.env exists, is gitignored, .env.example contains only variable names/defaults, and config diagnostics redact SEOUL_OPEN_DATA_KEY without printing the value.",
+          "userModel": "happy",
+          "expectedEvidence": ".omo/evidence/token-api-security/config-policy-dump.txt with no secret value exposure",
+          "essential": true,
+          "capturedEvidence": ".omo/evidence/token-api-security/config-policy-dump.txt: .env exists, git check-ignore confirms ignored, .env.example contains names/defaults only, no secret value printed | cleanup: no process/temp resource spawned",
+          "status": "pass",
+          "capturedAt": "2026-07-03T03:15:35.896Z"
+        },
+        {
+          "id": "C002",
+          "scenario": "Adversarial CLI surface: targeted secret-scanner tests prove real OpenAI-like keys on guardrail/redacted lines and SEOUL_OPEN_DATA_KEY assignments are rejected, while placeholder .env.example remains allowed.",
+          "userModel": "edge",
+          "expectedEvidence": ".omo/evidence/token-api-security/secret-scanner-adversarial.txt showing RED before patch and GREEN after patch",
+          "essential": true,
+          "capturedEvidence": ".omo/evidence/token-api-security/secret-scanner-prepatch.txt showed RED target vulnerability as prepatch_exit=0; .omo/evidence/token-api-security/secret-scanner-postpatch.txt showed GREEN rejection as postpatch_exit=1; .omo/evidence/token-api-security/verify.txt and scan logs pass | cleanup: removed .omo/evidence/task-9-secret-bypass.tmp",
+          "status": "pass",
+          "capturedAt": "2026-07-03T03:15:35.954Z"
+        },
+        {
+          "id": "C003",
+          "scenario": "HTTP real surface: start family-experience MCP with node --env-file=.env --import tsx src/server.ts, call /health and /mcp, confirm status 200 and diagnostics show seoulOpenDataKey redacted/missing without exposing raw key; then kill process and verify cleanup.",
+          "userModel": "regression",
+          "expectedEvidence": ".omo/evidence/token-api-security/http-surface.txt with status/body excerpts and cleanup receipt",
+          "essential": false,
+          "capturedEvidence": ".omo/evidence/token-api-security/http-surface.txt: /health status 200 with seoulOpenDataKey=redacted and /mcp POST status 200 text/event-stream tool list | cleanup: remaining_server_processes=0; port3349_listeners=0",
+          "status": "pass",
+          "capturedAt": "2026-07-03T03:15:36.010Z"
+        }
+      ],
+      "attempt": 0,
+      "createdAt": "2026-07-03T03:06:02.612Z",
+      "updatedAt": "2026-07-03T03:31:07.126Z",
+      "completedAt": "2026-07-03T03:31:07.126Z",
+      "evidence": "C001/C002/C003 passed; final verify and scans passed; HTTP MCP surface passed; quality gate approved in .omo/evidence/token-api-security-quality-gate.json"
+    }
+  ],
+  "codexObjective": "Complete the durable ulw-loop plan in .omo/ulw-loop/token-api-security-20260703/goals.json, including later accepted/appended stories, under the original brief constraints; use .omo/ulw-loop/token-api-security-20260703/ledger.jsonl as the audit trail.",
+  "aggregateCompletion": {
+    "status": "complete",
+    "completedAt": "2026-07-03T03:31:07.126Z",
+    "evidence": "C001/C002/C003 passed; final verify and scans passed; HTTP MCP surface passed; quality gate approved in .omo/evidence/token-api-security-quality-gate.json",
+    "codexGoal": {
+      "threadId": "019f1d36-af17-7a20-a79b-60c2e6a00e96",
+      "objective": "Complete the durable ulw-loop plan in .omo/ulw-loop/token-api-security-20260703/goals.json, including later accepted/appended stories, under the original brief constraints; use .omo/ulw-loop/token-api-security-20260703/ledger.jsonl as the audit trail.",
+      "status": "complete",
+      "tokensUsed": 349866,
+      "timeUsedSeconds": 1140,
+      "createdAt": 1783047975,
+      "updatedAt": 1783049116
+    }
+  }
+}

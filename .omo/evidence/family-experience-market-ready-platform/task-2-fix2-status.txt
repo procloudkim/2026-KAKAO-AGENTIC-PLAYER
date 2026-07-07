@@ -1,0 +1,15 @@
+?? .omo/evidence/family-experience-market-ready-platform/task-2-code-quality-review.md
+?? .omo/evidence/family-experience-market-ready-platform/task-2-fix2-cleanup.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-2-fix2-escape-hatches.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-2-fix2-final-verify.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-2-fix2-focused-scanClaims.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-2-fix2-loc.tsv
+?? .omo/evidence/family-experience-market-ready-platform/task-2-fix2-malformed-include.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-2-fix2-manual-eval-include-bypass.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-2-fix2-manual-evidence-include-bypass.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-2-fix2-manual-positive-caveat.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-2-fix2-red-include-bypass.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-2-fix2-scan-claims.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-2-fix2-verify.txt
+?? apps/family-experience-mcp/scripts/scan-claims.ts
+?? apps/family-experience-mcp/test/scanClaims.test.ts

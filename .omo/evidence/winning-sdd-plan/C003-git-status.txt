@@ -1,0 +1,6 @@
+?? .omo/evidence/family-experience-sdd-plan-artifacts-gate-review.md
+?? .omo/evidence/family-experience-winning-sdd-20260703-gate-review.md
+?? .omo/evidence/family-experience-winning-sdd-plan-rereview-code-review.md
+?? .omo/evidence/winning-sdd-plan/
+?? .omo/plans/family-experience-winning-sdd-to-submission.md
+?? .omo/ulw-loop/family-experience-winning-sdd-20260703/

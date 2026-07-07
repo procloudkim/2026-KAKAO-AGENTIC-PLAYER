@@ -1,0 +1,34 @@
+Task 9 scope/status artifact
+Generated: 2026-07-08
+
+Command: git status --short -- <task-9 scoped paths>
+ A apps/family-experience-mcp/docs/RUNBOOK.md
+?? .omo/evidence/family-experience-market-ready-platform/task-9-cache-cleanup.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-9-cache-doneclaim.md
+?? .omo/evidence/family-experience-market-ready-platform/task-9-cache-evidence-secret-scan.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-9-cache-focused-tests.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-9-cache-health.json
+?? .omo/evidence/family-experience-market-ready-platform/task-9-cache-loc.tsv
+?? .omo/evidence/family-experience-market-ready-platform/task-9-cache-missing-smoke.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-9-cache-refresh-seed.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-9-cache-scan-claims.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-9-cache-stale-smoke.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-9-cache-verify.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-9-code-quality-review.md
+?? .omo/evidence/family-experience-market-ready-platform/task-9-manual-qa-matrix.md
+?? .omo/evidence/family-experience-market-ready-platform/task-9-notepad.md
+?? apps/family-experience-mcp/src/etl/cacheOperations.ts
+?? apps/family-experience-mcp/src/etl/cacheQuery.ts
+?? apps/family-experience-mcp/src/etl/cacheStatus.ts
+?? apps/family-experience-mcp/src/health.ts
+?? apps/family-experience-mcp/src/mcp.ts
+?? apps/family-experience-mcp/src/mcpSourceRecords.ts
+?? apps/family-experience-mcp/test/etlNationwide.test.ts
+?? apps/family-experience-mcp/test/health.test.ts
+?? apps/family-experience-mcp/test/mcpCache.test.ts
+
+Command: git diff --stat -- apps/family-experience-mcp/docs/RUNBOOK.md
+ apps/family-experience-mcp/docs/RUNBOOK.md | 351 +++++++++++++++++++++++++++++
+ 1 file changed, 351 insertions(+)
+
+Note: many app/evidence files are untracked in this shared worktree, so this artifact is a scoped untracked/status receipt rather than a complete clean diff.

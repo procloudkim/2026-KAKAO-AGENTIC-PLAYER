@@ -1,0 +1,100 @@
+Task: Todo 3 - KTO TourAPI event adapter
+Artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-3-kto-tourapi.txt
+Date: 2026-07-04
+
+Scope check
+- Edited only:
+  - apps/family-experience-mcp/src/sources/ktoTourApi.ts
+  - apps/family-experience-mcp/test/ktoTourApi.test.ts
+  - apps/family-experience-mcp/test/fixtures/kto-tourapi-event.json
+  - apps/family-experience-mcp/test/fixtures/kto-tourapi-empty.json
+  - .omo/evidence/family-experience-nationwide-etl-expansion/task-3-kto-tourapi.txt
+- Did not wire MCP registry, shared config, shared schemas, or live fan-out.
+- Broader worktree was dirty before this task; unrelated files were not reverted or edited.
+
+Baseline characterization
+- Existing Seoul adapter convention:
+  - factory returns FamilyExperienceSourceAdapter with source_id, mode, list(request).
+  - success is SourceAdapterSuccess with ok=true, source_id, mode, retrieved_at, raw_snapshots, records.
+  - failures are ok=false with typed failure code, retryable flag, and optional diagnostics.
+  - missing key maps to missing_key retryable=false.
+  - empty matched records map to no_match retryable=false.
+  - upstream/transport errors map to source_failure retryable=true.
+  - keyed operational URL is allowed internally, diagnostics use redacted_url.
+  - raw snapshot ids are hash-derived from redacted request URL.
+
+Failing-first proof
+- Scenario: tests added before implementation.
+- Invocation: npm test -- ktoTourApi
+- Binary observable: exit code 1; Vitest failed before running tests because the module did not exist.
+- Captured output excerpt:
+  - FAIL test/ktoTourApi.test.ts [ test/ktoTourApi.test.ts ]
+  - Error: Cannot find module '../src/sources/ktoTourApi.js'
+
+Implementation summary
+- Added KTO TourAPI adapter factory and exported normalizer/build-request functions.
+- Source id: kto-tourapi-events.
+- Parser accepts object JSON payloads, JSON text, and a minimal XML item/header path.
+- Preserves contentid, contenttypeid, area/sigungu codes, date range, address, mapx/mapy, source URL, homepage URL, contact, and image caution through canonical fields/tags/notice.
+- Images are marked only as source-returned license-unverified data; they are not used as primary proof.
+- Adapter is not registered with MCP and default live request loader is intentionally not wired.
+
+Acceptance verification
+- Scenario: KTO adapter fixture and failure behavior.
+- Invocation: npm test -- ktoTourApi
+- Binary observable: exit code 0.
+- Captured output:
+  - Test Files 1 passed (1)
+  - Tests 8 passed (8)
+
+Type verification
+- Scenario: changed TypeScript compiles with project settings.
+- Invocation: npm run typecheck
+- Binary observable: exit code 0.
+- Captured output:
+  - tsc --noEmit
+
+Manual QA
+- Scenario: missing key, empty result/no_match, upstream error, and redacted diagnostics.
+- Invocation: node --import tsx --input-type=module with createKtoTourApiSourceAdapter and normalizeKtoTourApiPayload.
+- Binary observable: exit code 0.
+- Captured output:
+{
+  "missing_key": "missing_key",
+  "empty_result": "no_match",
+  "upstream_error": {
+    "code": "source_failure",
+    "retryable": true,
+    "source_code": "99"
+  },
+  "redaction": {
+    "contains_raw_secret": false,
+    "contains_encoded_secret": false,
+    "contains_redacted_marker": true
+  }
+}
+
+Adversarial QA
+- malformed_input:
+  - Scenario covered by test "rejects malformed JSON or XML as an invalid source response".
+  - Observable: source_invalid_response retryable=false.
+- untrusted external text / prompt_injection:
+  - Scenario covered by test "preserves untrusted source text as plain candidate data".
+  - Observable: prompt-like title is preserved as title only; parent_check remains confirmation/source timestamp required; no safety/open/booking claim is created.
+- stale_state:
+  - Fixtures use fixed retrievedAt in tests; adapter does not claim live status or freshness beyond source_timestamp_required.
+- dirty_worktree:
+  - Scoped git status showed only allowed KTO paths plus this evidence file for this task; unrelated dirty files existed before and were not touched.
+- misleading_success_output:
+  - npm test success is backed by manual QA output and typecheck.
+- flaky_tests:
+  - No sleeps, timers, network calls, or live API calls in tests; request loader is injected.
+
+Post-write review
+- Pure LOC:
+  - apps/family-experience-mcp/src/sources/ktoTourApi.ts: 228
+  - apps/family-experience-mcp/test/ktoTourApi.test.ts: 211
+- Single responsibility: ktoTourApi.ts owns KTO TourAPI fixture/injected-source parsing and normalization.
+- Boundary purity: external payload crosses Zod/XML parsing boundary before canonical records are emitted.
+- Escape hatches: no any, no ts-ignore, no non-null assertions.
+- Unsupported claims: no safety/open/booking claims; reservation remains confirmation_needed.

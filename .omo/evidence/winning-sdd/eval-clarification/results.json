@@ -1,0 +1,32 @@
+[
+  {
+    "id": "direct-prompt",
+    "group": "direct",
+    "prompt": "이번 주말 아이랑 갈 곳",
+    "expect": "clarification",
+    "latency_ms": 3,
+    "passed": true,
+    "checks": [
+      {
+        "name": "clarification_error",
+        "passed": true,
+        "detail": "clarification is an error response"
+      },
+      {
+        "name": "asks_child_age_or_stage",
+        "passed": true,
+        "detail": "Korean clarification text present"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=3"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  }
+]

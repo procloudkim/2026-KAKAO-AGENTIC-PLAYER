@@ -1,0 +1,23 @@
+Surface: MCP smoke missing cache prompt
+Invocation: npm run smoke:mcp -- --assert-tool-count=1 --cache-dir=../../.omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/missing-cache --skip-seed --expect-error --prompt="부산 이번 주말 4살 실내"
+Working directory: apps/family-experience-mcp
+--- output ---
+
+> family-experience-mcp@0.1.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts --assert-tool-count=1 --cache-dir=../../.omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/missing-cache --skip-seed --expect-error --prompt=부산 이번 주말 4살 실내
+
+{
+  "endpoint": "in-memory",
+  "cache_dir": "../../.omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/missing-cache",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "prompt": "부산 이번 주말 4살 실내",
+  "result_ok": false,
+  "mode": "live",
+  "candidate_count": 0,
+  "failure_code": "missing_configuration",
+  "text": "현재 설정으로는 체험 후보를 확인할 수 없어요. 공식 데이터 키를 설정하거나 fixture 모드를 켜 주세요. Nationwide cache is missing at ../../.omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/missing-cache. Run npm run etl:nationwide -- --fixture --write-cache --cache-dir ../../.omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/missing-cache."
+}
+EXIT_CODE=0

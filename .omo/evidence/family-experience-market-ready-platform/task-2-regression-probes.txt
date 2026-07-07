@@ -1,0 +1,141 @@
+MANUAL PROBES: scan-claims preserved cases
+
+CASE: explicit include path containing test/fixtures/eval forbidden claim rejects
+FILE: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\test\fixtures\eval\bad-public-copy.md
+TEXT: Launch copy says live now status is ready.
+COMMAND: npm --prefix apps/family-experience-mcp run scan:claims -- --include "D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\test\fixtures\eval\bad-public-copy.md"
+STATUS: 1
+OUTPUT:
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\test\fixtures\eval\bad-public-copy.md
+
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probe-work\\test\\fixtures\\eval\\bad-public-copy.md",
+      "line": 1,
+      "claim": "live now"
+    }
+  ]
+}
+EXPECTED_STATUS: 1
+EXPECTED_TEXT_PRESENT: True (live now)
+
+CASE: explicit include path containing .omo/evidence forbidden claim rejects
+FILE: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\.omo\evidence\bad-evidence-copy.md
+TEXT: PlayMCP final review and contest submission completed
+COMMAND: npm --prefix apps/family-experience-mcp run scan:claims -- --include "D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\.omo\evidence\bad-evidence-copy.md"
+STATUS: 1
+OUTPUT:
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\.omo\evidence\bad-evidence-copy.md
+
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probe-work\\.omo\\evidence\\bad-evidence-copy.md",
+      "line": 1,
+      "claim": "final review and contest submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probe-work\\.omo\\evidence\\bad-evidence-copy.md",
+      "line": 1,
+      "claim": "submission completed"
+    }
+  ]
+}
+EXPECTED_STATUS: 1
+EXPECTED_TEXT_PRESENT: True (final review and contest submission completed)
+
+CASE: English smuggle rejects
+FILE: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\english-smuggle.md
+TEXT: Public copy does not claim live now; live now status is ready.
+COMMAND: npm --prefix apps/family-experience-mcp run scan:claims -- --include "D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\english-smuggle.md"
+STATUS: 1
+OUTPUT:
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\english-smuggle.md
+
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probe-work\\english-smuggle.md",
+      "line": 1,
+      "claim": "live now"
+    }
+  ]
+}
+EXPECTED_STATUS: 1
+EXPECTED_TEXT_PRESENT: True (live now)
+
+CASE: Korean smuggle rejects
+FILE: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\korean-smuggle.md
+TEXT: 이 서비스는 실시간 운영중을 보장하지 않습니다. 실시간 운영중입니다.
+COMMAND: npm --prefix apps/family-experience-mcp run scan:claims -- --include "D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\korean-smuggle.md"
+STATUS: 1
+OUTPUT:
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\korean-smuggle.md
+
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probe-work\\korean-smuggle.md",
+      "line": 1,
+      "claim": "실시간"
+    }
+  ]
+}
+EXPECTED_STATUS: 1
+EXPECTED_TEXT_PRESENT: True (실시간)
+
+CASE: Korean cross-scope rejects
+FILE: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\korean-cross-scope.md
+TEXT: 이 서비스는 실시간 운영중입니다 예약 가능하지 않습니다.
+COMMAND: npm --prefix apps/family-experience-mcp run scan:claims -- --include "D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\korean-cross-scope.md"
+STATUS: 1
+OUTPUT:
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\korean-cross-scope.md
+
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probe-work\\korean-cross-scope.md",
+      "line": 1,
+      "claim": "실시간"
+    }
+  ]
+}
+EXPECTED_STATUS: 1
+EXPECTED_TEXT_PRESENT: True (실시간)
+
+CASE: Direct clean caveat passes
+FILE: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\direct-clean-caveat.md
+TEXT: 실시간 운영중을 보장하지 않습니다
+COMMAND: npm --prefix apps/family-experience-mcp run scan:claims -- --include "D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\direct-clean-caveat.md"
+STATUS: 0
+OUTPUT:
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work\direct-clean-caveat.md
+
+{
+  "status": "PASS",
+  "scanned_files": 130
+}
+EXPECTED_STATUS: 0
+EXPECTED_TEXT_PRESENT: True ("status": "PASS")
+
+CLEANUP: removed D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-2-regression-probe-work
+PROBE_FAILURES: 0

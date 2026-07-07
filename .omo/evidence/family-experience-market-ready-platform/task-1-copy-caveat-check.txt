@@ -1,0 +1,26 @@
+
+file                                                         phrase                                       present
+----                                                         ------                                       -------
+apps/family-experience-mcp/docs/DECISIONS.md                 source-grounded family experience candidates    True
+apps/family-experience-mcp/docs/DECISIONS.md                 no nationwide completeness                      True
+apps/family-experience-mcp/docs/DECISIONS.md                 no real-time freshness                          True
+apps/family-experience-mcp/docs/DECISIONS.md                 no reservation/open-now guarantee               True
+apps/family-experience-mcp/docs/DECISIONS.md                 no child safety certification                   True
+apps/family-experience-mcp/docs/SUBMISSION_COPY_DRAFT.md     source-grounded family experience candidates    True
+apps/family-experience-mcp/docs/SUBMISSION_COPY_DRAFT.md     no nationwide completeness                      True
+apps/family-experience-mcp/docs/SUBMISSION_COPY_DRAFT.md     no real-time freshness                          True
+apps/family-experience-mcp/docs/SUBMISSION_COPY_DRAFT.md     no reservation/open-now guarantee               True
+apps/family-experience-mcp/docs/SUBMISSION_COPY_DRAFT.md     no child safety certification                   True
+apps/family-experience-mcp/docs/DEMO_PACK.md                 source-grounded family experience candidates    True
+apps/family-experience-mcp/docs/DEMO_PACK.md                 no nationwide completeness                      True
+apps/family-experience-mcp/docs/DEMO_PACK.md                 no real-time freshness                          True
+apps/family-experience-mcp/docs/DEMO_PACK.md                 no reservation/open-now guarantee               True
+apps/family-experience-mcp/docs/DEMO_PACK.md                 no child safety certification                   True
+apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md source-grounded family experience candidates    True
+apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md no nationwide completeness                      True
+apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md no real-time freshness                          True
+apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md no reservation/open-now guarantee               True
+apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md no child safety certification                   True
+
+
+RESULT=PASS

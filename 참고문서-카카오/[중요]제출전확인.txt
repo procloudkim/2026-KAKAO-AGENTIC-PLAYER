@@ -1,0 +1,1213 @@
+<html lang="ko"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width">
+  <title>비즈니스폼</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="web.2.36.1.production_7-7-26_11:08:50.css">
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500,700&amp;display=swap&amp;subset=korean">
+</head>
+<body>
+  <div class="container-doc">
+    <header class="doc-header">
+      <h1 class="doc-title">
+        <a class="link_home">
+          <img src="data:image/png;base64,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" alt="Kakao 비즈니스폼" class="img_biz">
+        </a>
+      </h1>
+    </header>
+
+    <main class="doc-main">
+      <article class="content-article">
+        <h2 class="screen_out">본문</h2>
+
+        <div class="dimmed_layer"></div>
+
+        <!-- 비즈폼 유저사이드 레이어 -->
+        <div class="bizform_user_layer _bizform_user_layer"><!-- 최대 높이값 560px -->
+          <div class="inner_layer">
+            <div class="wrap_loading _wrap_loading" style="display: none;">
+              <div class="inner_loading">
+                <div class="loader"></div>
+              </div>
+            </div>
+
+            <div class="_events"><div><div class="layer_head"><strong class="tit_bizform">참여하기 (1/12)</strong></div><div class="layer_body _layer_body"><div class="wrap_area"><div class="area_g"><strong class="tit_g">이름<sup>*</sup></strong><div class="txt_desc">팀으로 참가하실 경우, 대표자명을 입력해 주세요. </div><div class="info_inp info_area"><div class="inner_info"><textarea class="tf_area" placeholder="내용을 입력해 주세요. (200자까지 가능)" style="height: 41px;"></textarea><textarea class="tf_area" style="visibility: hidden; position: absolute; top: 0px; left: 0px;"></textarea><a href="#none" class="btn_del"><div class="ico_biz ico_del">삭제</div></a><div class="txt_count">0/200</div></div></div></div><div class="area_g"><strong class="tit_g">[신청1] PlayMCP 서비스명<sup>*</sup></strong><div class="txt_desc">1인당 2개 서비스까지 신청 가능합니다.</div><div class="info_inp info_area"><div class="inner_info"><textarea class="tf_area" placeholder="내용을 입력해 주세요. (200자까지 가능)" style="height: 41px;"></textarea><textarea class="tf_area" style="visibility: hidden; position: absolute; top: 0px; left: 0px;"></textarea><a href="#none" class="btn_del"><div class="ico_biz ico_del">삭제</div></a><div class="txt_count">0/200</div></div></div></div><div class="area_g"><strong class="tit_g">[신청1] PlayMCP 상세 페이지 URL 주소<sup>*</sup></strong><div class="txt_desc">*예시: playmcp.kakao.com/mcp/1</div><div class="info_img"><img class="thumb_g _survey_img _img" data-src="https://t1.kakaocdn.net/biz_survey/bizform_images/132341/ac1d8e4b-e052-4348-b0a8-96a931ca4165" alt="" src="https://t1.kakaocdn.net/biz_survey/bizform_images/132341/ac1d8e4b-e052-4348-b0a8-96a931ca4165"></div><div class="info_inp info_area"><div class="inner_info"><textarea class="tf_area" placeholder="내용을 입력해 주세요. (200자까지 가능)" style="height: 41px;"></textarea><textarea class="tf_area" style="visibility: hidden; position: absolute; top: 0px; left: 0px;"></textarea><a href="#none" class="btn_del"><div class="ico_biz ico_del">삭제</div></a><div class="txt_count">0/200</div></div></div></div><div class="area_g"><strong class="tit_g">[신청2] PlayMCP 서비스명 (선택)</strong><div class="txt_desc">1인당 2개 서비스까지 신청 가능합니다.</div><div class="info_inp info_area"><div class="inner_info"><textarea class="tf_area" placeholder="내용을 입력해 주세요. (200자까지 가능)" style="height: 41px;"></textarea><textarea class="tf_area" style="visibility: hidden; position: absolute; top: 0px; left: 0px;"></textarea><a href="#none" class="btn_del"><div class="ico_biz ico_del">삭제</div></a><div class="txt_count">0/200</div></div></div></div><div class="area_g"><strong class="tit_g">[신청2] PlayMCP 상세 페이지 URL 주소 (선택)</strong><div class="info_inp info_area"><div class="inner_info"><textarea class="tf_area" placeholder="내용을 입력해 주세요. (200자까지 가능)" style="height: 41px;"></textarea><textarea class="tf_area" style="visibility: hidden; position: absolute; top: 0px; left: 0px;"></textarea><a href="#none" class="btn_del"><div class="ico_biz ico_del">삭제</div></a><div class="txt_count">0/200</div></div></div></div><div class="area_g"><strong class="tit_g">서비스 소개 및 AGENTIC PLAYER 10 지원 사유를 알려주세요<sup>*</sup></strong><div class="info_inp info_area"><div class="inner_info"><textarea class="tf_area" placeholder="내용을 입력해 주세요. (200자까지 가능)" style="height: 41px;"></textarea><textarea class="tf_area" style="visibility: hidden; position: absolute; top: 0px; left: 0px;"></textarea><a href="#none" class="btn_del"><div class="ico_biz ico_del">삭제</div></a><div class="txt_count">0/200</div></div></div></div><div class="area_g"><strong class="tit_g">PlayMCP 서비스를 '전체 공개' 상태로 설정하셨나요?<sup>*</sup></strong><div class="txt_desc">심사 직후에는 '나에게만 공개' 상태입니다.</div><ul class="list_choice"><li><div class="item_choice"><input type="radio" class="inp_choice" id="radio-9098415"><label for="radio-9098415" class="lab_choice"><span class="ico_biz ico_rdo"></span><strong class="tit_choice">네, '전체 공개' 설정 상태입니다. (미설정시 참여 불가) </strong></label></div></li></ul></div><div class="area_g"><strong class="tit_g">본선 진출 시, Kakao Tools 추가 개발이 가능하신가요? (~8/27)<sup>*</sup></strong><div class="txt_desc">사용자 투표 및 심사를 위한 추가 개발은 필수입니다.</div><ul class="list_choice"><li><div class="item_choice"><input type="radio" class="inp_choice" id="radio-9098401"><label for="radio-9098401" class="lab_choice"><span class="ico_biz ico_rdo"></span><strong class="tit_choice">네, 참여 가능합니다. </strong></label></div></li></ul></div><div class="area_g"><strong class="tit_g">현재 소속 구분<sup>*</sup></strong><ul class="list_choice"><li><div class="item_choice"><input type="radio" class="inp_choice" id="radio-9098416"><label for="radio-9098416" class="lab_choice"><span class="ico_biz ico_rdo"></span><strong class="tit_choice">학교 (중학교/고등학교/대학교)</strong></label></div></li><li><div class="item_choice"><input type="radio" class="inp_choice" id="radio-9098417"><label for="radio-9098417" class="lab_choice"><span class="ico_biz ico_rdo"></span><strong class="tit_choice">기업</strong></label></div></li><li><div class="item_choice"><input type="radio" class="inp_choice" id="radio-9098418"><label for="radio-9098418" class="lab_choice"><span class="ico_biz ico_rdo"></span><strong class="tit_choice">기관/단체</strong></label></div></li><li><div class="item_choice"><input type="radio" class="inp_choice" id="radio-9098419"><label for="radio-9098419" class="lab_choice"><span class="ico_biz ico_rdo"></span><strong class="tit_choice">스타트업</strong></label></div></li><li><div class="item_choice"><input type="radio" class="inp_choice" id="radio-9098420"><label for="radio-9098420" class="lab_choice"><span class="ico_biz ico_rdo"></span><strong class="tit_choice">개인개발/프리랜서</strong></label></div></li><li><div class="item_choice"><input type="radio" class="inp_choice" id="radio-9098421"><label for="radio-9098421" class="lab_choice"><span class="ico_biz ico_rdo"></span><strong class="tit_choice">기타 (직접입력)</strong></label></div><div class="info_inp info_option"><textarea class="tf_area" placeholder="내용을 입력해 주세요. (38자까지 가능)" style="height: 50px;"></textarea><textarea class="tf_area" style="visibility: hidden; position: absolute; top: 0px; left: 0px;"></textarea><a href="#none" class="btn_del"><div class="ico_biz ico_del">삭제</div></a><div class="txt_count">0/38</div></div></li></ul></div><div class="area_g"><strong class="tit_g">소속명(학교/회사/기관명)<sup>*</sup></strong><div class="txt_desc">ex. OO대학교, OO기업, 해당 없음</div><div class="info_inp info_area"><div class="inner_info"><textarea class="tf_area" placeholder="내용을 입력해 주세요. (200자까지 가능)" style="height: 41px;"></textarea><textarea class="tf_area" style="visibility: hidden; position: absolute; top: 0px; left: 0px;"></textarea><a href="#none" class="btn_del"><div class="ico_biz ico_del">삭제</div></a><div class="txt_count">0/200</div></div></div></div><div class="area_g"><strong class="tit_g">소속 기관 또는 팀의 홈페이지 URL을 입력해 주세요. (선택) </strong><div class="txt_desc">정보를 확인할 수 있는 온라인 채널을 입력해 주세요.</div><div class="info_inp info_area"><div class="inner_info"><textarea class="tf_area" placeholder="내용을 입력해 주세요. (200자까지 가능)" style="height: 41px;"></textarea><textarea class="tf_area" style="visibility: hidden; position: absolute; top: 0px; left: 0px;"></textarea><a href="#none" class="btn_del"><div class="ico_biz ico_del">삭제</div></a><div class="txt_count">0/200</div></div></div></div><div class="area_g"><strong class="tit_g">본 예선 참가 신청은 1회만 가능하며, 제출 후 수정이 어렵습니다.<sup>*</sup></strong><div class="txt_desc">7/14 23:59까지 제출해주세요!</div><ul class="list_choice"><li><div class="item_choice"><input type="radio" class="inp_choice" id="radio-9098423"><label for="radio-9098423" class="lab_choice"><span class="ico_biz ico_rdo"></span><strong class="tit_choice">네, 수정 불가한 점 확인했습니다. </strong></label></div></li></ul></div></div></div><div class="layer_foot foot_up" style=""><span class="group_btn"><a href="#none" class="btn_g">제출하기</a></span></div><div class="box_qrcode"><div class="wrap_grcode"><img src="https://kko.to/9TyYm9PwNj.qr" alt="" class="img_biz"></div><p class="txt_qrcode">QR로 찍으면 <br>폰에서도 <br>설문할 수 있어요.</p></div></div></div>
+          </div>
+        </div>
+
+        <!-- 팝업 레이어 -->
+        <div class="_popup_container"></div>
+
+        <!-- 토스트 레이어 -->
+        <div class="_toast_container"></div>
+      </article>
+    </main>
+
+    <footer class="doc-footer">
+      <div class="inner_footer">
+        <strong class="screen_out">광고 약관 및 정책</strong>
+        <ul class="list_policy">
+          <li><a href="https://business.kakao.com/policy/operation/" class="link_policy" target="_blank" rel="noopener">운영정책</a></li>
+          <li><a href="https://cs.kakao.com/helps?locale=ko&amp;service=127" class="link_policy" target="_blank" rel="noopener">고객센터</a></li>
+          <li><a href="https://kakaobusiness-policy.kakao.com/SERVICE/?redirect=false" class="link_policy" target="_blank" rel="noopener">이용약관</a></li>
+          <li><a href="https://www.kakaocorp.com/" class="link_policy" target="_blank" rel="noopener">(주) 카카오</a></li>
+        </ul>
+      </div>
+    </footer>
+  </div>
+  <script src="web.2.36.1.production_7-7-26_11:08:50.js"></script>
+  <script src="//t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+
+</body><unicorn-web-assistant style="visibility: visible !important; display: inline !important; opacity: 1 !important;"><template shadowrootmode="open"><style>:host {
+  font-size: initial;
+  --colors-error-500: #f04438;
+  --colors-error-600: #d92d20;
+
+  --colors-base-white: #ffffff;
+  --colors-base-transparent: #ffffff00;
+
+  --colors-gray-light-mode-50: #fafafa;
+  --colors-gray-light-mode-100: #f5f5f5;
+  --colors-gray-light-mode-200: #e9eaeb;
+  --colors-gray-light-mode-300: #d5d7da;
+  --colors-gray-light-mode-400: #a4a7ae;
+  --colors-gray-light-mode-500: #717680;
+  --colors-gray-light-mode-600: #535862;
+  --colors-gray-light-mode-700: #414651;
+  --colors-gray-light-mode-900: #181d27;
+
+  --colors-gray-dark-mode-50: #f7f7f7;
+  --colors-gray-dark-mode-300: #cecfd2;
+  --colors-gray-dark-mode-400: #94979c;
+  --colors-gray-dark-mode-500: #85888e;
+  --colors-gray-dark-mode-700: #373a41;
+  --colors-gray-dark-mode-800: #22262f;
+  --colors-gray-dark-mode-900: #13161b;
+  --colors-gray-dark-mode-950: #0c0e12;
+
+  --radius-md: 8px;
+
+  --spacing-1․5-6px: 6px;
+  --spacing-2-8px: 8px;
+  --spacing-sm: var(--spacing-1․5-6px);
+  --spacing-md: var(--spacing-2-8px);
+
+  --line-height-text-xs: 18px;
+  --line-height-text-sm: 20px;
+  --line-height-text-md: 24px;
+  --line-height-text-lg: 28px;
+
+  --font-size-text-xs: 12px;
+  --font-size-text-sm: 14px;
+  --font-size-text-md: 16px;
+  --font-size-text-lg: 18px;
+
+  --font-family-font-family-body: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+
+  /* custom */
+  --colors-effects-shadows-shadow-skeumorphic-inner-light: #0a0d120d;
+  --colors-effects-shadows-shadow-skeumorphic-inner-dark: #0c0e120d;
+
+  /* component */
+  --pc-offset: 24px;
+  --mobile-offset: 16px;
+  --button-size-pc-sm: 32px;
+  --button-size-pc-md: 40px;
+  --button-size-pc-lg: 48px;
+  --button-size-mobile-sm: 28px;
+  --button-size-mobile-md: 34px;
+  --button-size-mobile-lg: 40px;
+  --panle-size-pc: 240px;
+  --panle-size-mobile: 262px;
+  --positioner-width-pc: 158px;
+  --positioner-width-mobile: 172px;
+  --positioner-height-pc: 74px;
+  --positioner-height-mobile: 84px;
+}:host {
+    --colors-background-bg-primary: var(--colors-base-white);
+    --colors-background-bg-primary-hover: var(--colors-gray-light-mode-50);
+    --colors-background-bg-tertiary: var(--colors-gray-light-mode-100);
+    
+    --colors-foreground-fg-quaternary-500: var(--colors-gray-light-mode-500);
+    --colors-foreground-fg-secondary-700: var(--colors-gray-light-mode-700);
+    --colors-foreground-fg-primary-900: var(--colors-gray-light-mode-900);
+    --colors-foreground-fg-error-primary: var(--colors-error-600);
+    --colors-foreground-fg-disabled: var(--colors-gray-light-mode-400);
+
+    --colors-border-border-primary: var(--colors-gray-light-mode-300);
+    --colors-border-border-secondary: var(--colors-gray-light-mode-200);
+    --colors-border-border-disabled: var(--colors-gray-light-mode-300);
+
+    --colors-text-text-primary-900: var(--colors-gray-light-mode-900);
+    --colors-text-text-secondary-700: var(--colors-gray-light-mode-700);
+    --colors-text-text-placeholder: var(--colors-gray-light-mode-500);
+    --colors-text-text-disabled: var(--colors-gray-light-mode-500);
+
+    --component-colors-components-buttons-tertiary-button-tertiary-fg: var(--colors-gray-light-mode-600);
+    --component-colors-components-buttons-secondary-button-secondary-fg: var(--colors-gray-light-mode-700);
+    --component-colors-components-buttons-secondary-button-secondary-bg: var(--colors-base-white);
+    --component-colors-components-buttons-secondary-button-secondary-bg-hover: var(--colors-gray-light-mode-50);
+    --component-colors-components-buttons-secondary-button-secondary-border: var(--colors-gray-light-mode-300);
+    --component-colors-components-buttons-secondary-button-secondary-border-hover: var(--colors-gray-light-mode-300);
+
+    --component-colors-utility-gray-utility-gray-100: var(--colors-gray-light-mode-100);
+    --component-colors-utility-gray-utility-gray-300: var(--colors-gray-light-mode-300);
+
+    /* custom */
+    --buttons-shadow-inner: inset 0px -1px 0px var(--colors-effects-shadows-shadow-skeumorphic-inner-light);
+}
+
+/* component */
+:host {
+    --assistant-offset: var(--pc-offset);
+    --assistant-button-size-sm: var(--button-size-pc-sm);
+    --assistant-button-size-md: var(--button-size-pc-md);
+    --assistant-button-size-lg: var(--button-size-pc-lg);
+    --assistant-panel-size: var(--panle-size-pc);
+    --assistant-positioner-width: var(--positioner-width-pc);
+    --assistant-positioner-height: var(--positioner-height-pc);
+}
+
+@media (prefers-color-scheme: dark) {
+    :host {
+        --colors-background-bg-primary: var(--colors-gray-dark-mode-950);
+        --colors-background-bg-primary-hover: var(--colors-gray-dark-mode-800);
+        --colors-background-bg-tertiary: var(--colors-gray-dark-mode-800);
+
+        --colors-foreground-fg-quaternary-500: var(--colors-gray-dark-mode-400);
+        --colors-foreground-fg-secondary-700: var(--colors-gray-dark-mode-300);
+        --colors-foreground-fg-primary-900: var(--colors-base-white);
+        --colors-foreground-fg-error-primary: var(--colors-error-500);
+        --colors-foreground-fg-disabled: var(--colors-gray-dark-mode-500);
+
+        --colors-border-border-primary: var(--colors-gray-dark-mode-700);
+        --colors-border-border-secondary: var(--colors-gray-dark-mode-800);
+        --colors-border-border-disabled: var(--colors-gray-dark-mode-700);
+
+        --colors-text-text-primary-900: var(--colors-gray-dark-mode-50);
+        --colors-text-text-secondary-700: var(--colors-gray-dark-mode-300);
+        --colors-text-text-placeholder: var(--colors-gray-dark-mode-500);
+        --colors-text-text-disabled: var(--colors-gray-dark-mode-500);
+
+        --component-colors-components-buttons-tertiary-button-tertiary-fg: var(--colors-gray-dark-mode-400);
+        --component-colors-components-buttons-secondary-button-secondary-fg: var(--colors-gray-dark-mode-300);
+        --component-colors-components-buttons-secondary-button-secondary-bg: var(--colors-gray-dark-mode-900);
+        --component-colors-components-buttons-secondary-button-secondary-bg-hover: var(--colors-gray-dark-mode-800);
+        --component-colors-components-buttons-secondary-button-secondary-border: var(--colors-gray-dark-mode-700);
+        --component-colors-components-buttons-secondary-button-secondary-border-hover: var(--colors-gray-dark-mode-700);
+
+        --component-colors-utility-gray-utility-gray-100: var(--colors-gray-dark-mode-800);
+        --component-colors-utility-gray-utility-gray-300: var(--colors-gray-dark-mode-700);
+
+        /* custom */
+        --buttons-shadow-inner: inset 0px -1px 0px var(--colors-effects-shadows-shadow-skeumorphic-inner-dark);
+    }
+}
+
+/* component */
+@media (max-width: 768px) {
+    :host {
+        --assistant-offset: var(--mobile-offset);
+        --assistant-button-size-sm: var(--button-size-mobile-sm);
+        --assistant-button-size-md: var(--button-size-mobile-md);
+        --assistant-button-size-lg: var(--button-size-mobile-lg);
+        --assistant-panel-size: var(--panle-size-mobile);
+        --assistant-positioner-width: var(--positioner-width-mobile);
+        --assistant-positioner-height: var(--positioner-height-mobile);
+    }
+}.text-style-text-semibold, .text-style-text-medium, .text-style-text-regular {
+    font-family: var(--font-family-font-family-body);
+    font-style: normal;
+    text-decoration: none;
+    text-transform: none;
+    letter-spacing: 0;
+}
+.text-style-text-semibold {
+ font-weight: 600;
+}
+.text-style-text-medium {
+    font-weight: 500;
+}
+.text-style-text-regular {
+    font-weight: 400;
+}
+/* text-style-text-xs-medium, text-style-text-xs-regular */
+.text-style-text-semibold[size='xs'], .text-style-text-medium[size='xs'], .text-style-text-regular[size='xs'] {
+    font-size: var(--font-size-text-xs);
+    line-height: var(--line-height-text-xs);
+}
+/* text-style-text-sm-medium, text-style-text-sm-regular */
+.text-style-text-semibold[size='sm'], .text-style-text-medium[size='sm'], .text-style-text-regular[size='sm'] {
+    font-size: var(--font-size-text-sm);
+    line-height: var(--line-height-text-sm);
+}
+/* text-style-text-md-medium, text-style-text-md-regular */
+.text-style-text-semibold[size='md'], .text-style-text-medium[size='md'], .text-style-text-regular[size='md'] {
+    font-size: var(--font-size-text-md);
+    line-height: var(--line-height-text-md);
+}
+/* text-style-text-lg-medium, text-style-text-lg-regular */
+.text-style-text-semibold[size='lg'], .text-style-text-medium[size='lg'], .text-style-text-regular[size='lg'] {
+    font-size: var(--font-size-text-lg);
+    line-height: var(--line-height-text-lg);
+}* {
+    box-sizing: border-box !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+    background-color: inherit;
+    border: none;
+    padding: 0;
+
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+[hide] {
+    display: none !important;
+}
+
+[softshow] {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+[softhide] {
+    opacity: 0!important;
+    visibility: hidden!important;
+}
+
+.touch_effect {
+    background-color: var(--colors-background-bg-primary-hover) !important;
+}
+
+@keyframes fadeout {
+    0% {
+        opacity: 1;
+    }
+    
+    100% {
+        opacity: 0;
+    }
+}
+  
+@keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0;
+    }
+
+    33% {
+        opacity: 1;
+    }
+
+    66% {
+        opacity: 0;
+    }
+
+    99% {
+        opacity: 1;
+    }
+}
+
+.loading_indicator::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    border: 4px solid transparent;
+    border-top-color: #9f9f9f;
+    border-radius: 50%;
+    animation: loading-spinner 1s ease infinite;
+}
+
+@keyframes loading-spinner {
+    from {
+        transform: rotate(0turn);
+    }
+    to {
+        transform: rotate(1turn);
+    }
+}</style><style>.icon {
+    fill: none;
+}
+
+.icon[size="xs"] {
+    width: 12px;
+    height: 12px;
+}
+
+.icon[size="sm"] {
+    width: 16px;
+    height: 16px;
+}
+
+.icon[size="sm-md"] {
+    width: 18px;
+    height: 18px;
+}
+
+.icon[size="md"] {
+    width: 20px;
+    max-height: 20px;
+}
+
+.icon[size="md-lg"] {
+    width: 22px;
+    height: 22px;
+}
+
+.icon[size="lg"] {
+    width: 24px;
+    height: 24px;
+}
+
+.icon path {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* default style(stroke, stroke-width 등) */
+.chevron_left path, .x_close path, .arrow_narrow_up_left path, .refresh path, .eyeOff path, .link path {
+    stroke: var(--component-colors-components-buttons-tertiary-button-tertiary-fg); /* default stroke */
+    stroke-width: 1.67;
+}
+.x_close[size="lg"]>path {
+    stroke-width: 2;
+}
+.plus path, .minus path {
+    stroke: var(--colors-foreground-fg-secondary-700); 
+    stroke-width: 1.67;
+}
+.check > path {
+    stroke: white; 
+    stroke-width: 1.67;
+}
+.shield > path, .code > path {
+    stroke: var(--colors-foreground-fg-quaternary-500); 
+    stroke-width: 1.67;
+}
+.star > path, .alert_octagon > path, .setting path, .pip path  {
+    stroke: var(--colors-foreground-fg-quaternary-500); 
+    stroke-width: 1.3;
+}
+.eye path {
+    stroke: var(--colors-error-500);
+    stroke-width: 1.67;
+}
+
+/* [ISSUE-4685] Safari에서 뒤로가기 버튼이 보이지 않는 문제 관련 기본 크기 추가 */
+.icon.chevron_left {
+    width: 24px;
+    height: 24px;
+}
+
+/* custom */
+.unicorn {
+    overflow: visible;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2))
+}
+.unicorn > circle {
+    fill: #E84C3D;
+    stroke: #EA756A;
+}
+.unicorn > path {
+    fill: white;
+    fill-rule: evenodd;
+    clip-rule: evenodd;
+}.toggle_button {
+    display: inline-block;
+    position: relative;
+    width: 40px;
+    height: 20px;
+}
+
+.toggle_button input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.toggle_button_slider {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 10px;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.toggle_button_slider:before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    bottom: 4px;
+    height: 10px;
+    width: 10px;
+    background-color: var(--colors-foreground-fg-primary-900);
+    border-radius: 50%;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.toggle_button input:checked + .toggle_button_slider:before {
+    -webkit-transform: translateX(20px);
+    -ms-transform: translateX(20px);
+    transform: translateX(20px);
+    background-color: white;
+}
+
+.toggle_button input + .toggle_button_slider {
+    background-color: inherit;
+    border: 1px solid var(--colors-border-border-primary);
+}
+
+.toggle_button input:checked + .toggle_button_slider {
+    background-color: var(--colors-error-500);
+    border: 1px solid var(--colors-error-500);
+}
+
+.toggle_button[disabled] {
+    pointer-events: none !important;
+}
+
+.toggle_button[disabled] .toggle_button_slider:before {
+    background-color: var(--component-colors-utility-gray-utility-gray-300) !important;
+}
+
+.toggle_button[disabled] input + .toggle_button_slider {
+    border: 1px solid var(--component-colors-utility-gray-utility-gray-100) !important;
+}
+
+.toggle_button[disabled] input:checked + .toggle_button_slider {
+    background-color: var(--component-colors-utility-gray-utility-gray-100) !important;
+}
+
+@media (min-width: 768px) {
+    .toggle_button input:checked + .toggle_button_slider:hover {
+        background-color: var(--colors-error-600);
+        border: 1px solid var(--colors-error-600);
+    }
+}.common_button {
+    gap: 4px;
+    word-break: keep-all;
+    color: var(--component-colors-components-buttons-secondary-button-secondary-fg);
+    background-color: var(--component-colors-components-buttons-secondary-button-secondary-bg);
+    border: 1px solid var(--component-colors-components-buttons-secondary-button-secondary-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--buttons-shadow-inner);
+}
+
+.common_button[disabled] {
+    pointer-events: none !important;
+    color: var(--colors-foreground-fg-disabled) !important;
+}
+
+.common_button[size="sm"] {
+    padding: 4px 8px;
+    height: 26px;
+}
+
+.common_button[size="md"] {
+    padding: 6px 12px;
+    height: 32px;
+}
+
+.common_button[size="lg"] {
+    padding: 6px 12px;
+    height: 36px;
+}
+
+@media (min-width: 768px) {
+    .common_button:hover {
+        background-color: var(--colors-background-bg-primary-hover);
+    }
+}
+.icon_button {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--colors-background-bg-primary);
+    border-radius: var(--radius-md);
+}
+
+.icon_button[size="sm"] {
+    width: 32px;
+    height: 32px;
+    padding: var(--spacing-sm);
+}
+
+.icon_button[size="md"] {
+    width: 36px;
+    height: 36px;
+    padding: var(--spacing-md);
+}
+
+.icon_button[size="lg"] {
+    width: 40px;
+    height: 40px;
+    padding: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+    .icon_button:hover {
+        background-color: var(--colors-background-bg-primary-hover);
+    }
+}
+
+.icon_button[disabled] {
+    cursor: auto;
+    pointer-events: none !important;
+}
+
+.icon_button[disabled] path{
+    stroke: var(--colors-foreground-fg-disabled) !important;
+}
+
+.icon_button[type="arrowNarrowUpLeft"][corner="right_top"] {
+    transform: rotate(90deg);
+}
+.icon_button[type="arrowNarrowUpLeft"][corner="right_bottom"] {
+    transform: rotate(180deg);
+}
+.icon_button[type="arrowNarrowUpLeft"][corner="left_bottom"] {
+    transform: rotate(270deg);
+}
+.icon_button[type="arrowNarrowUpLeft"][current] path {
+    stroke : var(--colors-foreground-fg-error-primary)
+}
+.icon_box {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.icon_box[size="sm"] {
+    width: 20px;
+    height: 24px;
+}
+.icon_box[size="md"] {
+    width: 22px;
+    height: 26px;
+}
+.icon_box[size="lg"] {
+    width: 24px;
+    height: 28px;
+}
+
+.icon_box[type="back"] {
+    width: 24px;
+    height: 32px;
+}
+
+.icon_box[type="back"][size="lg"] { /* use iOS */
+    width: 26px;
+    height: 34px;
+}.checkbox {
+    cursor: pointer;
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.checkbox input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.checkbox_mark {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 20px;
+    width: 20px;
+    border-radius: 2px;
+}
+
+.checkbox input + .checkbox_mark {
+    background-color: inherit;
+    border: 1px solid var(--colors-border-border-primary);
+}
+.checkbox input + .checkbox_mark path {
+    display: none;
+    stroke: white;
+}
+.checkbox  input:checked + .checkbox_mark {
+    background-color: var(--colors-error-500);
+    border: 1px solid var(--colors-error-500);
+}
+.checkbox  input:checked + .checkbox_mark path {
+    display: block;
+}
+@media (min-width: 768px) {
+    .checkbox:hover input:checked + .checkbox_mark {
+        background-color: var(--colors-error-600);
+        border: 1px solid var(--colors-error-600);
+    }
+}
+
+.checkbox_text {
+    color: var(--colors-text-text-secondary-700);
+    margin: 6px 0px 6px 8px;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}.domain {
+    color: var(--colors-text-text-primary-900);
+}
+
+.domain > div {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .domain {
+        padding: 12px 16px 2px 16px;
+    }
+}
+
+/* PC */
+@media (min-width: 768px) {
+    .domain {
+        padding: 16px 16px 8px 16px;
+    }
+}.button_group {
+    overflow: hidden;
+    display: inline-flex;
+    border-radius: var(--radius-md);
+    box-shadow: var(--buttons-shadow-inner);
+}
+
+.button_group>.button_group_item {
+    border: none;
+    border-top: 1px solid var(--colors-border-border-primary);
+    border-bottom: 1px solid var(--colors-border-border-primary);
+    border-left: 1px solid var(--colors-border-border-primary);
+    border-radius: unset;
+    box-shadow: inherit
+}
+
+.button_group>.button_group_item[size="sm"] {
+    height: 28px;
+}
+
+.button_group>.button_group_item[size="md"] {
+    height: 36px;
+}
+
+.button_group>.icon_button.button_group_item[size="sm"] {
+    width: 34px;
+}
+
+.button_group>.icon_button.button_group_item[size="md"] {
+    width: 44px;
+}
+
+@media (min-width: 768px) {
+    .button_group>.button_group_item:hover {
+        background-color: var(--colors-background-bg-primary-hover);
+    }
+}
+
+.button_group>.button_group_item:first-child {
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.button_group>.button_group_item:last-child {
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    border-right: 1px solid var(--colors-border-border-primary);
+}.notification {
+    position: fixed;
+    z-index: 2147483647;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    pointer-events: none;
+
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+
+    color: white;
+}
+
+.notification > * {
+    width: max-content;
+}
+
+.notification[ani="default"] {
+    animation: fadeout 1.5s ease 1.5s;
+}
+
+.notification[ani="assistant"] {
+    animation: fadeout 1s forwards 3s;
+}.list_item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+}
+
+.list_item_label  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.list_item_title {
+    color: var(--colors-text-text-secondary-700);
+}
+
+.list_item_badge {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 20px;
+    height: 20px;
+
+    border-radius: 50%;
+    background-color: var(--colors-error-500);
+    color: white;
+}
+
+.list_item_badge[size="xs"] {
+    width: 18px;
+    height: 18px;
+}
+
+.list_item[type="button"] {
+    cursor: pointer;
+}
+
+@media (min-width: 768px) {
+    .list_item[type="button"]:hover {
+        background-color: var(--colors-background-bg-primary-hover);
+    }
+}
+
+/* 특수 케이스 */
+.list_item_label[custom="pos"] {
+    align-self: flex-start;
+    margin-top: 4px;
+}
+.positioner {
+    display: flex;
+    justify-content: space-between;
+    width: var(--assistant-positioner-width);
+    height: var(--assistant-positioner-height);
+}
+
+.positioner_side {
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.positioner_center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.userscripts_item {
+    width:338px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--colors-border-border-secondary);
+}
+
+.userscripts_info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.userscript_icon_wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 46px;
+    height: 46px;
+    border: 1px solid var(--colors-border-border-primary);
+    border-radius: 8px;
+}
+
+.userscript_icon {
+    width: 69.7%;
+    height: 69.7%;
+}
+
+.userscript_title_wrapper {
+    min-width: 0;
+    flex: 1;
+
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+    gap: 2px;
+}
+
+.userscript_title {
+    height: 20px;
+    color: var(--colors-text-text-primary-900);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.userscript_subtitle {
+    max-height: 36px;
+    color: var(--colors-text-text-secondary-700);
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.userscript_toggle_wrapper {
+    display: flex;
+}
+
+.userscripts_command_button_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.userscripts_command_button_wrapper:not(:empty) {
+    margin-top: 12px;
+}
+
+.userscripts_command_button_wrapper > .common_button {
+    max-width: 100%;
+}
+
+.userscripts_command_button_wrapper > .common_button > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+} 
+
+.userscripts_item[disabled] .userscript_title, .userscripts_item[disabled] .userscript_subtitle {
+    color: var(--colors-text-text-disabled) !important;
+}
+
+.userscripts_item[disabled] .userscript_icon_wrapper {
+    color: var(--colors-border-border-disabled) !important;
+}
+
+.userscripts_item[disabled] .userscript_icon {
+    opacity: 0.6 !important;
+}
+
+@media (max-width: 768px) {
+    .userscripts_item {
+        width: 328px;
+    }
+    
+    .userscript_title {
+        height: 24px;
+    }
+    
+    .userscript_subtitle {
+        color: var(--colors-text-text-secondary-700);
+        max-height: 40px;
+    }
+}.background {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2147483647;
+    background: rgba(0, 0, 0, 0.5);
+}.title_bar {
+    cursor: move;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 6px 8px;
+    background-color: var(--colors-background-bg-primary);
+    color: var(--component-colors-components-buttons-tertiary-button-tertiary-fg);
+}
+
+.title_bar[large] {
+    padding: 8px;
+}
+
+.title_bar_wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.title_bar:not([showback]) > .title_bar_wrapper {
+    padding-left: 8px;
+}
+
+.title_bar:not([showback]) > .title_bar_wrapper > .icon_box[type="back"] {
+    display: none;
+}
+
+.assistant_button {
+    position: fixed;
+    z-index: 2147483647;
+    filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.2));
+
+    /** responsive repositioning animation */
+    transition-property: opacity, visibility;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in;
+}
+
+.assistant_button>* {
+    position: absolute;
+}
+
+.assistant_button>.hidden_button {
+    width: 16px;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(191, 191, 191, 0.8);
+    border-radius: 10px;
+}
+
+.web_panel:not([hide])~.assistant_button {
+    cursor: auto;
+}
+
+.assistant_button[dragging],
+.web_panel:not([hide])~.assistant_button:not([mode="hidden"]) {
+    cursor: move !important;
+}
+
+.assistant_button[position^="left"] {
+    left: var(--assistant-offset);
+}
+
+.assistant_button[position^="right"] {
+    right: var(--assistant-offset);
+}
+
+.assistant_button[position$="top"] {
+    top: var(--assistant-offset);
+}
+
+.assistant_button[position$="bottom"] {
+    bottom: var(--assistant-offset);
+}
+
+.assistant_button[position^="left"][mode="hidden"] {
+    left: calc(var(--assistant-button-size-lg) / 2 * -1) !important;
+}
+
+.assistant_button[position^="right"][mode="hidden"] {
+    right: calc(var(--assistant-button-size-lg) / 2 * -1) !important;
+}
+
+.assistant_button[size="sm"] {
+    width: var(--assistant-button-size-sm);
+    height: var(--assistant-button-size-sm);
+}
+
+.assistant_button[size="md"] {
+    width: var(--assistant-button-size-md);
+    height: var(--assistant-button-size-md);
+}
+
+.assistant_button[size="lg"] {
+    width: var(--assistant-button-size-lg);
+    height: var(--assistant-button-size-lg);
+}
+
+.assistant_button[mode="hidden"] {
+    width: var(--assistant-button-size-lg) !important;
+}
+
+.assistant_button[transparent="10"] {
+    opacity: 0.1;
+}
+
+.assistant_button[transparent="25"] {
+    opacity: 0.25;
+}
+
+.assistant_button[transparent="50"] {
+    opacity: 0.5;
+}
+
+.assistant_button[transparent="75"] {
+    opacity: 0.75;
+}
+
+.assistant_button[transparent="100"] {
+    opacity: 1;
+}
+
+.assistant_button[changing="hidden"]>.icon.unicorn {
+    animation: fadeout 0.3s forwards;
+}
+
+.assistant_button[changing="hidden"]>.hidden_button {
+    animation: blink 1s ease-in 0.3s 1;
+}
+
+.assistant_button[changing="main"]>.hidden_button {
+    animation: fadeout 0.2s forwards;
+}
+
+.assistant_button[changing="main"]>.icon.unicorn {
+    animation: fadein 0.2s forwards 0.2s;
+}
+
+.assistant_button>.unicorn>circle {
+    transition: fill 0.2s ease-in, stroke 0.2s ease-in;
+}
+
+.assistant_button[inactive]>.unicorn>circle {
+    fill: #C2BEBD;
+    stroke: #D1D1D1;
+}.web_panel {
+    position: fixed;
+    z-index: 2147483647;
+    overflow: hidden;
+    background-color: var(--colors-background-bg-primary);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, .1);
+}
+
+.web_panel * {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}.web_panel[mode="main"],
+.web_panel[mode="setting"],
+.web_panel[mode="userscript"] {
+    min-width: var(--assistant-panel-size);
+    min-height: 296px;
+}
+
+.web_panel[mode="main"][userscript="off"] {
+    min-height: 256px;
+}
+
+.web_panel[mode="userscript"] {
+    display: flex;
+    flex-flow: column;
+    max-height: 456px;
+}
+
+.web_panel[mode="userscript"]>.userscript_panel_content {
+    flex: 1;
+    overflow-y: scroll;
+    overscroll-behavior: none;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE, Edge */
+}
+
+.web_panel[mode="userscript"]>.userscript_panel_content::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari */
+}
+
+.userscript_panel_content[empty] {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.userscript_panel_content[empty] .userscript_panel_placeholder {
+    position: absolute;
+    margin: 0 32px;
+    color: var(--colors-text-text-placeholder);
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+
+    .web_panel[mode="main"],
+    .web_panel[mode="setting"],
+    .web_panel[mode="userscript"] {
+        min-height: 304px;
+    }
+
+    .web_panel[mode="main"][userscript="off"] {
+        min-height: 264px;
+    }
+
+    .web_panel[mode="userscript"] {
+        max-height: 422px;
+    }
+}
+
+.web_panel[position^="left"] {
+    left: var(--assistant-offset);
+}
+
+.web_panel[position^="right"] {
+    right: var(--assistant-offset);
+}
+
+.web_panel[position$="top"] {
+    top: calc(var(--assistant-offset) + var(--assistant-button-size-lg) + 10px);
+}
+
+.web_panel[position$="bottom"] {
+    bottom: calc(var(--assistant-offset) + var(--assistant-button-size-lg) + 10px);
+}
+
+.web_panel>.title_bar {
+    border-bottom: 1px solid var(--colors-border-border-secondary);
+}</style><main lang="ko"><div class="background" hide=""></div><div class="notification" hide=""><span class="text-style-text-medium" size="md">버튼의 위치를 변경해주세요.</span><span class="text-style-text-medium" size="sm">(버튼을 누른 상태에서 이동)</span></div><div class="web_panel" mode="main" userscript="off" hide=""><div class="title_bar"><div class="title_bar_wrapper"><div class="icon_box" type="back" size="md"><svg class="icon chevron_left" viewBox="0 0 24 24"><path d="M15 18L9 12L15 6"></path></svg></div><span class="text-style-text-medium" size="md">웹 어시스턴트</span></div><div class="icon_button" type="xClose" size="sm"><svg class="icon x_close" viewBox="0 0 20 20" size="md"><path d="M15 5L5 15M5 5L15 15"></path></svg></div></div><div hide=""><div class="domain"><span class="text-style-text-medium" size="lg">forms.kakao.com</span></div><ul><li class="list_item" type="button"><div class="list_item_label"><div class="icon_box" type="adblock" size="md"><svg class="icon shield" viewBox="0 0 20 20" size="md"><path d="M7.52502 9.59375L9.17502 11.2188L12.8875 7.5625M16.6 10C16.6 13.9881 12.183 16.8887 10.5759 17.8121C10.3932 17.917 10.3019 17.9695 10.173 17.9967C10.073 18.0178 9.92706 18.0178 9.82704 17.9967C9.69815 17.9695 9.60683 17.917 9.42418 17.8121C7.81704 16.8887 3.40002 13.9881 3.40002 10V6.1143C3.40002 5.4647 3.40002 5.1399 3.5079 4.8607C3.6032 4.61405 3.75806 4.39398 3.95909 4.21949C4.18666 4.02198 4.49546 3.90794 5.11306 3.67985L9.53654 2.04617C9.70806 1.98283 9.79381 1.95116 9.88204 1.9386C9.96029 1.92747 10.0398 1.92747 10.118 1.9386C10.2062 1.95116 10.292 1.98283 10.4635 2.04617L14.887 3.67985C15.5046 3.90794 15.8134 4.02198 16.041 4.21949C16.242 4.39398 16.3968 4.61405 16.4921 4.8607C16.6 5.1399 16.6 5.4647 16.6 6.1143V10Z"></path></svg></div><span class="list_item_title text-style-text-regular" size="md">이 사이트 보호</span></div><label class="toggle_button"><input type="checkbox"><span class="toggle_button_slider"></span></label></li><li class="list_item" type="button"><div class="list_item_label"><div class="icon_box" type="cleaner" size="md"><svg class="icon star" viewBox="0 0 18 20" size="md"><path d="M3.375 18.125V14.0625M3.375 5.9375V1.875M1.5 3.90625H5.25M1.5 16.0938H5.25M9.75 2.6875L8.44937 6.35095C8.23786 6.9467 8.1321 7.24457 7.96765 7.49513C7.82189 7.7172 7.6428 7.91122 7.43781 8.06912C7.20653 8.24728 6.93157 8.36185 6.38165 8.59098L3 10L6.38165 11.409C6.93157 11.6382 7.20653 11.7527 7.43781 11.9309C7.6428 12.0888 7.82189 12.2828 7.96765 12.5049C8.1321 12.7554 8.23786 13.0533 8.44937 13.649L9.75 17.3125L11.0506 13.649C11.2621 13.0533 11.3679 12.7554 11.5324 12.5049C11.6781 12.2828 11.8572 12.0888 12.0622 11.9309C12.2935 11.7527 12.5684 11.6382 13.1184 11.409L16.5 10L13.1184 8.59098C12.5684 8.36185 12.2935 8.24728 12.0622 8.06912C11.8572 7.91122 11.6781 7.7172 11.5324 7.49513C11.3679 7.24458 11.2621 6.9467 11.0506 6.35095L9.75 2.6875Z"></path></svg></div><span class="list_item_title text-style-text-regular" size="md">클리너 실행</span></div></li><li class="list_item" type="button"><div class="list_item_label"><div class="icon_box" type="report" size="md"><svg class="icon alert_octagon" viewBox="0 0 20 19" size="md"><path d="M10 6.47222V9.54167M10 12.6111H10.0078M2.20837 6.87336V12.21C2.20837 12.3977 2.20837 12.4915 2.2299 12.5798C2.24899 12.6581 2.28047 12.733 2.32319 12.8016C2.37138 12.8791 2.43876 12.9454 2.57351 13.0782L6.40915 16.8557C6.54391 16.9884 6.61129 17.0547 6.68992 17.1022C6.75963 17.1443 6.83564 17.1753 6.91514 17.1941C7.00481 17.2153 7.1001 17.2153 7.29068 17.2153H12.7094C12.9 17.2153 12.9953 17.2153 13.0849 17.1941C13.1644 17.1753 13.2404 17.1443 13.3102 17.1022C13.3888 17.0547 13.4562 16.9884 13.5909 16.8557L17.4266 13.0781C17.5613 12.9454 17.6287 12.8791 17.6769 12.8016C17.7196 12.733 17.7511 12.6581 17.7702 12.5798C17.7917 12.4915 17.7917 12.3977 17.7917 12.21V6.87336C17.7917 6.68567 17.7917 6.59182 17.7702 6.50351C17.7511 6.42521 17.7196 6.35036 17.6769 6.2817C17.6287 6.20426 17.5613 6.1379 17.4266 6.00519L13.5909 2.22766C13.4562 2.09495 13.3888 2.02859 13.3102 1.98114C13.2404 1.93906 13.1644 1.90806 13.0849 1.88926C12.9953 1.86806 12.9 1.86806 12.7094 1.86806H7.29068C7.1001 1.86806 7.00481 1.86806 6.91514 1.88926C6.83564 1.90806 6.75963 1.93906 6.68992 1.98114C6.61129 2.02859 6.54391 2.09495 6.40915 2.22767L2.57351 6.00519C2.43876 6.1379 2.37138 6.20426 2.32319 6.2817C2.28047 6.35036 2.24899 6.42521 2.2299 6.50351C2.20837 6.59182 2.20837 6.68567 2.20837 6.87336Z"></path></svg></div><span class="list_item_title text-style-text-regular" size="md">광고 신고하기</span></div></li><li class="list_item" type="button"><div class="list_item_label"><div class="icon_box" type="setting" size="md"><svg class="icon setting" viewBox="0 0 18 20" size="md"><path d="M6.59903 16.3883L7.13735 17.5275C7.29738 17.8666 7.55855 18.1547 7.88917 18.3569C8.21979 18.5591 8.60567 18.6667 9 18.6667C9.39433 18.6667 9.78021 18.5591 10.1108 18.3569C10.4415 18.1547 10.7026 17.8666 10.8626 17.5275L11.401 16.3883C11.5926 15.9841 11.9149 15.6471 12.3221 15.4253C12.7317 15.203 13.2057 15.1083 13.6761 15.1547L14.9932 15.2867C15.3853 15.3257 15.781 15.2568 16.1323 15.0885C16.4836 14.9201 16.7755 14.6595 16.9725 14.3381C17.1698 14.017 17.2638 13.6489 17.2431 13.2785C17.2224 12.9081 17.0879 12.5513 16.8559 12.2514L16.076 11.2432C15.7983 10.8815 15.65 10.4462 15.6523 10C15.6522 9.55504 15.802 9.12151 16.0801 8.76163L16.86 7.75341C17.092 7.45352 17.2265 7.09673 17.2472 6.72632C17.2679 6.35591 17.1739 5.9878 16.9766 5.66667C16.7796 5.34534 16.4877 5.08469 16.1364 4.91633C15.7851 4.74797 15.3894 4.67913 14.9973 4.71815L13.6802 4.85008C13.2098 4.89656 12.7358 4.80184 12.3262 4.57948C11.9182 4.35649 11.5958 4.01771 11.4051 3.61171L10.8626 2.47252C10.7026 2.13342 10.4415 1.84529 10.1108 1.64308C9.78021 1.44087 9.39433 1.33328 9 1.33334C8.60567 1.33328 8.21979 1.44087 7.88917 1.64308C7.55855 1.84529 7.29738 2.13342 7.13735 2.47252L6.59903 3.61171C6.4083 4.01771 6.08586 4.35649 5.67794 4.57948C5.26825 4.80184 4.79431 4.89656 4.32394 4.85008L3.00269 4.71815C2.61061 4.67913 2.21491 4.74797 1.86359 4.91633C1.51226 5.08469 1.22039 5.34534 1.02337 5.66667C0.826089 5.9878 0.732103 6.35591 0.752813 6.72632C0.773523 7.09673 0.908039 7.45352 1.14004 7.75341L1.91989 8.76163C2.19801 9.12151 2.34778 9.55504 2.34769 10C2.34778 10.445 2.19801 10.8785 1.91989 11.2384L1.14004 12.2466C0.908039 12.5465 0.773523 12.9033 0.752813 13.2737C0.732103 13.6441 0.826089 14.0122 1.02337 14.3333C1.22059 14.6545 1.51249 14.915 1.86377 15.0833C2.21504 15.2517 2.61064 15.3206 3.00269 15.2819L4.31984 15.1499C4.79022 15.1034 5.26416 15.1982 5.67385 15.4205C6.0833 15.6429 6.40722 15.9817 6.59903 16.3883Z"></path><path d="M8.99835 12.6C10.5245 12.6 11.7616 11.4359 11.7616 10C11.7616 8.56406 10.5245 7.4 8.99835 7.4C7.47224 7.4 6.23509 8.56406 6.23509 10C6.23509 11.4359 7.47224 12.6 8.99835 12.6Z"></path></svg></div><span class="list_item_title text-style-text-regular" size="md">웹 어시스턴트 설정</span></div></li></ul></div><div hide=""><ul><li class="list_item"><div class="list_item_label" custom="pos"><span class="list_item_title text-style-text-regular" size="md">위치</span></div><div class="positioner"><div class="positioner_side"><div class="icon_button" type="arrowNarrowUpLeft" size="md" corner="left_top"><svg class="icon arrow_narrow_up_left" viewBox="0 0 20 20" size="md"><path d="M15 15L5 5M5 5V11.6667M5 5H11.6667"></path></svg></div><div class="icon_button" type="arrowNarrowUpLeft" size="md" corner="left_bottom"><svg class="icon arrow_narrow_up_left" viewBox="0 0 20 20" size="md"><path d="M15 15L5 5M5 5V11.6667M5 5H11.6667"></path></svg></div></div><div class="positioner_center"><button class="common_button" size="lg"><span class="text-style-text-medium" size="md">직접 변경</span></button></div><div class="positioner_side"><div class="icon_button" type="arrowNarrowUpLeft" size="md" corner="right_top"><svg class="icon arrow_narrow_up_left" viewBox="0 0 20 20" size="md"><path d="M15 15L5 5M5 5V11.6667M5 5H11.6667"></path></svg></div><div class="icon_button" type="arrowNarrowUpLeft" size="md" corner="right_bottom" current=""><svg class="icon arrow_narrow_up_left" viewBox="0 0 20 20" size="md"><path d="M15 15L5 5M5 5V11.6667M5 5H11.6667"></path></svg></div></div></div></li><li class="list_item"><div class="list_item_label"><span class="list_item_title text-style-text-regular" size="md">자동 숨김</span></div><label class="toggle_button"><input type="checkbox"><span class="toggle_button_slider"></span></label></li><li class="list_item"><div class="list_item_label"><span class="list_item_title text-style-text-regular" size="md">크기(보통)</span></div><div class="button_group"><div class="icon_button button_group_item" type="minus" size="md"><svg class="icon minus" viewBox="0 0 20 20" size="md"><path d="M4.16663 10H15.8333"></path></svg></div><div class="icon_button button_group_item" type="plus" size="md" disabled=""><svg class="icon plus" viewBox="0 0 20 20" size="md"><path d="M9.99996 4.16669V15.8334M4.16663 10H15.8333"></path></svg></div></div></li><li class="list_item"><div class="list_item_label"><span class="list_item_title text-style-text-regular" size="md">투명도(100%)</span></div><div class="button_group"><div class="icon_button button_group_item" type="minus" size="md"><svg class="icon minus" viewBox="0 0 20 20" size="md"><path d="M4.16663 10H15.8333"></path></svg></div><div class="icon_button button_group_item" type="plus" size="md" disabled=""><svg class="icon plus" viewBox="0 0 20 20" size="md"><path d="M9.99996 4.16669V15.8334M4.16663 10H15.8333"></path></svg></div></div></li><li class="list_item"><label class="checkbox"><input type="checkbox"><div class="checkbox_mark"><svg class="icon check" viewBox="0 0 12 12" size="xs"><path d="M10 3L4.5 8.5L2 6"></path></svg></div><span class="checkbox_text text-style-text-regular" size="md">이 사이트만</span></label></li></ul></div></div><button class="assistant_button" tabindex="-1" mode="hidden" position="right_bottom" transparent="100" size="lg"><svg class="icon unicorn" viewBox="6.5 4.5 47 47" softhide=""><circle cx="30" cy="28" r="23.5"></circle><path d="M35.447 18.023L32.8706 23.0715L36.3353 25.3544L40.0001 27.818L38.7405 29.8036L37.2661 32.0506C37.2661 32.0506 36.6858 31.8197 35.9705 31.4954C34.3686 30.769 32.367 30.5589 30.9023 30.9636C29.3617 31.3891 27.6001 33.164 27.1162 34.778C26.9187 35.4366 26.7587 36.5891 26.7605 37.3392C26.7644 38.9404 27.2523 41.1532 27.8895 42.4598C28.1383 42.9697 28.3564 43.348 28.3061 43.3978C28.2557 43.4477 27.1949 42.6252 26.017 41.4725C23.113 38.6312 21.6595 36.4523 20.6453 33.4206C19.9385 31.308 19.8055 28.7696 20.2803 26.448C20.4942 25.4023 20.885 24.0411 21.1491 23.4231C21.7858 21.9327 23.2131 19.5671 24.1236 18.4928L24.8576 17.6268L27.2741 19.233C28.6034 20.1163 29.7791 20.8391 29.8868 20.8391C29.9948 20.8391 31.8099 19.0811 33.9209 16.9323C36.0316 14.7835 37.8184 13.014 37.8912 13.0001C37.964 12.9861 36.8641 15.2464 35.447 18.023ZM21.8777 25.491C22.2581 24.0447 23.2723 21.915 24.323 20.356L25.0273 19.3112L27.0176 20.6367L29.0076 21.9622L27.8981 23.4142C26.5072 25.2344 25.5118 27.2848 24.9359 29.5156C24.389 31.6338 24.3246 35.8424 24.8104 37.6985C24.9874 38.3739 25.2803 38.9801 25.2438 39.0162C25.2073 39.0526 24.6076 38.4743 24.1295 37.7605C21.967 34.5336 20.9531 29.0076 21.8777 25.491ZM31.4009 26.2319C31.4009 26.2319 31.1739 25.5979 31.0281 25.1973C30.8985 24.8412 30.5744 23.8491 30.5744 23.8491C30.6931 23.9599 32.2757 24.9726 32.2757 24.9726L33.1621 25.5295C33.1621 25.5295 32.6467 25.7476 32.3137 25.8807C31.9591 26.0224 31.4009 26.2319 31.4009 26.2319Z"></path></svg><div class="hidden_button"></div></button></main></template></unicorn-web-assistant></html>

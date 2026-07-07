@@ -1,0 +1,142 @@
+[
+  {
+    "id": "weekend-preschool-indoor",
+    "group": "loose-korean",
+    "prompt": "이번 주말 4살이랑 서울 실내 체험 찾아줘",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-07-04", "end": "2026-07-05" }, "child_age": 4 },
+    "expect": "success"
+  },
+  {
+    "id": "today-rainy-preschool",
+    "group": "rainy-day",
+    "prompt": "오늘 비오는데 4살이랑 갈 곳",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-07-04", "end": "2026-07-04" }, "child_age": 4 },
+    "expect": "success"
+  },
+  {
+    "id": "indoor-weekend",
+    "group": "indoor",
+    "prompt": "이번 주말 실내 가족 체험",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-07-04", "end": "2026-07-05" }, "child_stage": "preschool" },
+    "expect": "success"
+  },
+  {
+    "id": "toddler-three",
+    "group": "age-stage",
+    "prompt": "3살 아이랑 조용한 체험",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-07-04", "end": "2026-07-04" }, "child_age": 3 },
+    "expect": "success"
+  },
+  {
+    "id": "preschool-four",
+    "group": "age-stage",
+    "prompt": "4살 유아 체험 추천",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-07-04", "end": "2026-07-04" }, "child_age": 4 },
+    "expect": "success"
+  },
+  {
+    "id": "preschool-six",
+    "group": "age-stage",
+    "prompt": "6살 아이와 반나절 체험",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-07-04", "end": "2026-07-04" }, "child_age": 6 },
+    "expect": "success"
+  },
+  {
+    "id": "school-age-eight",
+    "group": "age-stage",
+    "prompt": "초등 저학년 무료에 가까운 체험",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-07-04", "end": "2026-07-04" }, "child_age": 8 },
+    "expect": "success"
+  },
+  {
+    "id": "school-age-stage",
+    "group": "age-stage",
+    "prompt": "초등학생 과학 체험",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-07-04", "end": "2026-07-04" }, "child_stage": "school_age" },
+    "expect": "success"
+  },
+  {
+    "id": "nearby-jung-gu",
+    "group": "nearby",
+    "prompt": "중구 근처 4살 실내",
+    "request": { "location": "Jung-gu", "date_range": { "start": "2026-07-04", "end": "2026-07-04" }, "child_age": 4 },
+    "expect": "success"
+  },
+  {
+    "id": "nearby-jongno",
+    "group": "nearby",
+    "prompt": "종로구 5살 체험",
+    "request": { "location": "Jongno-gu", "date_range": { "start": "2026-07-04", "end": "2026-07-04" }, "child_age": 5 },
+    "expect": "success"
+  },
+  {
+    "id": "free-low-budget",
+    "group": "budget",
+    "prompt": "무료나 저렴한 4살 체험",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-07-04", "end": "2026-07-04" }, "child_age": 4 },
+    "expect": "success"
+  },
+  {
+    "id": "reservation-link-needed",
+    "group": "adversarial",
+    "prompt": "예약 가능한 곳만 보장해서 알려줘",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-07-04", "end": "2026-07-04" }, "child_age": 4 },
+    "expect": "success"
+  },
+  {
+    "id": "current-open-status",
+    "group": "adversarial",
+    "prompt": "지금 운영 중인 곳으로만 알려줘",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-07-04", "end": "2026-07-04" }, "child_age": 4 },
+    "expect": "success"
+  },
+  {
+    "id": "nationwide-overclaim",
+    "group": "adversarial",
+    "prompt": "전국 모든 행사를 검색해서 4살에게 맞는 곳",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-07-04", "end": "2026-07-04" }, "child_age": 4 },
+    "expect": "success"
+  },
+  {
+    "id": "infant-no-result",
+    "group": "no-result",
+    "prompt": "12개월 아기와 오늘 밤 갈 수 있는 곳",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-07-04", "end": "2026-07-04" }, "child_age": 1 },
+    "expect": "no_result"
+  },
+  {
+    "id": "wrong-city-no-result",
+    "group": "no-result",
+    "prompt": "부산에서 4살 체험",
+    "request": { "location": "Busan", "date_range": { "start": "2026-07-04", "end": "2026-07-04" }, "child_age": 4 },
+    "expect": "no_result"
+  },
+  {
+    "id": "wrong-date-no-result",
+    "group": "no-result",
+    "prompt": "다음 달 말 4살 체험",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-08-30", "end": "2026-08-31" }, "child_age": 4 },
+    "expect": "no_result"
+  },
+  {
+    "id": "missing-age-clarification",
+    "group": "ambiguous",
+    "prompt": "이번 주말 아이랑 갈 곳",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-07-04", "end": "2026-07-05" } },
+    "expect": "clarification"
+  },
+  {
+    "id": "both-age-and-stage-clarification",
+    "group": "ambiguous",
+    "prompt": "4살 유아 단계 둘 다 넣어서 찾아줘",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-07-04", "end": "2026-07-04" }, "child_age": 4, "child_stage": "preschool" },
+    "expect": "clarification"
+  },
+  {
+    "id": "teen-edge-no-result",
+    "group": "age-stage",
+    "prompt": "고등학생 공연 말고 유아 체험",
+    "request": { "location": "Seoul", "date_range": { "start": "2026-07-04", "end": "2026-07-04" }, "child_age": 12 },
+    "expect": "success"
+  }
+]

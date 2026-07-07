@@ -1,0 +1,12 @@
+Invocation: cd D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp; npm run etl:nationwide -- --source definitely_invalid --fixture --dry-run
+TimeoutSeconds: 60
+ExpectedExitCodes: 1
+DurationSeconds: 0.59
+ExitCode: 1
+Verdict: PASS
+--- output ---
+
+> family-experience-mcp@0.1.0 etl:nationwide
+> tsx scripts/etl-nationwide.ts --source definitely_invalid --fixture --dry-run
+
+Invalid source id: definitely_invalid

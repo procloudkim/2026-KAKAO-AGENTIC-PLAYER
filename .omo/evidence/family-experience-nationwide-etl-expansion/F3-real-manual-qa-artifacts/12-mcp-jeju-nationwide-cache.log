@@ -1,0 +1,23 @@
+Surface: MCP smoke Jeju prompt against nationwide eval cache
+Invocation: npm run smoke:mcp -- --assert-tool-count=1 --cache-dir=test/fixtures/eval-nationwide/cache --skip-seed "--prompt=제주 7월 13일 2살 무료 바다 이야기 체험"
+Working directory: apps/family-experience-mcp
+--- output ---
+
+> family-experience-mcp@0.1.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts --assert-tool-count=1 --cache-dir=test/fixtures/eval-nationwide/cache --skip-seed --prompt=제주 7월 13일 2살 무료 바다 이야기 체험
+
+{
+  "endpoint": "in-memory",
+  "cache_dir": "test/fixtures/eval-nationwide/cache",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "prompt": "제주 7월 13일 2살 무료 바다 이야기 체험",
+  "result_ok": true,
+  "mode": "fixture",
+  "candidate_count": 1,
+  "first_source": "kto_tourapi",
+  "text": "fixture/demo 기준으로 후보 1개를 찾았어요.\naction_card: 1\ntitle: Nationwide Eval Jeju Toddler Sea Story\ndate_time: 2026-07-13 10:30-11:20\nvenue: Jeju Eval Sea Center\naddress: 100 Haean-ro, Jeju\nage_fit_label: source-stated\nage_fit_reason: Source text states toddler sea story for ages 1-3 with caregiver.\nindoor_outdoor: mixed\nfee_text: Free fixture program; confirm fees with the official source in live mode.\nsource_name: KTO TourAPI\nsource_url: https://example.invalid/kto-eval/jeju-toddler-sea\nretrieved_at: 2026-07-04T00:00:00.000Z\nconfidence: date=source-stated; venue=source-stated; age_fit=source-stated; reservation=unknown\nmode: fixture\nwarnings: fixture/demo data only; not live/current.\nsource_summary: KTO TourAPI 근거로 제목, 날짜, 장소, 연령 단서를 확인했습니다. source_refs=kto-tourapi-events:eval-cache:raw:jeju-toddler-sea\nparent_check: Source text states toddler sea story for ages 1-3 with caregiver. 예약/요금은 출발 전 공식 출처에서 확인하세요.\nnext_action: https://example.invalid/kto-eval/jeju-toddler-sea에서 날짜, 장소, 요금, 신청 절차를 확인하세요."
+}
+EXIT_CODE=0

@@ -1,0 +1,11 @@
+scenario=HTTP real surface using existing server process node --env-file=.env --import tsx src/server.ts
+health_status=200
+health_mode=
+health_seoulOpenDataKey=redacted
+health_raw_secret_printed=false
+mcp_post_status=200
+mcp_post_content_type=text/event-stream
+mcp_post_body_excerpt=event: message data: {"result":{"tools":[{"name":"find_family_experiences","title":"아이랑 어디가","description":"서울 가족 체험 후보를 근거와 함께 최대 3개까지 찾습니다.","inputSchema":{"type":"object","$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"location":{"type":"string","minLength":1},"date_range":{"type":"object","properties":{"start":{"type":"string","pattern":"^\\d{4}-\\d{2}-\\d{2}$"},"end":{"type":"string","pattern":"^\\d{4}-\\d{2}-\\d{2}$"}},"required":["start","end"],"additionalPropertie
+note=smoke:mcp fixture-success script is not used as live-mode proof because current .env has FAMILY_EXPERIENCE_ALLOW_FIXTURE=false.
+cleanup=remaining_server_processes=0; port3349_listeners=0
+cleanup=port3349_listen_absent; netstat shows TIME_WAIT only

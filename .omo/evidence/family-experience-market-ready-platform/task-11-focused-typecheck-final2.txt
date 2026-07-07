@@ -1,0 +1,1 @@
+src/mcp.ts(10,8): error TS2307: Cannot find module './observability.js' or its corresponding type declarations.

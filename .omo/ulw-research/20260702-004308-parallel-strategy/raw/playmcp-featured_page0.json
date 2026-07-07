@@ -1,0 +1,2321 @@
+{
+  "page": 0,
+  "totalPages": 18,
+  "totalElements": "212",
+  "content": [
+    {
+      "id": "469",
+      "name": "찐맛집",
+      "description": "<덕지덕지 광고들에 가려진 진짜 찐 맛집 한 번에 찾자!>\n\n찐맛집은 광고·협찬·제품제공·리뷰이벤트 문구가 포함된 리뷰 텍스트를 자동 감지해 점수 산정에서 제외하고, 남은 리뷰들의 텍스트 신호를 기반으로 신뢰도 높은 맛집 추천과 비교를 제공하는 MCP입니다.\n맛·분위기·웨이팅·위생·서비스·가격 등 핵심 요소의 긍정/부정 언급을 분리해 점수화하며, 사용자가 중요하게 보는 기준(예: 분위기/맛)에 따라 가중치를 조정해 “지금 가서 만족할 확률이 높은 선택지”를 직관적으로 보여줍니다.",
+      "status": "APPROVED",
+      "starterMessages": [
+        "라구식당 vs 플르서라구뜨 비교해줘.",
+        "신촌 파스타 3곳 추천해줘. 분위기가 중요해.",
+        "이석덕생면파스타 광고 리뷰 비율이랑 점수 자세히 알려줘."
+      ],
+      "formattedTools": [
+        {
+          "name": "recommend_region",
+          "description": "Recommend top-N places within a region+food query.\n- Sponsored/comped reviews are filtered by disclosure keywords.\n- Returns a summary report and stores a report_id for show_report().",
+          "parameters": [
+            {
+              "name": "region",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "food_keyword",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "topn",
+              "type": "integer",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "focus",
+              "type": "string",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "compare_places",
+          "description": "Compare two places by best local-search match for each query.\nStores a report_id for show_report().",
+          "parameters": [
+            {
+              "name": "query_a",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "query_b",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "focus",
+              "type": "string",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "show_report",
+          "description": "Show a full report for a stored report_id.",
+          "parameters": [
+            {
+              "name": "report_id",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "show_last_report",
+          "description": "Convenience: show the last stored report in full mode.",
+          "parameters": []
+        }
+      ],
+      "identifyName": "jjmz",
+      "applicableAIServiceScope": "ALL",
+      "featuredLevel": 4,
+      "monthlyToolCallCount": "244",
+      "totalToolCallCount": "326",
+      "image": {
+        "path": "/komi/upload-files/mcp/images/Z8sI9EEqyGksuu9BZBLENtSXo7Xy15vFmhTjevZk3RUvi622AQz9ehQCYBo8xHRpjXt2XsEj3caj8HUuFhv2J6.png",
+        "fullUrl": "https://t1.kakaocdn.net/komi/upload-files/mcp/images/Z8sI9EEqyGksuu9BZBLENtSXo7Xy15vFmhTjevZk3RUvi622AQz9ehQCYBo8xHRpjXt2XsEj3caj8HUuFhv2J6.png",
+        "cdnUrl": "https://t1.kakaocdn.net"
+      },
+      "authConfigSummary": {
+        "type": "NONE"
+      },
+      "teamProfile": {
+        "name": "삼다수메타몽",
+        "classification": {
+          "type": "INDIVIDUAL"
+        }
+      }
+    },
+    {
+      "id": "489",
+      "name": "ArtBridge:20만 공연데이터 1초만에 내취향으로",
+      "description": "KOPIS의 20만 건 이상의 데이터를 바탕으로 9개 장르(연극·뮤지컬·무용·클래식·국악·대중음악·서커스/마술·복합)의 공연을 **박스오피스 인기도·위치·날짜·가격** 등 다각도에서 분석해 맞춤형 공연을 추천하는 MCP 서버입니다.\n\n핵심 기능:\n- 박스오피스 기반 인기 공연 추천 (실시간 순위 반영)\n- 지역별 실시간 공연 검색 (구/군 -> 시/도 -> 전국 순 자동 확장)\n- 무료 공연 자동 필터링 (API 체이닝)\n- 마감임박(종료 14일 이내) 공연 가중치 점수로 추천\n- 출연진·시놉시스·예매 링크 등 상세 정보 통합 조회\n\n실사용 예시:\n카카오톡에서 \"이번 주에 연극이나 볼래?\"라는 대화가 나오면, AI가 자동으로 `기간`, `장르` 파라미터를 추출해 실시간 공연 정보를 즉시 제공합니다. \n이를 통해 사용자는 끊김 없는 문화생활 경험을, 서비스 제공자는 예매 전환율 향상과 비즈니스 가치 창출 기회를 얻게 됩니다.",
+      "status": "APPROVED",
+      "starterMessages": [
+        "종로구에서 이번 주 볼만한 연극 추천해주고 예매 링크도 알려줘.",
+        "요즘 뮤지컬 뭐가 제일 핫해? 출연진이랑 예매 링크도 알려줘",
+        "이번 달 마감 임박한 공연 중에 놓치면 아까운 거 뭐야?"
+      ],
+      "formattedTools": [
+        {
+          "name": "get_genre_list",
+          "description": "사용 가능한 모든 공연 장르 코드와 이름을 조회합니다. 연극, 뮤지컬, 무용, 클래식, 국악, 대중음악 등의 장르를 제공합니다.",
+          "parameters": []
+        },
+        {
+          "name": "search_events_by_location",
+          "description": "🎯 스마트 검색 지원! 특정 지역과 기간의 공연을 검색합니다. \n    \n4단계 지능형 완화 전략:\n• Level 1: 요청 조건 100% 일치\n• Level 2: 장르 OR 위치 중 하나만 완화\n• Level 3: 장르 + 위치 동시 완화\n• Level 4: 기간까지 확장 (이번달 전체)\n\n우선순위 자동 분석:\n• \"다음주\" 등 특정 기간 → 날짜 우선\n• 장르/위치는 유사한 것으로 점진적 확장",
+          "parameters": [
+            {
+              "name": "genreCode",
+              "type": "string",
+              "description": "장르 코드. 사용 가능한 코드: AAAA-연극, BBBC-무용(서양/한국무용), BBBE-대중무용, CCCA-서양음악(클래식), CCCC-한국음악(국악), CCCD-대중음악, EEEA-복합, EEEB-서커스/마술, GGGA-뮤지컬",
+              "required": true
+            },
+            {
+              "name": "startDate",
+              "type": "string",
+              "description": "공연 시작일 (YYYYMMDD 형식)",
+              "required": true
+            },
+            {
+              "name": "endDate",
+              "type": "string",
+              "description": "공연 종료일 (YYYYMMDD 형식)",
+              "required": true
+            },
+            {
+              "name": "sidoCode",
+              "type": "string",
+              "description": "시도 코드 [선택]. 예시: 11-서울, 41-경기, 26-부산, 27-대구, 28-인천",
+              "required": false
+            },
+            {
+              "name": "gugunCode",
+              "type": "string",
+              "description": "구군 코드 4자리 [선택]. 예시: 1168-강남구, 1111-종로구, 1144-마포구, 1165-서초구, 1171-송파구, 1114-중구, 1162-관악구, 2635-해운대구, 2726-수성구. 강남구는 1168, 종로구는 1111입니다.",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "type": "number",
+              "description": "최소 결과 개수 (기본: 3, 최대: 50). 스마트 검색이 이 개수를 달성하려고 자동 완화합니다.",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "filter_free_events",
+          "description": "💰 가격 우선 스마트 검색! 무료 공연을 최우선으로 검색합니다 (항상 오늘부터 30일 이내).\n    \n우선순위:\n1. 가격 (40%) - 무료 > 저렴한 순\n2. 날짜 (30%) - 오늘~30일 고정\n3. 장르 (20%)\n4. 위치 (10%)\n\n⚠️ startDate/endDate는 무시되며 항상 오늘~30일 범위로 고정됩니다.",
+          "parameters": [
+            {
+              "name": "genreCode",
+              "type": "string",
+              "description": "장르 코드. 사용 가능한 코드: AAAA-연극, BBBC-무용(서양/한국무용), BBBE-대중무용, CCCA-서양음악(클래식), CCCC-한국음악(국악), CCCD-대중음악, EEEA-복합, EEEB-서커스/마술, GGGA-뮤지컬",
+              "required": true
+            },
+            {
+              "name": "startDate",
+              "type": "string",
+              "description": "공연 시작일 (무시됨 - 항상 오늘 날짜 사용)",
+              "required": false
+            },
+            {
+              "name": "endDate",
+              "type": "string",
+              "description": "공연 종료일 (무시됨 - 항상 오늘+30일 사용)",
+              "required": false
+            },
+            {
+              "name": "sidoCode",
+              "type": "string",
+              "description": "시도 코드 [선택]. 예시: 11-서울, 41-경기, 26-부산, 27-대구, 28-인천",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "type": "number",
+              "description": "결과 개수 (기본: 20, 최대: 50)",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "get_event_detail",
+          "description": "공연 ID를 사용하여 상세 정보를 조회합니다. 시놉시스, 출연진, 관람료, 공연 시간, 연령 제한, 포스터 이미지, 예매 링크 등을 제공합니다.",
+          "parameters": [
+            {
+              "name": "eventId",
+              "type": "string",
+              "description": "공연 ID (mt20id)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_trending_performances",
+          "description": "🔥 인기도 우선 스마트 검색! KOPIS 박스오피스 기반 인기 공연을 추천합니다.\n    \n우선순위:\n1. 인기도 (40%) - 오픈런(+30), 공연중(+10), 14일내 종료(+20)\n2. 개수 (30%) - 요청 개수 달성\n3. 장르 (20%)\n4. 날짜 (10%)\n\n해당 장르에 결과가 없으면 전체 장르로 자동 확장합니다.",
+          "parameters": [
+            {
+              "name": "genreCode",
+              "type": "string",
+              "description": "장르 코드 [선택 - 전체 조회 시 생략]. 사용 가능한 코드: AAAA-연극, BBBC-무용(서양/한국무용), BBBE-대중무용, CCCA-서양음악(클래식), CCCC-한국음악(국악), CCCD-대중음악, EEEA-복합, EEEB-서커스/마술, GGGA-뮤지컬",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "type": "number",
+              "description": "결과 개수 (기본: 20, 최대: 50)",
+              "required": false
+            }
+          ]
+        }
+      ],
+      "identifyName": "ArtBridge",
+      "applicableAIServiceScope": "ALL",
+      "featuredLevel": 0,
+      "monthlyToolCallCount": "1517",
+      "totalToolCallCount": "15167",
+      "image": {
+        "path": "/komi/upload-files/mcp/images/32EqJ6gQsoyvZx5UwdRYNQ4I3SD6MUh8B7p0JxVOPZNErnxJtMbywza379SEHGmVUmxhz9P2P0c3ijVTqkT26W.png",
+        "fullUrl": "https://t1.kakaocdn.net/komi/upload-files/mcp/images/32EqJ6gQsoyvZx5UwdRYNQ4I3SD6MUh8B7p0JxVOPZNErnxJtMbywza379SEHGmVUmxhz9P2P0c3ijVTqkT26W.png",
+        "cdnUrl": "https://t1.kakaocdn.net"
+      },
+      "authConfigSummary": {
+        "type": "NONE"
+      },
+      "teamProfile": {
+        "name": "한태진",
+        "classification": {
+          "type": "INDIVIDUAL"
+        }
+      }
+    },
+    {
+      "id": "154",
+      "name": "네이버 검색 mcp",
+      "description": "네이버 검색 API와 데이터랩 API를 AI에 연결하는 MCP 서버입니다.\n\n검색\n웹 · 뉴스 · 블로그 · 카페 · 쇼핑 · 이미지 · 지식iN · 책 · 백과사전 · 전문자료 · 지역\n\n데이터랩\n검색어 트렌드 / 쇼핑 인사이트 — 카테고리 · 기기 · 성별 · 연령 · 키워드별 분석\n\n쇼핑 인사이트 분석에 필요한 카테고리코드를 자연어로 찾는 도구가 내장되어 있어 \n코드를 일일이 찾을 필요가 없어요.\n\n[깃허브] github.com/isnow890/naver-search-mcp",
+      "status": "APPROVED",
+      "starterMessages": [
+        "네이버에서 테슬라 관련 최신 뉴스 검색해줄래?",
+        "제주도 맛집 검색해서 블로그, 지역 정보, 카페 글을 모두 보여줘",
+        "부산 해운대 숙소 로컬 검색 결과와 최근 여행 후기를 찾아줘"
+      ],
+      "formattedTools": [
+        {
+          "name": "search_webkr",
+          "description": "🌐 웹문서 검색 - 한국 웹사이트 종합 검색 (Search Korean web documents and general content. Comprehensive search across Korean websites and online content. Find articles, information, and documents from various Korean sources. For recent content or 'today's results', use get_current_korean_time first.)",
+          "parameters": [
+            {
+              "name": "query",
+              "type": "string",
+              "description": "검색어",
+              "required": true
+            },
+            {
+              "name": "display",
+              "type": "number",
+              "description": "한 번에 가져올 결과 수 (기본 10)",
+              "required": false
+            },
+            {
+              "name": "start",
+              "type": "number",
+              "description": "검색 시작 위치 (기본 1)",
+              "required": false
+            },
+            {
+              "name": "sort",
+              "type": "\"sim\" | \"date\"",
+              "description": "정렬 방식 (sim: 유사도, date: 날짜순)",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "search_news",
+          "description": "📰 뉴스 검색 - 최신 뉴스와 시사 정보 (Search latest Korean news articles from major outlets. Perfect for current events, breaking news, and recent developments. Covers politics, economy, society, and international news. For today's news or current events, use get_current_korean_time first to understand what 'today' means.)",
+          "parameters": [
+            {
+              "name": "query",
+              "type": "string",
+              "description": "검색어",
+              "required": true
+            },
+            {
+              "name": "display",
+              "type": "number",
+              "description": "한 번에 가져올 결과 수 (기본 10)",
+              "required": false
+            },
+            {
+              "name": "start",
+              "type": "number",
+              "description": "검색 시작 위치 (기본 1)",
+              "required": false
+            },
+            {
+              "name": "sort",
+              "type": "\"sim\" | \"date\"",
+              "description": "정렬 방식 (sim: 유사도, date: 날짜순)",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "search_blog",
+          "description": "✍️ 블로그 검색 - 실제 사용자 후기와 개인적 경험 (Search personal blogs and reviews for authentic user experiences. Great for product reviews, personal stories, detailed tutorials, and real user opinions. Find genuine Korean perspectives. For recent posts or 'today's content', use get_current_korean_time first.)",
+          "parameters": [
+            {
+              "name": "query",
+              "type": "string",
+              "description": "검색어",
+              "required": true
+            },
+            {
+              "name": "display",
+              "type": "number",
+              "description": "한 번에 가져올 결과 수 (기본 10)",
+              "required": false
+            },
+            {
+              "name": "start",
+              "type": "number",
+              "description": "검색 시작 위치 (기본 1)",
+              "required": false
+            },
+            {
+              "name": "sort",
+              "type": "\"sim\" | \"date\"",
+              "description": "정렬 방식 (sim: 유사도, date: 날짜순)",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "search_shop",
+          "description": "🛒 쇼핑 검색 - 상품 정보와 가격 비교 (Search Naver Shopping for products, prices, and shopping deals. Compare prices across vendors, find product specifications, and discover shopping trends in Korea. For current deals or today's specials, use get_current_korean_time first.)",
+          "parameters": [
+            {
+              "name": "query",
+              "type": "string",
+              "description": "검색어",
+              "required": true
+            },
+            {
+              "name": "display",
+              "type": "number",
+              "description": "한 번에 가져올 결과 수 (기본 10)",
+              "required": false
+            },
+            {
+              "name": "start",
+              "type": "number",
+              "description": "검색 시작 위치 (기본 1)",
+              "required": false
+            },
+            {
+              "name": "sort",
+              "type": "\"sim\" | \"date\"",
+              "description": "정렬 방식 (sim: 유사도, date: 날짜순)",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "search_image",
+          "description": "🖼️ 이미지 검색 (Search for images with Korean context and relevance. Find visual content, infographics, charts, and photos related to your search terms. Great for visual research and content discovery. For recent images or current visual content, use get_current_korean_time first.)",
+          "parameters": [
+            {
+              "name": "query",
+              "type": "string",
+              "description": "검색어",
+              "required": true
+            },
+            {
+              "name": "display",
+              "type": "number",
+              "description": "한 번에 가져올 결과 수 (기본 10)",
+              "required": false
+            },
+            {
+              "name": "start",
+              "type": "number",
+              "description": "검색 시작 위치 (기본 1)",
+              "required": false
+            },
+            {
+              "name": "sort",
+              "type": "\"sim\" | \"date\"",
+              "description": "정렬 방식 (sim: 유사도, date: 날짜순)",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "search_kin",
+          "description": "❓ 지식iN 검색 (Search Naver KnowledgeiN for Q&A and community-driven answers. Find solutions to problems, get expert advice, and discover community insights on various topics. For recent questions or current discussions, use get_current_korean_time first.)",
+          "parameters": [
+            {
+              "name": "query",
+              "type": "string",
+              "description": "검색어",
+              "required": true
+            },
+            {
+              "name": "display",
+              "type": "number",
+              "description": "한 번에 가져올 결과 수 (기본 10)",
+              "required": false
+            },
+            {
+              "name": "start",
+              "type": "number",
+              "description": "검색 시작 위치 (기본 1)",
+              "required": false
+            },
+            {
+              "name": "sort",
+              "type": "\"sim\" | \"date\"",
+              "description": "정렬 방식 (sim: 유사도, date: 날짜순)",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "search_book",
+          "description": "📚 책 검색 - 도서 정보와 서평 (Search for books, publications, and literary content. Find book reviews, author information, publication details, and reading recommendations in Korean literature and translated works. For new releases or current bestsellers, use get_current_korean_time first.)",
+          "parameters": [
+            {
+              "name": "query",
+              "type": "string",
+              "description": "검색어",
+              "required": true
+            },
+            {
+              "name": "display",
+              "type": "number",
+              "description": "한 번에 가져올 결과 수 (기본 10)",
+              "required": false
+            },
+            {
+              "name": "start",
+              "type": "number",
+              "description": "검색 시작 위치 (기본 1)",
+              "required": false
+            },
+            {
+              "name": "sort",
+              "type": "\"sim\" | \"date\"",
+              "description": "정렬 방식 (sim: 유사도, date: 날짜순)",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "search_encyc",
+          "description": "📖 네이버 지식백과 검색 (Search Naver Encyclopedia for authoritative knowledge and definitions. Best for academic research, getting reliable information, and understanding Korean concepts and terminology. For current definitions or recent updates, use get_current_korean_time for context.)",
+          "parameters": [
+            {
+              "name": "query",
+              "type": "string",
+              "description": "검색어",
+              "required": true
+            },
+            {
+              "name": "display",
+              "type": "number",
+              "description": "한 번에 가져올 결과 수 (기본 10)",
+              "required": false
+            },
+            {
+              "name": "start",
+              "type": "number",
+              "description": "검색 시작 위치 (기본 1)",
+              "required": false
+            },
+            {
+              "name": "sort",
+              "type": "\"sim\" | \"date\"",
+              "description": "정렬 방식 (sim: 유사도, date: 날짜순)",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "search_academic",
+          "description": "🎓 전문자료 검색 - 학술 논문과 전문 자료 (Search academic papers, research documents, and scholarly content. Access Korean academic resources, research papers, theses, and professional publications. For recent publications or current research, use get_current_korean_time first.)",
+          "parameters": [
+            {
+              "name": "query",
+              "type": "string",
+              "description": "검색어",
+              "required": true
+            },
+            {
+              "name": "display",
+              "type": "number",
+              "description": "한 번에 가져올 결과 수 (기본 10)",
+              "required": false
+            },
+            {
+              "name": "start",
+              "type": "number",
+              "description": "검색 시작 위치 (기본 1)",
+              "required": false
+            },
+            {
+              "name": "sort",
+              "type": "\"sim\" | \"date\"",
+              "description": "정렬 방식 (sim: 유사도, date: 날짜순)",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "search_local",
+          "description": "📍 지역 검색 - 지역 업체와 장소 정보 (Search for local businesses, restaurants, and places in Korea. Find location information, reviews, contact details, and business hours for Korean establishments. For current business hours or today's availability, use get_current_korean_time first.)",
+          "parameters": [
+            {
+              "name": "query",
+              "type": "string",
+              "description": "검색어",
+              "required": true
+            },
+            {
+              "name": "display",
+              "type": "number",
+              "description": "한 번에 가져올 결과 수 (최대 5)",
+              "required": false
+            },
+            {
+              "name": "start",
+              "type": "number",
+              "description": "검색 시작 위치 (최대 1)",
+              "required": false
+            },
+            {
+              "name": "sort",
+              "type": "\"random\" | \"comment\"",
+              "description": "정렬 방식 (random: 정확도순, comment: 리뷰 많은순)",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "search_cafearticle",
+          "description": "☕ 카페글 검색 - 커뮤니티 토론과 전문 정보 (Search Naver Cafe articles for community discussions and specialized content. Find niche communities, hobby groups, and specialized discussions on various topics. For recent discussions or current community topics, use get_current_korean_time first.)",
+          "parameters": [
+            {
+              "name": "query",
+              "type": "string",
+              "description": "검색어",
+              "required": true
+            },
+            {
+              "name": "display",
+              "type": "number",
+              "description": "한 번에 가져올 결과 수 (기본 10)",
+              "required": false
+            },
+            {
+              "name": "start",
+              "type": "number",
+              "description": "검색 시작 위치 (기본 1)",
+              "required": false
+            },
+            {
+              "name": "sort",
+              "type": "\"sim\" | \"date\"",
+              "description": "정렬 방식 (sim: 유사도, date: 날짜순)",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "datalab_search",
+          "description": "📊 데이터랩 검색어 트렌드 분석 (Analyze search keyword trends over time using Naver DataLab. Track popularity changes, seasonal patterns, and compare multiple keywords. Perfect for market research and trend analysis. For current trend analysis or 'recent trends', use get_current_korean_time to determine proper date ranges.)",
+          "parameters": [
+            {
+              "name": "startDate",
+              "type": "string",
+              "description": "Start date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "endDate",
+              "type": "string",
+              "description": "End date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "timeUnit",
+              "type": "\"date\" | \"week\" | \"month\"",
+              "description": "Time unit",
+              "required": true
+            },
+            {
+              "name": "keywordGroups",
+              "type": "array",
+              "description": "Keyword groups",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "datalab_shopping_category",
+          "description": "🛍️ 쇼핑 카테고리별 트렌드 분석 (STEP 2: Analyze shopping category trends over time. Use find_category first to get category codes. BUSINESS CASES: Market size analysis, seasonal trend identification, category performance comparison. EXAMPLE: Compare '패션의류' vs '화장품' trends over 6 months. For current period analysis, use get_current_korean_time to set proper date ranges.)",
+          "parameters": [
+            {
+              "name": "startDate",
+              "type": "string",
+              "description": "Start date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "endDate",
+              "type": "string",
+              "description": "End date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "timeUnit",
+              "type": "\"date\" | \"week\" | \"month\"",
+              "description": "Time unit",
+              "required": true
+            },
+            {
+              "name": "category",
+              "type": "array",
+              "description": "Array of category name and code pairs",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "datalab_shopping_by_device",
+          "description": "📱 기기별 쇼핑 트렌드 분석 (Analyze shopping trends by device (PC vs Mobile). Use find_category first. BUSINESS CASES: Mobile commerce strategy, responsive design priority, device-specific campaigns. EXAMPLE: 'PC 사용자가 더 많이 구매하는 카테고리는?' For current device trends, use get_current_korean_time to set proper analysis period.)",
+          "parameters": [
+            {
+              "name": "startDate",
+              "type": "string",
+              "description": "Start date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "endDate",
+              "type": "string",
+              "description": "End date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "timeUnit",
+              "type": "\"date\" | \"week\" | \"month\"",
+              "description": "Time unit",
+              "required": true
+            },
+            {
+              "name": "category",
+              "type": "string",
+              "description": "Category code",
+              "required": true
+            },
+            {
+              "name": "device",
+              "type": "\"pc\" | \"mo\"",
+              "description": "Device type",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "datalab_shopping_by_gender",
+          "description": "👥 성별 쇼핑 트렌드 분석 (Analyze shopping trends by gender (Male vs Female). Use find_category first. BUSINESS CASES: Gender-targeted marketing, product positioning, demographic analysis. EXAMPLE: '화장품 쇼핑에서 남녀 비율은?' For current gender trends, use get_current_korean_time to set proper analysis period.)",
+          "parameters": [
+            {
+              "name": "startDate",
+              "type": "string",
+              "description": "Start date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "endDate",
+              "type": "string",
+              "description": "End date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "timeUnit",
+              "type": "\"date\" | \"week\" | \"month\"",
+              "description": "Time unit",
+              "required": true
+            },
+            {
+              "name": "category",
+              "type": "string",
+              "description": "Category code",
+              "required": true
+            },
+            {
+              "name": "gender",
+              "type": "\"f\" | \"m\"",
+              "description": "Gender",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "datalab_shopping_by_age",
+          "description": "연령별 쇼핑 트렌드 (Analyze shopping trends by age groups (10s, 20s, 30s, 40s, 50s, 60s+). Use find_category first. BUSINESS CASES: Age-targeted products, generational preferences, lifecycle marketing. EXAMPLE: '개발 도구는 어느 연령대가 많이 구매하나?' For current age trends, use get_current_korean_time to set proper analysis period.)",
+          "parameters": [
+            {
+              "name": "startDate",
+              "type": "string",
+              "description": "Start date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "endDate",
+              "type": "string",
+              "description": "End date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "timeUnit",
+              "type": "\"date\" | \"week\" | \"month\"",
+              "description": "Time unit",
+              "required": true
+            },
+            {
+              "name": "category",
+              "type": "string",
+              "description": "Category code",
+              "required": true
+            },
+            {
+              "name": "ages",
+              "type": "array",
+              "description": "Age groups",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "datalab_shopping_keywords",
+          "description": "🔍 카테고리 내 키워드 비교 (Compare specific keywords within a shopping category. Use find_category first. BUSINESS CASES: Product keyword optimization, competitor analysis, search trend identification. EXAMPLE: Within '패션' category, compare '원피스' vs '자켓' vs '드레스' trends. For current keyword trends, use get_current_korean_time to set proper analysis period.)",
+          "parameters": [
+            {
+              "name": "startDate",
+              "type": "string",
+              "description": "Start date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "endDate",
+              "type": "string",
+              "description": "End date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "timeUnit",
+              "type": "\"date\" | \"week\" | \"month\"",
+              "description": "Time unit",
+              "required": true
+            },
+            {
+              "name": "category",
+              "type": "string",
+              "description": "Category code",
+              "required": true
+            },
+            {
+              "name": "keyword",
+              "type": "array",
+              "description": "Array of keyword name and value pairs",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "datalab_shopping_keyword_by_device",
+          "description": "📱🔍 쇼핑 키워드 기기별 트렌드 (Analyze keyword performance by device within shopping categories. Use find_category first to get category codes. Perfect for understanding mobile vs desktop shopping behavior for specific products.)",
+          "parameters": [
+            {
+              "name": "startDate",
+              "type": "string",
+              "description": "Start date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "endDate",
+              "type": "string",
+              "description": "End date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "timeUnit",
+              "type": "\"date\" | \"week\" | \"month\"",
+              "description": "Time unit",
+              "required": true
+            },
+            {
+              "name": "category",
+              "type": "string",
+              "description": "Category code",
+              "required": true
+            },
+            {
+              "name": "keyword",
+              "type": "string",
+              "description": "Search keyword",
+              "required": true
+            },
+            {
+              "name": "device",
+              "type": "\"pc\" | \"mo\"",
+              "description": "Device type",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "datalab_shopping_keyword_by_gender",
+          "description": "👥🔍 쇼핑 키워드 성별 트렌드 (Analyze keyword performance by gender within shopping categories. Use find_category first to get category codes. Essential for gender-targeted marketing and product positioning strategies.)",
+          "parameters": [
+            {
+              "name": "startDate",
+              "type": "string",
+              "description": "Start date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "endDate",
+              "type": "string",
+              "description": "End date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "timeUnit",
+              "type": "\"date\" | \"week\" | \"month\"",
+              "description": "Time unit",
+              "required": true
+            },
+            {
+              "name": "category",
+              "type": "string",
+              "description": "Category code",
+              "required": true
+            },
+            {
+              "name": "keyword",
+              "type": "string",
+              "description": "Search keyword",
+              "required": true
+            },
+            {
+              "name": "gender",
+              "type": "\"f\" | \"m\"",
+              "description": "Gender",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "datalab_shopping_keyword_by_age",
+          "description": "쇼핑 키워드 연령별 트렌드 (Analyze keyword performance by age groups within shopping categories. Use find_category first to get category codes. Perfect for age-targeted marketing and understanding generational shopping preferences.)",
+          "parameters": [
+            {
+              "name": "startDate",
+              "type": "string",
+              "description": "Start date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "endDate",
+              "type": "string",
+              "description": "End date (yyyy-mm-dd)",
+              "required": true
+            },
+            {
+              "name": "timeUnit",
+              "type": "\"date\" | \"week\" | \"month\"",
+              "description": "Time unit",
+              "required": true
+            },
+            {
+              "name": "category",
+              "type": "string",
+              "description": "Category code",
+              "required": true
+            },
+            {
+              "name": "keyword",
+              "type": "string",
+              "description": "Search keyword",
+              "required": true
+            },
+            {
+              "name": "ages",
+              "type": "array",
+              "description": "Age groups",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_current_korean_time",
+          "description": "🕐 현재 한국 시간 조회 - '오늘', '현재', '지금' 등의 시간 정보가 필요할 때 항상 사용하세요 (Get current Korean time (KST) with date and time information. Use this tool whenever you need to know 'today', 'now', 'current time', or any time-related queries. Essential for understanding what 'today' means in Korean context. Always use this tool when users mention 'today' or 'current' to provide accurate time context.)",
+          "parameters": []
+        },
+        {
+          "name": "find_category",
+          "description": "🚀 카테고리 검색: 한국어로 검색하여 데이터랩 분석에 필요한 카테고리 코드를 찾아주는 필수 도구 (STEP 1: Find shopping categories with Korean search terms. Search in KOREAN (패션, 화장품, 가전제품, etc.) to find category codes needed for datalab tools. Smart fuzzy matching finds similar categories even with partial matches.)",
+          "parameters": [
+            {
+              "name": "query",
+              "type": "string",
+              "description": "Korean category search query (한국어 카테고리 검색어, 예: '패션', '화장품', '가구', '스마트폰'). Supports exact match and fuzzy search with level-based priority",
+              "required": true
+            },
+            {
+              "name": "max_results",
+              "type": "number",
+              "description": "Maximum number of results to return (반환할 최대 결과 수, 기본값: 10)",
+              "required": false
+            }
+          ]
+        }
+      ],
+      "identifyName": "NaverSearch",
+      "applicableAIServiceScope": "ALL",
+      "featuredLevel": 0,
+      "monthlyToolCallCount": "946",
+      "totalToolCallCount": "2947",
+      "image": {
+        "path": "/komi/upload-files/mcp/images/nQzoe8vIxql0oK7Rwi239dxO2iYrxozLLQCIPRpVjmOjwGyPw0ZNUnNJfGkO1kAZmKf16eLZPAYi8NIS8XaBZJ.png",
+        "fullUrl": "https://t1.kakaocdn.net/komi/upload-files/mcp/images/nQzoe8vIxql0oK7Rwi239dxO2iYrxozLLQCIPRpVjmOjwGyPw0ZNUnNJfGkO1kAZmKf16eLZPAYi8NIS8XaBZJ.png",
+        "cdnUrl": "https://t1.kakaocdn.net"
+      },
+      "authConfigSummary": {
+        "type": "NONE"
+      },
+      "teamProfile": {
+        "name": "isnow890",
+        "classification": {
+          "type": "INDIVIDUAL"
+        }
+      }
+    },
+    {
+      "id": "1",
+      "name": "카카오톡 나챗방",
+      "description": "카카오톡 나챗방에 텍스트 메시지를 보낼 수 있습니다.\n► 할 일, 다짐, 메모 등 자유로운 내용을 메시지 형태로 남길 수 있습니다.\n► “~라고 나챗방에 보내줘”와 같은 요청 문구를 사용하면, 해당 문장을 자동으로 나와의 채팅에 전송합니다.\n► 특정 키워드나 명령어를 입력하면, AI가 적절한 텍스트를 생성해 나와의 채팅에 대신 보내줄 수도 있습니다. 예: “오늘의 명언 하나 나챗방에 보내줘”",
+      "status": "APPROVED",
+      "starterMessages": [
+        "\"빨리 퇴근하자\"라고 나챗방에 보내줘",
+        "오늘의 쓸데없는 정보 하나 나챗방에 보내줘",
+        "오늘 점심 뭐 먹을지 랜덤으로 골라서 나챗방에 보내줘"
+      ],
+      "formattedTools": [
+        {
+          "name": "MemoChat",
+          "description": "카카오톡 메시지를 나에게 보내는 도구입니다. \n이 도구는 사용자가 나에게 카카오톡 메시지를 보낼 수 있도록 합니다.\n",
+          "parameters": [
+            {
+              "name": "message",
+              "type": "string",
+              "description": "보낼 메시지의 내용입니다. 최대 200자까지 지원.\n",
+              "required": true
+            }
+          ]
+        }
+      ],
+      "identifyName": "KakaotalkChat",
+      "applicableAIServiceScope": "ALL",
+      "featuredLevel": 0,
+      "monthlyToolCallCount": "669",
+      "totalToolCallCount": "6093",
+      "image": {
+        "path": "/komi/upload-files/mcp/images/nn9AZ1809Vty6rf1SK1IRFnySR8Z2KAvJpKqlozmQhoghkrKwVj5PI0rRw25VjQZTui93XIASgp09IEBnKdzr1.png",
+        "fullUrl": "https://t1.kakaocdn.net/komi/upload-files/mcp/images/nn9AZ1809Vty6rf1SK1IRFnySR8Z2KAvJpKqlozmQhoghkrKwVj5PI0rRw25VjQZTui93XIASgp09IEBnKdzr1.png",
+        "cdnUrl": "https://t1.kakaocdn.net"
+      },
+      "authConfigSummary": {
+        "type": "NONE"
+      },
+      "teamProfile": {
+        "name": "Kakao",
+        "classification": {
+          "name": "주식회사 카카오",
+          "registrationNumber": "120-81-47521",
+          "ceoName": "정신아",
+          "businessType": "CORPORATE",
+          "type": "BUSINESS"
+        }
+      }
+    },
+    {
+      "id": "31",
+      "name": "미국 주식 정보",
+      "description": "미국 주식 종목들에 대해 실시간으로 분석하고 조회합니다.\n▶ 매수/매도 의견, 최신 금융 뉴스, 주가 추이까지 한번에 확인하여 시장의 흐름을 놓치지 마세요.\n▶ 주가, 재무제표, 기업 정보 등 핵심적인 투자 정보를 제공하여 깊이 있는 분석을 돕습니다.\n▶ 미래 주가 = 현재 + 과거 의 정보 분석 입니다.\n\n▶ 이 MCP 는 Yahoo Finance Data 를 사용합니다. 사용량에 따라서 일시적으로 조회되지 않을 수 있습니다",
+      "status": "APPROVED",
+      "starterMessages": [
+        "엔비디아 관련 최신 금융 뉴스랑 애널리스트들의 투자 의견은 어때?",
+        "테슬라의 최근 분기별 손익계산서를 요약해 줘",
+        "팔란티어를 지금 살까말까?"
+      ],
+      "formattedTools": [
+        {
+          "name": "get_historical_stock_prices",
+          "description": "Get historical stock prices for a given ticker symbol. Include the following information: Date, Open, High, Low, Close, Volume, Adj Close.\n    Args:\n        ticker: str\n            The ticker symbol of the stock to get historical prices for, e.g. \"AAPL\"\n        period : str\n            Valid periods: 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max\n            Either Use period parameter or use start and end\n            Default is \"1mo\"\n        interval : str\n            Valid intervals: 1m,2m,5m,15m,30m,60m,90m,1h,1d,5d,1wk,1mo,3mo\n            Intraday data cannot extend last 60 days\n            Default is \"1d\"\n    ",
+          "parameters": [
+            {
+              "name": "ticker",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "period",
+              "type": "string",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "interval",
+              "type": "string",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "get_stock_info",
+          "description": "Get stock information for a given ticker symbol. Include the following information:\n    Stock Price & Trading Info, Company Information, Financial Metrics, Earnings & Revenue, Margins & Returns, Dividends, Balance Sheet, Ownership, Analyst Coverage, Risk Metrics, Other.\n    \n    Args:\n        ticker: str\n            The ticker symbol of the stock to get information for, e.g. \"AAPL\"\n    ",
+          "parameters": [
+            {
+              "name": "ticker",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_finance_news",
+          "description": "Get news for a given ticker symbol.\n    \n    Args:\n        ticker: str\n            The ticker symbol of the stock to get news for, e.g. \"AAPL\"\n    ",
+          "parameters": [
+            {
+              "name": "ticker",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_stock_actions",
+          "description": "Get stock dividends and stock splits for a given ticker symbol.\n    \n    Args:\n        ticker: str\n            The ticker symbol of the stock to get stock actions for, e.g. \"AAPL\"\n    ",
+          "parameters": [
+            {
+              "name": "ticker",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_financial_statement",
+          "description": "Get financial statement for a given ticker symbol. You can choose from the following financial statement types: income_stmt, quarterly_income_stmt, balance_sheet, quarterly_balance_sheet, cashflow, quarterly_cashflow.\n    \n    Args:\n        ticker: str\n            The ticker symbol of the stock to get financial statement for, e.g. \"AAPL\"\n        financial_type: str\n            The type of financial statement to get. You can choose from the following financial statement types: income_stmt, quarterly_income_stmt, balance_sheet, quarterly_balance_sheet, cashflow, quarterly_cashflow.\n    ",
+          "parameters": [
+            {
+              "name": "ticker",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "financial_type",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_holder_info",
+          "description": "Get holder information for a given ticker symbol. You can choose from the following holder types: major_holders, institutional_holders, mutualfund_holders, insider_transactions, insider_purchases, insider_roster_holders.\n    \n    Args:\n        ticker: str\n            The ticker symbol of the stock to get holder information for, e.g. \"AAPL\"\n        holder_type: str\n            The type of holder information to get. You can choose from the following holder types: major_holders, institutional_holders, mutualfund_holders, insider_transactions, insider_purchases, insider_roster_holders.\n    ",
+          "parameters": [
+            {
+              "name": "ticker",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "holder_type",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_option_expiration_dates",
+          "description": "Fetch the available options expiration dates for a given ticker symbol.\n    \n    Args:\n        ticker: str\n            The ticker symbol of the stock to get option expiration dates for, e.g. \"AAPL\"\n    ",
+          "parameters": [
+            {
+              "name": "ticker",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_option_chain",
+          "description": "Fetch the option chain for a given ticker symbol, expiration date, and option type.\n    \n    Args:\n        ticker: str\n            The ticker symbol of the stock to get option chain for, e.g. \"AAPL\"\n        expiration_date: str\n            The expiration date for the options chain (format: 'YYYY-MM-DD')\n        option_type: str\n            The type of option to fetch ('calls' or 'puts')\n    ",
+          "parameters": [
+            {
+              "name": "ticker",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "expiration_date",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "option_type",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_recommendations",
+          "description": "Get recommendations or upgrades/downgrades for a given ticker symbol. You can also specify the number of months back to get upgrades/downgrades for, default is 12.\n    \n    Args:\n        ticker: str\n            The ticker symbol of the stock to get recommendations for, e.g. \"AAPL\"\n        recommendation_type: str\n            The type of recommendation to get. You can choose from the following recommendation types: recommendations, upgrades_downgrades.\n        months_back: int\n            The number of months back to get upgrades/downgrades for, default is 12.\n    ",
+          "parameters": [
+            {
+              "name": "ticker",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "recommendation_type",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "months_back",
+              "type": "integer",
+              "description": null,
+              "required": false
+            }
+          ]
+        }
+      ],
+      "identifyName": "UsStockInfo",
+      "applicableAIServiceScope": "ALL",
+      "featuredLevel": 0,
+      "monthlyToolCallCount": "492",
+      "totalToolCallCount": "2569",
+      "image": {
+        "path": "/komi/upload-files/mcp/images/8lDolB9G7PrRHX7j5jObRqD2zIxo8VRQq6aVGZ52sUtOBJUZovfFFVIK71DyCrmhRoFBA8wKxwSWIdR8tZWEpH.png",
+        "fullUrl": "https://t1.kakaocdn.net/komi/upload-files/mcp/images/8lDolB9G7PrRHX7j5jObRqD2zIxo8VRQq6aVGZ52sUtOBJUZovfFFVIK71DyCrmhRoFBA8wKxwSWIdR8tZWEpH.png",
+        "cdnUrl": "https://t1.kakaocdn.net"
+      },
+      "authConfigSummary": {
+        "type": "NONE"
+      },
+      "teamProfile": {
+        "name": "https://gino.im",
+        "classification": {
+          "type": "INDIVIDUAL"
+        }
+      }
+    },
+    {
+      "id": "363",
+      "name": "띵동 - 택배 추적기",
+      "description": "모르는 번호로 온 \"주소지 불명\" 혹은 \"미수령 택배\" 문자에 가슴 철렁하셨나요? 이제 출처가 불분명한 SMS 링크를 누르는 위험 대신, 안전한 MCP로 당신의 소중한 물건들을 지키세요.\n\n단순한 배송 조회를 넘어, 사기 예방부터 세관 통과까지! 당신의 '지름'이 무사히 현관 앞에 도착할 때까지 MCP가 24시간 밀착 마크합니다.\n\n주요 기능\n실시간 배송 추적: 내 택배가 지금 어디쯤 오고 있는지 한눈에 확인하세요.\n세관 통과 실시간 조회: 해외에서 오는 설레는 선물, 통관 진행 상태를 바로 알려드려요.\n사기 이력 조회: 의심스러운 번호나 계좌, 이메일이 사기에 사용된 적이 있는지 미리 확인하고 예방하세요.\nURL 안전 검사: 문자 메시지에 포함된 링크가 피싱 사이트인지 클릭 전 안전하게 검사해 드려요.\n편의점 위치 조회: 택배를 보내거나 받을 수 있는 가장 가까운 편의점을 찾아드려요.\n지원 택배사 확인: 국내외 수많은 택배사 중 내가 찾는 곳이 있는지 바로 확인하세요.",
+      "status": "APPROVED",
+      "starterMessages": [
+        "롯데택배의 123456789 운송번호 상태를 조회하고 싶어",
+        "2024년 1234567890 세관통과 기록을 조회하고 싶어",
+        "1234567890 사기계좌번호인지 조회해줘"
+      ],
+      "formattedTools": [
+        {
+          "name": "checkFraud",
+          "description": "전화번호, 계좌번호, 이메일이 사기에 사용된 이력이 있는지 조회합니다. (최근 3개월 사기 피해사례를 조회합니다.)",
+          "parameters": [
+            {
+              "name": "type",
+              "type": "string",
+              "description": "조회 유형: PHONE(전화번호), ACCOUNT(계좌번호), EMAIL(이메일)",
+              "required": true
+            },
+            {
+              "name": "value",
+              "type": "string",
+              "description": "조회할 값 (전화번호: 01012345678, 계좌번호: 1234567890123, 이메일: example@email.com)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "searchConvenienceStores",
+          "description": "가까운 편의점을 찾아드려요",
+          "parameters": [
+            {
+              "name": "searchKeyword",
+              "type": "string",
+              "description": "찾고 싶은 편의점 이름이나 동네 이름 (예: 강북, 압구정, 강남)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "searchUnipathProgress",
+          "description": "해외에서 주문한 물건이 세관을 통과했는지 확인해요",
+          "parameters": [
+            {
+              "name": "trackingNumber",
+              "type": "string",
+              "description": "해외 직구 물건의 운송장 번호",
+              "required": true
+            },
+            {
+              "name": "year",
+              "type": "string",
+              "description": "조회할 연도 (예: 2025)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "trackParcel",
+          "description": "택배가 어디까지 왔는지 배송 상태를 확인해요",
+          "parameters": [
+            {
+              "name": "carrierCode",
+              "type": "string",
+              "description": "택배 회사 코드 (어떤 회사 코드가 있는지는 trackerCompanyList 도구로 확인할 수 있어요)",
+              "required": true
+            },
+            {
+              "name": "trackingNumber",
+              "type": "string",
+              "description": "운송장 번호",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "trackerCompanyList",
+          "description": "어떤 택배사들을 지원하는지 전체 목록을 확인해요",
+          "parameters": []
+        },
+        {
+          "name": "checkUrlSafety",
+          "description": "웹사이트 URL이 안전한지 검사해요. 피싱, 악성코드, 사기 사이트 등을 탐지합니다.",
+          "parameters": [
+            {
+              "name": "url",
+              "type": "string",
+              "description": "검사할 웹사이트 URL (예: https://example.com)",
+              "required": true
+            }
+          ]
+        }
+      ],
+      "identifyName": "ThingDong",
+      "applicableAIServiceScope": "ALL",
+      "featuredLevel": 0,
+      "monthlyToolCallCount": "438",
+      "totalToolCallCount": "5699",
+      "image": {
+        "path": "/komi/upload-files/mcp/images/FfewgrmLT6ryMvSSlO9i9zq254doRirPe7U73URSA2IX6iDGbkWBeeSEM0qb5S5oGsgOC7hOm5NzO4CuarjfK4.png",
+        "fullUrl": "https://t1.kakaocdn.net/komi/upload-files/mcp/images/FfewgrmLT6ryMvSSlO9i9zq254doRirPe7U73URSA2IX6iDGbkWBeeSEM0qb5S5oGsgOC7hOm5NzO4CuarjfK4.png",
+        "cdnUrl": "https://t1.kakaocdn.net"
+      },
+      "authConfigSummary": {
+        "type": "NONE"
+      },
+      "teamProfile": {
+        "name": "신성수",
+        "classification": {
+          "type": "INDIVIDUAL"
+        }
+      }
+    },
+    {
+      "id": "61",
+      "name": "아파트 정보",
+      "description": "지역 단위로 아파트 단지를 조회하고, 각 단지에 대한 상세 정보를 확인할 수 있습니다.\n\n- 특정 지역의 아파트 상세 정보를 조회할 수 있습니다.\n- 특정 아파트 가격을 조회할 수 있습니다.\n- 이 MCP 는 공공데이터를 사용합니다. 사용량에 따라서 일시적으로 조회되지 않을 수 있습니다",
+      "status": "APPROVED",
+      "starterMessages": [
+        "압구정 현대아파트의 주차 환경을 알려줘",
+        "판교 푸르지오그랑블이랑 판교 신미주 아파트 비교해줘",
+        "이번 달 마포구 아파트 평균 매매가 알려줘"
+      ],
+      "formattedTools": [
+        {
+          "name": "get_region_code",
+          "description": "🔍 지역코드 조회 - 지역명을 행정구역 코드로 변환\n    \n    📍 사용 시나리오:\n    - \"강남구\", \"서초동\", \"역삼동\" 등 지역명으로 공식 행정구역 코드 확인\n    - 아파트 목록 조회나 실거래가 조회에 필요한 지역코드 획득\n    - 정확한 지역 범위 파악 (시/도, 시/군/구, 읍/면/동 단위)\n    \n    💡 LLM이 이 도구를 사용해야 하는 경우:\n    - 사용자가 \"강남구 아파트\", \"판교 아파트\" 등 지역명으로 문의할 때\n    - 다른 API 호출 전에 정확한 지역코드가 필요할 때\n    - 사용자가 제공한 주소나 지역명을 표준화해야 할 때\n    \n    Args:\n        region_name: 지역명 (예: \"강남구\", \"서초동\", \"역삼동\", \"서울특별시 강남구\")\n    \n    Returns:\n        지역코드 정보 (시도코드, 시군구코드, 읍면동코드)와 정확한 행정구역명",
+          "parameters": [
+            {
+              "name": "region_name",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_apt_list",
+          "description": "🏢 아파트 목록 조회 - 특정 시군구의 아파트 단지 목록을 페이징으로 조회\n    \n    📍 사용 시나리오:\n    - 특정 지역의 아파트 단지명과 단지코드 확인\n    - 아파트 상세정보 조회 전에 정확한 단지코드 획득\n    - 특정 구/시 단위의 아파트 현황 파악 (페이지별로)\n    \n    💡 LLM이 이 도구를 사용해야 하는 경우:\n    - \"강남구에 있는 아파트 목록 보여줘\" → 자동으로 필요한 만큼 페이지 조회\n    - \"판교 지역 아파트 단지들 보여줘\" → hasMore=true면 자동으로 추가 페이지 호출\n    - 특정 아파트명으로 단지코드를 찾아야 할 때 → 찾을 때까지 페이지 순회\n    - get_region_code로 얻은 시군구코드로 해당 지역 아파트 조회할 때\n    \n    ⚠️ 주의사항:\n    - get_region_code를 먼저 호출하여 정확한 시군구코드(5자리) 확보 필요\n    - 시군구 단위로만 조회 가능 (동 단위로는 필터링 불가)\n    \n    📄 **페이징 처리 가이드 (LLM 자동 처리):**\n    - 항상 page=1부터 시작\n    - hasMore=true면 자동으로 page=2, 3, 4... 순차 호출\n    - 사용자 요청에 충분한 데이터가 모일 때까지 또는 전체 데이터 수집 완료시까지 반복\n    - 각 호출마다 최대 50개씩만 반환되므로 문자 제한 안전\n    \n    🔍 **sgg_code 계산 방법 (매우 중요!):**\n    get_region_code 결과에서 sidoCode + sggCode 문자열 연결\n    - 수지구: sidoCode(\"41\") + sggCode(\"465\") = \"41465\" ✅\n    - 강남구: sidoCode(\"11\") + sggCode(\"680\") = \"11680\" ✅\n    \n    Args:\n        sgg_code: 시군구코드 5자리 (반드시 sidoCode+sggCode 조합으로 계산)\n        page: 페이지 번호 (1부터 시작, 기본값: 1)\n        size: 페이지당 결과 수 (최대 50개, 기본값: 50)\n    \n    Returns:\n        해당 시군구의 아파트 단지 목록 + 페이징 정보 (totalPages, hasMore, currentPage 등)",
+          "parameters": [
+            {
+              "name": "sgg_code",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "page",
+              "type": "integer",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "size",
+              "type": "integer",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "get_apt_info",
+          "description": "🏠 아파트 상세 정보 조회 - 특정 아파트의 모든 상세 정보와 AI 기반 편의성 분석\n    \n    📊 주요 조회 항목 (10가지 핵심 메트릭):\n    - 세대수, 주차대수(지하), 사용승인일, 승강기대수, 복도유형\n    - 전용면적별 세대현황, 시공사, 편의시설, 건축물대장상 연면적, CCTV대수\n    \n    🧠 AI 제공 인사이트:\n    - 세대당 주차공간 분석 (주차 충분성 평가: 우수/양호/부족)\n    - 차 없는 생활 가능성 (대중교통 접근성 기반 생활 적합도)\n    - 생활 편의성 종합 점수 (10점 만점, 등급 부여)\n    - 교통, 편의시설, 보안시설 종합 분석\n    \n    📍 사용 시나리오:\n    - \"래미안 강남 아파트 정보 자세히 알려줘\"\n    - \"이 아파트 주차 여유로운지 확인해줘\"\n    - \"차 없이 살기 좋은 아파트인지 분석해줘\"\n    - \"아파트 편의시설과 교통편 어떤지 평가해줘\"\n    \n    💡 LLM이 이 도구를 사용해야 하는 경우:\n    - 단일 파트의 상세 정보만 필요할 때\n    - 아파트의 생활 편의성, 주차 상황 분석이 필요할 때\n    - 구체적인 아파트 스펙(세대수, 승강기, CCTV 등) 문의시\n    - 대중교통 접근성 기반 생활패턴 분석이 필요할 때\n    \n    ⚠️ 주의사항:\n    - 반드시 get_apt_list에서 얻은 정확한 단지코드 필요\n    - 단지코드 없이는 호출 불가\n    - 여러 아파트 조회시에는 get_apt_info_bulk 사용 권장\n    \n    Args:\n        kapt_code: 아파트 단지코드 (get_apt_list에서 획득)\n    \n    Returns:\n        아파트 상세 정보, AI 편의성 분석, 생활적합성 점수 및 등급",
+          "parameters": [
+            {
+              "name": "kapt_code",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_apt_info_bulk",
+          "description": "🏢 아파트 다건 상세 정보 조회 - 여러 아파트의 상세 정보를 배치 조회하고 필터링/정렬/비교 분석\n    \n    🚀 핵심 기능 (성능 최적화):\n    - 배치 처리로 동시 요청 수 제한하여 API 서버 부하 방지\n    - 조기 종료 지원: 필요한 만큼만 조회하여 시간 절약\n    - 각 아파트별 상세 정보 (get_apt_info와 동일한 정보)\n    - 자동 비교 랭킹 생성 (주차비율, 세대수, 생활편의성)\n    - 전체 평균 통계 및 베스트 아파트 추천\n    - 실패한 조회도 개별 처리하여 부분 성공 허용\n    \n    📊 제공 정보:\n    - 각 아파트 상세정보 (세대수, 주차, 편의시설, 교통 등)\n    - 요약 통계 (총 요청수, 성공/실패 건수, 평균 주차비율)\n    - 3가지 랭킹: 주차비율순, 세대수순, 생활편의성순\n    - 최고 주차비율 아파트 추천\n    \n    📍 사용자 발화 → sort_criteria 추출 가이드:\n    \n    🅿️ **주차 관련**: → \"주차비율 높은 순\"\n    - \"주차 좋은\", \"주차 많은\", \"주차 편한\", \"주차 2대\", \"주차공간\"\n    - \"차 댈 곳\", \"주차장\", \"주차비율\", \"주차대수\"\n    \n    🏢 **단지 규모**: → \"세대수 많은 순\"  \n    - \"큰 단지\", \"대단지\", \"세대수 많은\", \"규모 큰\"\n    - \"많은 세대\", \"대형 아파트\"\n    \n    🚇 **교통 편의**: → \"교통 편리한 순\"\n    - \"교통 좋은\", \"지하철 가까운\", \"역 근처\", \"교통편한\"\n    - \"출퇴근\", \"접근성\", \"대중교통\", \"버스정류장\", \"지하철역\", \"도보 거리\"\n    \n    📹 **보안/CCTV**: → \"CCTV 많은 순\"\n    - \"보안 좋은\", \"CCTV\", \"안전한\", \"보안시설\"\n    \n    🛗 **승강기**: → \"승강기 많은 순\"\n    - \"승강기\", \"엘리베이터\", \"층간 이동\"\n    \n    🏗️ **신축/연식**: → \"최신 건물 순\"\n    - \"최신\", \"신축\", \"새로운\", \"최근\", \"연식\"\n    - \"새 건물\", \"새로 지은\"\n    \n    ⭐ **종합 점수**: → \"생활편의성 좋은 순\"\n    - \"살기 좋은\", \"편의성\", \"생활환경\", \"종합적으로\"\n    - \"추천\", \"괜찮은\", \"좋은 곳\"\n    \n    💡 LLM이 이 도구를 사용해야 하는 경우:\n    - 사용자가 \"~순으로\", \"~기준으로 정렬\", \"~랭킹\" 등을 요청할 때\n    - \"주차 좋은\", \"큰 단지\", \"교통 편한\", \"최신\" 등 구체적 기준이 있을 때  \n    - 여러 아파트를 특정 기준으로 비교/순위를 매겨야 할 때\n    - \"TOP 5\", \"순위\", \"랭킹\", \"비교\" 키워드가 포함된 요청\n    - \"~이내\", \"~안에\", \"~이상\", \"~이하\", \"~가 있는\", \"~가 없는\" 등 필터링 조건이 있는 요청\n    - 2개 이상 아파트의 상세정보가 필요한 모든 경우(정렬, 필터링, 비교 포함)\n    \n    🎯 장점:\n    - 성능: 병렬 처리로 빠른 조회\n    - 편의: 자동 랭킹과 비교 분석 제공\n    - 안정성: 일부 실패해도 나머지 결과 반환\n    - 인사이트: 전체 평균과 베스트 추천 제공\n    \n    ⚠️ 주의사항:\n    - kapt_codes는 get_apt_list에서 얻은 정확한 단지코드 배열 필요\n    - 너무 많은 코드(50개 이상)는 성능상 비추천\n    - 빈 배열이나 잘못된 코드 포함시 해당 부분만 실패 처리\n    \n    Args:\n        kapt_codes: 아파트 단지코드 리스트 (get_apt_list에서 획득한 apartmentCode들)\n        sort_criteria: 사용자 발화에서 추출한 정렬/필터 기준 (선택사항)\n                      👆 위의 가이드를 참고하여 정확한 키워드로 설정\n                      예: \"주차비율 높은 순\", \"세대수 많은 순\", \"교통 편리한 순\"\n        max_concurrent: 최대 동시 요청 수 (기본값: 5, 성능 최적화)\n        limit: 결과 제한 개수 (고정: 3개, 조기 종료로 성능 향상)\n    \n    Returns:\n        다건 아파트 정보, 사용자 기준으로 정렬된 결과, 상위 추천",
+          "parameters": [
+            {
+              "name": "kapt_codes",
+              "type": "array",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "sort_criteria",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "max_concurrent",
+              "type": "integer",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "limit",
+              "type": "integer | null",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "get_apt_price",
+          "description": "💰 아파트 실거래가 조회 - 특정 지역의 아파트 매매 거래 내역 및 시장 분석\n    \n    📊 제공 정보:\n    - 개별 거래 내역 (아파트명, 매매가, 전용면적, 층수, 거래일)\n    - 평균 매매가 계산\n    - 거래량 통계 (총 거래건수)\n    - 면적대별, 단지별 거래 현황\n    \n    📍 사용 시나리오:\n    - \"강남구 이번 달 아파트 거래가 어떤지 보여줘\"\n    - \"서초구 작년 12월 아파트 평균 매매가 알려줘\"\n    - \"판교 지역 최근 아파트 거래 동향 분석해줘\"\n    - \"특정 지역 아파트 시세 확인하고 싶어\"\n    \n    💡 LLM이 이 도구를 사용해야 하는 경우:\n    - 아파트 가격, 시세, 거래가 관련 문의시\n    - 특정 월의 거래 현황 분석이 필요할 때\n    - 지역별 부동산 시장 동향 파악시\n    - get_region_code로 얻은 지역코드로 해당 지역 거래가 조회시\n    \n    🔄 워크플로우:\n    1. get_region_code로 지역명 → 지역코드 변환\n    2. 해당 지역코드로 실거래가 조회\n    3. 거래 내역 분석 및 인사이트 제공\n    \n    ⚠️ 주의사항:\n    - 시군구 단위(5자리 코드)로만 조회 가능\n    - 공공데이터이므로 실제 거래가 기준 (시세와 차이 있을 수 있음)\n    - 월 단위로만 조회 가능 (일별 조회 불가)\n    \n    Args:\n        lawd_cd: 법정동코드 앞5자리 - 시도코드(2자리) + 시군구코드(3자리)\n        deal_ymd: 계약년월 YYYYMM 형식 (기본값: 현재월, 예: \"202401\")\n    \n    Returns:\n        해당 지역/월의 모든 아파트 실거래 내역, 평균가, 거래량 통계",
+          "parameters": [
+            {
+              "name": "lawd_cd",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "deal_ymd",
+              "type": "string",
+              "description": null,
+              "required": false
+            }
+          ]
+        }
+      ],
+      "identifyName": "AptInfo",
+      "applicableAIServiceScope": "ALL",
+      "featuredLevel": 0,
+      "monthlyToolCallCount": "361",
+      "totalToolCallCount": "3338",
+      "image": {
+        "path": "/komi/upload-files/mcp/images/IfrqBKffuNJO2imkzlfH8QvTfDXtdK5oBL04l9HgdJ5LcHILOOnrQarRscwrWsThEiGSbMp1wKTB0i2xxSkwgu.png",
+        "fullUrl": "https://t1.kakaocdn.net/komi/upload-files/mcp/images/IfrqBKffuNJO2imkzlfH8QvTfDXtdK5oBL04l9HgdJ5LcHILOOnrQarRscwrWsThEiGSbMp1wKTB0i2xxSkwgu.png",
+        "cdnUrl": "https://t1.kakaocdn.net"
+      },
+      "authConfigSummary": {
+        "type": "NONE"
+      },
+      "teamProfile": {
+        "name": "Kakao",
+        "classification": {
+          "name": "주식회사 카카오",
+          "registrationNumber": "120-81-47521",
+          "ceoName": "정신아",
+          "businessType": "CORPORATE",
+          "type": "BUSINESS"
+        }
+      }
+    },
+    {
+      "id": "332",
+      "name": "PlayMCP 방탈출",
+      "description": "AI와 함께 텍스트로 즐기는 방탈출 게임 MCP입니다. 시작하면 사용 가능한 시나리오 목록을 보여주고, 사용자가 선택한 시나리오로 즉시 플레이를 시작합니다. 매 턴 AI가 현재 상황과 가능한 행동(선택지)을 안내하며, 사용자의 텍스트 입력을 바탕으로 다음 진행을 처리합니다.",
+      "status": "APPROVED",
+      "starterMessages": [
+        "방탈출 시작할래. 시나리오 목록 보여주고 “느와르 사무실”로 시작해줘.",
+        "지금 화면에서 가능한 행동을 알려주고, 일단 책상부터 조사해줘.",
+        "내가 입력이 애매하면 멋대로 진행하지 말고, 선택지 2~3개로 되물어줘."
+      ],
+      "formattedTools": [
+        {
+          "name": "scenario_list",
+          "description": "Lists available escape-room scenarios from the scenarios directory. Internal messages are English; user-visible text is in the display field.",
+          "parameters": []
+        },
+        {
+          "name": "scenario_start",
+          "description": "Starts a selected scenario and returns the initial state and available choices. Stateless: the client must store and pass state on each step.",
+          "parameters": [
+            {
+              "name": "scenarioId",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "scenario_step",
+          "description": "Applies one choice to the current scenario state and returns the next state and choices. Stateless: client stores state; action is a choiceId.",
+          "parameters": [
+            {
+              "name": "scenarioId",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "state",
+              "type": "object",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "action",
+              "type": "object",
+              "description": null,
+              "required": true
+            }
+          ]
+        }
+      ],
+      "identifyName": "escapeRoom",
+      "applicableAIServiceScope": "ALL",
+      "featuredLevel": 0,
+      "monthlyToolCallCount": "221",
+      "totalToolCallCount": "623",
+      "image": {
+        "path": "/komi/upload-files/mcp/images/ABLMY5GNwMRMwpLTaBKiqcMT7IzGArNfJA0sDSnPuY39X9EDof3tz1yyPNNr93D1DZU7KB7ZSQBI325NFPVMQs.png",
+        "fullUrl": "https://t1.kakaocdn.net/komi/upload-files/mcp/images/ABLMY5GNwMRMwpLTaBKiqcMT7IzGArNfJA0sDSnPuY39X9EDof3tz1yyPNNr93D1DZU7KB7ZSQBI325NFPVMQs.png",
+        "cdnUrl": "https://t1.kakaocdn.net"
+      },
+      "authConfigSummary": {
+        "type": "NONE"
+      },
+      "teamProfile": {
+        "name": "........",
+        "classification": {
+          "type": "INDIVIDUAL"
+        }
+      }
+    },
+    {
+      "id": "119",
+      "name": "사람인",
+      "description": "사람인 서비스는 사람인의 채용 정보를 기반으로 원하는 직무와 지역의 채용 공고 및 기업 정보를 쉽게 탐색할 수 있도록 도와주는 AI 도구입니다.\n\n복잡한 검색 조건을 직접 설정하지 않아도, 자연어로 질문하면 AI가 사용자의 의도를 이해해 적합한 채용 정보를 정리해 제공합니다.\n\n▶︎ 관심 있는 직무나 직군을 기준으로 관련 채용 공고를 찾아볼 수 있습니다.\n▶︎ 회사 이름이나 키워드를 입력해 기업 정보와 해당 기업의 채용 공고를 확인할 수 있습니다.\n▶︎ 지역명이나 지하철역명을 기준으로 출퇴근을 고려한 채용 공고 검색이 가능합니다.\n▶︎ 여러 조건을 조합해 나에게 맞는 채용 공고를 탐색하고, AI가 핵심 내용을 요약해 안내합니다.\n\n본 서비스를 통해 AI가 답한 내용은 사실과 다를 수 있으므로 사용 시 꼭 재차 확인 바랍니다.",
+      "status": "APPROVED",
+      "starterMessages": [
+        "서울 백엔드 개발자 공고 알려줘",
+        "카카오 기업정보 알려줘",
+        "신입 FE개발자 채용 공고 알려줘"
+      ],
+      "formattedTools": [
+        {
+          "name": "fetch_sub_job_categories",
+          "description": "\n하위 직종(소분류) 목록 조회. 상위 직종 선택 후 세부 직무 코드 확인.\n\n[파라미터]\n- jobCategoryCode(필수): 상위 직종 코드. fetch_job_categories 결과의 code값\n\n[반환]\n- name: 세부 직종명 (예: 웹개발, 앱개발, 데이터분석)\n- code: 세부 직종코드\n\n[사용법]\n1. fetch_job_categories로 상위코드 확인 (예: IT=\"02\")\n2. 이 도구로 하위코드 조회 (예: 웹개발=\"0201\")\n3. search_saramin_jobs의 subJobCategoryCodes에 입력\n",
+          "parameters": [
+            {
+              "name": "jobCategoryCode",
+              "type": "string",
+              "description": "상위 직종 코드. fetch_job_categories 결과의 code값",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "search_company_info",
+          "description": "\n[필수 도구] 기업 정보 검색. 특정 기업의 정보, 재무 상태, 연봉, 복지, 평점 등을 조회.\n\n## 파라미터 설명\n\n| 파라미터 | 타입 | 필수 | 설명 | 예시 |\n|---------|------|-----|------|-----|\n| searchWord | String | ✓ | 기업명 | \"삼성전자\", \"토스\", \"카카오\" |\n| pageNum | Int | | 페이지 번호 (기본: 1) | 1 |\n| limit | Int | | 페이지당 결과 수 (기본: 3) | 3 |\n\n## 트리거 예시 (이런 요청 시 호출)\n- \"(주)비바리퍼블리카는 어떤 회사야?\"\n- \"삼성전자 연봉이랑 매출액 알려줘\"\n- \"카카오 기업 정보 조회해줘\"\n- \"네이버 복지 어때?\"\n\n## 사용법\n1. 사용자가 \"삼성전자\"라고 하면 searchWord=\"삼성전자\"로 검색\n2. 반환된 기업 정보(기업명, 매출, 연봉, 복지, 평점, 링크 등)를 사용자에게 제시\n\n## 주의사항\n- 기업 **채용 공고** 검색은 search_saramin_jobs 사용\n- 이 도구는 **기업 자체의 정보** 조회 전용\n",
+          "parameters": [
+            {
+              "name": "request",
+              "type": "object",
+              "description": "기업명, 페이지 번호 등 검색 조건",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "search_saramin_jobs",
+          "description": "\n채용공고 검색. 취업/이직/채용/구직 질문 시 사용.\n\n[파라미터]\n- searchWord(필수): 검색어. 직무명/기술/회사명. 예:\"백엔드 개발자\"\n- orderBy: 수동정렬여부. 기업명검색시 true. 기본false\n- csns: 사업자번호목록. 특정회사 검색시 사용\n- jobCategoryCodes: 상위직종코드. search_job_category로 조회\n- subJobCategoryCodes: 하위직종코드\n- locationCodes: 지역코드. search_location으로 먼저 조회. 예:[\"101000\"]=서울\n- subwayCodes: 지하철코드. search_subway로 먼저 조회. 예:[\"212\"]=강남역\n- page: 페이지번호. 기본1\n- pageCount: 페이지당결과수. 기본3\n- sort: 정렬. Relation=관련도(기본), RegDt=최신, EditDt=수정일, ClosingDt=마감임박, ReadCnt=조회순, ApplyCnt=지원순, EmployCnt=직원수순\n- minSalary: 최소연봉(만원). \"5천만원이상\"→5000\n- companyType: 기업형태. LARGE=대기업, TOP1000=1000대기업, MIDSIZE=중견, SMALLSIZE=중소, STARTUP=스타트업, FOREIGN=외국계\n- isExperienced: 경력구분. true=경력, false=신입, null=전체\n- minCareer: 최소경력연수. \"3년이상\"→3\n- maxCareer: 최대경력연수. \"5년이하\"→5\n\n[주의]\n- 지역/지하철은 한글명 불가. 반드시 코드조회 도구 먼저 실행\n- \"최신공고\"→sort=RegDt, \"마감임박\"→sort=ClosingDt\n",
+          "parameters": [
+            {
+              "name": "request",
+              "type": "object",
+              "description": "검색어, 지역/직무 코드, 필터링 조건 등을 포함한 요청 객체",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "search_saramin_store_products",
+          "description": "\n[필수 도구] 사람인 스토어 상품 검색. 취업 준비 관련 유료 컨텐츠(컨설팅, 인적성, 자소서 첨삭 등) 검색.\n\n## 파라미터 설명\n\n| 파라미터 | 타입 | 필수 | 설명 | 예시 |\n|---------|------|-----|------|-----|\n| searchWord | String | ✓ | 검색 키워드 (상품명/설명/태그) | \"인적성 검사\", \"자소서 첨삭\", \"면접 코칭\" |\n| pageNum | Int | | 페이지 번호 (기본: 1) | 1 |\n| limit | Int | | 페이지당 결과 수 (기본: 3) | 3 |\n| sort | String | | 정렬 기준 (기본: 추천순) | \"인기순\", \"최신순\", \"낮은가격순\", \"높은가격순\" |\n\n## 트리거 예시 (이런 요청 시 호출)\n- \"내 성격 유형 검사해보고 싶어\" → 인적성 검사\n- \"자소서 어떻게 쓰는지 도와주는 거 있어?\" → 자소서/이력서 첨삭\n- \"면접관 앞에서 너무 떨려, 코칭 받고 싶어\" → 면접 코칭\n- \"공기업 NCS 모의고사 찾고 있어\" → 공기업 대비\n\n## 사용법\n1. 사용자가 \"인적성 검사\"라고 하면 searchWord=\"인적성 검사\"로 검색\n2. 반환된 상품 정보(상품명, 가격, 할인율, 평점, 링크 등)를 사용자에게 제시\n\n## 주의사항\n- **일반 채용 공고 검색은 search_saramin_jobs 사용**\n- 이 도구는 취업 준비를 위한 **유료 상품/서비스** 전용\n- 첫 호출 시 인기순 정렬 권장\n",
+          "parameters": [
+            {
+              "name": "request",
+              "type": "object",
+              "description": "스토어 상품 검색 요청 객체 (키워드, 정렬 등)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "search_subway_info",
+          "description": "\n지하철역 코드조회 및 통근권 검색. search_saramin_jobs의 subwayCodes에 사용할 코드 조회.\n\n[파라미터]\n- stationName(필수): 지하철역명. 예:\"판교역\", \"강남역\"\n- maxTimeMinutes: 최대 소요시간(분). 0=단순코드조회, 30=\"30분이내 통근권\"\n- maxTransfers: 환승횟수 제한. 기본1\n\n[모드]\n- 단순조회(maxTimeMinutes=0): 역이름→역코드 변환\n- 통근권검색(maxTimeMinutes>0): 해당역에서 N분내 도달가능한 역 목록\n\n[사용법]\n1. \"강남역 근처\" → stationName=\"강남역\", maxTimeMinutes=0 → 코드조회\n2. \"판교역 30분이내\" → stationName=\"판교역\", maxTimeMinutes=30 → 통근권역 목록\n3. 반환된 code를 search_saramin_jobs의 subwayCodes에 입력\n",
+          "parameters": [
+            {
+              "name": "stationName",
+              "type": "string",
+              "description": "지하철역명. 예: '판교역', '강남역'",
+              "required": true
+            },
+            {
+              "name": "maxTimeMinutes",
+              "type": "integer",
+              "description": "최대 소요시간(분). 단순코드조회시 0. 예: '30분이내'→30",
+              "required": true
+            },
+            {
+              "name": "maxTransfers",
+              "type": "integer",
+              "description": "환승횟수 제한. 기본1",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "fetch_job_categories",
+          "description": "\n상위 직종(대분류) 전체 목록 조회. search_saramin_jobs의 jobCategoryCodes에 사용할 코드 확인.\n\n[반환]\n- name: 직종명 (예: IT/인터넷, 디자인, 영업)\n- code: 직종코드 (예: \"02\"=IT개발)\n\n[사용법]\n사용자가 \"개발자\", \"디자이너\" 등 직종 언급시 이 도구로 코드 확인 후 search_saramin_jobs 호출\n",
+          "parameters": []
+        },
+        {
+          "name": "search_location_codes",
+          "description": "\n지역명→지역코드 변환. search_saramin_jobs의 locationCodes 파라미터에 사용할 코드 조회.\n\n[파라미터]\n- location(필수): 한글 지역명. 예:\"강남구\", \"판교\", \"서울\", \"경기도 성남시\"\n\n[반환]\n- name: 지역명\n- code: 지역코드 (search_saramin_jobs의 locationCodes에 입력)\n\n[사용법]\n1. 사용자가 \"판교\"라고 하면 이 도구로 코드 조회\n2. 반환된 code를 search_saramin_jobs의 locationCodes에 입력\n예: \"판교\" → code:\"101150\" → locationCodes:[\"101150\"]\n",
+          "parameters": [
+            {
+              "name": "location",
+              "type": "string",
+              "description": "검색할 지역명 (한글). 예: '강남구', '판교', '서울'",
+              "required": true
+            }
+          ]
+        }
+      ],
+      "identifyName": "SaraminMcp",
+      "applicableAIServiceScope": "ALL",
+      "featuredLevel": 0,
+      "monthlyToolCallCount": "221",
+      "totalToolCallCount": "2441",
+      "image": {
+        "path": "/komi/upload-files/mcp/images/se7er3wkVq41eCFG6B2RVz5NA7qXAfYi5OnEhwB3uH20hEudnKTbKjdDWzlJyq8MjM78xHXF0UsMwqNpjUhPiE.png",
+        "fullUrl": "https://t1.kakaocdn.net/komi/upload-files/mcp/images/se7er3wkVq41eCFG6B2RVz5NA7qXAfYi5OnEhwB3uH20hEudnKTbKjdDWzlJyq8MjM78xHXF0UsMwqNpjUhPiE.png",
+        "cdnUrl": "https://t1.kakaocdn.net"
+      },
+      "authConfigSummary": {
+        "type": "NONE"
+      },
+      "teamProfile": {
+        "name": "사람인",
+        "classification": {
+          "name": "주식회사 사람인 (Saramin Co., Ltd.)",
+          "registrationNumber": "113-86-00917",
+          "ceoName": "황현순",
+          "businessType": "CORPORATE",
+          "type": "BUSINESS"
+        }
+      }
+    },
+    {
+      "id": "3",
+      "name": "카카오맵",
+      "description": "카카오맵을 활용해 지정한 지역 기준으로 다양한 장소를 탐색하고 길찾기까지 도와줍니다.\n► 입력한 장소나 키워드를 기준으로 맛집, 카페, 명소, 문화 공간 등을 추천받을 수 있습니다.\n► 도보, 자전거, 대중교통 등 이동 수단에 따라 목적지까지의 최적 경로를 안내받을 수 있습니다.",
+      "status": "APPROVED",
+      "starterMessages": [
+        "성수동 브런치 카페 추천해줘",
+        "판교에서 뚝섬까지 자전거로 가면 얼마나 걸려?",
+        "판교역 근처 약국 알려줘"
+      ],
+      "formattedTools": [
+        {
+          "name": "SearchPlaceByKeywordOpen",
+          "description": "Searches for places in South Korea using keywords extracted from user queries.\nThe output must include a Kakao Map link.\n\n# Supported Keyword Types:\n- Region name (e.g., 성수동)\n- Place name (e.g., 스타벅스, 판교역)\n- Business type or category (e.g., 약국, 카페)\n- Menu item\n\n# Keyword Extraction\nFollow the rules below when extracting keywords:\n- A region name is a required keyword. If it is not included, ask the user to input it again. \n- If no place search results are found, extract the keyword again and retry the search.\n\n## Extraction Examples \nuser query: \"판교역 3번출구 카페 추천해줘\"\nkeyword: \"판교역 3번출구 카페\"\n\nuser query: \"성수동에 있는 약국 알려줘\"\nkeyword: \"성수동 약국\"\n",
+          "parameters": [
+            {
+              "name": "keyword",
+              "type": "string",
+              "description": "A core keyword used to search for a place.  \nExtract and combine meaningful terms from the user utterance such as place names, region names, or types of facilities.  \nExamples: \"판교역 3번출구 ATM\", \"성수동 약국\"\n",
+              "required": true
+            },
+            {
+              "name": "highlightedRegion",
+              "type": "string",
+              "description": "Extracted region inferred from the context of the user’s utterance, if applicable.\n",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "GetPublicTransitDirections",
+          "description": "Provides public transportation route guidance within South Korea.\nSupports both intra-city transportation (e.g., buses, subways) and intercity transportation (e.g., express buses, KTX trains).\nThe output must include a Kakao Map link.\n",
+          "parameters": [
+            {
+              "name": "origin",
+              "type": "string",
+              "description": "Starting place name",
+              "required": true
+            },
+            {
+              "name": "destination",
+              "type": "string",
+              "description": "Ending place name",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "GetWalkDirections",
+          "description": "Provides walking route guidance within South Korea.\nThe output must include a Kakao Map link.\n",
+          "parameters": [
+            {
+              "name": "origin",
+              "type": "string",
+              "description": "Starting place name",
+              "required": true
+            },
+            {
+              "name": "destination",
+              "type": "string",
+              "description": "Ending place name",
+              "required": true
+            },
+            {
+              "name": "routeMode",
+              "type": "\"RECOMMENDATION\" | \"SHORTEST_TIME\"",
+              "description": "Defines the criteria for route selection based on user preference.\nThe default value is `RECOMMENDATION`.\n",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "GetBikeDirections",
+          "description": "Provides bicycle route guidance within South Korea.\nThe output must include a Kakao Map link.\n",
+          "parameters": [
+            {
+              "name": "origin",
+              "type": "string",
+              "description": "Starting place name",
+              "required": true
+            },
+            {
+              "name": "destination",
+              "type": "string",
+              "description": "Ending place name",
+              "required": true
+            }
+          ]
+        }
+      ],
+      "identifyName": "KakaoMap",
+      "applicableAIServiceScope": "ALL",
+      "featuredLevel": 0,
+      "monthlyToolCallCount": "218",
+      "totalToolCallCount": "4259",
+      "image": {
+        "path": "/komi/upload-files/mcp/images/1SCKiFhoXf0ODPn9oxb7b5MKGOVNEBv99PUk4hJJxPBZQf4hxJrcR1fcjwRsaPC4q9tjBFPfkwOCwrUFY7weX8.png",
+        "fullUrl": "https://t1.kakaocdn.net/komi/upload-files/mcp/images/1SCKiFhoXf0ODPn9oxb7b5MKGOVNEBv99PUk4hJJxPBZQf4hxJrcR1fcjwRsaPC4q9tjBFPfkwOCwrUFY7weX8.png",
+        "cdnUrl": "https://t1.kakaocdn.net"
+      },
+      "authConfigSummary": {
+        "type": "NONE"
+      },
+      "teamProfile": {
+        "name": "Kakao",
+        "classification": {
+          "name": "주식회사 카카오",
+          "registrationNumber": "120-81-47521",
+          "ceoName": "정신아",
+          "businessType": "CORPORATE",
+          "type": "BUSINESS"
+        }
+      }
+    },
+    {
+      "id": "377",
+      "name": "OpenDART MCP Server",
+      "description": "한국 금융감독원 전자공시시스템(DART) API를 MCP로 제공합니다. AI가 한국 상장기업의 공시, 재무정보, 기업정보를 실시간으로 조회할 수 있습니다.\n\n주요 기능:\n• 기업 검색 (114,000+ 전체 기업)\n• 재무제표/재무지표 조회 (ROE, 부채비율 등)\n• 공시 검색 및 조회\n• 임원/직원 현황 (평균 급여, 근속연수)\n• 최대주주/대량보유 현황\n• 배당 정보, 증자/감자, 자기주식 현황\n\n2023년~2025년 최신 데이터 모두 조회 가능!",
+      "status": "APPROVED",
+      "starterMessages": [
+        "삼성전자 2024년 재무제표 간단하게 보여줘",
+        "네이버 직원 평균 연봉 알려줘",
+        "카카오 ROE랑 부채비율 어때?"
+      ],
+      "formattedTools": [
+        {
+          "name": "find_company",
+          "description": "기업명으로 corp_code(기업 고유번호) 검색\n\n⚠️ 중요: corp_code를 모르는 기업 조회 시 이 도구를 먼저 사용하세요!\n\n### 사용 예시\n- \"인산가\" → corp_code 획득 → 재무제표 조회\n- \"오르비텍\" → corp_code 획득 → 임원 현황 조회\n\n### 검색 팁\n- 정확한 기업명 또는 일부만 입력 가능\n- 전체 114,000+ 기업 데이터에서 즉시 검색 (매우 빠름!)\n- 상장기업이 우선 정렬되어 반환됩니다\n- 검색 결과에서 corp_code, corp_name, stock_code(종목코드) 확인\n\n### 주요 기업은 직접 사용 가능\n- 삼성전자: 00126380\n- SK하이닉스: 00164779\n- LG전자: 00401731\n- 현대자동차: 00164742\n- 네이버: 00266961\n- 카카오: 00258801\n",
+          "parameters": [
+            {
+              "name": "query",
+              "type": "string",
+              "description": "검색할 기업명 (예: '인산가', '오르비텍', '셀트리온')",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "search_disclosures",
+          "description": "한국 상장기업 공시 검색\n\n### 용도\n- 최근 공시 내역 확인\n- 특정 기업의 공시 이력 조회\n- 특정 기간의 공시 검색\n\n### 파라미터\n- corp_code: 기업 고유번호 (선택, 없으면 전체 검색)\n- bgn_de/end_de: 검색 기간 YYYYMMDD (선택)\n- corp_cls: Y(코스피), K(코스닥), N(코넥스), E(기타)\n\n### 💡 corp_code를 모르면?\n→ find_company 도구를 먼저 사용하세요!\n\n## 📌 사용 가이드\n\n### corp_code(기업 고유번호)를 모를 때\n1. `find_company` 도구로 기업명 검색 → corp_code 획득\n2. 획득한 corp_code로 다른 API 호출\n\n### 주요 기업 고유번호 (자주 사용)\n- 삼성전자: 00126380\n- SK하이닉스: 00164779  \n- LG전자: 00401731\n- 현대자동차: 00164742\n- 네이버: 00266961\n- 카카오: 00258801\n- 삼성SDI: 00126371\n- LG화학: 00356361\n- 셀트리온: 00421045\n- 포스코홀딩스: 00126186\n\n### reprt_code (보고서 종류)\n- 11011: 사업보고서 (연간, 가장 상세)\n- 11012: 반기보고서\n- 11013: 1분기보고서\n- 11014: 3분기보고서\n\n### fs_div (재무제표 구분)\n- CFS: 연결재무제표 (자회사 포함, 일반적으로 사용)\n- OFS: 개별재무제표 (해당 법인만)\n\n### corp_cls (시장 구분)\n- Y: 유가증권시장 (코스피 대기업)\n- K: 코스닥시장 (중소/벤처)\n- N: 코넥스시장 (초기기업)\n- E: 기타 (비상장 등)\n",
+          "parameters": [
+            {
+              "name": "corp_code",
+              "type": "string",
+              "description": "기업 고유번호 8자리 (find_company로 검색)",
+              "required": false
+            },
+            {
+              "name": "bgn_de",
+              "type": "string",
+              "description": "검색 시작일 YYYYMMDD",
+              "required": false
+            },
+            {
+              "name": "end_de",
+              "type": "string",
+              "description": "검색 종료일 YYYYMMDD",
+              "required": false
+            },
+            {
+              "name": "corp_cls",
+              "type": "\"Y\" | \"K\" | \"N\" | \"E\"",
+              "description": "Y=코스피, K=코스닥, N=코넥스, E=기타",
+              "required": false
+            },
+            {
+              "name": "page_no",
+              "type": "integer",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "page_count",
+              "type": "integer",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "get_company_info",
+          "description": "기업 기본정보 조회 (회사명, 대표자, 업종, 주소 등)\n\n### 반환 정보\n- corp_name: 회사명\n- ceo_nm: 대표자명\n- induty_code: 업종코드\n- adres: 주소\n- hm_url: 홈페이지\n- est_dt: 설립일\n- acc_mt: 결산월\n\n### 💡 corp_code를 모르면?\n→ find_company 도구를 먼저 사용하세요!\n\n## 📌 사용 가이드\n\n### corp_code(기업 고유번호)를 모를 때\n1. `find_company` 도구로 기업명 검색 → corp_code 획득\n2. 획득한 corp_code로 다른 API 호출\n\n### 주요 기업 고유번호 (자주 사용)\n- 삼성전자: 00126380\n- SK하이닉스: 00164779  \n- LG전자: 00401731\n- 현대자동차: 00164742\n- 네이버: 00266961\n- 카카오: 00258801\n- 삼성SDI: 00126371\n- LG화학: 00356361\n- 셀트리온: 00421045\n- 포스코홀딩스: 00126186\n\n### reprt_code (보고서 종류)\n- 11011: 사업보고서 (연간, 가장 상세)\n- 11012: 반기보고서\n- 11013: 1분기보고서\n- 11014: 3분기보고서\n\n### fs_div (재무제표 구분)\n- CFS: 연결재무제표 (자회사 포함, 일반적으로 사용)\n- OFS: 개별재무제표 (해당 법인만)\n\n### corp_cls (시장 구분)\n- Y: 유가증권시장 (코스피 대기업)\n- K: 코스닥시장 (중소/벤처)\n- N: 코넥스시장 (초기기업)\n- E: 기타 (비상장 등)\n",
+          "parameters": [
+            {
+              "name": "corp_code",
+              "type": "string",
+              "description": "기업 고유번호 (find_company로 검색)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_financial_account",
+          "description": "기업 주요 재무계정 조회 (매출, 영업이익, 자산 등 핵심 지표)\n\n### 반환 정보\n- 매출액, 영업이익, 당기순이익\n- 자산총계, 부채총계, 자본총계\n- 당기/전기/전전기 비교 데이터\n\n### 파라미터\n- corp_code: 기업 고유번호 (필수)\n- bsns_year: 사업연도 예: \"2023\" (필수)\n- reprt_code: 11011(사업보고서), 11012(반기), 11013(1분기), 11014(3분기)\n- fs_div: CFS(연결), OFS(개별) - 선택, 기본값 연결+개별 모두\n\n### 💡 corp_code를 모르면?\n→ find_company 도구를 먼저 사용하세요!\n\n## 📌 사용 가이드\n\n### corp_code(기업 고유번호)를 모를 때\n1. `find_company` 도구로 기업명 검색 → corp_code 획득\n2. 획득한 corp_code로 다른 API 호출\n\n### 주요 기업 고유번호 (자주 사용)\n- 삼성전자: 00126380\n- SK하이닉스: 00164779  \n- LG전자: 00401731\n- 현대자동차: 00164742\n- 네이버: 00266961\n- 카카오: 00258801\n- 삼성SDI: 00126371\n- LG화학: 00356361\n- 셀트리온: 00421045\n- 포스코홀딩스: 00126186\n\n### reprt_code (보고서 종류)\n- 11011: 사업보고서 (연간, 가장 상세)\n- 11012: 반기보고서\n- 11013: 1분기보고서\n- 11014: 3분기보고서\n\n### fs_div (재무제표 구분)\n- CFS: 연결재무제표 (자회사 포함, 일반적으로 사용)\n- OFS: 개별재무제표 (해당 법인만)\n\n### corp_cls (시장 구분)\n- Y: 유가증권시장 (코스피 대기업)\n- K: 코스닥시장 (중소/벤처)\n- N: 코넥스시장 (초기기업)\n- E: 기타 (비상장 등)\n",
+          "parameters": [
+            {
+              "name": "corp_code",
+              "type": "string",
+              "description": "기업 고유번호 (find_company로 검색)",
+              "required": true
+            },
+            {
+              "name": "bsns_year",
+              "type": "string",
+              "description": "사업연도 (예: 2023)",
+              "required": true
+            },
+            {
+              "name": "reprt_code",
+              "type": "\"11011\" | \"11012\" | \"11013\" | \"11014\"",
+              "description": "11011=사업보고서, 11012=반기, 11013=1분기, 11014=3분기",
+              "required": true
+            },
+            {
+              "name": "fs_div",
+              "type": "\"OFS\" | \"CFS\"",
+              "description": "CFS=연결(권장), OFS=개별",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "get_full_financial_statement",
+          "description": "기업 전체 재무제표 상세 조회 (BS, IS, CF 전체 계정)\n\n### 반환 정보 (매우 상세)\n- 재무상태표(BS): 자산/부채/자본 전체 항목\n- 손익계산서(IS): 수익/비용 전체 항목\n- 현금흐름표(CF): 영업/투자/재무활동\n- 포괄손익계산서(CIS)\n- 자본변동표(SCE)\n\n### 파라미터\n- corp_code: 기업 고유번호 (필수)\n- bsns_year: 사업연도 예: \"2023\" (필수)\n- reprt_code: 11011(사업보고서), 11012(반기), 11013(1분기), 11014(3분기) (필수)\n- fs_div: CFS(연결) 또는 OFS(개별) (필수!)\n\n### 💡 corp_code를 모르면?\n→ find_company 도구를 먼저 사용하세요!\n\n## 📌 사용 가이드\n\n### corp_code(기업 고유번호)를 모를 때\n1. `find_company` 도구로 기업명 검색 → corp_code 획득\n2. 획득한 corp_code로 다른 API 호출\n\n### 주요 기업 고유번호 (자주 사용)\n- 삼성전자: 00126380\n- SK하이닉스: 00164779  \n- LG전자: 00401731\n- 현대자동차: 00164742\n- 네이버: 00266961\n- 카카오: 00258801\n- 삼성SDI: 00126371\n- LG화학: 00356361\n- 셀트리온: 00421045\n- 포스코홀딩스: 00126186\n\n### reprt_code (보고서 종류)\n- 11011: 사업보고서 (연간, 가장 상세)\n- 11012: 반기보고서\n- 11013: 1분기보고서\n- 11014: 3분기보고서\n\n### fs_div (재무제표 구분)\n- CFS: 연결재무제표 (자회사 포함, 일반적으로 사용)\n- OFS: 개별재무제표 (해당 법인만)\n\n### corp_cls (시장 구분)\n- Y: 유가증권시장 (코스피 대기업)\n- K: 코스닥시장 (중소/벤처)\n- N: 코넥스시장 (초기기업)\n- E: 기타 (비상장 등)\n",
+          "parameters": [
+            {
+              "name": "corp_code",
+              "type": "string",
+              "description": "기업 고유번호 (find_company로 검색)",
+              "required": true
+            },
+            {
+              "name": "bsns_year",
+              "type": "string",
+              "description": "사업연도 (예: 2023)",
+              "required": true
+            },
+            {
+              "name": "reprt_code",
+              "type": "\"11011\" | \"11012\" | \"11013\" | \"11014\"",
+              "description": "11011=사업보고서, 11012=반기, 11013=1분기, 11014=3분기",
+              "required": true
+            },
+            {
+              "name": "fs_div",
+              "type": "\"OFS\" | \"CFS\"",
+              "description": "CFS=연결(권장), OFS=개별 (필수!)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_dividend_info",
+          "description": "기업 배당 정보 조회\n\n### 반환 정보\n- 주당 현금배당금\n- 배당수익률\n- 배당성향\n- 현금배당 총액\n\n### 💡 corp_code를 모르면?\n→ find_company 도구를 먼저 사용하세요!\n\n## 📌 사용 가이드\n\n### corp_code(기업 고유번호)를 모를 때\n1. `find_company` 도구로 기업명 검색 → corp_code 획득\n2. 획득한 corp_code로 다른 API 호출\n\n### 주요 기업 고유번호 (자주 사용)\n- 삼성전자: 00126380\n- SK하이닉스: 00164779  \n- LG전자: 00401731\n- 현대자동차: 00164742\n- 네이버: 00266961\n- 카카오: 00258801\n- 삼성SDI: 00126371\n- LG화학: 00356361\n- 셀트리온: 00421045\n- 포스코홀딩스: 00126186\n\n### reprt_code (보고서 종류)\n- 11011: 사업보고서 (연간, 가장 상세)\n- 11012: 반기보고서\n- 11013: 1분기보고서\n- 11014: 3분기보고서\n\n### fs_div (재무제표 구분)\n- CFS: 연결재무제표 (자회사 포함, 일반적으로 사용)\n- OFS: 개별재무제표 (해당 법인만)\n\n### corp_cls (시장 구분)\n- Y: 유가증권시장 (코스피 대기업)\n- K: 코스닥시장 (중소/벤처)\n- N: 코넥스시장 (초기기업)\n- E: 기타 (비상장 등)\n",
+          "parameters": [
+            {
+              "name": "corp_code",
+              "type": "string",
+              "description": "기업 고유번호 (find_company로 검색)",
+              "required": true
+            },
+            {
+              "name": "bsns_year",
+              "type": "string",
+              "description": "사업연도 (예: 2023)",
+              "required": true
+            },
+            {
+              "name": "reprt_code",
+              "type": "\"11011\" | \"11012\" | \"11013\" | \"11014\"",
+              "description": "11011=사업보고서(권장)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_executives",
+          "description": "기업 임원 현황 조회\n\n### 반환 정보\n- 임원명, 직위\n- 등기여부, 상근여부\n- 담당업무\n- 주요경력\n\n### 💡 corp_code를 모르면?\n→ find_company 도구를 먼저 사용하세요!\n\n## 📌 사용 가이드\n\n### corp_code(기업 고유번호)를 모를 때\n1. `find_company` 도구로 기업명 검색 → corp_code 획득\n2. 획득한 corp_code로 다른 API 호출\n\n### 주요 기업 고유번호 (자주 사용)\n- 삼성전자: 00126380\n- SK하이닉스: 00164779  \n- LG전자: 00401731\n- 현대자동차: 00164742\n- 네이버: 00266961\n- 카카오: 00258801\n- 삼성SDI: 00126371\n- LG화학: 00356361\n- 셀트리온: 00421045\n- 포스코홀딩스: 00126186\n\n### reprt_code (보고서 종류)\n- 11011: 사업보고서 (연간, 가장 상세)\n- 11012: 반기보고서\n- 11013: 1분기보고서\n- 11014: 3분기보고서\n\n### fs_div (재무제표 구분)\n- CFS: 연결재무제표 (자회사 포함, 일반적으로 사용)\n- OFS: 개별재무제표 (해당 법인만)\n\n### corp_cls (시장 구분)\n- Y: 유가증권시장 (코스피 대기업)\n- K: 코스닥시장 (중소/벤처)\n- N: 코넥스시장 (초기기업)\n- E: 기타 (비상장 등)\n",
+          "parameters": [
+            {
+              "name": "corp_code",
+              "type": "string",
+              "description": "기업 고유번호 (find_company로 검색)",
+              "required": true
+            },
+            {
+              "name": "bsns_year",
+              "type": "string",
+              "description": "사업연도 (예: 2023)",
+              "required": true
+            },
+            {
+              "name": "reprt_code",
+              "type": "\"11011\" | \"11012\" | \"11013\" | \"11014\"",
+              "description": "11011=사업보고서(권장)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_employees",
+          "description": "기업 직원 현황 조회 (인원, 평균급여, 근속연수)\n\n### 반환 정보\n- 직원 수 (정규직/계약직)\n- 평균 근속연수\n- 연간 급여 총액\n- 1인 평균 급여\n\n### ⚠️ 주의\n- 사업보고서(11011)에만 상세 정보 포함\n- 분기보고서는 데이터 없을 수 있음\n\n### 💡 corp_code를 모르면?\n→ find_company 도구를 먼저 사용하세요!\n\n## 📌 사용 가이드\n\n### corp_code(기업 고유번호)를 모를 때\n1. `find_company` 도구로 기업명 검색 → corp_code 획득\n2. 획득한 corp_code로 다른 API 호출\n\n### 주요 기업 고유번호 (자주 사용)\n- 삼성전자: 00126380\n- SK하이닉스: 00164779  \n- LG전자: 00401731\n- 현대자동차: 00164742\n- 네이버: 00266961\n- 카카오: 00258801\n- 삼성SDI: 00126371\n- LG화학: 00356361\n- 셀트리온: 00421045\n- 포스코홀딩스: 00126186\n\n### reprt_code (보고서 종류)\n- 11011: 사업보고서 (연간, 가장 상세)\n- 11012: 반기보고서\n- 11013: 1분기보고서\n- 11014: 3분기보고서\n\n### fs_div (재무제표 구분)\n- CFS: 연결재무제표 (자회사 포함, 일반적으로 사용)\n- OFS: 개별재무제표 (해당 법인만)\n\n### corp_cls (시장 구분)\n- Y: 유가증권시장 (코스피 대기업)\n- K: 코스닥시장 (중소/벤처)\n- N: 코넥스시장 (초기기업)\n- E: 기타 (비상장 등)\n",
+          "parameters": [
+            {
+              "name": "corp_code",
+              "type": "string",
+              "description": "기업 고유번호 (find_company로 검색)",
+              "required": true
+            },
+            {
+              "name": "bsns_year",
+              "type": "string",
+              "description": "사업연도 (예: 2023)",
+              "required": true
+            },
+            {
+              "name": "reprt_code",
+              "type": "\"11011\" | \"11012\" | \"11013\" | \"11014\"",
+              "description": "11011=사업보고서(상세정보)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_largest_shareholders",
+          "description": "기업 최대주주 현황 조회\n\n### 반환 정보\n- 최대주주명\n- 보유 주식수\n- 지분율 (%)\n- 변동 내역\n\n### 💡 corp_code를 모르면?\n→ find_company 도구를 먼저 사용하세요!\n\n## 📌 사용 가이드\n\n### corp_code(기업 고유번호)를 모를 때\n1. `find_company` 도구로 기업명 검색 → corp_code 획득\n2. 획득한 corp_code로 다른 API 호출\n\n### 주요 기업 고유번호 (자주 사용)\n- 삼성전자: 00126380\n- SK하이닉스: 00164779  \n- LG전자: 00401731\n- 현대자동차: 00164742\n- 네이버: 00266961\n- 카카오: 00258801\n- 삼성SDI: 00126371\n- LG화학: 00356361\n- 셀트리온: 00421045\n- 포스코홀딩스: 00126186\n\n### reprt_code (보고서 종류)\n- 11011: 사업보고서 (연간, 가장 상세)\n- 11012: 반기보고서\n- 11013: 1분기보고서\n- 11014: 3분기보고서\n\n### fs_div (재무제표 구분)\n- CFS: 연결재무제표 (자회사 포함, 일반적으로 사용)\n- OFS: 개별재무제표 (해당 법인만)\n\n### corp_cls (시장 구분)\n- Y: 유가증권시장 (코스피 대기업)\n- K: 코스닥시장 (중소/벤처)\n- N: 코넥스시장 (초기기업)\n- E: 기타 (비상장 등)\n",
+          "parameters": [
+            {
+              "name": "corp_code",
+              "type": "string",
+              "description": "기업 고유번호 (find_company로 검색)",
+              "required": true
+            },
+            {
+              "name": "bsns_year",
+              "type": "string",
+              "description": "사업연도 (예: 2023)",
+              "required": true
+            },
+            {
+              "name": "reprt_code",
+              "type": "\"11011\" | \"11012\" | \"11013\" | \"11014\"",
+              "description": "11011=사업보고서(권장)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_financial_index",
+          "description": "기업 주요 재무지표 조회 (ROE, ROA, 부채비율 등)\n\n### 반환 정보 ⭐\n- ROE (자기자본이익률)\n- ROA (총자산이익률)\n- 부채비율\n- 유동비율\n- 당좌비율\n- 영업이익률\n- 순이익률\n- EPS (주당순이익)\n- BPS (주당순자산)\n- PER, PBR (주가배수)\n\n### 파라미터\n- corp_code: 기업 고유번호 (필수)\n- bsns_year: 사업연도 (필수)\n- reprt_code: 보고서코드 (필수)\n- idx_cl_code: 지표분류코드 (선택)\n  - M210000: 수익성지표\n  - M220000: 안정성지표\n  - M230000: 성장성지표\n  - M240000: 활동성지표\n\n### 💡 corp_code를 모르면?\n→ find_company 도구를 먼저 사용하세요!\n\n## 📌 사용 가이드\n\n### corp_code(기업 고유번호)를 모를 때\n1. `find_company` 도구로 기업명 검색 → corp_code 획득\n2. 획득한 corp_code로 다른 API 호출\n\n### 주요 기업 고유번호 (자주 사용)\n- 삼성전자: 00126380\n- SK하이닉스: 00164779  \n- LG전자: 00401731\n- 현대자동차: 00164742\n- 네이버: 00266961\n- 카카오: 00258801\n- 삼성SDI: 00126371\n- LG화학: 00356361\n- 셀트리온: 00421045\n- 포스코홀딩스: 00126186\n\n### reprt_code (보고서 종류)\n- 11011: 사업보고서 (연간, 가장 상세)\n- 11012: 반기보고서\n- 11013: 1분기보고서\n- 11014: 3분기보고서\n\n### fs_div (재무제표 구분)\n- CFS: 연결재무제표 (자회사 포함, 일반적으로 사용)\n- OFS: 개별재무제표 (해당 법인만)\n\n### corp_cls (시장 구분)\n- Y: 유가증권시장 (코스피 대기업)\n- K: 코스닥시장 (중소/벤처)\n- N: 코넥스시장 (초기기업)\n- E: 기타 (비상장 등)\n",
+          "parameters": [
+            {
+              "name": "corp_code",
+              "type": "string",
+              "description": "기업 고유번호 (find_company로 검색)",
+              "required": true
+            },
+            {
+              "name": "bsns_year",
+              "type": "string",
+              "description": "사업연도 (예: 2023)",
+              "required": true
+            },
+            {
+              "name": "reprt_code",
+              "type": "\"11011\" | \"11012\" | \"11013\" | \"11014\"",
+              "description": "11011=사업보고서, 11012=반기, 11013=1분기, 11014=3분기",
+              "required": true
+            },
+            {
+              "name": "idx_cl_code",
+              "type": "\"M210000\" | \"M220000\" | \"M230000\" | \"M240000\"",
+              "description": "지표분류코드 (필수): M210000=수익성, M220000=안정성, M230000=성장성, M240000=활동성",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_major_stock",
+          "description": "대량보유 상황보고 조회 (5%룰)\n\n### 반환 정보\n- 보고자명\n- 보유주식수\n- 보유비율 (%)\n- 보고사유 (취득/처분/변동)\n- 변동일자\n\n### 용도\n- 5% 이상 주주의 지분 변동 추적\n- 기관/외국인 대량 매수/매도 확인\n- 경영권 분쟁 신호 감지\n\n### 💡 corp_code를 모르면?\n→ find_company 도구를 먼저 사용하세요!\n\n## 📌 사용 가이드\n\n### corp_code(기업 고유번호)를 모를 때\n1. `find_company` 도구로 기업명 검색 → corp_code 획득\n2. 획득한 corp_code로 다른 API 호출\n\n### 주요 기업 고유번호 (자주 사용)\n- 삼성전자: 00126380\n- SK하이닉스: 00164779  \n- LG전자: 00401731\n- 현대자동차: 00164742\n- 네이버: 00266961\n- 카카오: 00258801\n- 삼성SDI: 00126371\n- LG화학: 00356361\n- 셀트리온: 00421045\n- 포스코홀딩스: 00126186\n\n### reprt_code (보고서 종류)\n- 11011: 사업보고서 (연간, 가장 상세)\n- 11012: 반기보고서\n- 11013: 1분기보고서\n- 11014: 3분기보고서\n\n### fs_div (재무제표 구분)\n- CFS: 연결재무제표 (자회사 포함, 일반적으로 사용)\n- OFS: 개별재무제표 (해당 법인만)\n\n### corp_cls (시장 구분)\n- Y: 유가증권시장 (코스피 대기업)\n- K: 코스닥시장 (중소/벤처)\n- N: 코넥스시장 (초기기업)\n- E: 기타 (비상장 등)\n",
+          "parameters": [
+            {
+              "name": "corp_code",
+              "type": "string",
+              "description": "기업 고유번호 (find_company로 검색)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_executive_stock",
+          "description": "임원·주요주주 소유보고 조회\n\n### 반환 정보\n- 보고자명\n- 직위 (대표이사, 이사 등)\n- 관계 (본인/특수관계인)\n- 보유주식수\n- 보유비율 (%)\n- 변동사유\n\n### 용도\n- 임원 지분 변동 추적\n- 내부자 매매 동향 확인\n- 경영진 신뢰도 판단\n\n### 💡 corp_code를 모르면?\n→ find_company 도구를 먼저 사용하세요!\n\n## 📌 사용 가이드\n\n### corp_code(기업 고유번호)를 모를 때\n1. `find_company` 도구로 기업명 검색 → corp_code 획득\n2. 획득한 corp_code로 다른 API 호출\n\n### 주요 기업 고유번호 (자주 사용)\n- 삼성전자: 00126380\n- SK하이닉스: 00164779  \n- LG전자: 00401731\n- 현대자동차: 00164742\n- 네이버: 00266961\n- 카카오: 00258801\n- 삼성SDI: 00126371\n- LG화학: 00356361\n- 셀트리온: 00421045\n- 포스코홀딩스: 00126186\n\n### reprt_code (보고서 종류)\n- 11011: 사업보고서 (연간, 가장 상세)\n- 11012: 반기보고서\n- 11013: 1분기보고서\n- 11014: 3분기보고서\n\n### fs_div (재무제표 구분)\n- CFS: 연결재무제표 (자회사 포함, 일반적으로 사용)\n- OFS: 개별재무제표 (해당 법인만)\n\n### corp_cls (시장 구분)\n- Y: 유가증권시장 (코스피 대기업)\n- K: 코스닥시장 (중소/벤처)\n- N: 코넥스시장 (초기기업)\n- E: 기타 (비상장 등)\n",
+          "parameters": [
+            {
+              "name": "corp_code",
+              "type": "string",
+              "description": "기업 고유번호 (find_company로 검색)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_capital_change",
+          "description": "증자(감자) 현황 조회\n\n### 반환 정보\n- 증자/감자 구분\n- 발행주식수\n- 주당 발행가액\n- 자본금 변동액\n- 변동일자\n- 변동사유\n\n### 용도\n- 기업 자본 구조 변화 확인\n- 유상증자/무상증자 이력\n- 감자로 인한 주주가치 변동\n\n### 💡 corp_code를 모르면?\n→ find_company 도구를 먼저 사용하세요!\n\n## 📌 사용 가이드\n\n### corp_code(기업 고유번호)를 모를 때\n1. `find_company` 도구로 기업명 검색 → corp_code 획득\n2. 획득한 corp_code로 다른 API 호출\n\n### 주요 기업 고유번호 (자주 사용)\n- 삼성전자: 00126380\n- SK하이닉스: 00164779  \n- LG전자: 00401731\n- 현대자동차: 00164742\n- 네이버: 00266961\n- 카카오: 00258801\n- 삼성SDI: 00126371\n- LG화학: 00356361\n- 셀트리온: 00421045\n- 포스코홀딩스: 00126186\n\n### reprt_code (보고서 종류)\n- 11011: 사업보고서 (연간, 가장 상세)\n- 11012: 반기보고서\n- 11013: 1분기보고서\n- 11014: 3분기보고서\n\n### fs_div (재무제표 구분)\n- CFS: 연결재무제표 (자회사 포함, 일반적으로 사용)\n- OFS: 개별재무제표 (해당 법인만)\n\n### corp_cls (시장 구분)\n- Y: 유가증권시장 (코스피 대기업)\n- K: 코스닥시장 (중소/벤처)\n- N: 코넥스시장 (초기기업)\n- E: 기타 (비상장 등)\n",
+          "parameters": [
+            {
+              "name": "corp_code",
+              "type": "string",
+              "description": "기업 고유번호 (find_company로 검색)",
+              "required": true
+            },
+            {
+              "name": "bsns_year",
+              "type": "string",
+              "description": "사업연도 (예: 2023)",
+              "required": true
+            },
+            {
+              "name": "reprt_code",
+              "type": "\"11011\" | \"11012\" | \"11013\" | \"11014\"",
+              "description": "11011=사업보고서(권장)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_treasury_stock",
+          "description": "자기주식 취득 및 처분 현황 조회\n\n### 반환 정보\n- 취득/처분 구분\n- 주식수\n- 취득/처분 가액\n- 취득/처분 목적\n- 기간\n- 비고\n\n### 용도\n- 자사주 매입 규모 확인\n- 주주환원 정책 분석\n- 자사주 소각 현황\n\n### 💡 corp_code를 모르면?\n→ find_company 도구를 먼저 사용하세요!\n\n## 📌 사용 가이드\n\n### corp_code(기업 고유번호)를 모를 때\n1. `find_company` 도구로 기업명 검색 → corp_code 획득\n2. 획득한 corp_code로 다른 API 호출\n\n### 주요 기업 고유번호 (자주 사용)\n- 삼성전자: 00126380\n- SK하이닉스: 00164779  \n- LG전자: 00401731\n- 현대자동차: 00164742\n- 네이버: 00266961\n- 카카오: 00258801\n- 삼성SDI: 00126371\n- LG화학: 00356361\n- 셀트리온: 00421045\n- 포스코홀딩스: 00126186\n\n### reprt_code (보고서 종류)\n- 11011: 사업보고서 (연간, 가장 상세)\n- 11012: 반기보고서\n- 11013: 1분기보고서\n- 11014: 3분기보고서\n\n### fs_div (재무제표 구분)\n- CFS: 연결재무제표 (자회사 포함, 일반적으로 사용)\n- OFS: 개별재무제표 (해당 법인만)\n\n### corp_cls (시장 구분)\n- Y: 유가증권시장 (코스피 대기업)\n- K: 코스닥시장 (중소/벤처)\n- N: 코넥스시장 (초기기업)\n- E: 기타 (비상장 등)\n",
+          "parameters": [
+            {
+              "name": "corp_code",
+              "type": "string",
+              "description": "기업 고유번호 (find_company로 검색)",
+              "required": true
+            },
+            {
+              "name": "bsns_year",
+              "type": "string",
+              "description": "사업연도 (예: 2023)",
+              "required": true
+            },
+            {
+              "name": "reprt_code",
+              "type": "\"11011\" | \"11012\" | \"11013\" | \"11014\"",
+              "description": "11011=사업보고서(권장)",
+              "required": true
+            }
+          ]
+        }
+      ],
+      "identifyName": "opendart",
+      "applicableAIServiceScope": "ALL",
+      "featuredLevel": 0,
+      "monthlyToolCallCount": "205",
+      "totalToolCallCount": "636",
+      "image": {
+        "path": "/komi/upload-files/mcp/images/gi6KTOse0qKsL2B0TZtxy1SdfZsQxOJHgSFEA6UmeGQM2ROpipSoUI3F59QpwkrNosFWPyiUkcvpvESCVdHBAj.png",
+        "fullUrl": "https://t1.kakaocdn.net/komi/upload-files/mcp/images/gi6KTOse0qKsL2B0TZtxy1SdfZsQxOJHgSFEA6UmeGQM2ROpipSoUI3F59QpwkrNosFWPyiUkcvpvESCVdHBAj.png",
+        "cdnUrl": "https://t1.kakaocdn.net"
+      },
+      "authConfigSummary": {
+        "type": "NONE"
+      },
+      "teamProfile": {
+        "name": "김다윤",
+        "classification": {
+          "type": "INDIVIDUAL"
+        }
+      }
+    },
+    {
+      "id": "60636710119191984",
+      "name": "보육나침반",
+      "description": "보육나침반(Childcare Compass)은 전국 어린이집의 파편화된 행정 기준을 현장 업무와 연결해, 필요한 근거를 쉽게 찾도록 돕는 보육행정 에이전트입니다. 불필요한 행정 부담을 줄여 보육교직원이 본연의 업무와 아이들에게 집중할 수 있도록 합니다.\n\n일반 검색이 아니라 2026 보육사업안내·재무회계 매뉴얼·회계업무 길라잡이·2024 개정 평가매뉴얼·표준보육과정·누리과정 등 공식 지침 원문과 법제처 법령에 근거해 검증·안내합니다.\n\n또한 지속적으로 업데이트할 예정입니다.",
+      "status": "APPROVED",
+      "starterMessages": [
+        "어린이집 냉장고 수리비, 어느 계정과목으로 처리하니?",
+        "2025년에 보수교육을 이수했는데, 다음 보수교육은 언제 받니?",
+        "2세 터널 놀이로 놀이흐름 만들어줘"
+      ],
+      "formattedTools": [
+        {
+          "name": "search_law_and_guidelines",
+          "description": "[보육나침반(Childcare Compass)] 어린이집 법령·운영기준 질문에 실제 지침서·법령에서 근거를 찾아 즉시 답합니다.\n\n    [트리거] \"근거\", \"법\", \"조항\", \"규정\", \"운영위원회\", \"CCTV\", \"반편성\", \"혼합반\",\n            \"교사 대 아동 비율\", \"보육일수\", \"입소 우선순위\", \"임면보고\", \"설치기준\",\n            \"지도점검\", \"시정명령\", \"보육료\", \"이거 맞아?\", \"어떻게 해야 해?\"\n    [용도] 추측이 아니라 실제 지침(보육사업안내·표준보육과정·재무회계·평가·누리과정)과\n          법제처 관련 법령명을 근거로 제공. 운영위·혼합반 등 핵심은 고정 근거로 바로 답함.\n\n    [호스트 AI 답변 형식]\n      · 법령형(권리·의무·민원·지도점검): [결론]→[법령 근거(법·시행령·시행규칙 핵심 조문)]→\n        [보육사업안내 근거(쪽수)]→[현장 판단]→[처리 절차]→[남길 서류]→[주의·리스크]→[현장 문안]\n      · 운영기준형(반편성·보육일수·입소·운영): [결론]→[보육사업안내 근거(장·절·쪽수)]→\n        [적용 조건/예외]→[현장 처리]→[남길 서류]→[주의]\n      · '검토 필요'로만 끝내지 말 것. 조문·쪽수·관항목을 지어내지 말 것.\n\n    Args:\n        질의: 알고 싶은 핵심어 (예: \"운영위원회 구성\", \"2세 3세 혼합반\", \"CCTV 열람\")\n    ",
+          "parameters": [
+            {
+              "name": "질의",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "verify_accounting",
+          "description": "[보육나침반(Childcare Compass)] 어린이집 회계 집행의 적정성을 재무회계 매뉴얼·회계업무 길라잡이의 '관-항-목' 근거로 검증하도록 돕습니다. 지출(세출)·수입(세입)을 모두 다룹니다.\n\n    [트리거] \"회계 검증\", \"어느 계정\", \"계정과목\", \"관 항 목\", \"집행\", \"예산 위반\", \"행정처분\",\n            \"전용\", \"목적외 사용\", \"수입/세입\", \"세출\", \"보조금\", \"지원금\", \"후원금\", \"고용보험\",\n            \"환급금\", \"이거 수입이야 지출이야\", \"어디로 잡아\", \"증빙 뭐\"\n    [용도] 어떤 지출/수입을 어느 '관-항-목'에 잡는지, 집행이 적정·위반인지 판단할 근거\n          (빈출 계정 빠른 판정 + 매뉴얼·길라잡이 원문 + 세입·세출 과목구분표)를 제공.\n          수입/지출을 자동 구분하고, 수입에는 '지출증빙'을 요구하지 않도록 안내.\n\n    [호스트 AI 규칙]\n      - 계정과목은 '관 > 항 > 목' 3단계 모두 표기(예: 잡수입(08) > 잡수입(81) > 그 밖의 잡수입(812)).\n      - '기타로 처리' 식으로 뭉뚱그리지 말고 매뉴얼/길라잡이 근거·예시를 인용.\n      - 수입이면 '수입 증빙'(통장 입금내역·교부결정/정산 통지서)을 안내하고 '지출증빙' 요구 금지.\n      - 추경/전용 제한·목적외 사용 금지 점검. 확정 곤란 시 '추가확인 필요'로 안내.\n\n    Args:\n        지출내용: 검증할 지출/수입 내용 (예: \"냉장고 수리비\", \"고용보험 지원금 입금\")\n        계정과목: 처리하려는 계정과목(선택) (예: \"운영비\", \"잡수입\")\n        비고: 추가 상황(선택) (예: \"교육청에서 입금됨\")\n    ",
+          "parameters": [
+            {
+              "name": "지출내용",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "계정과목",
+              "type": "string",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "비고",
+              "type": "string",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "create_play_flow",
+          "description": "[보육나침반(Childcare Compass)] 놀이중심·비구조화 놀이 기반 '놀이흐름 패널(놀이흐름도 + 배움읽기)'을 2024 개정 표준보육과정(영아)·2019 개정 누리과정(유아) 근거로 설계합니다.\n\n    [트리거] \"놀이흐름도\", \"놀이패널\", \"놀이안\", \"배움읽기\", \"놀이 설계\", \"놀이 계획\", \"관찰기록\",\n            \"0세/1세/2세 놀이\", \"누리과정 놀이\", \"다음 놀이 예상\", \"부모 안내 놀이기록\"\n    [용도] 영아(0-2세)는 표준보육과정, 유아(3-5세)는 개정 누리과정의 영역 + 실행자료 근거로,\n          '아이가 주도한 움직임과 발견'이 살아나는 놀이흐름 패널을 설계. (법령은 붙이지 말 것)\n\n    Args:\n        놀이주제: 주제/소재 (예: \"물\", \"상자\", \"솔방울\", \"터널\")\n        연령: 대상 (예: \"0-1세\", \"2세\", \"3-5세\")\n        자료: 사용할 비정형 놀이자료(열린 자료)\n        중심영역: 강조할 영역(선택)\n    ",
+          "parameters": [
+            {
+              "name": "놀이주제",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "연령",
+              "type": "string",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "자료",
+              "type": "string",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "중심영역",
+              "type": "string",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "guide_evaluation",
+          "description": "[보육나침반(Childcare Compass)] 어린이집 평가제(2024 개정 평가매뉴얼) 질문에 평가영역·항목·등급·주기·관찰포인트·증빙을 안내합니다. (검증된 6영역·15항목 고정 근거 내장)\n\n    [트리거] \"평가제\", \"평가지표\", \"평가영역\", \"평가항목\", \"평가 준비\", \"평가등급\", \"평가주기\",\n            \"관찰기록\", \"일과 운영\", \"배움 지원\", \"상호작용 지원\", \"보육과정 실행과 평가\",\n            \"원장 리더십\", \"건강 및 안전\", \"자체평가\", \"현장평가\", \"종합평가\", \"재평가\"\n    [용도] 검증된 6영역·15항목 구조 + 평가매뉴얼 근거로 해당 영역/항목, 현장에서 보여야 할 모습,\n          기록·증빙자료, 보완 포인트를 제시. (법령을 먼저 붙이지 말 것)\n\n    Args:\n        질문: 평가 관련 질문 (예: \"영유아존중 상호작용 항목\", \"평가등급 주기\", \"건강·안전 점검\")\n    ",
+          "parameters": [
+            {
+              "name": "질문",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "guide_labor",
+          "description": "[보육나침반(Childcare Compass)] 보육교직원 노무·고용보험·근로계약 질문에 법령 + 보육사업안내 근거로 안내합니다.\n\n    [트리거] \"근로계약\", \"육아휴직\", \"출산전후휴가\", \"4대보험\", \"퇴직금\", \"대체교사\",\n            \"주휴수당\", \"연차\", \"고용보험\", \"기간제\", \"임면보고\", \"단시간 교사\", \"보조교사\"\n    [용도] 근로기준법·고용보험법·남녀고용평등법 등 + 보육사업안내 교직원 관리 기준으로\n          결론·법령근거·처리절차·서류·리스크를 안내.\n\n    Args:\n        질문: 노무 관련 질문 (예: \"보조교사 근로계약 1년 단위로 해야 해?\")\n    ",
+          "parameters": [
+            {
+              "name": "질문",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "create_official_document",
+          "description": "[보육나침반(Childcare Compass)] 어린이집 공식문서(공문)의 서식 구조에 맞춘 초안을 생성합니다.\n\n    [트리거] \"가정통신문\", \"공지\", \"공문\", \"회의록\", \"인계인수서\", \"안내문 써줘\", \"문서 작성\"\n    [용도] 정확한 서식 골격에 핵심내용을 채워 초안 반환. 호스트 AI가 따뜻하고 신뢰감 있게 다듬음.\n\n    Args:\n        문서종류: 가정통신문 | 공지사항 | 운영위원회회의록 | 직원회의록 | 협조공문 | 사무인계인수서\n        제목: 문서 제목/주제\n        핵심내용: 전달할 핵심 내용\n        어린이집명: 발신 기관명\n        원장명: 발신자(원장) 성명\n        대상: 수신 대상\n        날짜: 문서 일자 (미입력 시 오늘)\n    ",
+          "parameters": [
+            {
+              "name": "문서종류",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "제목",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "핵심내용",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "어린이집명",
+              "type": "string",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "원장명",
+              "type": "string",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "대상",
+              "type": "string",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "날짜",
+              "type": "string",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "review_admin_document",
+          "description": "[보육나침반(Childcare Compass)] 작성한 어린이집 문서를 검토해 빠진 필수 항목과 보완점을 알려줍니다.\n\n    [트리거] \"검토\", \"확인해줘\", \"빠진 거 없어?\", \"이거 괜찮아?\", \"점검\"\n    [용도] 서식상 필수 항목 누락 점검. 호스트 AI는 결과를 친절히 정리해 안내.\n\n    Args:\n        문서내용: 검토할 문서 전문\n        문서종류: 가정통신문 | 운영위원회회의록 | 직원회의록 | 협조공문\n    ",
+          "parameters": [
+            {
+              "name": "문서내용",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "문서종류",
+              "type": "string",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "guide_admin_procedure",
+          "description": "[보육나침반(Childcare Compass)] 어린이집 행정 업무의 '절차 + 필요서류 + 근거확인 방법'을 단계별로 안내합니다.\n\n    [트리거] \"절차\", \"어떻게 해야 해\", \"뭐부터\", \"필요한 서류\", \"채용 절차\", \"운영위 어떻게\"\n    [용도] 무엇을 어떤 순서로 해야 하는지 안내.\n\n    Args:\n        업무: 안내받을 업무명 (예: \"신규 교사 채용\", \"운영위원회 구성\")\n    ",
+          "parameters": [
+            {
+              "name": "업무",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        }
+      ],
+      "identifyName": "childcareAdmin",
+      "applicableAIServiceScope": "ALL",
+      "featuredLevel": 0,
+      "monthlyToolCallCount": "200",
+      "totalToolCallCount": "200",
+      "image": {
+        "path": "/komi/upload-files/mcp/images/bbNKXMp3kwsp8VtACbYwOgoJvMmXYZbb5pJ992m1PGDFGfgimxeeCvoHMWA2eXkU9xeIqzRTrBVEHIIe8t95bz.png",
+        "fullUrl": "https://t1.kakaocdn.net/komi/upload-files/mcp/images/bbNKXMp3kwsp8VtACbYwOgoJvMmXYZbb5pJ992m1PGDFGfgimxeeCvoHMWA2eXkU9xeIqzRTrBVEHIIe8t95bz.png",
+        "cdnUrl": "https://t1.kakaocdn.net"
+      },
+      "authConfigSummary": {
+        "type": "NONE"
+      },
+      "teamProfile": {
+        "name": "이음지기",
+        "classification": {
+          "type": "INDIVIDUAL"
+        }
+      }
+    }
+  ]
+}

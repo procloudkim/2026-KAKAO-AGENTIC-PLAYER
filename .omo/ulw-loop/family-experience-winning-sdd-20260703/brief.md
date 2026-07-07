@@ -1,0 +1,1 @@
+승인된 family-experience-winning-sdd-to-submission 계획을 구현 없이 상세화한다. 산출물은 .omo/plans/family-experience-winning-sdd-to-submission.md이며, Family Experience MCP 우승 가능성을 높이기 위한 SDD 실행계획, 정확한 QA 명령, evidence path, dependency matrix, scope guardrails, final verification wave를 포함해야 한다.

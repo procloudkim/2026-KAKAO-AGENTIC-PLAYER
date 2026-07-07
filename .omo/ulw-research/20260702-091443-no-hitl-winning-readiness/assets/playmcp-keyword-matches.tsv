@@ -1,0 +1,213 @@
+page	name	identifyName	matchedTerms
+0	찐맛집	jjmz	age
+0	ArtBridge:20만 공연데이터 1초만에 내취향으로	ArtBridge	문화,공연,age,event
+0	네이버 검색 mcp	NaverSearch	여행,age,event
+0	카카오톡 나챗방	KakaotalkChat	age
+0	미국 주식 정보	UsStockInfo	age
+0	띵동 - 택배 추적기	ThingDong	age
+0	아파트 정보	AptInfo	age
+0	PlayMCP 방탈출	escapeRoom	age
+0	사람인	SaraminMcp	age
+0	카카오맵	KakaoMap	문화,약국,age
+0	OpenDART MCP Server	opendart	age
+0	보육나침반	childcareAdmin	아이,어린,육아,보육,age,child
+1	foxMate - 환율, 환전 정보	fx	여행,age
+1	kr-bid	krbid	age
+1	YouTube Data 분석	YouTubeData	age,event
+1	부동산 매물 검색	kakaoRealEstate	어린,age
+1	MOYO · 단톡방 AI 펫	moyo	돌봄,age
+1	복식 대진표 생성기	DoubleMatchMaker	age
+1	ssuMCP	ssuMCP	행사,도서관,age
+1	맛집검색	kakaoFoodFinder	age
+1	그어봄	geoubom	age
+1	Tripcue	Tripcue	행사,공연,관광,여행,age,child,event,tour
+1	멜론	Melon	아이,age
+1	한국 공항 실시간 운항정보	KoreaFlights	age
+2	여기어때	YeogiTravelAgent	여행,age
+2	신년운세 & 사주/궁합 - 정통 명리학 by 1FATE	1fate	age
+2	투두메이트	TodoMate	age
+2	맞춤 뉴스 브리핑	KakaoPNB	age
+2	경조사비 비서	giftLedger	문화,age,event
+2	전국 아파트 관리비	DeepDataPortal	아이,age
+2	카카오톡 선물하기	KakaotalkGift	아이,age
+2	당근전톡	dangjeontalk	아이,age
+2	LifeMate(라이프메이트)	lifemate	아이,age
+2	멀티벌서스(Multi-Versus)	kakaovs	아이,age,tour
+2	톡캘린더	KakaotalkCal	age,event
+2	조선/선박 용어 MCP	ShipMCP	age
+3	안심구매	safetyCheck	어린,age
+3	KidSafe - 아이를 위한 AI 구명조끼	kidsafe	아이,age,kids
+3	공유 비밀의 방	SharedSecretRoom	아이,age
+3	부동산원 MCP	rebMCP	age
+3	날씨 예보 조회	20	age
+3	키츠네타로	KitsuneTarot	age
+3	TradePlay	tradeplay	age
+3	오늘장사 브리핑	tbb	age
+3	수어	ksign1	age
+3	키즈허브	kidshub	아이,어린,육아,키즈,체험,행사,문화,박물관,도서관,보육,돌봄,age,child,kids
+3	삶은 갓생	myGodSaengLife	age
+3	팝업스토어 - 팝가	popga	age
+4	NotionTalk	notiontalk	아이,age
+4	포켓몬 TCG 검색 MCP	PokemonTCG	age
+4	Polymarket 예측	polymarket	age
+4	BTS 방탄퀴즈 : OX 서바이벌	btsBulletproof	age
+4	스타트랙(Start-Rec)	StartRec	age
+4	웨딩 매니저	weddingmanager	가족,age,family
+4	공공 혜택 네비게이션	publicSupportNav	아이,가족,문화,돌봄,age
+4	LENS CORE	LENSCORE	age
+4	동네 도서관	dongneLibrary	아이,어린,문화,도서관,age
+4	PlayMCP 톺아보기	playmcpViewer	여행,age
+4	KTX·SRT 시간표	koreaRail	age
+4	교권 지킴이	teacherGuard	age,child
+5	집안 약사 (약 병용금기 체크)	medsafe	어린,age
+5	엔분의일 (N빵 정산봇)	nbbang	age
+5	해양 조업, 낚시 정보	MarineCondition	age
+5	학교 급식 정보	SchoolMeal	age
+5	쇼핑 도우미	shoppingAdvisor	아이,age
+5	스마트장보기	smartShopping	age
+5	지원금봇	jiwongumBot	육아,age
+5	학교생활 도우미	neisSchool	age,event
+5	취업도우미 Work24 MCP	work24JobHelper	age
+5	실시간 코인 정보	CoinInfo	age
+5	피싱 신호등	PhishingSignal	가족,age
+5	총무야	chongmu	여행,age
+6	카톡 모임 플래너	kakaoMeetup	age
+6	병원 · 약국 정보 조회	MedInfo	어린,약국,age
+6	양력<->음력 변환 MCP	lunarBirthdayMCP	age
+6	사업자 진위·상태	koreaBizCheck	age
+6	집 주위 선물찾기	giftFind	age
+6	무디의 영어단어장	smoveth	아이,age
+6	급똥 서울	gds	age
+6	점심 골라줘! (술자리도 가능👌)	PickRestaurant	age
+6	OX 퀴즈 게임	OxQuizGame	age
+6	인천공항 대중교통	airportTransit	age
+6	CareerLens - AI 기반 채용검색 MCP	CareerLens	age
+6	법률 절차 길잡이	legalNavi	가족,육아,문화,보육,돌봄,age,family
+7	SafetyScanner 안심 알바 스캐너	safetyscanner	age
+7	말조심	maljosim	age
+7	버스람	busramseoul	문화,age
+7	강남은 지루해 - 여럿이 중간 약속장소 찾기	NoMoreGangNam	아이,문화,여행,age
+7	포커 텍사스 홀덤 서포트 AI	PokerHoldem	age
+7	학교 시간표 정보	ScheduleInfo	age
+7	One-Line	oneline	age
+7	싸인전에 · 계약 건강검진	safesign	age,family
+7	서울의 탐정	seoulDetective	age
+7	맘케어	momCare	육아,돌봄,age
+7	다이어그램 생성기	genDiagram	age
+7	[부산]농수산물도매가	wholesaleBusan	age
+8	피싱멈춰	smishingstop	age
+8	사주봄	sajubom	아이,age
+8	잃어버렸톡 - 분실물 찾기	losttalk	아이,age
+8	나만의 근력 트레이너	mytrainer	age
+8	기자야 내가 간다	newsMixer	age
+8	Moko Tools - Lostark MCP	lostark	age
+8	IT 뉴스, 세미나/컨퍼런스 일정, 기술 블로그 검색	ItNewsSearch	age
+8	공시봇	easyGongsi	age
+8	문서 요약 MCP	summaryDocuments	age
+8	LBTI - 연애 성격 유형	LBTI	age
+8	바우처 지킴이	voucherGuardian	육아,문화,돌봄,age
+8	공항 출도착 현황 (공모전)	koreaFlightCompe	age,family
+9	미세먼지 위험지수	air	age
+9	사업자 확인 도우미	talkcheck	age
+9	우체국 추적·우편번호	koreaMail	age,event
+9	응급실·야간진료	koreaNightClinic	아이,age
+9	공항 주차장 현황	KRAirportParking	age
+9	동네 장사 비서	dongneBiz	행사,age,event
+9	마이스코어봇	myscorebot	age
+9	법실마리	lexguardv2	age
+9	스토리빌딩 게임	hashi285	age
+9	금융상품 금리비교	koreaFinlife	age
+9	Heirmos · AI 영구 기억	heirmos	아이,age
+9	특허정보 편리한 조회	KiprisPlusMCP	아이,age
+10	로또 당첨번호 및 판매점 검색	lotto645	age
+10	자동차 정보	cartnerMCP	age
+10	한국관광공사 Tour MCP	tourMcp	가족,행사,문화,공연,관광,여행,age,tour
+10	절세비서	taxMate	가족,공연,박물관,age
+10	하자Go	hazago	아이,age
+10	SeedUp: 창업 도우미	SeedUp	아이,age
+10	마이홈포털 공공 주택 MCP	gongGongMCP	age
+10	LexLink_ko	KoreanLaw	가족,문화,관광,age
+10	돌봄내비	dolbomnavi	가족,돌봄,age,family
+10	핀메이트 — 3D 개발보드 튜터	pinmate	age
+10	서울 관광 (Seoul Tourism)	seoulTourism	가족,체험,행사,문화,공연,관광,age,tour
+10	애플 탐색기	appleExplorer	age
+11	아카이브 탐색기	arxivSearchTool	age
+11	crypto-guardian	cryptoGuardian	age
+11	서울시 지하철 출발 결정 도우미 MCP	subwayDeparture	age
+11	ChatNote	ChatNote	아이,여행,age
+11	약잘알 - 의약품 & 건강기능식품 정보 MCP	yakjalal	아이,age
+11	100억 가계부	budget100eok	age
+11	바로바로 양도소득세	quickquickTax	age
+11	스페이스클라우드	spaceCloud	age
+11	나무의사 진단도구	treeDoctor	age
+11	AI 스튜디오 - 쿠키샷	cookieShot	age
+11	서울교통분실물	lostFound	age
+11	GeoQuiz - 지리퀴즈	GeoQuiz	age
+12	Spring 서버 진단 MCP	ServerMonitoring	체험,age
+12	Restaurant Marketing MCP	apithethStudio	어린,age
+12	따릉이 MCP	seoulBike	age
+12	OOOTTT - OTT 구독료 야무지게 쓰기	ooottt	age
+12	플레이리스트 추천기	jjhokYoutMusic	age
+12	NASA 우주정보	nasaspace	행사,age
+12	우리의식탁	WTable	age
+12	명절 질문 답변 생성기	HolidayQna	가족,육아,age,child
+12	원시인 이름 생성기	PrimitiveNameGen	여행,age
+12	행운의 로또 번호 생성기	LottoGen	age
+12	전세 안심 진단	jeonseCheck	age
+12	알콩	alcoholRecommend	문화,age,family
+13	광고 타겟팅 설정 어시스턴트	adtargethelp	age
+13	바우만 16 메디컬 안티에이징 솔루션	hanrioCosmetic	age
+13	식당 정보 조회	trustrestaurant	가족,age
+13	genie	genie	아이,age
+13	웹사이트를 앱으로만들기	WebsiteToApp	아이,age
+13	한국어 이름 생성기	KoreanNameGen	age
+13	MediMatch	mediMatch	약국,age
+13	AI비서 알잘똑	AJD	여행,age,event
+13	팝업라이브	popuplive	age
+13	약 같이 먹어도 될까?	drugChecker	age
+13	이메일 인사말 추천	EmailGreeting	age
+13	런즈	142	아이,age
+14	아랍어 이름 생성기	ArabicNameGen	문화,age
+14	KCD_MCP	KcdCodeFinder	age
+14	와인 & 위스키 테이스팅 노트	TastingNote	age
+14	써도돼?	sseodoRecall	age
+14	KISA 보호나라 보안공지 서비스	KisaBohonaraMCP	age
+14	다이소 MCP	daiso	행사,age
+14	자동차 연비 조회	carfuelefficienc	age
+14	LinKeep	LinKeep	age
+14	다양한 원석 정보 - GstoneIndex	gstoneindex	age
+14	dreamtto	Dreamtto	age
+14	[주식투자 필수] 법안 리스크 분석기	BillRiskAnalyzer	age
+14	우리동네 성범죄자는 어디에?	MCPFoundryCrime	가족,age
+15	약속잡기(Meetup)	MeetupMCP	age
+15	커피(스페셜티) 추천 MCP	SpecialtyBot	age
+15	K-LifeGuard MCP	KLifeGuardMcp	약국,age
+15	T1D Manager (No연동 버전)	t1dManagerLite	age
+15	QuickLog – 채팅 한 줄 다이어트	quicklog	age
+15	크보메이트	kbomate	age
+15	만렙헌터	maxHunter	age
+15	K-Health MCP	koreaHealth	약국,age
+15	Korea Culture MCP	koreaCulture	행사,문화,공연,관광,여행,age,tour
+15	LinkStack	LinkStack	age
+15	어디(Eodi)_여행 도우미	Eodi	여행,age
+15	whatmeme - 최신 밈 트렌드 & 재미있는 밈	whatmeme	age
+16	SmartLifeIndex	SmartLifeIndex	아이,어린,문화,관광,약국,age
+16	저메추 MCP - 음식 및 가공식품 영양성분	nutree	age
+16	취미 나침판 (Hobby Compass)	HobbyCompass	age
+16	자기소개서 Helper	application	age
+16	PromStack	PromStack	age
+16	AI가 말하지 못했던 속마음	InnerThoughts	age
+16	컴퓨터 사용	computer	age
+16	반려견 백과사전 DogWiki	DogBreedsWiki	age
+16	DeepThink	DeepThink	아이,age
+16	Content Genie MCP	museContentGenie	아이,여행,age,event
+16	유시아	usia	age
+16	Books MCP - 도서 검색 및 추천	books	도서관,age
+17	Korea Transit MCP	KoreaTransitMcp	age
+17	랜덤 게임	random	age
+17	대한민국 상표 검색 MCP	KoreaTradeMark	age
+17	특정 일자 상영작들의 박스오피스	boxoffice	age
+17	NASA 재난재해	NasaDisaster	age,event
+17	Fostiny MCP	FostinyMcp	age
+17	K-POP Romanizer [한국어 로마자 변환기]	KpopRomanizer	문화,age
+17	tmdb	Tmdb	age

@@ -1,0 +1,8 @@
+{
+  "prompt_count": 1,
+  "passed_count": 1,
+  "pass_rate": 1,
+  "unsupported_claim_failures": 0,
+  "latency_ms_max": 3,
+  "status": "pass"
+}

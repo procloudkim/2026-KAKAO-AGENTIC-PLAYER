@@ -1,0 +1,13 @@
+Invocation: cd apps/family-experience-mcp; npm run scan:claims
+Started: 2026-07-04T07:50:09.8035100+09:00
+DurationSeconds: 0.626
+ExitCode: 0
+--- output ---
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 117
+}

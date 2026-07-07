@@ -1,0 +1,393 @@
+{
+  "page": 0,
+  "totalPages": 1,
+  "totalElements": "1",
+  "content": [
+    {
+      "id": "428",
+      "name": "KidSafe - 아이를 위한 AI 구명조끼",
+      "description": "👧 아이를 위한 AI 구명조끼 MCP\n\n\"아이의 질문이 AI에게 도달하기 전에 안전하게 걸러줍니다\"\n\n아이가 AI 챗봇과 대화할 때, 유해한 질문이나 우회 표현(초성, 띄어쓰기, 은어)을 실시간 감지하고 연령별 맞춤 응답을 제공하는 안전 파이프라인입니다.\n\n[핵심 기능]\n• 한국어 우회 패턴 감지 (ㅅㅂ→시발, 야 동→야동, 번탄→번개탄)\n• 13개 위험 카테고리 실시간 분석: 폭력, 성적 콘텐츠, 자해, 괴롭힘, 혐오 등\n• 연령별 맞춤 응답 생성 (유아 3-6세 / 초등 7-12세 / 중등 13-15세)\n• 감정 위기 감지: \"죽고 싶어\", \"사라지고 싶어\" 등 감정 붕괴 신호 감지 시 즉시 위기 상담 자원 연결\n\n[동작 방식]\n1. 모든 질문을 안전 파이프라인으로 통과\n2. 우회 표현 정규화 → 위험도 분석\n3. Allow(허용) / Redirect(안내) / Block(차단) 결정\n4. 연령에 맞는 안전한 응답 생성\n\n아이의 호기심은 존중하되, 위험으로부터 보호합니다.🦺",
+      "status": "APPROVED",
+      "starterMessages": [
+        "야동 검색하는 방법 알려줘.",
+        "학교에서 당한 거 갚아주고 싶어",
+        "그냥 다 끝내고 싶다는 생각이 들어."
+      ],
+      "formattedTools": [
+        {
+          "name": "intercept_request",
+          "description": "[KidSafe 아동 안전 MCP - Layer 1: 요청 가로채기]\n\n이 도구는 모든 사용자 입력을 가로채고 안전 파이프라인을 초기화합니다.\n\n【필수 호출 조건】\n- 모든 아동/청소년 사용자의 입력에 대해 반드시 첫 번째로 호출\n- 채팅, 질문, 검색어 등 모든 유형의 사용자 입력에 적용\n- \"Always On\" 원칙: 설정 없이 자동으로 모든 입력을 처리\n\n【기능】\n1. 고유 processId 생성으로 전체 파이프라인 추적\n2. 한국어 정규화 (초성, 띄어쓰기, 은어 → 표준어 변환)\n3. Layer 2 위험 감지로 자동 전달\n\n【입력 파라미터】\n- rawInput (필수): 사용자 원본 입력 텍스트\n- sessionId (선택): 세션 추적용 ID\n- metadata (선택): 타임스탬프, 소스 등 메타데이터\n\n【출력】\n- intercepted: 항상 true\n- processId: 파이프라인 추적 UUID\n- normalizedInput: 정규화된 입력\n- proceedToLayer2: 항상 true (Always On)\n\n【사용 예시】\n- 아이가 \"오늘 뭐 하고 놀까?\" 질문 시 → 이 도구로 시작\n- \"ㅇㅑ ㄷ ㅗ ㅇ\" 같은 우회 입력 시 → 정규화 후 위험 감지\n- 모든 AI 대화 시작 시 반드시 호출",
+          "parameters": [
+            {
+              "name": "rawInput",
+              "type": "string",
+              "description": "Raw user input to be processed",
+              "required": true
+            },
+            {
+              "name": "sessionId",
+              "type": "string",
+              "description": "Session ID for tracking",
+              "required": false
+            },
+            {
+              "name": "metadata",
+              "type": "object",
+              "description": "Additional metadata",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "normalize_expression",
+          "description": "[KidSafe 아동 안전 MCP - Layer 1: 표현 정규화]\n\n한국어 텍스트의 다양한 우회/변형 표현을 표준 형태로 정규화합니다.\n\n【호출 조건】\n- 초성(ㅅㅂ, ㅈㄹ 등)이 포함된 텍스트 발견 시\n- 띄어쓰기로 분리된 단어(야 동, 자 살 등) 감지 시\n- 영어 혼용(sex, porn 등) 또는 특수문자 우회 발견 시\n- intercept_request에서 자동으로 내부 호출됨\n\n【정규화 대상】\n1. 초성 변환: ㅅㅂ → 시발, ㅈㄹ → 지랄, ㅂㅅ → 병신\n2. 띄어쓰기 분리: \"야 동\" → \"야동\", \"자 살\" → \"자살\"\n3. 은어/속어: \"번탄\" → \"번개탄\", \"극단적선택\" → \"자살\"\n4. 영어 혼용: \"sex\" → \"성관계\", \"porn\" → \"포르노\"\n5. 특수문자: \"ㅅH스\" → \"섹스\"\n\n【입력 파라미터】\n- rawInput (필수): 정규화할 원본 텍스트\n- processId (필수): 파이프라인 추적 ID\n\n【출력】\n- processId: 추적 ID\n- originalInput: 원본 입력\n- normalizedInput: 정규화된 텍스트\n- transformations: 변환 내역 배열 [{type, original, normalized}]\n\n【사용 예시】\n- \"ㅅㅂ 뭐야\" → \"시발 뭐야\"로 정규화\n- \"야 동 보 여 줘\" → \"야동 보여줘\"로 정규화",
+          "parameters": [
+            {
+              "name": "rawInput",
+              "type": "string",
+              "description": "Raw input to normalize",
+              "required": true
+            },
+            {
+              "name": "processId",
+              "type": "string",
+              "description": "Pipeline tracking ID",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "detect_obfuscation",
+          "description": "[KidSafe 아동 안전 MCP - Layer 1: 우회 감지]\n\n사용자 입력에서 필터링 우회 시도 패턴을 감지합니다.\n\n【호출 조건】\n- 의심스러운 문자 패턴(초성만, 띄어쓰기 과다 등) 발견 시\n- 안전 필터 우회 시도 의심 시\n- intercept_request 후 추가 분석이 필요할 때\n\n【감지 패턴 유형】\n1. chosung (초성): 연속된 자음만으로 구성 (ㅅㅂ, ㅈㄹ)\n2. spacing (띄어쓰기): 단어 내 비정상 띄어쓰기 (야 동)\n3. mixed (혼용): 한영 혼용 또는 숫자 대체 (ㅅex, 19금)\n4. special (특수문자): 특수문자로 글자 대체 (ㅅH스)\n5. encoding (인코딩): 유니코드 우회 시도\n\n【입력 파라미터】\n- input (필수): 분석할 텍스트\n- processId (필수): 파이프라인 추적 ID\n\n【출력】\n- processId: 추적 ID\n- hasObfuscation: 우회 패턴 감지 여부 (boolean)\n- obfuscationPatterns: 감지된 패턴 배열 [{type, pattern, position}]\n- deobfuscatedInput: 우회 해제된 텍스트 (감지된 경우)\n\n【사용 예시】\n- \"ㅇㅑ ㄷㅗ ㅇ\" 입력 시 → hasObfuscation: true, patterns: [spacing, chosung]\n- \"포 르 노\" 입력 시 → spacing 패턴 감지, deobfuscatedInput: \"포르노\"",
+          "parameters": [
+            {
+              "name": "input",
+              "type": "string",
+              "description": "Input to check for obfuscation",
+              "required": true
+            },
+            {
+              "name": "processId",
+              "type": "string",
+              "description": "Pipeline tracking ID",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "classify_risk_intent",
+          "description": "[KidSafe 아동 안전 MCP - Layer 2: 위험 의도 분류]\n\nOpenAI Moderation API를 사용하여 입력의 위험도와 유해 의도를 분류합니다.\n\n【호출 조건】\n- intercept_request 완료 후 반드시 호출\n- 정규화된 입력에 대한 위험도 평가 필요 시\n- 13개 카테고리 합산 점수 기반 판단 필요 시\n\n【위험도 분류 기준 (합산 점수)】\n- safe: < 5% (안전)\n- low: 5% ~ 10% (낮음)\n- medium: 10% ~ 20% (중간)\n- high: 20% ~ 35% (높음)\n- critical: > 35% (심각)\n\n【13개 분석 카테고리】\nsexual, sexual/minors, harassment, harassment/threatening,\nhate, hate/threatening, illicit, illicit/violent,\nself-harm, self-harm/intent, self-harm/instructions,\nviolence, violence/graphic\n\n【입력 파라미터】\n- normalizedInput (필수): 정규화된 입력 텍스트\n- processId (필수): 파이프라인 추적 ID\n\n【출력】\n- processId: 추적 ID\n- moderation: {flagged, totalScore, threshold, categories, topCategories}\n- riskLevel: safe | low | medium | high | critical\n- intents: [{type: sexual|self-harm|violence|..., confidence: 0~1}]\n\n【사용 예시】\n- \"죽고 싶어\" → riskLevel: high, intents: [{type: 'self-harm', confidence: 0.85}]\n- \"오늘 뭐 먹을까?\" → riskLevel: safe, intents: []",
+          "parameters": [
+            {
+              "name": "normalizedInput",
+              "type": "string",
+              "description": "Normalized input to classify",
+              "required": true
+            },
+            {
+              "name": "processId",
+              "type": "string",
+              "description": "Pipeline tracking ID",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "emotional_collapse_detector",
+          "description": "[KidSafe 아동 안전 MCP - Layer 2: 감정 붕괴 감지]\n\n사용자 입력에서 감정적 고통 신호와 위기 지표를 감지합니다.\n\n【호출 조건】\n- 우울, 슬픔, 외로움 관련 키워드 발견 시\n- 자해/자살 관련 표현 감지 시\n- 따돌림/괴롭힘 피해 신호 발견 시\n- classify_risk_intent와 병렬로 호출 권장\n\n【감지 대상】\n1. 자살 위험 신호: \"죽고싶\", \"사라지고싶\", \"끝내고싶\"\n2. 우울 지표: \"우울해\", \"힘들어\", \"포기하고싶\"\n3. 외로움: \"혼자\", \"아무도 없어\", \"친구가 없어\"\n4. 따돌림: \"왕따\", \"놀림받아\", \"무시당해\"\n\n【고통 수준 분류】\n- none: 감지 없음\n- mild: 경미한 고통 신호 (1개 지표)\n- moderate: 중간 고통 (2개 이상 지표 또는 우울 패턴)\n- severe: 심각한 위기 (자살/자해 관련 표현)\n\n【입력 파라미터】\n- input (필수): 분석할 텍스트\n- processId (필수): 파이프라인 추적 ID\n\n【출력】\n- processId: 추적 ID\n- hasEmotionalDistress: 감정 고통 감지 여부\n- distressLevel: none | mild | moderate | severe\n- indicators: 감지된 지표 문자열 배열\n- requiresImmediateSupport: 즉각 지원 필요 여부\n- suggestedResources: 긴급 연락처 (자살예방상담전화, 정신건강위기상담 등)\n\n【사용 예시】\n- \"아무도 나를 좋아하지 않아\" → distressLevel: moderate, 상담 연결 안내\n- \"죽고 싶어\" → distressLevel: severe, 즉시 긴급 자원 제공",
+          "parameters": [
+            {
+              "name": "input",
+              "type": "string",
+              "description": "Input to analyze for emotional distress",
+              "required": true
+            },
+            {
+              "name": "processId",
+              "type": "string",
+              "description": "Pipeline tracking ID",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "contextual_boundary_check",
+          "description": "[KidSafe 아동 안전 MCP - Layer 2: 맥락 경계 검사]\n\n사용자 질문의 맥락과 의도를 분석하여 교육적 호기심과 유해 의도를 구분합니다.\n\n【호출 조건】\n- 모호하거나 경계선상의 질문 감지 시\n- 교육적 질문인지 유해 의도인지 판단 필요 시\n- 연령 부적절 주제 접근 여부 확인 시\n- classify_risk_intent 결과가 애매한 경우\n\n【맥락 유형 분류】\n1. educational (교육적): \"왜 ~인가요?\", \"~에 대해 알려줘\", 역사/과학/수학 질문\n2. curiosity (호기심): \"궁금해\", \"알고 싶어\", \"뭐야?\"\n3. harmful_intent (유해 의도): \"방법 알려줘\", \"어떻게 하면\", \"해 줘\"\n4. ambiguous (모호): 판단 불가\n\n【연령 부적절 주제】\n술, 담배, 마약, 도박, 성인, 19금, 음란, 총, 칼, 무기, 해킹, 불법\n\n【입력 파라미터】\n- input (필수): 분석할 텍스트\n- processId (필수): 파이프라인 추적 ID\n- previousContext (선택): 이전 대화 맥락\n\n【출력】\n- processId: 추적 ID\n- contextType: educational | curiosity | harmful_intent | ambiguous\n- isAgeAppropriate: 연령 적합 여부 (boolean)\n- boundaryViolations: 위반 주제 배열\n- contextualRiskAdjustment: 위험도 조정값 (-0.2 ~ +0.5)\n\n【사용 예시】\n- \"사람은 왜 죽어?\" → educational, 조정값: -0.1\n- \"술 마시는 방법\" → harmful_intent, boundaryViolations: ['술']\n- \"역사에서 전쟁이 왜 일어났어?\" → educational, isAgeAppropriate: true",
+          "parameters": [
+            {
+              "name": "input",
+              "type": "string",
+              "description": "Input to check contextual boundaries",
+              "required": true
+            },
+            {
+              "name": "processId",
+              "type": "string",
+              "description": "Pipeline tracking ID",
+              "required": true
+            },
+            {
+              "name": "previousContext",
+              "type": "string",
+              "description": "Previous conversation context",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "safety_decision_router",
+          "description": "[KidSafe 아동 안전 MCP - Layer 3: 안전 결정 라우터]\n\n위험 평가 결과를 바탕으로 안전 결정(허용/우회/차단)을 내립니다.\n\n【호출 조건】\n- Layer 2의 위험 분류 완료 후 반드시 호출\n- 요청에 대한 최종 정책 결정 필요 시\n- 적절한 응답 핸들러로 라우팅 필요 시\n\n【결정 기준】\n1. allow (허용): 합산 점수 < 5%, 안전한 요청\n2. redirect (우회): 합산 점수 5% ~ 20%, 안전한 방향으로 안내\n3. block (차단): 합산 점수 > 20% 또는 high/critical 위험도\n\n【즉시 차단 카테고리】\n- sexual/minors (미성년자 관련 성적 콘텐츠)\n- self-harm/instructions (자해 방법)\n- violence/graphic (노골적 폭력)\n\n【입력 파라미터】\n- processId (필수): 파이프라인 추적 ID\n- riskLevel (필수): safe | low | medium | high | critical\n- totalScore (필수): 합산 위험 점수 (0~1)\n- intents (필수): [{type, confidence}] 감지된 의도 배열\n\n【출력】\n- processId: 추적 ID\n- decision: allow | redirect | block\n- reason: 결정 사유 (한국어)\n- blockedCategories: 차단 시 해당 카테고리 배열\n- redirectSuggestion: 우회 시 안전한 대안 제안\n\n【사용 예시】\n- totalScore: 0.03 → allow, \"안전한 요청입니다\"\n- totalScore: 0.15 → redirect, 안전 주제 제안\n- riskLevel: high → block, 차단 사유 및 카테고리 명시",
+          "parameters": [
+            {
+              "name": "processId",
+              "type": "string",
+              "description": "Pipeline tracking ID",
+              "required": true
+            },
+            {
+              "name": "riskLevel",
+              "type": "\"safe\" | \"low\" | \"medium\" | \"high\" | \"critical\"",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "totalScore",
+              "type": "number",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "intents",
+              "type": "array",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "irreversible_risk_guard",
+          "description": "[KidSafe 아동 안전 MCP - Layer 3: 돌이킬 수 없는 위험 보호]\n\n자살, 자해 방법, 노골적 폭력 등 돌이킬 수 없는 위험으로부터 보호합니다.\n\n【호출 조건】\n- classify_risk_intent에서 self-harm 관련 카테고리 감지 시\n- 폭력 또는 성/미성년자 관련 높은 점수 감지 시\n- safety_decision_router와 병렬로 호출하여 이중 검증\n- 위기 상황 의심 키워드 발견 시\n\n【즉시 개입 대상】\n1. 자살/자해: self-harm/intent, self-harm/instructions 점수 > 1%\n2. 노골적 폭력: violence/graphic 점수 > 1%\n3. 미성년자 성적 콘텐츠: sexual/minors 점수 > 1%\n4. 위기 키워드: \"죽고싶\", \"자살\", \"끝내고싶\", \"사라지고싶\"\n\n【긴급 자원】\n- 자살예방상담전화 1393 (24시간)\n- 정신건강위기상담전화 1577-0199\n- 청소년전화 1388\n\n【입력 파라미터】\n- processId (필수): 파이프라인 추적 ID\n- input (필수): 사용자 원본 입력\n- moderationResult (필수): OpenAI Moderation 결과 {categories: {...}}\n\n【출력】\n- processId: 추적 ID\n- hasIrreversibleRisk: 돌이킬 수 없는 위험 감지 여부\n- riskType: suicide | self-harm | violence | none\n- immediateAction: block | alert | none\n- emergencyResources: 긴급 연락처 배열 (위험 감지 시)\n\n【사용 예시】\n- \"자살 방법 알려줘\" → block, 자살예방상담전화 제공\n- \"피 흘리는 장면 보여줘\" → alert, violence 유형으로 분류",
+          "parameters": [
+            {
+              "name": "processId",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "input",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "moderationResult",
+              "type": "object",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "generate_toddler_response",
+          "description": "[KidSafe 아동 안전 MCP - Layer 4: 유아 응답 생성]\n\n유아(3-6세)에게 적합한 안전한 응답을 생성합니다.\n\n【호출 조건】\n- safety_decision_router 결정 완료 후 호출\n- 유아 연령대(3-6세) 대상 응답이 필요할 때\n- 세 연령대 응답 동시 생성 시 병렬로 호출\n\n【응답 특성】\n1. 매우 짧고 단순한 문장 (5-10단어)\n2. 어려운 개념은 \"어른이 도와줘야 해요\"로 대체\n3. 긍정적이고 따뜻한 톤\n4. 친근한 캐릭터 표현 사용 가능\n5. 무서운/복잡한 내용 최소화\n\n【안전 조치 유형】\n- protect: 위험한 내용으로부터 보호 (차단/우회 시)\n- explain: 간단하게 설명 (허용 시)\n- guide: 안전한 방향으로 안내 (우회 시)\n\n【입력 파라미터】\n- processId (필수): 파이프라인 추적 ID\n- originalInput (필수): 사용자 원본 입력\n- decision (필수): allow | redirect | block\n- riskContext (필수): {level, categories} 위험 맥락\n\n【출력】\n- processId: 추적 ID\n- ageGroup: 'toddler'\n- response: 유아용 응답 텍스트\n- safetyAction: protect | explain | guide\n- suggestedFollowUp: 후속 대화 제안 (선택)\n\n【응답 예시】\n- 안전 질문: \"고양이는 귀여워요! 야옹~\"\n- 위험 차단: \"이건 어른들만 알아도 되는 거예요. 다른 재미있는 거 얘기할까요?\"",
+          "parameters": [
+            {
+              "name": "processId",
+              "type": "string",
+              "description": "Pipeline tracking ID",
+              "required": true
+            },
+            {
+              "name": "originalInput",
+              "type": "string",
+              "description": "Original user input",
+              "required": true
+            },
+            {
+              "name": "decision",
+              "type": "\"allow\" | \"redirect\" | \"block\"",
+              "description": "Safety decision",
+              "required": true
+            },
+            {
+              "name": "riskContext",
+              "type": "object",
+              "description": "Risk context from detection",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "generate_elementary_response",
+          "description": "[KidSafe 아동 안전 MCP - Layer 4: 초등 응답 생성]\n\n초등학생(7-12세)에게 적합한 안전한 응답을 생성합니다.\n\n【호출 조건】\n- safety_decision_router 결정 완료 후 호출\n- 초등학생 연령대(7-12세) 대상 응답이 필요할 때\n- 세 연령대 응답 동시 생성 시 병렬로 호출\n\n【응답 특성】\n1. 이유를 간단히 설명 (\"~하면 위험할 수 있어서요\")\n2. 대안 행동 제시 (\"대신 이런 것을 해보면 어떨까요?\")\n3. 부모님/선생님께 이야기하도록 안내\n4. 호기심을 존중하면서 안전하게 안내\n5. 교육적 내용은 나이에 맞게 설명\n\n【안전 조치 유형】\n- protect: 위험한 내용으로부터 보호하며 이유 설명\n- explain: 이해하기 쉽게 설명\n- guide: 더 안전하고 유익한 방향으로 안내\n\n【입력 파라미터】\n- processId (필수): 파이프라인 추적 ID\n- originalInput (필수): 사용자 원본 입력\n- decision (필수): allow | redirect | block\n- riskContext (필수): {level, categories} 위험 맥락\n\n【출력】\n- processId: 추적 ID\n- ageGroup: 'elementary'\n- response: 초등용 응답 텍스트\n- safetyAction: protect | explain | guide\n- suggestedFollowUp: 후속 대화/활동 제안\n\n【응답 예시】\n- 안전 질문: \"좋은 질문이에요! 과학적으로 설명하면...\"\n- 위험 우회: \"그 주제는 조금 어려운 내용이에요. 부모님께 여쭤보는 게 좋겠어요.\"",
+          "parameters": [
+            {
+              "name": "processId",
+              "type": "string",
+              "description": "Pipeline tracking ID",
+              "required": true
+            },
+            {
+              "name": "originalInput",
+              "type": "string",
+              "description": "Original user input",
+              "required": true
+            },
+            {
+              "name": "decision",
+              "type": "\"allow\" | \"redirect\" | \"block\"",
+              "description": "Safety decision",
+              "required": true
+            },
+            {
+              "name": "riskContext",
+              "type": "object",
+              "description": "Risk context from detection",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "generate_middle_response",
+          "description": "[KidSafe 아동 안전 MCP - Layer 4: 중등 응답 생성]\n\n중학생(13-15세)에게 적합한 안전한 응답을 생성합니다.\n\n【호출 조건】\n- safety_decision_router 결정 완료 후 호출\n- 중학생 연령대(13-15세) 대상 응답이 필요할 때\n- 세 연령대 응답 동시 생성 시 병렬로 호출\n\n【응답 특성】\n1. 맥락과 사회적 책임에 대해 설명\n2. 자율적 판단을 존중하면서 안내\n3. 전문 도움 연결 (상담센터, 전문기관)\n4. 청소년기 고민에 공감\n5. 성숙한 대화 톤 유지\n\n【안전 조치 유형】\n- protect: 보호하며 왜 위험한지 맥락 설명\n- explain: 성숙한 수준으로 상세히 설명\n- guide: 전문 자원 연결 및 건강한 대안 제시\n\n【입력 파라미터】\n- processId (필수): 파이프라인 추적 ID\n- originalInput (필수): 사용자 원본 입력\n- decision (필수): allow | redirect | block\n- riskContext (필수): {level, categories} 위험 맥락\n\n【출력】\n- processId: 추적 ID\n- ageGroup: 'middle'\n- response: 중등용 응답 텍스트\n- safetyAction: protect | explain | guide\n- suggestedFollowUp: 전문 자원 또는 추가 탐구 방향\n\n【응답 예시】\n- 안전 질문: \"흥미로운 질문이네요. 이 주제에 대해 더 알아보면...\"\n- 감정 위기: \"힘든 감정이 드는 것 같아요. 혼자 해결하려 하지 말고, 청소년 상담 1388에서 도움을 받을 수 있어요.\"",
+          "parameters": [
+            {
+              "name": "processId",
+              "type": "string",
+              "description": "Pipeline tracking ID",
+              "required": true
+            },
+            {
+              "name": "originalInput",
+              "type": "string",
+              "description": "Original user input",
+              "required": true
+            },
+            {
+              "name": "decision",
+              "type": "\"allow\" | \"redirect\" | \"block\"",
+              "description": "Safety decision",
+              "required": true
+            },
+            {
+              "name": "riskContext",
+              "type": "object",
+              "description": "Risk context from detection",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "suggest_safe_alternatives",
+          "description": "[KidSafe 아동 안전 MCP - Layer 5: 안전한 대안 제안]\n\n유해 콘텐츠가 차단되었을 때 안전한 대안 질문을 제안합니다.\n\n【호출 조건】\n- safety_decision_router에서 block 또는 redirect 결정 시\n- 아이에게 건설적인 대화 방향 제시가 필요할 때\n- 차단 후 긍정적인 대안 제공 시\n\n【제안 카테고리별 대안】\n1. sexual → 신체 건강, 성장, 건강한 관계\n2. self-harm → 스트레스 해소, 취미활동, 상담\n3. violence → 감정 조절, 갈등 해결, 화해\n4. harassment → 좋은 친구되기, 공감 능력\n5. hate → 다양성 이해, 사회성\n6. illicit → 규칙과 안전, 법의 의미\n\n【기본 대안 (카테고리 없을 때)】\n- \"오늘 재미있었던 일이 있었나요?\"\n- \"좋아하는 게임이나 놀이가 있나요?\"\n- \"새로 배우고 싶은 것이 있나요?\"\n\n【입력 파라미터】\n- processId (필수): 파이프라인 추적 ID\n- originalInput (필수): 차단된 원본 입력\n- blockedCategories (필수): 차단된 카테고리 배열\n\n【출력】\n- processId: 추적 ID\n- alternatives: [{question, reason, safetyLevel}] 최대 3개 대안\n\n【사용 예시】\n- blockedCategories: ['self-harm']\n  → \"힘들 때 마음을 편하게 하는 방법이 있나요?\"\n  → \"좋아하는 취미활동을 추천해 주세요\"",
+          "parameters": [
+            {
+              "name": "processId",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "originalInput",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "blockedCategories",
+              "type": "array",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "construct_guardian_note",
+          "description": "[KidSafe 아동 안전 MCP - Layer 5: 보호자 알림 구성]\n\n우려되는 콘텐츠 감지 시 보호자/부모님을 위한 알림 메시지를 구성합니다.\n\n【호출 조건】\n- safety_decision_router에서 redirect 또는 block 결정 시\n- 보호자에게 알림이 필요한 위험 수준일 때\n- 아이의 정서적 위기 신호 감지 시\n- irreversible_risk_guard에서 위험 감지 시\n\n【심각도 분류】\n- info: 일반 정보 제공 수준\n- warning: 주의가 필요한 수준 (medium 위험)\n- critical: 즉각 관심 필요 (self-harm, violence/graphic, sexual/minors)\n\n【카테고리별 권장사항】\n- sexual: 건강한 성교육 대화 권장\n- self-harm: 정서 상태 확인, 전문 상담 고려\n- violence: 폭력적 콘텐츠 노출 확인, 갈등 해결 대화\n- harassment: 또래 관계 확인, 건강한 관계 형성 대화\n- hate: 다양성과 존중에 대한 대화\n- illicit: 규칙과 안전에 대한 대화\n\n【입력 파라미터】\n- processId (필수): 파이프라인 추적 ID\n- originalInput (필수): 아이의 원본 입력\n- riskLevel (필수): safe | low | medium | high | critical\n- riskCategories (필수): 감지된 위험 카테고리 배열\n- decision (필수): allow | redirect | block\n\n【출력】\n- processId: 추적 ID\n- guardianNote: {severity, originalInput, riskCategories, recommendation, resources?, timestamp}\n\n【알림 예시】\n- self-harm 감지: \"아이가 입력한 내용에 심각한 우려 요소가 발견되었습니다.\n  아이의 정서 상태를 확인하고, 필요시 전문 상담을 고려해 주세요.\n  긴급연락처: 자살예방상담전화 1393, 청소년전화 1388\"",
+          "parameters": [
+            {
+              "name": "processId",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "originalInput",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "riskLevel",
+              "type": "\"safe\" | \"low\" | \"medium\" | \"high\" | \"critical\"",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "riskCategories",
+              "type": "array",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "decision",
+              "type": "\"allow\" | \"redirect\" | \"block\"",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "final_output_lock",
+          "description": "[KidSafe 아동 안전 MCP - Layer 5: 최종 출력 잠금]\n\n안전 파이프라인의 출력을 잠그고 최종화합니다.\n\n【호출 조건】\n- 모든 Layer 4 응답 생성 완료 후\n- 보호자 알림 및 대안 제안 준비 완료 후\n- 파이프라인의 마지막 단계로 반드시 호출\n\n【기능】\n1. 세 연령대(유아/초등/중등) 응답 통합\n2. 보호자 알림 포함 (있는 경우)\n3. 안전한 대안 질문 포함\n4. 처리 메타데이터 첨부 (타임스탬프, 버전)\n5. 출력 잠금으로 무결성 보장\n\n【입력 파라미터】\n- processId (필수): 파이프라인 추적 ID\n- responses (필수): {toddler?, elementary?, middle?} 각 연령대 응답\n- guardianNote (선택): 보호자 알림 객체\n- alternatives (선택): 안전한 대안 질문 배열\n\n【출력】\n- processId: 추적 ID\n- locked: true (항상)\n- finalOutput: {\n    responses: {toddler?, elementary?, middle?},\n    guardianNote?: 보호자 알림,\n    safeAlternatives?: 대안 질문 배열\n  }\n- metadata: {processedAt, pipelineVersion}\n\n【사용 예시】\n파이프라인 완료 후:\n{\n  locked: true,\n  finalOutput: {\n    responses: {\n      toddler: \"이건 어른이 도와줘야 해요\",\n      elementary: \"이 주제는 부모님께 여쭤보세요\",\n      middle: \"전문가 상담을 권장해요\"\n    },\n    guardianNote: {severity: 'warning', ...},\n    safeAlternatives: [\"재미있는 과학 질문 해볼까요?\"]\n  }\n}",
+          "parameters": [
+            {
+              "name": "processId",
+              "type": "string",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "responses",
+              "type": "object",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "guardianNote",
+              "type": "object",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "alternatives",
+              "type": "array",
+              "description": null,
+              "required": false
+            }
+          ]
+        }
+      ],
+      "identifyName": "kidsafe",
+      "applicableAIServiceScope": "ALL",
+      "featuredLevel": 0,
+      "monthlyToolCallCount": "48",
+      "totalToolCallCount": "422",
+      "image": {
+        "path": "/komi/upload-files/mcp/images/P0ln0Ngcc8uJ23gBC0kJZpxXSHZFiXXkx5TNCiXAsrQpam7RAceerwRtslSIgQlQ7z7LzU5tWjXmYHtq2PDmur.png",
+        "fullUrl": "https://t1.kakaocdn.net/komi/upload-files/mcp/images/P0ln0Ngcc8uJ23gBC0kJZpxXSHZFiXXkx5TNCiXAsrQpam7RAceerwRtslSIgQlQ7z7LzU5tWjXmYHtq2PDmur.png",
+        "cdnUrl": "https://t1.kakaocdn.net"
+      },
+      "authConfigSummary": {
+        "type": "NONE"
+      },
+      "teamProfile": {
+        "name": "김세준",
+        "classification": {
+          "type": "INDIVIDUAL"
+        }
+      }
+    }
+  ]
+}

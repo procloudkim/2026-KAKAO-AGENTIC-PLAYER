@@ -1,0 +1,30 @@
+
+> family-experience-mcp@0.1.0 smoke:golden
+> tsx scripts/smoke-golden.ts
+
+{
+  "artifact_dir": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence",
+  "scenarios": [
+    {
+      "id": "happy",
+      "passed": false,
+      "isError": true
+    },
+    {
+      "id": "missing-age",
+      "passed": false,
+      "isError": true
+    },
+    {
+      "id": "no-result",
+      "passed": false,
+      "isError": true
+    },
+    {
+      "id": "source-failure",
+      "passed": false,
+      "isError": true
+    }
+  ]
+}
+Golden smoke failed: happy:fixture_mode:fixture mode is visible; happy:exactly_three_candidates:candidate_count=0; happy:exactly_three_action_cards:card_count=0; missing-age:korean_parent_clarification:Korean clarification asks for child age or stage; no-result:relax_exactly_one_constraint:suggests relaxing exactly the date range; source-failure:safe_korean_message:safe Korean source-failure text

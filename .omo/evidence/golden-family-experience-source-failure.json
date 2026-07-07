@@ -1,0 +1,50 @@
+{
+  "scenario": "source-failure",
+  "prompt": "서울에서 4살 아이랑 갈 만한 실내 체험 3개만 골라줘.",
+  "endpoint": "http://127.0.0.1:3346/mcp",
+  "request": {
+    "location": "Seoul",
+    "date_range": {
+      "start": "2026-07-04",
+      "end": "2026-07-04"
+    },
+    "child_age": 4
+  },
+  "response": {
+    "isError": true,
+    "text": "공식 데이터 응답을 안전하게 확인하지 못했어요. 잠시 후 다시 시도해 주세요. Nationwide cache metadata is malformed at D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\data\\family-experience-cache\\metadata.json. Rebuild the cache with npm run etl:nationwide -- --fixture --write-cache --cache-dir data/family-experience-cache.",
+    "action_cards": [],
+    "structuredContent": {
+      "ok": false,
+      "mode": "live",
+      "failure": {
+        "code": "upstream_invalid_response",
+        "message": "Nationwide cache metadata is malformed at D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\data\\family-experience-cache\\metadata.json. Rebuild the cache with npm run etl:nationwide -- --fixture --write-cache --cache-dir data/family-experience-cache.",
+        "retryable": false
+      }
+    }
+  },
+  "checks": [
+    {
+      "name": "is_error_true",
+      "passed": true,
+      "detail": "source failure sets isError true"
+    },
+    {
+      "name": "no_candidates",
+      "passed": true,
+      "detail": "no candidates on source failure"
+    },
+    {
+      "name": "safe_korean_message",
+      "passed": true,
+      "detail": "safe Korean source-failure text"
+    },
+    {
+      "name": "no_raw_keyed_url",
+      "passed": true,
+      "detail": "no raw secret or keyed URL"
+    }
+  ],
+  "passed": true
+}

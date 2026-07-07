@@ -1,0 +1,15 @@
+Scenario: RED proof before fix for explicit --include mixed allowed placeholder plus real-looking API_KEY.
+Invocation: npm run scan:secrets -- --include ..\..\.omo\evidence\family-experience-market-ready-platform\task-7-red-mixed-placeholder-real-looking.env
+ExitCode: 0
+Expected-before-fix: false-negative PASS / exit 0 demonstrates blocker is reproducible.
+FixtureLine: CLI_SYNTHETIC_SERVICE_KEY_12345 API_KEY=<redacted-synthetic-secret>
+--- output ---
+
+> family-experience-mcp@0.1.0 scan:secrets
+> tsx scripts/scan-secrets.ts --include ..\..\.omo\evidence\family-experience-market-ready-platform\task-7-red-mixed-placeholder-real-looking.env
+
+{
+  "status": "PASS",
+  "scanned_files": 149
+}
+

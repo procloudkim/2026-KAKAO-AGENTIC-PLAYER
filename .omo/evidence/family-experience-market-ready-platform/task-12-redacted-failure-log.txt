@@ -1,0 +1,14 @@
+{
+  "endpoint": "in-memory",
+  "cache_dir": "C:\\Users\\K\\AppData\\Local\\Temp\\family-experience-mcp-smoke-qA5wLF",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "prompt": "부산 이번 주말 4살 실내",
+  "result_ok": false,
+  "mode": "live",
+  "candidate_count": 0,
+  "failure_code": "missing_configuration",
+  "text": "현재 설정으로는 체험 후보를 확인할 수 없어요. 캐시를 새로고침하거나 공식 데이터 설정을 확인해 주세요. Nationwide cache is missing at C:\\Users\\K\\AppData\\Local\\Temp\\family-experience-mcp-smoke-qA5wLF. Run source-specific cache refresh: npm run etl:nationwide -- --live --write-cache --cache-dir C:\\Users\\K\\AppData\\Local\\Temp\\family-experience-mcp-smoke-qA5wLF --source culture_portal."
+}

@@ -1,0 +1,43 @@
+# task-5 MCP GREEN
+## command 1
+cd apps/family-experience-mcp && npm run typecheck && npm test -- --run test/mcp.test.ts
+
+> family-experience-mcp@0.0.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.0.0 test
+> vitest --run test/mcp.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  11:00:47
+   Duration  407ms (transform 95ms, setup 0ms, import 253ms, tests 40ms, environment 0ms)
+
+## preflight port 3345
+no LISTENING on :3345 before start
+## start server
+## health probe
+health_status=200
+{"ok":true,"name":"family-experience-mcp","version":"0.1.0","tools":["find_family_experiences"],"config":{"port":3345,"allowFixture":true,"toolMode":"fixture","seoulOpenDataBaseUrl":"http://openapi.seoul.go.kr:8088","seoulOpenDataKey":"missing"}}## command 2
+npm run smoke:mcp -- --assert-tool-count=1
+
+> family-experience-mcp@0.0.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts --assert-tool-count=1
+
+{
+  "endpoint": "http://127.0.0.1:3345/mcp",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "result_ok": true,
+  "candidate_count": 3,
+  "text": "fixture/demo 기준으로 후보 3개를 찾았어요.\n1. Demo Seoul Kids Makers Studio\n2. Demo Rainy Day Story Theater\n3. Demo Family Science Light Lab"
+}
+## cleanup
+no LISTENING on :3345

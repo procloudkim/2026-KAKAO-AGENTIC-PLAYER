@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Parent Trust MCP Personas And API Pipeline</title>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.55; max-width: 980px; margin: 40px auto; padding: 0 24px; color: #17202a; }
+    h1, h2 { line-height: 1.2; }
+    h1 { font-size: 30px; }
+    h2 { margin-top: 34px; border-bottom: 1px solid #d7dde5; padding-bottom: 8px; }
+    table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+    th, td { border: 1px solid #d7dde5; padding: 8px; vertical-align: top; }
+    th { background: #f3f6f8; text-align: left; }
+    .callout { background: #f7faf6; border: 1px solid #cfe2d1; padding: 14px 16px; border-radius: 8px; }
+    .risk { background: #fff8f2; border-color: #ead3bd; }
+    code { background: #eef2f6; padding: 2px 4px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Parent Trust MCP Personas And API Pipeline</h1>
+  <p class="callout">Core: safety and purchase-decision support from official, source-bounded evidence. Kakao Gift is a convenience hook only.</p>
+
+  <h2>Personas</h2>
+  <table>
+    <tr><th>Persona</th><th>Decision Job</th><th>Output</th><th>Main Risk</th></tr>
+    <tr><td>초보 부모 / 주 양육자</td><td>계속 사용, 일시 중단, 교체, 문의, 신고 여부 결정</td><td>확인된 것, 모르는 것, 지금 할 일, 공유 문구</td><td>no-hit을 안전으로 오해</td></tr>
+    <tr><td>선물하려는 사람</td><td>안전 불안을 만들지 않는 선물 후보 고르기</td><td>선물 전 체크, 피해야 할 신호, 후킹용 선물 기준</td><td>인기/랭킹을 안전성으로 오해</td></tr>
+    <tr><td>공동 돌봄자</td><td>오늘 제품을 써도 되는지, 언제 부모에게 물을지 결정</td><td>사용 체크, 중단 조건, 부모에게 물어볼 것</td><td>긴 리포트가 실제 돌봄 행동으로 안 바뀜</td></tr>
+  </table>
+
+  <h2>API Priority</h2>
+  <table>
+    <tr><th>Priority</th><th>Lane</th><th>Sources</th><th>Boundary</th></tr>
+    <tr><td>P0</td><td>제품안전/리콜</td><td>SafetyKorea/KATS</td><td>모델/인증번호/기록 범위만 증명</td></tr>
+    <tr><td>P0</td><td>식품/수입식품</td><td>MFDS/Food Safety Korea</td><td>제품/바코드/제조일자/유통기한 매칭 필요</td></tr>
+    <tr><td>P1</td><td>생활화학제품</td><td>초록누리</td><td>생활화학제품 lane에만 적용</td></tr>
+    <tr><td>P1</td><td>인접 규제제품</td><td>MFDS 의료기기, 의약품, 화장품</td><td>법적 카테고리별 분리 필수</td></tr>
+    <tr><td>P2</td><td>글로벌 리콜/사고</td><td>CPSC, SaferProducts</td><td>한국 사용/구매에는 jurisdiction label 필수</td></tr>
+    <tr><td>P3</td><td>커머스 hook</td><td>Kakao Shopping/Gift</td><td>구매 편의만, 안전 근거 아님</td></tr>
+  </table>
+
+  <h2>Recommended Build</h2>
+  <ol>
+    <li><code>parse_parent_product_identity</code></li>
+    <li><code>route_parent_product_lanes</code></li>
+    <li><code>check_parent_product_trust</code> fixture mode</li>
+    <li><code>render_parent_action_card</code></li>
+    <li>First live adapter: SafetyKorea/KATS after API approval.</li>
+  </ol>
+
+  <h2>Non-Negotiables</h2>
+  <p class="callout risk">No safety score. No safe/danger verdict. No-hit is not safety proof. Certification and recall are separate. Manufacturer statements are recorded as claims, not regulator findings.</p>
+</body>
+</html>

@@ -1,0 +1,121 @@
+
+> family-experience-mcp@0.1.0 test
+> vitest --run test/etlNationwide.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/etlNationwide.test.ts (14 tests | 4 failed) 372ms
+     × rejects live cache metadata missing schema_version 16ms
+     × rejects live cache metadata missing publish_id 15ms
+     × rejects live cache metadata missing file_digests 16ms
+     × rejects live cache metadata missing source_provenance 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/etlNationwide.test.ts > nationwide ETL cache runner > rejects live cache metadata missing schema_version
+AssertionError: expected { ok: true, mode: 'fixture', …(1) } to match object { ok: false, …(1) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "failure": {
+-     "code": "upstream_invalid_response",
+-   },
+-   "ok": false,
++   "ok": true,
+  }
+
+ ❯ test/etlNationwide.test.ts:244:22
+    242|
+    243|       // Then: missing versioned metadata fails closed instead of retu…
+    244|       expect(result).toMatchObject({
+       |                      ^
+    245|         ok: false,
+    246|         failure: { code: "upstream_invalid_response" },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  test/etlNationwide.test.ts > nationwide ETL cache runner > rejects live cache metadata missing publish_id
+AssertionError: expected { ok: true, mode: 'fixture', …(1) } to match object { ok: false, …(1) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "failure": {
+-     "code": "upstream_invalid_response",
+-   },
+-   "ok": false,
++   "ok": true,
+  }
+
+ ❯ test/etlNationwide.test.ts:273:22
+    271|
+    272|       // Then: missing publish integrity metadata fails closed instead…
+    273|       expect(result).toMatchObject({
+       |                      ^
+    274|         ok: false,
+    275|         failure: { code: "upstream_invalid_response" },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  test/etlNationwide.test.ts > nationwide ETL cache runner > rejects live cache metadata missing file_digests
+AssertionError: expected { ok: true, mode: 'fixture', …(1) } to match object { ok: false, …(1) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "failure": {
+-     "code": "upstream_invalid_response",
+-   },
+-   "ok": false,
++   "ok": true,
+  }
+
+ ❯ test/etlNationwide.test.ts:302:22
+    300|
+    301|       // Then: missing file integrity metadata fails closed instead of…
+    302|       expect(result).toMatchObject({
+       |                      ^
+    303|         ok: false,
+    304|         failure: { code: "upstream_invalid_response" },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  test/etlNationwide.test.ts > nationwide ETL cache runner > rejects live cache metadata missing source_provenance
+AssertionError: expected { ok: true, mode: 'fixture', …(1) } to match object { ok: false, …(1) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "failure": {
+-     "code": "upstream_invalid_response",
+-   },
+-   "ok": false,
++   "ok": true,
+  }
+
+ ❯ test/etlNationwide.test.ts:331:22
+    329|
+    330|       // Then: missing source provenance metadata fails closed instead…
+    331|       expect(result).toMatchObject({
+       |                      ^
+    332|         ok: false,
+    333|         failure: { code: "upstream_invalid_response" },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 10 passed (14)
+   Start at  21:54:47
+   Duration  845ms (transform 198ms, setup 0ms, import 324ms, tests 372ms, environment 0ms)
+

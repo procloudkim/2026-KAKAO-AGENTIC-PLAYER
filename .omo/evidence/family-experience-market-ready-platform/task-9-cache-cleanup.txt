@@ -1,0 +1,6 @@
+Task 9 cleanup receipt
+Generated: 2026-07-08
+Removed .omo/tmp/task-9-cache-stale and .omo/tmp/task-9-cache-missing if present.
+Temporary /health server was stopped in the health capture command finally block.
+Listening/process spot check:
+

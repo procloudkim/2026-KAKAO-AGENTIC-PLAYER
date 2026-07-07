@@ -1,0 +1,964 @@
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include .omo/evidence/family-experience-market-ready-platform
+
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-1-copy-caveat-check.txt",
+      "line": 5,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-1-copy-caveat-check.txt",
+      "line": 10,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-1-copy-caveat-check.txt",
+      "line": 15,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-1-copy-caveat-check.txt",
+      "line": 20,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-1-diff.patch",
+      "line": 18,
+      "claim": "browser parser"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-1-diff.patch",
+      "line": 18,
+      "claim": "unofficial scraping pipeline"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-1-diff.patch",
+      "line": 20,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-1-diff.patch",
+      "line": 21,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-1-diff.patch",
+      "line": 35,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-1-diff.patch",
+      "line": 43,
+      "claim": "browser-parser"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-1-diff.patch",
+      "line": 91,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-1-diff.patch",
+      "line": 111,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-1-diff.patch",
+      "line": 190,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-1-diff.patch",
+      "line": 191,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-1-doneclaim.json",
+      "line": 26,
+      "claim": "전국 완전"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-1-doneclaim.json",
+      "line": 32,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-10-code-quality-review.md",
+      "line": 20,
+      "claim": "전국 모든 행사"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-10-code-quality-review.md",
+      "line": 20,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-10-code-quality-review.md",
+      "line": 20,
+      "claim": "suitable for all"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-10-fix2-verify.txt",
+      "line": 32,
+      "claim": "전국 모든 행사"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-10-fix2-verify.txt",
+      "line": 37,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-10-fix2-verify.txt",
+      "line": 42,
+      "claim": "suitable for all"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-11-market-prompt-eval\\results.json",
+      "line": 527,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-11-market-prompt-eval\\results.json",
+      "line": 1310,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-11-market-prompt-eval\\results.json",
+      "line": 5225,
+      "claim": "전국 모든 행사"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-11-market-prompt-eval\\results.json",
+      "line": 7574,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-13-fallback-verify.txt",
+      "line": 462,
+      "claim": "final review and contest submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-13-fallback-verify.txt",
+      "line": 462,
+      "claim": "submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-13-fallback-verify.txt",
+      "line": 502,
+      "claim": "final review and contest submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-13-fallback-verify.txt",
+      "line": 502,
+      "claim": "submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-13-fallback-verify.txt",
+      "line": 532,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-13-fallback-verify.txt",
+      "line": 542,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-13-fallback-verify.txt",
+      "line": 582,
+      "claim": "final review and contest submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-13-fallback-verify.txt",
+      "line": 582,
+      "claim": "submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-13-fallback-verify.txt",
+      "line": 688,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-13-fallback-verify.txt",
+      "line": 698,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-13-fallback-verify.txt",
+      "line": 728,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-13-fallback-verify.txt",
+      "line": 738,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 14,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 14,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 15,
+      "claim": "final review and contest submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 15,
+      "claim": "submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 50,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 50,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 65,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 77,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 79,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 80,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 91,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 94,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 96,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 97,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 123,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 123,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 139,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-code-quality-review.md",
+      "line": 140,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-false-submission-claim.txt",
+      "line": 11,
+      "claim": "final review and contest submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-false-submission-claim.txt",
+      "line": 11,
+      "claim": "submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-false-submission-claim.txt",
+      "line": 16,
+      "claim": "submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix-smuggle.txt",
+      "line": 11,
+      "claim": "final review and contest submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix-smuggle.txt",
+      "line": 11,
+      "claim": "submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix-smuggle.txt",
+      "line": 16,
+      "claim": "submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix2-doneclaim.md",
+      "line": 29,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix2-doneclaim.md",
+      "line": 29,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix2-manual-eval-include-bypass.txt",
+      "line": 15,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix2-manual-eval-include-bypass.txt",
+      "line": 20,
+      "claim": "nationwide completeness"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix2-manual-evidence-include-bypass.txt",
+      "line": 15,
+      "claim": "final review and contest submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix2-manual-evidence-include-bypass.txt",
+      "line": 15,
+      "claim": "submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix2-manual-evidence-include-bypass.txt",
+      "line": 20,
+      "claim": "submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix3-doneclaim.md",
+      "line": 21,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix3-doneclaim.md",
+      "line": 22,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix3-doneclaim.md",
+      "line": 35,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix3-doneclaim.md",
+      "line": 36,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix3-manual-english-smuggle.txt",
+      "line": 15,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix3-manual-korean-smuggle.txt",
+      "line": 15,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix4-manual-english-fix3-smuggle-reject.txt",
+      "line": 11,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix4-manual-korean-cross-scope-reject.txt",
+      "line": 11,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-fix4-manual-korean-fix3-smuggle-reject.txt",
+      "line": 11,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-negative-claim.txt",
+      "line": 11,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 5,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 19,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 24,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 28,
+      "claim": "final review and contest submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 28,
+      "claim": "submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 42,
+      "claim": "final review and contest submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 42,
+      "claim": "submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 47,
+      "claim": "submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 52,
+      "claim": "final review and contest submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 52,
+      "claim": "submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 56,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 70,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 75,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 79,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 93,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 98,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 102,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 116,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-2-regression-probes.txt",
+      "line": 121,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-3-gate-scan-sources-untracked.diff",
+      "line": 111,
+      "claim": "browser-parser"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 7,
+      "claim": "전국 모든 행사"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 12,
+      "claim": "전국 전체"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 17,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 22,
+      "claim": "예약가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 27,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 32,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 37,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 42,
+      "claim": "currently open"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 47,
+      "claim": "아이에게 적합함"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 52,
+      "claim": "전국 모든 행사"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 57,
+      "claim": "전국 전체"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 62,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 67,
+      "claim": "예약가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 72,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 77,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 82,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 87,
+      "claim": "currently open"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 92,
+      "claim": "아이에게 적합함"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 97,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 102,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 107,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 112,
+      "claim": "아이에게 적합함"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 117,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 122,
+      "claim": "예약가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 127,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-claim-scan-repro.txt",
+      "line": 132,
+      "claim": "currently open"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 49,
+      "claim": "전국 모든 행사"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 49,
+      "claim": "전국 전체"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 49,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 49,
+      "claim": "예약가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 49,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 49,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 49,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 49,
+      "claim": "currently open"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 49,
+      "claim": "suitable for all"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 49,
+      "claim": "아이에게 적합함"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 532,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 532,
+      "claim": "예약가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 532,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 532,
+      "claim": "currently open"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 11,
+      "claim": "전국 모든 행사"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 16,
+      "claim": "전국 전체"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 21,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 26,
+      "claim": "예약가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 31,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 36,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 41,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 46,
+      "claim": "currently open"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 51,
+      "claim": "아이에게 적합함"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 56,
+      "claim": "전국 모든 행사"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 61,
+      "claim": "전국 전체"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 66,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 71,
+      "claim": "예약가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 76,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 81,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 86,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 91,
+      "claim": "currently open"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 96,
+      "claim": "아이에게 적합함"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 101,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 106,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 111,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 116,
+      "claim": "아이에게 적합함"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 121,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 126,
+      "claim": "예약가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 131,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-check.txt",
+      "line": 136,
+      "claim": "currently open"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 11,
+      "claim": "전국 모든 행사"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 16,
+      "claim": "전국 전체"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 21,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 26,
+      "claim": "예약가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 31,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 36,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 41,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 46,
+      "claim": "currently open"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 51,
+      "claim": "아이에게 적합함"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 56,
+      "claim": "전국 모든 행사"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 61,
+      "claim": "전국 전체"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 66,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 71,
+      "claim": "예약가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 76,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 81,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 86,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 91,
+      "claim": "currently open"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 96,
+      "claim": "아이에게 적합함"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 101,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 106,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 111,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 116,
+      "claim": "아이에게 적합함"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 121,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 126,
+      "claim": "예약가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 131,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-scan-claims-direct-after-fix.txt",
+      "line": 136,
+      "claim": "currently open"
+    }
+  ]
+}

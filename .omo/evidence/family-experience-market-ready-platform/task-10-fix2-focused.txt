@@ -1,0 +1,17 @@
+COMMAND: npm --prefix apps/family-experience-mcp test -- --run test/httpJson.test.ts
+STARTED_AT: 2026-07-07T17:50:02.5883121+09:00
+
+> family-experience-mcp@0.1.0 test
+> vitest --run test/httpJson.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  17:50:03
+   Duration  21.78s (transform 144ms, setup 0ms, import 269ms, tests 21.40s, environment 0ms)
+
+EXIT_CODE=0
+FINISHED_AT: 2026-07-07T17:50:25.0292322+09:00

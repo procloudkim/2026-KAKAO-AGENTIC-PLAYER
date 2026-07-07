@@ -1,0 +1,818 @@
+TASK 13 FALLBACK PROOF
+timestamp=2026-07-08T03:44:18.8577572+09:00
+command=npm run verify
+workdir=D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp
+
+
+
+> family-experience-mcp@0.1.0 verify
+
+> npm run typecheck && npm test -- --run
+
+
+
+
+
+> family-experience-mcp@0.1.0 typecheck
+
+> tsc --noEmit
+
+
+
+
+
+> family-experience-mcp@0.1.0 test
+
+> vitest --run
+
+
+
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+
+ ❯ .tmp-task-13-build/test/nationalFestival.test.js (10 tests | 2 failed) 28ms
+
+     × loads local standard dataset CSV when no public service key is required 12ms
+
+     × loads CSV rows for 2025~2026 nationwide search range 2ms
+
+ ❯ .tmp-task-13-build/test/culturePortal.test.js (5 tests | 2 failed) 10ms
+
+     × returns source_invalid_response when Culture Portal XML is malformed 4ms
+
+     × normalizes a Culture Portal period fixture into a source-backed candidate 1ms
+
+node:internal/modules/esm/resolve:271
+
+    throw new ERR_MODULE_NOT_FOUND(
+
+          ^
+
+
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\.tmp-task-13-build\src\server.ts' imported from D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\.tmp-task-13-build\
+
+    at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+
+    at moduleResolve (node:internal/modules/esm/resolve:861:10)
+
+    at defaultResolve (node:internal/modules/esm/resolve:988:11)
+
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:697:20)
+
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:714:38)
+
+    at nextStep (node:internal/modules/customization_hooks:189:26)
+
+    at resolveBaseSync (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:8745)
+
+    at resolveDirectorySync (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:9958)
+
+    at resolveTsPathsSync (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:11190)
+
+    at resolve2 (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:12977) {
+
+  code: 'ERR_MODULE_NOT_FOUND',
+
+  url: 'file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/.tmp-task-13-build/src/server.ts'
+
+}
+
+
+
+Node.js v24.15.0
+
+node:internal/modules/esm/resolve:271
+
+    throw new ERR_MODULE_NOT_FOUND(
+
+          ^
+
+
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\.tmp-task-13-build\src\server.ts' imported from D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\.tmp-task-13-build\
+
+    at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+
+    at moduleResolve (node:internal/modules/esm/resolve:861:10)
+
+    at defaultResolve (node:internal/modules/esm/resolve:988:11)
+
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:697:20)
+
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:714:38)
+
+    at nextStep (node:internal/modules/customization_hooks:189:26)
+
+    at resolveBaseSync (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:8745)
+
+    at resolveDirectorySync (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:9958)
+
+    at resolveTsPathsSync (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:11190)
+
+    at resolve2 (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:12977) {
+
+  code: 'ERR_MODULE_NOT_FOUND',
+
+  url: 'file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/.tmp-task-13-build/src/server.ts'
+
+}
+
+
+
+Node.js v24.15.0
+
+node:internal/modules/esm/resolve:271
+
+    throw new ERR_MODULE_NOT_FOUND(
+
+          ^
+
+
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\.tmp-task-13-build\src\server.ts' imported from D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\.tmp-task-13-build\
+
+    at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+
+    at moduleResolve (node:internal/modules/esm/resolve:861:10)
+
+    at defaultResolve (node:internal/modules/esm/resolve:988:11)
+
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:697:20)
+
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:714:38)
+
+    at nextStep (node:internal/modules/customization_hooks:189:26)
+
+    at resolveBaseSync (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:8745)
+
+    at resolveDirectorySync (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:9958)
+
+    at resolveTsPathsSync (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:11190)
+
+    at resolve2 (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:12977) {
+
+  code: 'ERR_MODULE_NOT_FOUND',
+
+  url: 'file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/.tmp-task-13-build/src/server.ts'
+
+}
+
+
+
+Node.js v24.15.0
+
+node:internal/modules/esm/resolve:271
+
+    throw new ERR_MODULE_NOT_FOUND(
+
+          ^
+
+
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\.tmp-task-13-build\src\server.ts' imported from D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\.tmp-task-13-build\
+
+    at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+
+    at moduleResolve (node:internal/modules/esm/resolve:861:10)
+
+    at defaultResolve (node:internal/modules/esm/resolve:988:11)
+
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:697:20)
+
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:714:38)
+
+    at nextStep (node:internal/modules/customization_hooks:189:26)
+
+    at resolveBaseSync (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:8745)
+
+    at resolveDirectorySync (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:9958)
+
+    at resolveTsPathsSync (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:11190)
+
+    at resolve2 (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:12977) {
+
+  code: 'ERR_MODULE_NOT_FOUND',
+
+  url: 'file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/.tmp-task-13-build/src/server.ts'
+
+}
+
+
+
+Node.js v24.15.0
+
+node:internal/modules/esm/resolve:271
+
+    throw new ERR_MODULE_NOT_FOUND(
+
+          ^
+
+
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\.tmp-task-13-build\src\server.ts' imported from D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\.tmp-task-13-build\
+
+    at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+
+    at moduleResolve (node:internal/modules/esm/resolve:861:10)
+
+    at defaultResolve (node:internal/modules/esm/resolve:988:11)
+
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:697:20)
+
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:714:38)
+
+    at nextStep (node:internal/modules/customization_hooks:189:26)
+
+    at resolveBaseSync (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:8745)
+
+    at resolveDirectorySync (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:9958)
+
+    at resolveTsPathsSync (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:11190)
+
+    at resolve2 (file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/tsx/dist/register-CqMfTiWi.mjs:2:12977) {
+
+  code: 'ERR_MODULE_NOT_FOUND',
+
+  url: 'file:///D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/.tmp-task-13-build/src/server.ts'
+
+}
+
+
+
+Node.js v24.15.0
+
+ ❯ .tmp-task-13-build/test/httpJson.test.js (8 tests | 5 failed) 948ms
+
+     × rejects invalid JSON with a safe parse-error shape 189ms
+
+     × rejects oversized JSON bodies before MCP tool dispatch 245ms
+
+     × returns request_timeout when the MCP JSON body stalls 150ms
+
+     × rejects overlong prompt requests with a safe JSON-RPC error 144ms
+
+     × rate limits rapid repeated MCP requests per process 135ms
+
+ ❯ .tmp-task-13-build/test/scanClaims.test.js (18 tests | 9 failed) 2513ms
+
+     × rejects false final-review and submission status claims through include 370ms
+
+     × rejects negative-prefixed false final-review and submission status claims through include 290ms
+
+     × rejects explicit include under test fixtures eval path with false market claims 248ms
+
+     × rejects explicit include under omo evidence path with false public status claims 217ms
+
+     × allows explicit include with a public unsupported-claim caveat 222ms
+
+     × allows explicit include with an English live-now caveat only 184ms
+
+     × rejects English caveat smuggling through explicit include 174ms
+
+     × rejects Korean caveat smuggling through explicit include 176ms
+
+     × rejects included prompt, docs, fixture, and generated evidence claim files 166ms
+
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 18 ⎯⎯⎯⎯⎯⎯⎯
+
+
+
+ FAIL  .tmp-task-13-build/test/culturePortal.test.js > Culture Portal one-view source adapter > returns source_invalid_response when Culture Portal XML is malformed
+
+Error: ENOENT: no such file or directory, open 'D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\.tmp-task-13-build\test\fixtures\culture-portal-malformed.xml'
+
+ ❯ fixture .tmp-task-13-build/test/culturePortal.test.js:15:24
+
+     13| const sampleRedactedUrl = "https://apis.example.test/period2?from=2026…
+
+     14| function fixture(name) {
+
+     15|     return readFileSync(join(import.meta.dirname, "fixtures", name), "…
+
+       |                        ^
+
+     16| }
+
+     17| function expectFailure(result) {
+
+ ❯ .tmp-task-13-build/test/culturePortal.test.js:90:30
+
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/18]⎯
+
+
+
+ FAIL  .tmp-task-13-build/test/culturePortal.test.js > Culture Portal one-view source adapter > normalizes a Culture Portal period fixture into a source-backed candidate
+
+Error: ENOENT: no such file or directory, open 'D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\.tmp-task-13-build\test\fixtures\culture-portal-period-valid.xml'
+
+ ❯ fixture .tmp-task-13-build/test/culturePortal.test.js:15:24
+
+     13| const sampleRedactedUrl = "https://apis.example.test/period2?from=2026…
+
+     14| function fixture(name) {
+
+     15|     return readFileSync(join(import.meta.dirname, "fixtures", name), "…
+
+       |                        ^
+
+     16| }
+
+     17| function expectFailure(result) {
+
+ ❯ .tmp-task-13-build/test/culturePortal.test.js:104:21
+
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/18]⎯
+
+
+
+ FAIL  .tmp-task-13-build/test/httpJson.test.js > Family experience MCP HTTP request limits > rejects invalid JSON with a safe parse-error shape
+
+ FAIL  .tmp-task-13-build/test/httpJson.test.js > Family experience MCP HTTP request limits > rejects oversized JSON bodies before MCP tool dispatch
+
+ FAIL  .tmp-task-13-build/test/httpJson.test.js > Family experience MCP HTTP request limits > returns request_timeout when the MCP JSON body stalls
+
+ FAIL  .tmp-task-13-build/test/httpJson.test.js > Family experience MCP HTTP request limits > rejects overlong prompt requests with a safe JSON-RPC error
+
+ FAIL  .tmp-task-13-build/test/httpJson.test.js > Family experience MCP HTTP request limits > rate limits rapid repeated MCP requests per process
+
+Error: MCP HTTP server exited before listening: 1
+
+ ❯ ChildProcess.<anonymous> .tmp-task-13-build/test/httpJson.test.js:106:20
+
+    104|         activeMcpProcess?.once("exit", (code) => {
+
+    105|             clearTimeout(timeout);
+
+    106|             reject(new Error(`MCP HTTP server exited before listening:…
+
+       |                    ^
+
+    107|         });
+
+    108|     });
+
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/18]⎯
+
+
+
+ FAIL  .tmp-task-13-build/test/nationalFestival.test.js > National culture festival standard dataset adapter > loads local standard dataset CSV when no public service key is required
+
+AssertionError: expected false to be true // Object.is equality
+
+
+
+- Expected
+
++ Received
+
+
+
+- true
+
++ false
+
+
+
+ ❯ expectSuccess .tmp-task-13-build/test/nationalFestival.test.js:26:23
+
+     24| }
+
+     25| function expectSuccess(result) {
+
+     26|     expect(result.ok).toBe(true);
+
+       |                       ^
+
+     27|     if (!result.ok) {
+
+     28|         throw new Error("expected national festival adapter success");
+
+ ❯ .tmp-task-13-build/test/nationalFestival.test.js:154:25
+
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/18]⎯
+
+
+
+ FAIL  .tmp-task-13-build/test/nationalFestival.test.js > National culture festival standard dataset adapter > loads CSV rows for 2025~2026 nationwide search range
+
+AssertionError: expected false to be true // Object.is equality
+
+
+
+- Expected
+
++ Received
+
+
+
+- true
+
++ false
+
+
+
+ ❯ expectSuccess .tmp-task-13-build/test/nationalFestival.test.js:26:23
+
+     24| }
+
+     25| function expectSuccess(result) {
+
+     26|     expect(result.ok).toBe(true);
+
+       |                       ^
+
+     27|     if (!result.ok) {
+
+     28|         throw new Error("expected national festival adapter success");
+
+ ❯ .tmp-task-13-build/test/nationalFestival.test.js:175:25
+
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/18]⎯
+
+
+
+ FAIL  .tmp-task-13-build/test/scanClaims.test.js > claim scanner > rejects false final-review and submission status claims through include
+
+AssertionError: expected 'ENOENT: no such file or directory, op…' to contain 'final review and contest submission c…'
+
+
+
+- Expected
+
++ Received
+
+
+
+- final review and contest submission completed
+
++ ENOENT: no such file or directory, open 'D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\tmp\market-plan\false-submission.md'
+
++
+
+
+
+ ❯ .tmp-task-13-build/test/scanClaims.test.js:98:35
+
+     96|             expect(result.status).toBe(1);
+
+     97|             expect(result.stderr).toContain("false-submission.md");
+
+     98|             expect(result.stderr).toContain(finalReviewSubmissionCompl…
+
+       |                                   ^
+
+     99|         }
+
+    100|         finally {
+
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/18]⎯
+
+
+
+ FAIL  .tmp-task-13-build/test/scanClaims.test.js > claim scanner > rejects negative-prefixed false final-review and submission status claims through include
+
+AssertionError: expected 'ENOENT: no such file or directory, op…' to contain 'final review and contest submission c…'
+
+
+
+- Expected
+
++ Received
+
+
+
+- final review and contest submission completed
+
++ ENOENT: no such file or directory, open 'D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\tmp\market-plan\false-submission-smuggle.md'
+
++
+
+
+
+ ❯ .tmp-task-13-build/test/scanClaims.test.js:116:35
+
+    114|             expect(result.status).toBe(1);
+
+    115|             expect(result.stderr).toContain("false-submission-smuggle.…
+
+    116|             expect(result.stderr).toContain(finalReviewSubmissionCompl…
+
+       |                                   ^
+
+    117|         }
+
+    118|         finally {
+
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/18]⎯
+
+
+
+ FAIL  .tmp-task-13-build/test/scanClaims.test.js > claim scanner > rejects explicit include under test fixtures eval path with false market claims
+
+AssertionError: expected 'ENOENT: no such file or directory, op…' to contain 'nationwide completeness'
+
+
+
+- Expected
+
++ Received
+
+
+
+- nationwide completeness
+
++ ENOENT: no such file or directory, open 'D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\tmp\market-plan\test\fixtures\eval\bad-public-copy.md'
+
++
+
+
+
+ ❯ .tmp-task-13-build/test/scanClaims.test.js:158:35
+
+    156|             expect(result.status).toBe(1);
+
+    157|             expect(result.stderr).toContain("bad-public-copy.md");
+
+    158|             expect(result.stderr).toContain(nationwideCompleteness);
+
+       |                                   ^
+
+    159|             expect(result.stderr).toContain(liveNow);
+
+    160|         }
+
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/18]⎯
+
+
+
+ FAIL  .tmp-task-13-build/test/scanClaims.test.js > claim scanner > rejects explicit include under omo evidence path with false public status claims
+
+AssertionError: expected 'ENOENT: no such file or directory, op…' to contain 'final review and contest submission c…'
+
+
+
+- Expected
+
++ Received
+
+
+
+- final review and contest submission completed
+
++ ENOENT: no such file or directory, open 'D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\tmp\market-plan\.omo\evidence\bad-evidence-copy.md'
+
++
+
+
+
+ ❯ .tmp-task-13-build/test/scanClaims.test.js:177:35
+
+    175|             expect(result.status).toBe(1);
+
+    176|             expect(result.stderr).toContain("bad-evidence-copy.md");
+
+    177|             expect(result.stderr).toContain(finalReviewSubmissionCompl…
+
+       |                                   ^
+
+    178|         }
+
+    179|         finally {
+
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/18]⎯
+
+
+
+ FAIL  .tmp-task-13-build/test/scanClaims.test.js > claim scanner > allows explicit include with a public unsupported-claim caveat
+
+AssertionError: expected 1 to be +0 // Object.is equality
+
+
+
+- Expected
+
++ Received
+
+
+
+- 0
+
++ 1
+
+
+
+ ❯ .tmp-task-13-build/test/scanClaims.test.js:193:35
+
+    191|             const result = runClaimScan(["--include", includeFile]);
+
+    192|             // Then: explicit caveat language is accepted.
+
+    193|             expect(result.status).toBe(0);
+
+       |                                   ^
+
+    194|             expect(result.stdout).toContain('"status": "PASS"');
+
+    195|         }
+
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/18]⎯
+
+
+
+ FAIL  .tmp-task-13-build/test/scanClaims.test.js > claim scanner > allows explicit include with an English live-now caveat only
+
+AssertionError: expected 1 to be +0 // Object.is equality
+
+
+
+- Expected
+
++ Received
+
+
+
+- 0
+
++ 1
+
+
+
+ ❯ .tmp-task-13-build/test/scanClaims.test.js:210:35
+
+    208|             const result = runClaimScan(["--include", includeFile]);
+
+    209|             // Then: caveat-only launch copy is accepted.
+
+    210|             expect(result.status).toBe(0);
+
+       |                                   ^
+
+    211|             expect(result.stdout).toContain('"status": "PASS"');
+
+    212|         }
+
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/18]⎯
+
+
+
+ FAIL  .tmp-task-13-build/test/scanClaims.test.js > claim scanner > rejects English caveat smuggling through explicit include
+
+AssertionError: expected 'ENOENT: no such file or directory, op…' to contain 'live now'
+
+
+
+- Expected
+
++ Received
+
+
+
+- live now
+
++ ENOENT: no such file or directory, open 'D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\tmp\market-plan\english-live-now-smuggle.md'
+
++
+
+
+
+ ❯ .tmp-task-13-build/test/scanClaims.test.js:229:35
+
+    227|             expect(result.status).toBe(1);
+
+    228|             expect(result.stderr).toContain("english-live-now-smuggle.…
+
+    229|             expect(result.stderr).toContain(liveNow);
+
+       |                                   ^
+
+    230|         }
+
+    231|         finally {
+
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/18]⎯
+
+
+
+ FAIL  .tmp-task-13-build/test/scanClaims.test.js > claim scanner > rejects Korean caveat smuggling through explicit include
+
+AssertionError: expected 'ENOENT: no such file or directory, op…' to contain '실시간'
+
+
+
+- Expected
+
++ Received
+
+
+
+- 실시간
+
++ ENOENT: no such file or directory, open 'D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\tmp\market-plan\korean-live-now-smuggle.md'
+
++
+
+
+
+ ❯ .tmp-task-13-build/test/scanClaims.test.js:247:35
+
+    245|             expect(result.status).toBe(1);
+
+    246|             expect(result.stderr).toContain("korean-live-now-smuggle.m…
+
+    247|             expect(result.stderr).toContain(realTimeClaim);
+
+       |                                   ^
+
+    248|         }
+
+    249|         finally {
+
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/18]⎯
+
+
+
+ FAIL  .tmp-task-13-build/test/scanClaims.test.js > claim scanner > rejects included prompt, docs, fixture, and generated evidence claim files
+
+AssertionError: expected 'ENOENT: no such file or directory, op…' to contain 'launch-prompt.md'
+
+
+
+- Expected
+
++ Received
+
+
+
+- launch-prompt.md
+
++ ENOENT: no such file or directory, open 'D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\tmp\market-plan\docs\public-copy.md'
+
++
+
+
+
+ ❯ .tmp-task-13-build/test/scanClaims.test.js:269:35
+
+    267|             // Then: every included launch surface is scanned and reje…
+
+    268|             expect(result.status).toBe(1);
+
+    269|             expect(result.stderr).toContain("launch-prompt.md");
+
+       |                                   ^
+
+    270|             expect(result.stderr).toContain("public-copy.md");
+
+    271|             expect(result.stderr).toContain("bad-fixture.txt");
+
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/18]⎯
+
+
+
+
+
+ Test Files  4 failed | 38 passed (42)
+
+      Tests  18 failed | 282 passed (300)
+
+   Start at  03:44:21
+
+   Duration  23.22s (transform 6.32s, setup 0ms, import 11.97s, tests 35.40s, environment 4ms)
+
+
+
+exit_code=1

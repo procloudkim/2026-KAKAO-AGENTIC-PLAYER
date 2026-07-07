@@ -1,0 +1,97 @@
+
+> family-experience-mcp@0.1.0 test
+> vitest --run test/golden.test.ts test/mcpCache.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/golden.test.ts (6 tests | 4 failed) 18ms
+     × locks the happy golden action-card contract 10ms
+     × locks Korean missing-age guidance without SDK validation text 1ms
+     × locks no-result safety and one-constraint relaxation 1ms
+     × locks source-failure safety 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/golden.test.ts > Todo 7 golden evidence semantics > locks the happy golden action-card contract
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/golden.test.ts:70:29
+     68|
+     69|     // Then: the evidence contains exactly three fixture cards with th…
+     70|     expect(artifact.passed).toBe(true)
+       |                             ^
+     71|     expect(structuredContent?.ok).toBe(true)
+     72|     if (structuredContent?.ok !== true) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  test/golden.test.ts > Todo 7 golden evidence semantics > locks Korean missing-age guidance without SDK validation text
+AssertionError: expected '' to match /아이 나이|발달 단계/
+
+- Expected:
+/아이 나이|발달 단계/
+
++ Received:
+""
+
+ ❯ test/golden.test.ts:169:36
+    167|     // When / Then: it asks for child age or stage in Korean and retur…
+    168|     expect(artifact.response.isError).toBe(true)
+    169|     expect(artifact.response.text).toMatch(/아이 나이|발달 단계/)
+       |                                    ^
+    170|     expect(artifact.response.text).not.toMatch(/Input validation error…
+    171|     expect(artifact.response.structuredContent?.ok).toBe(false)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  test/golden.test.ts > Todo 7 golden evidence semantics > locks no-result safety and one-constraint relaxation
+AssertionError: expected undefined to be false // Object.is equality
+
+- Expected:
+false
+
++ Received:
+undefined
+
+ ❯ test/golden.test.ts:180:53
+    178|     // When / Then: it fabricates no candidates and suggests relaxing …
+    179|     expect(artifact.response.isError).toBe(true)
+    180|     expect(artifact.response.structuredContent?.ok).toBe(false)
+       |                                                     ^
+    181|     expect(artifact.response.action_cards).toHaveLength(0)
+    182|     expect(artifact.response.text).toMatch(/날짜 범위 하나만/)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  test/golden.test.ts > Todo 7 golden evidence semantics > locks source-failure safety
+AssertionError: expected '조건에 맞는 근거 있는 후보를 찾지 못했어요. 후보를 임의로 만들지…' to match /현재 설정|공식 데이터|fixture 모드/
+
+- Expected:
+/현재 설정|공식 데이터|fixture 모드/
+
++ Received:
+"조건에 맞는 근거 있는 후보를 찾지 못했어요. 후보를 임의로 만들지 않았습니다. 다음에는 날짜 범위 하나만 넓혀서 다시 요청해 주세요."
+
+ ❯ test/golden.test.ts:194:36
+    192|     expect(artifact.response.structuredContent?.ok).toBe(false)
+    193|     expect(artifact.response.action_cards).toHaveLength(0)
+    194|     expect(artifact.response.text).toMatch(/현재 설정|공식 데이터|fixture 모드/)
+       |                                    ^
+    195|     expect(JSON.stringify(artifact)).not.toMatch(/SEOUL_OPEN_DATA_KEY|…
+    196|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  4 failed | 8 passed (12)
+   Start at  19:11:24
+   Duration  538ms (transform 259ms, setup 0ms, import 468ms, tests 65ms, environment 0ms)
+

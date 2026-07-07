@@ -1,0 +1,116 @@
+TASK 13 FALLBACK PROOF
+timestamp=2026-07-08T03:44:18.4269587+09:00
+command=npm ci --omit=dev --ignore-scripts --dry-run
+workdir=D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp
+
+remove why-is-node-running 2.3.0
+
+remove vitest 4.1.9
+
+remove vite 8.1.2
+
+remove undici-types 8.3.0
+
+remove typescript 6.0.3
+
+remove tsx 4.22.4
+
+remove tinyrainbow 3.1.0
+
+remove tinyglobby 0.2.17
+
+remove tinyexec 1.2.4
+
+remove tinybench 2.9.0
+
+remove std-env 4.1.0
+
+remove stackback 0.0.2
+
+remove source-map-js 1.2.1
+
+remove siginfo 2.0.0
+
+remove rolldown 1.1.4
+
+remove postcss 8.5.16
+
+remove picomatch 4.0.4
+
+remove picocolors 1.1.1
+
+remove pathe 2.0.3
+
+remove obug 2.1.3
+
+remove nanoid 3.3.15
+
+remove magic-string 0.30.21
+
+remove lightningcss-win32-x64-msvc 1.32.0
+
+remove lightningcss 1.32.0
+
+remove fdir 6.5.0
+
+remove expect-type 1.4.0
+
+remove estree-walker 3.0.3
+
+remove esbuild 0.28.1
+
+remove es-module-lexer 2.2.0
+
+remove detect-libc 2.1.2
+
+remove convert-source-map 2.0.0
+
+remove chai 6.2.2
+
+remove assertion-error 2.0.1
+
+remove @vitest/utils 4.1.9
+
+remove @vitest/spy 4.1.9
+
+remove @vitest/snapshot 4.1.9
+
+remove @vitest/runner 4.1.9
+
+remove @vitest/pretty-format 4.1.9
+
+remove @vitest/mocker 4.1.9
+
+remove @vitest/expect 4.1.9
+
+remove @types/node 26.1.0
+
+remove @types/estree 1.0.9
+
+remove @types/deep-eql 4.0.2
+
+remove @types/chai 5.2.3
+
+remove @standard-schema/spec 1.1.0
+
+remove @rolldown/pluginutils 1.0.1
+
+remove @rolldown/binding-win32-x64-msvc 1.1.4
+
+remove @oxc-project/types 0.138.0
+
+remove @jridgewell/sourcemap-codec 1.5.5
+
+remove @esbuild/win32-x64 0.28.1
+
+
+
+removed 50 packages in 238ms
+
+
+
+2 packages are looking for funding
+
+  run `npm fund` for details
+
+exit_code=0

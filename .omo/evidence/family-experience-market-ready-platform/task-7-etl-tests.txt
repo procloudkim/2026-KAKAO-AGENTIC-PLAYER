@@ -1,0 +1,84 @@
+
+> family-experience-mcp@0.1.0 test
+> vitest --run test/etlNationwide.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/etlNationwide.test.ts (10 tests | 1 failed) 341ms
+     × writes metadata, raw snapshot JSONL, and normalized record JSONL in write-cache mode 16ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/etlNationwide.test.ts > nationwide ETL cache runner > writes metadata, raw snapshot JSONL, and normalized record JSONL in write-cache mode
+AssertionError: expected { …(14) } to match object { schema_version: 2, …(7) }
+(10 matching properties omitted from actual)
+
+- Expected
++ Received
+
+@@ -10,12 +10,47 @@
+      {
+        "generated_at": "2026-07-04T00:00:00.000Z",
+        "mode": "fixture",
+        "ok": true,
+        "raw_snapshot_present": true,
++       "raw_snapshots": 1,
+        "records": 1,
+        "source": "seoul",
++       "source_id": "seoul-culture-events",
++       "ttl_hours": 48,
++     },
++     {
++       "generated_at": "2026-07-04T00:00:00.000Z",
++       "mode": "fixture",
++       "ok": true,
++       "raw_snapshot_present": true,
++       "raw_snapshots": 1,
++       "records": 1,
++       "source": "culture_portal",
++       "source_id": "culture-portal-oneview",
++       "ttl_hours": 48,
++     },
++     {
++       "generated_at": "2026-07-04T00:00:00.000Z",
++       "mode": "fixture",
++       "ok": true,
++       "raw_snapshot_present": true,
++       "raw_snapshots": 1,
++       "records": 1,
++       "source": "kto_tourapi",
++       "source_id": "kto-tourapi-events",
++       "ttl_hours": 48,
++     },
++     {
++       "generated_at": "2026-07-04T00:00:00.000Z",
++       "mode": "fixture",
++       "ok": true,
++       "raw_snapshot_present": true,
++       "raw_snapshots": 1,
++       "records": 1,
++       "source": "national_festival",
++       "source_id": "national-culture-festival-standard",
+        "ttl_hours": 48,
+      },
+    ],
+    "source_set": [
+      "seoul",
+
+ ❯ test/etlNationwide.test.ts:155:24
+    153|       // Then: the on-disk cache has generated_at, TTL, source set, an…
+    154|       expect(report.ok).toBe(true)
+    155|       expect(metadata).toMatchObject({
+       |                        ^
+    156|         schema_version: 2,
+    157|         generated_at: "2026-07-04T00:00:00.000Z",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 passed (10)
+   Start at  18:49:02
+   Duration  674ms (transform 123ms, setup 0ms, import 207ms, tests 341ms, environment 0ms)
+

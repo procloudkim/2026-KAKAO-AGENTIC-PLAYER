@@ -1,0 +1,46 @@
+{
+  "etl_fixture_dry_run_ok": true,
+  "etl_normalized_records": 4,
+  "etl_raw_snapshots": 4,
+  "etl_failures": 0,
+  "etl_sources": [
+    {
+      "source": "seoul",
+      "ok": true,
+      "records": 1,
+      "raw_snapshots": 1
+    },
+    {
+      "source": "culture_portal",
+      "ok": true,
+      "records": 1,
+      "raw_snapshots": 1
+    },
+    {
+      "source": "kto_tourapi",
+      "ok": true,
+      "records": 1,
+      "raw_snapshots": 1
+    },
+    {
+      "source": "national_festival",
+      "ok": true,
+      "records": 1,
+      "raw_snapshots": 1
+    }
+  ],
+  "smoke_result_ok": true,
+  "smoke_candidate_count": 1,
+  "smoke_first_source": "culture_portal",
+  "eval_prompt_count": 42,
+  "eval_passed_count": 42,
+  "eval_unsupported_claim_failures": 0,
+  "eval_missing_buckets": [],
+  "cache_metadata_exists": true,
+  "cache_mode": "write-cache",
+  "cache_fixture": true,
+  "cache_normalized_records": 4,
+  "cache_raw_snapshots": 4,
+  "cache_failures": 0,
+  "cache_generated_at": "2026-07-03T22:52:33.337Z"
+}

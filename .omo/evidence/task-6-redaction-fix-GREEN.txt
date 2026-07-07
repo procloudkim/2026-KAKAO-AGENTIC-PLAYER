@@ -1,0 +1,18 @@
+
+> family-experience-mcp@0.0.0 test
+> vitest --run test/seoulCulture.test.ts test/sources.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  2 passed (2)
+      Tests  9 passed (9)
+   Start at  10:29:28
+   Duration  246ms (transform 93ms, setup 0ms, import 170ms, tests 15ms, environment 0ms)
+
+
+> family-experience-mcp@0.0.0 typecheck
+> tsc --noEmit
+
+EXIT_CODE=0

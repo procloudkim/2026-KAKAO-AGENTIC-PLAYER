@@ -1,0 +1,13 @@
+{
+  "scenario": "task-4-stale-cache",
+  "pass": true,
+  "result": {
+    "ok": false,
+    "mode": "live",
+    "failure": {
+      "code": "missing_configuration",
+      "message": "Nationwide cache is stale at D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\tmp\\market-plan\\stale-cache. Rebuild it with npm run etl:nationwide -- --fixture --write-cache --cache-dir D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\tmp\\market-plan\\stale-cache.",
+      "retryable": false
+    }
+  }
+}

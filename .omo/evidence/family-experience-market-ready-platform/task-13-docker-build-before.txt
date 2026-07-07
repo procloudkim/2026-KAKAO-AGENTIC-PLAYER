@@ -1,0 +1,79 @@
+TASK 13 BASELINE BEFORE EDITS
+timestamp=2026-07-08T03:40:56.4049418+09:00
+repo=D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY
+app=D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp
+
+===== npm --prefix apps/family-experience-mcp run verify =====
+command=npm --prefix apps/family-experience-mcp run verify
+
+
+> family-experience-mcp@0.1.0 verify
+
+> npm run typecheck && npm test -- --run
+
+
+
+
+
+> family-experience-mcp@0.1.0 typecheck
+
+> tsc --noEmit
+
+
+
+
+
+> family-experience-mcp@0.1.0 test
+
+> vitest --run
+
+
+
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+
+
+
+ Test Files  21 passed (21)
+
+      Tests  150 passed (150)
+
+   Start at  03:40:58
+
+   Duration  21.56s (transform 2.24s, setup 0ms, import 4.72s, tests 26.03s, environment 2ms)
+
+
+
+exit_code=0
+
+===== docker version =====
+command=docker version
+Client:
+
+ Version:           29.6.1
+
+ API version:       1.55
+
+ Go version:        go1.26.4
+
+ Git commit:        8900f1d
+
+ Built:             Fri Jun 26 11:43:32 2026
+
+ OS/Arch:           windows/amd64
+
+ Context:           desktop-linux
+
+failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+
+exit_code=1
+
+===== docker build --platform linux/amd64 -t family-experience-mcp:market . =====
+command=docker build --platform linux/amd64 -t family-experience-mcp:market .
+ERROR: failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+
+exit_code=1
+

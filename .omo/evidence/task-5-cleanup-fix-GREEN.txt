@@ -1,0 +1,6 @@
+# task-5 cleanup fix GREEN
+## cleanup lifecycle gate
+no LISTENING on :3345 before start
+captured_server_pid=1334
+health_status=200
+cleanup_result=no LISTENING on :3345

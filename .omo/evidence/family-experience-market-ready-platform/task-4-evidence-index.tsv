@@ -1,0 +1,16 @@
+artifact	bytes
+task-4-baseline-partial-cache.txt	2481
+task-4-claim-scan-repro.txt	4918
+task-4-cleanup.txt	363
+task-4-code-quality-review.md	2590
+task-4-diff.patch	32427
+task-4-doneclaim.md	4090
+task-4-escape-hatch-scan.txt	195
+task-4-focused-tests.txt	354
+task-4-loc.tsv	131
+task-4-manual-cache-query-probes.txt	483
+task-4-notepad.md	1060
+task-4-red-metadata-tests.txt	3963
+task-4-stale-cache.txt	520
+task-4-status.txt	373
+task-4-verify.txt	478

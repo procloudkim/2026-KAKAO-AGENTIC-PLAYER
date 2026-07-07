@@ -1,0 +1,152 @@
+{
+  "page": 0,
+  "totalPages": 1,
+  "totalElements": "1",
+  "content": [
+    {
+      "id": "489",
+      "name": "ArtBridge:20만 공연데이터 1초만에 내취향으로",
+      "description": "KOPIS의 20만 건 이상의 데이터를 바탕으로 9개 장르(연극·뮤지컬·무용·클래식·국악·대중음악·서커스/마술·복합)의 공연을 **박스오피스 인기도·위치·날짜·가격** 등 다각도에서 분석해 맞춤형 공연을 추천하는 MCP 서버입니다.\n\n핵심 기능:\n- 박스오피스 기반 인기 공연 추천 (실시간 순위 반영)\n- 지역별 실시간 공연 검색 (구/군 -> 시/도 -> 전국 순 자동 확장)\n- 무료 공연 자동 필터링 (API 체이닝)\n- 마감임박(종료 14일 이내) 공연 가중치 점수로 추천\n- 출연진·시놉시스·예매 링크 등 상세 정보 통합 조회\n\n실사용 예시:\n카카오톡에서 \"이번 주에 연극이나 볼래?\"라는 대화가 나오면, AI가 자동으로 `기간`, `장르` 파라미터를 추출해 실시간 공연 정보를 즉시 제공합니다. \n이를 통해 사용자는 끊김 없는 문화생활 경험을, 서비스 제공자는 예매 전환율 향상과 비즈니스 가치 창출 기회를 얻게 됩니다.",
+      "status": "APPROVED",
+      "starterMessages": [
+        "종로구에서 이번 주 볼만한 연극 추천해주고 예매 링크도 알려줘.",
+        "요즘 뮤지컬 뭐가 제일 핫해? 출연진이랑 예매 링크도 알려줘",
+        "이번 달 마감 임박한 공연 중에 놓치면 아까운 거 뭐야?"
+      ],
+      "formattedTools": [
+        {
+          "name": "get_genre_list",
+          "description": "사용 가능한 모든 공연 장르 코드와 이름을 조회합니다. 연극, 뮤지컬, 무용, 클래식, 국악, 대중음악 등의 장르를 제공합니다.",
+          "parameters": []
+        },
+        {
+          "name": "search_events_by_location",
+          "description": "🎯 스마트 검색 지원! 특정 지역과 기간의 공연을 검색합니다. \n    \n4단계 지능형 완화 전략:\n• Level 1: 요청 조건 100% 일치\n• Level 2: 장르 OR 위치 중 하나만 완화\n• Level 3: 장르 + 위치 동시 완화\n• Level 4: 기간까지 확장 (이번달 전체)\n\n우선순위 자동 분석:\n• \"다음주\" 등 특정 기간 → 날짜 우선\n• 장르/위치는 유사한 것으로 점진적 확장",
+          "parameters": [
+            {
+              "name": "genreCode",
+              "type": "string",
+              "description": "장르 코드. 사용 가능한 코드: AAAA-연극, BBBC-무용(서양/한국무용), BBBE-대중무용, CCCA-서양음악(클래식), CCCC-한국음악(국악), CCCD-대중음악, EEEA-복합, EEEB-서커스/마술, GGGA-뮤지컬",
+              "required": true
+            },
+            {
+              "name": "startDate",
+              "type": "string",
+              "description": "공연 시작일 (YYYYMMDD 형식)",
+              "required": true
+            },
+            {
+              "name": "endDate",
+              "type": "string",
+              "description": "공연 종료일 (YYYYMMDD 형식)",
+              "required": true
+            },
+            {
+              "name": "sidoCode",
+              "type": "string",
+              "description": "시도 코드 [선택]. 예시: 11-서울, 41-경기, 26-부산, 27-대구, 28-인천",
+              "required": false
+            },
+            {
+              "name": "gugunCode",
+              "type": "string",
+              "description": "구군 코드 4자리 [선택]. 예시: 1168-강남구, 1111-종로구, 1144-마포구, 1165-서초구, 1171-송파구, 1114-중구, 1162-관악구, 2635-해운대구, 2726-수성구. 강남구는 1168, 종로구는 1111입니다.",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "type": "number",
+              "description": "최소 결과 개수 (기본: 3, 최대: 50). 스마트 검색이 이 개수를 달성하려고 자동 완화합니다.",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "filter_free_events",
+          "description": "💰 가격 우선 스마트 검색! 무료 공연을 최우선으로 검색합니다 (항상 오늘부터 30일 이내).\n    \n우선순위:\n1. 가격 (40%) - 무료 > 저렴한 순\n2. 날짜 (30%) - 오늘~30일 고정\n3. 장르 (20%)\n4. 위치 (10%)\n\n⚠️ startDate/endDate는 무시되며 항상 오늘~30일 범위로 고정됩니다.",
+          "parameters": [
+            {
+              "name": "genreCode",
+              "type": "string",
+              "description": "장르 코드. 사용 가능한 코드: AAAA-연극, BBBC-무용(서양/한국무용), BBBE-대중무용, CCCA-서양음악(클래식), CCCC-한국음악(국악), CCCD-대중음악, EEEA-복합, EEEB-서커스/마술, GGGA-뮤지컬",
+              "required": true
+            },
+            {
+              "name": "startDate",
+              "type": "string",
+              "description": "공연 시작일 (무시됨 - 항상 오늘 날짜 사용)",
+              "required": false
+            },
+            {
+              "name": "endDate",
+              "type": "string",
+              "description": "공연 종료일 (무시됨 - 항상 오늘+30일 사용)",
+              "required": false
+            },
+            {
+              "name": "sidoCode",
+              "type": "string",
+              "description": "시도 코드 [선택]. 예시: 11-서울, 41-경기, 26-부산, 27-대구, 28-인천",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "type": "number",
+              "description": "결과 개수 (기본: 20, 최대: 50)",
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "get_event_detail",
+          "description": "공연 ID를 사용하여 상세 정보를 조회합니다. 시놉시스, 출연진, 관람료, 공연 시간, 연령 제한, 포스터 이미지, 예매 링크 등을 제공합니다.",
+          "parameters": [
+            {
+              "name": "eventId",
+              "type": "string",
+              "description": "공연 ID (mt20id)",
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_trending_performances",
+          "description": "🔥 인기도 우선 스마트 검색! KOPIS 박스오피스 기반 인기 공연을 추천합니다.\n    \n우선순위:\n1. 인기도 (40%) - 오픈런(+30), 공연중(+10), 14일내 종료(+20)\n2. 개수 (30%) - 요청 개수 달성\n3. 장르 (20%)\n4. 날짜 (10%)\n\n해당 장르에 결과가 없으면 전체 장르로 자동 확장합니다.",
+          "parameters": [
+            {
+              "name": "genreCode",
+              "type": "string",
+              "description": "장르 코드 [선택 - 전체 조회 시 생략]. 사용 가능한 코드: AAAA-연극, BBBC-무용(서양/한국무용), BBBE-대중무용, CCCA-서양음악(클래식), CCCC-한국음악(국악), CCCD-대중음악, EEEA-복합, EEEB-서커스/마술, GGGA-뮤지컬",
+              "required": false
+            },
+            {
+              "name": "limit",
+              "type": "number",
+              "description": "결과 개수 (기본: 20, 최대: 50)",
+              "required": false
+            }
+          ]
+        }
+      ],
+      "identifyName": "ArtBridge",
+      "applicableAIServiceScope": "ALL",
+      "featuredLevel": 0,
+      "monthlyToolCallCount": "1517",
+      "totalToolCallCount": "15167",
+      "image": {
+        "path": "/komi/upload-files/mcp/images/32EqJ6gQsoyvZx5UwdRYNQ4I3SD6MUh8B7p0JxVOPZNErnxJtMbywza379SEHGmVUmxhz9P2P0c3ijVTqkT26W.png",
+        "fullUrl": "https://t1.kakaocdn.net/komi/upload-files/mcp/images/32EqJ6gQsoyvZx5UwdRYNQ4I3SD6MUh8B7p0JxVOPZNErnxJtMbywza379SEHGmVUmxhz9P2P0c3ijVTqkT26W.png",
+        "cdnUrl": "https://t1.kakaocdn.net"
+      },
+      "authConfigSummary": {
+        "type": "NONE"
+      },
+      "teamProfile": {
+        "name": "한태진",
+        "classification": {
+          "type": "INDIVIDUAL"
+        }
+      }
+    }
+  ]
+}

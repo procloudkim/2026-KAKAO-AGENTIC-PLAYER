@@ -1,0 +1,43 @@
+CLEANUP RECEIPT: task-2 scanClaims regression
+
+SCENARIO: final cleanup after focused red/green, full verify, and manual preserved-case probes.
+CHANGED_BY_THIS_TASK:
+- apps/family-experience-mcp/scripts/scan-claims.ts
+- .omo/evidence/family-experience-market-ready-platform/task-2-regression-red.txt
+- .omo/evidence/family-experience-market-ready-platform/task-2-regression-focused-green.txt
+- .omo/evidence/family-experience-market-ready-platform/task-2-regression-verify.txt
+- .omo/evidence/family-experience-market-ready-platform/task-2-regression-probes.txt
+- .omo/evidence/family-experience-market-ready-platform/task-2-regression-cleanup.txt
+
+NOT_TOUCHED_BY_THIS_TASK:
+- apps/family-experience-mcp/test/scanClaims.test.ts
+- Todo 4 ETL files
+- Todo 6 output files
+- Todo 7 secret scanner files
+
+COMMAND_RESULTS:
+- RED: npm --prefix apps/family-experience-mcp test -- --run test/scanClaims.test.ts -> EXIT_CODE 1, 2 failed / 16 passed.
+- FOCUSED_GREEN: npm --prefix apps/family-experience-mcp test -- --run test/scanClaims.test.ts -> EXIT_CODE 0, 18 passed.
+- FULL_VERIFY: npm --prefix apps/family-experience-mcp run verify -> EXIT_CODE 0, typecheck passed, 18 files / 134 tests passed.
+- MANUAL_PROBES: six scan:claims include probes -> PROBE_FAILURES 0.
+
+ARTIFACT_SIZES:
+- .omo/evidence/family-experience-market-ready-platform/task-2-regression-red.txt -> 1912 bytes
+- .omo/evidence/family-experience-market-ready-platform/task-2-regression-focused-green.txt -> 451 bytes
+- .omo/evidence/family-experience-market-ready-platform/task-2-regression-verify.txt -> 553 bytes
+- .omo/evidence/family-experience-market-ready-platform/task-2-regression-probes.txt -> 7212 bytes
+
+TEMP_CLEANUP:
+- task-2-regression-probe-work exists: False
+
+PURE_LOC:
+- apps/family-experience-mcp/scripts/scan-claims.ts -> 239
+- apps/family-experience-mcp/test/scanClaims.test.ts -> 226
+
+SCOPED_GIT_STATUS:
+?? .omo/evidence/family-experience-market-ready-platform/
+?? apps/family-experience-mcp/scripts/scan-claims.ts
+?? apps/family-experience-mcp/test/scanClaims.test.ts
+
+DEBUG_ARTIFACTS:
+- debug marker matches in scanner diff: 0

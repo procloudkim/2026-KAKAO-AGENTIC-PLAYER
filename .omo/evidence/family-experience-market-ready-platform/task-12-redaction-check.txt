@@ -1,0 +1,4 @@
+smoke_exit_code=0
+raw_secret_present=False
+stack_trace_present=False
+bounded_failure_present=True

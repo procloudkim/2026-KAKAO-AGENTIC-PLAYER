@@ -1,0 +1,91 @@
+{
+  "task": "Todo 2 - Convert forbidden-claim scanning into a market-launch gate",
+  "changed_files": [
+    "apps/family-experience-mcp/scripts/scan-claims.ts",
+    "apps/family-experience-mcp/test/scanClaims.test.ts"
+  ],
+  "implementation": [
+    "Added documented CLI usage for repeated --include <path> arguments.",
+    "Included files or directories are resolved from invocation root, app root, then repo root and are scanned in addition to unchanged default targets.",
+    "Added forbidden status phrases for false final-review/submission completion claims.",
+    "Kept eval negative fixture allowance narrow; did not globally weaken scanner rules."
+  ],
+  "failing_proof": {
+    "scenario": "Before production changes, included public copy with unsupported real-time/all-events claim was accepted.",
+    "invocation": "npm --prefix apps/family-experience-mcp run scan:claims -- --include .omo/tmp/market-plan/bad-public-copy.md",
+    "observable": "EXIT_CODE=0; scanner reported PASS and scanned_files=124.",
+    "artifact": ".omo/evidence/family-experience-market-ready-platform/task-2-red-negative-claim.txt"
+  },
+  "verification": [
+    {
+      "scenario": "Full package verify",
+      "invocation": "npm --prefix apps/family-experience-mcp run verify",
+      "observable": "exit 0; 17 test files passed; 99 tests passed",
+      "artifact": ".omo/evidence/family-experience-market-ready-platform/task-2-verify.txt"
+    },
+    {
+      "scenario": "Flake guard verify rerun",
+      "invocation": "npm --prefix apps/family-experience-mcp run verify",
+      "observable": "exit 0",
+      "artifact": ".omo/evidence/family-experience-market-ready-platform/task-2-verify-rerun.txt"
+    },
+    {
+      "scenario": "Default claim scan unchanged",
+      "invocation": "npm --prefix apps/family-experience-mcp run scan:claims",
+      "observable": "exit 0; PASS; scanned_files=124",
+      "artifact": ".omo/evidence/family-experience-market-ready-platform/task-2-scan-claims.txt"
+    },
+    {
+      "scenario": "Unsupported included launch copy",
+      "invocation": "npm --prefix apps/family-experience-mcp run scan:claims -- --include .omo/tmp/market-plan/bad-public-copy.md",
+      "observable": "exit 1; FAIL finding in bad-public-copy.md",
+      "artifact": ".omo/evidence/family-experience-market-ready-platform/task-2-negative-claim.txt"
+    },
+    {
+      "scenario": "False final-review/submission completion status",
+      "invocation": "npm --prefix apps/family-experience-mcp run scan:claims -- --include .omo/tmp/market-plan/false-submission.md",
+      "observable": "exit 1; FAIL finding in false-submission.md",
+      "artifact": ".omo/evidence/family-experience-market-ready-platform/task-2-false-submission-claim.txt"
+    },
+    {
+      "scenario": "Missing include value",
+      "invocation": "npm --prefix apps/family-experience-mcp run scan:claims -- --include",
+      "observable": "exit 1; usage error",
+      "artifact": ".omo/evidence/family-experience-market-ready-platform/task-2-missing-include.txt"
+    },
+    {
+      "scenario": "Nonexistent include path",
+      "invocation": "npm --prefix apps/family-experience-mcp run scan:claims -- --include .omo/tmp/market-plan/missing.md",
+      "observable": "exit 1; ENOENT",
+      "artifact": ".omo/evidence/family-experience-market-ready-platform/task-2-nonexistent-include.txt"
+    },
+    {
+      "scenario": "Temporary QA cleanup",
+      "invocation": "Test-Path .omo/tmp/market-plan",
+      "observable": "ABSENT",
+      "artifact": ".omo/evidence/family-experience-market-ready-platform/task-2-cleanup.txt"
+    }
+  ],
+  "adversarial_probes": [
+    "Malformed input: missing --include value and nonexistent include path both exit 1.",
+    "Dirty worktree: touched files are untracked in shared worktree; no unrelated files reverted.",
+    "Stale state: scanner and tests were re-read before editing; final verify rerun passed.",
+    "Misleading success output: negative scans have separate EXIT_CODE=1 receipts.",
+    "Untrusted external text: included temporary public copy is rejected.",
+    "Negative fixtures: eval fixture allowance remains file-specific and copied literals in docs are still rejected.",
+    "Hung commands: npm verify and scan commands completed within normal short-command bounds.",
+    "Cancel/resume cleanup: .omo/tmp/market-plan absence recorded."
+  ],
+  "risks": [
+    "Default evidence scanning still follows the existing selected evidence filename patterns; out-of-pattern launch artifacts must be passed with --include.",
+    "No Todo 10 runtime files were touched."
+  ],
+  "post_write_review": {
+    "loc_artifact": ".omo/evidence/family-experience-market-ready-platform/task-2-loc.txt",
+    "scan_claims_ts_pure_loc": 173,
+    "scanClaims_test_ts_pure_loc": 105,
+    "single_responsibility": "scanner owns claim scanning; test file owns scanner behavior coverage",
+    "boundary_purity": "CLI args parsed at the script boundary into readonly include paths",
+    "escape_hatches": "rg check found no as any/as unknown/ts-ignore/ts-expect-error/non-null assertion matches in touched files"
+  }
+}

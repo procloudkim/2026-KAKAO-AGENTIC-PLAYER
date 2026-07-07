@@ -1,0 +1,58 @@
+
+> family-experience-mcp@0.1.0 test
+> vitest mcpCache --run
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/mcpCache.test.ts (3 tests | 1 failed) 22ms
+     × does not present synthetic cache candidates as live official proof when cache matches the request 17ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/mcpCache.test.ts > Todo 7 MCP nationwide cache routing > does not present synthetic cache candidates as live official proof when cache matches the request
+AssertionError: expected { type: 'text', …(1) } to match object { type: 'text', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "text": StringContaining "fixture/demo 기준",
++   "text": "공식 데이터 기준으로 후보 1개를 찾았어요.
++ action_card: 1
++ title: Busan Indoor Family Studio
++ date_time: 2026-07-04~2026-07-05 10:00-12:00
++ venue: Busan Culture Center
++ address: Busan Haeundae-gu indoor hall
++ age_fit_label: source-stated
++ age_fit_reason: Official source states preschool family participation.
++ indoor_outdoor: indoor
++ fee_text: Free with official confirmation
++ source_name: Culture Portal/KCISA
++ source_url: https://example.test/culture-portal-oneview/task-7
++ retrieved_at: 2026-07-04T00:00:00.000Z
++ confidence: date=source-stated; venue=source-stated; age_fit=source-stated; reservation=unknown
++ mode: live
++ warnings: 공식 출처 응답 기준입니다. 운영 여부, 요금, 예약은 출발 전 다시 확인하세요.
++ source_summary: Culture Portal/KCISA 근거로 제목, 날짜, 장소, 연령 단서를 확인했습니다. source_refs=culture-portal-oneview:culture-portal-oneview:raw:task-7-busan
++ parent_check: Official source states preschool family participation. 예약/요금은 출발 전 공식 출처에서 확인하세요.
++ next_action: https://example.test/culture-portal-oneview/task-7에서 날짜, 장소, 요금, 신청 절차를 확인하세요.",
+    "type": "text",
+  }
+
+ ❯ test/mcpCache.test.ts:144:33
+    142|         throw new Error(structuredContent.failure.message)
+    143|       }
+    144|       expect(result.content[0]).toMatchObject({
+       |                                 ^
+    145|         type: "text",
+    146|         text: expect.stringContaining("fixture/demo 기준"),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  08:18:01
+   Duration  389ms (transform 123ms, setup 0ms, import 252ms, tests 22ms, environment 0ms)
+

@@ -1,0 +1,29 @@
+
+> family-experience-mcp@0.0.0 test
+> vitest --run test/sources.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/sources.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/sources.test.ts [ test/sources.test.ts ]
+Error: Cannot find module '../src/sources/fixture.js' imported from D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/sources.test.ts
+ ❯ test/sources.test.ts:3:1
+      1| import { describe, expect, it } from "vitest"
+      2|
+      3| import { fixtureFamilyExperienceRecords } from "../src/sources/fixture…
+       | ^
+      4| import {
+      5|   canSourceSupportAuthorityClaim,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  10:02:59
+   Duration  146ms (transform 18ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+

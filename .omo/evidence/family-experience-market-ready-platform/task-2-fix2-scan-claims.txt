@@ -1,0 +1,11 @@
+COMMAND=npm --prefix apps/family-experience-mcp run scan:claims
+EXIT_CODE=0
+
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 127
+}

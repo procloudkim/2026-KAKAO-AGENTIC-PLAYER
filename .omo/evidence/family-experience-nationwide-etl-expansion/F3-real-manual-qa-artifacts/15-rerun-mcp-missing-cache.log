@@ -1,0 +1,22 @@
+# surface: 15-rerun-mcp-missing-cache.log
+# cwd: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp
+# started_at: 2026-07-04T08:29:05.8827096+09:00
+
+> family-experience-mcp@0.1.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts --assert-tool-count=1 --cache-dir=D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-nationwide-etl-expansion\F3-real-manual-qa-artifacts\missing-cache-rerun-20260704-qa --skip-seed --expect-error --prompt=부산 이번 주말 4살 실내
+
+{
+  "endpoint": "in-memory",
+  "cache_dir": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\F3-real-manual-qa-artifacts\\missing-cache-rerun-20260704-qa",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "prompt": "부산 이번 주말 4살 실내",
+  "result_ok": false,
+  "mode": "live",
+  "candidate_count": 0,
+  "failure_code": "missing_configuration",
+  "text": "현재 설정으로는 체험 후보를 확인할 수 없어요. 공식 데이터 키를 설정하거나 fixture 모드를 켜 주세요. Nationwide cache is missing at D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\F3-real-manual-qa-artifacts\\missing-cache-rerun-20260704-qa. Run npm run etl:nationwide -- --fixture --write-cache --cache-dir D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\F3-real-manual-qa-artifacts\\missing-cache-rerun-20260704-qa."
+}
+# exit_code: 0

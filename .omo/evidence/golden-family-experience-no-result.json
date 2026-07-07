@@ -1,0 +1,50 @@
+{
+  "scenario": "no-result",
+  "prompt": "오늘 밤 늦게 2살 아이와 갈 수 있는 무료 실내 체험을 찾아줘.",
+  "endpoint": "http://127.0.0.1:3345/mcp",
+  "request": {
+    "location": "Seoul",
+    "date_range": {
+      "start": "2026-07-02",
+      "end": "2026-07-02"
+    },
+    "child_age": 2
+  },
+  "response": {
+    "isError": true,
+    "text": "조건에 맞는 근거 있는 후보를 찾지 못했어요. 후보를 임의로 만들지 않았습니다. 다음에는 날짜 범위 하나만 넓혀서 다시 요청해 주세요.",
+    "action_cards": [],
+    "structuredContent": {
+      "ok": false,
+      "mode": "fixture",
+      "failure": {
+        "code": "no_results",
+        "message": "No family experiences matched the requested date, location, and child age constraints.",
+        "retryable": false
+      }
+    }
+  },
+  "checks": [
+    {
+      "name": "is_error",
+      "passed": true,
+      "detail": "no confident result is a safe error outcome"
+    },
+    {
+      "name": "zero_candidates",
+      "passed": true,
+      "detail": "no candidates are fabricated"
+    },
+    {
+      "name": "relax_exactly_one_constraint",
+      "passed": true,
+      "detail": "suggests relaxing exactly the date range"
+    },
+    {
+      "name": "no_unsupported_claims",
+      "passed": true,
+      "detail": "no unsupported public claim text"
+    }
+  ],
+  "passed": true
+}

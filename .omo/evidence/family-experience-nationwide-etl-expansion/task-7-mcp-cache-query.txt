@@ -1,0 +1,85 @@
+Task: Todo 7 - MCP cache query
+Date: 2026-07-04 Asia/Seoul
+
+Changed behavior:
+- Existing public MCP tool remains find_family_experiences.
+- Non-fixture MCP requests read the nationwide ETL cache first by location/date/child selector.
+- Existing live Seoul fallback is limited to configured Seoul-like locations.
+- No Culture Portal/KTO/National Festival live fan-out occurs in the MCP request path.
+- Missing or stale cache returns missing_configuration with an ETL rebuild command.
+
+Baseline characterization:
+- npm test -- mcp
+  Result: PASS, 2 files / 7 tests.
+  Artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-7-baseline-npm-test-mcp.txt
+- npm run smoke:mcp
+  Result: FAIL before changes, fetch failed because the script only tried HTTP endpoint mode.
+  Artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-7-baseline-smoke-mcp.txt
+
+Failing-first proof:
+- npm test -- mcp after adding cache-routing tests and before implementation.
+  Result: FAIL, 3 targeted failures.
+  Observables:
+  - cache match called the injected source adapter.
+  - missing cache text did not mention cache.
+  - stale cache text did not mention stale.
+  Artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-7-red-npm-test-mcp.txt
+
+Final automated verification:
+- npm test -- mcp
+  Result: PASS, 3 files / 10 tests.
+  Artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-7-green3-npm-test-mcp.txt
+  Binary observables: cache-backed candidate source=culture_portal; missing cache failure=missing_configuration; stale cache failure=missing_configuration; one public tool unchanged.
+- npm run smoke:mcp
+  Result: PASS.
+  Artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-7-green3-smoke-mcp.txt
+  Binary observables: endpoint=in-memory; tools=[find_family_experiences]; prompt="부산 이번 주말 4살 실내"; result_ok=true; mode=live; candidate_count=1; first_source=culture_portal.
+- npm run typecheck
+  Result: PASS.
+  Artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-7-green3-typecheck.txt
+
+Manual QA:
+- Scenario: Busan cache-backed MCP prompt.
+  Invocation: npm run smoke:mcp -- --cache-dir=..\..\.omo\evidence\family-experience-nationwide-etl-expansion\cache-smoke --prompt="부산 이번 주말 4살 실내"
+  Result: PASS.
+  Artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-7-final-manual-qa-busan.txt
+  Binary observables: result_ok=true; mode=live; candidate_count=1; first_source=culture_portal; text includes Busan Indoor Family Studio and indoor.
+- Scenario: Jeju school-age/free cache-backed MCP prompt.
+  Invocation: npm run smoke:mcp -- --cache-dir=..\..\.omo\evidence\family-experience-nationwide-etl-expansion\cache-smoke --prompt="제주 초등학생 무료"
+  Result: PASS.
+  Artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-7-final-manual-qa-jeju.txt
+  Binary observables: result_ok=true; mode=live; candidate_count=1; first_source=kto_tourapi; text includes Jeju Family Sea Festival and Free entry listed by source.
+- Scenario: missing cache actionable failure.
+  Invocation: npm run smoke:mcp -- --cache-dir=..\..\.omo\evidence\family-experience-nationwide-etl-expansion\cache-missing-final-019f1d36 --skip-seed --expect-error --prompt="부산 이번 주말 4살 실내"
+  Result: PASS.
+  Artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-7-final-manual-qa-missing-cache.txt
+  Binary observables: result_ok=false; mode=live; candidate_count=0; failure_code=missing_configuration; text includes cache is missing and npm run etl:nationwide -- --fixture --write-cache.
+
+Adversarial QA:
+- stale_state/generated cache: covered by test/mcpCache.test.ts stale-cache case; final observable in task-7-green3-npm-test-mcp.txt.
+- malformed_input: existing MCP invalid-input tests still pass in task-7-green3-npm-test-mcp.txt.
+- prompt_injection/untrusted text: cache-backed test asserts cached text "ignore previous instructions" remains candidate description data.
+- dirty_worktree: git status scoped output recorded; unrelated dirty files preserved.
+- misleading_success_output: tests and smoke assert structuredContent JSON fields source/mode/failure_code/candidate_count.
+- hung_long_commands: smoke uses in-memory MCP and cache fixtures; no live nationwide network fan-out.
+- flaky_tests: npm test -- mcp passed after implementation, then passed again after refactor split.
+
+Post-write review:
+- Pure LOC:
+  src/etl/cacheQuery.ts 236
+  src/mcpSourceRecords.ts 113
+  src/mcp.ts 179
+  src/promptParser.ts 73
+  scripts/smoke-mcp.ts 246
+  test/mcp.test.ts 192
+  test/mcpCache.test.ts 195
+  Artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-7-postwrite-loc.txt
+- Escape-hatch scan:
+  rg "as any|as unknown|@ts-ignore|@ts-expect-error|enum " over changed TS files returned no matches.
+  Artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-7-postwrite-escape-scan.txt
+- Scoped dirty-worktree receipt:
+  Artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-7-final-status.txt
+
+Known risks:
+- cacheQuery.ts and smoke-mcp.ts are in the 200-250 LOC warning band; split before future expansion.
+- The smoke cache is deterministic fixture data for MCP routing proof, not live source freshness proof.

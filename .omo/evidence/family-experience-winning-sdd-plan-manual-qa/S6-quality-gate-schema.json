@@ -1,0 +1,76 @@
+{
+  "check": "quality",
+  "verdict": "PASS",
+  "checks": [
+    {
+      "id": "code_review_present",
+      "pass": true
+    },
+    {
+      "id": "manual_qa_present",
+      "pass": true
+    },
+    {
+      "id": "gate_review_present",
+      "pass": true
+    },
+    {
+      "id": "criteria_coverage_present",
+      "pass": true
+    },
+    {
+      "id": "surface_evidence_present",
+      "pass": true
+    },
+    {
+      "id": "adversarial_cases_present",
+      "pass": true
+    },
+    {
+      "id": "artifact_refs_present",
+      "pass": true
+    },
+    {
+      "id": "artifact_ref_paths_nonempty",
+      "pass": true,
+      "refs": [
+        {
+          "id": "artifact-plan",
+          "kind": "log",
+          "description": "Final winning SDD plan artifact.",
+          "path": ".omo/plans/family-experience-winning-sdd-to-submission.md"
+        },
+        {
+          "id": "artifact-c001",
+          "kind": "cli-transcript",
+          "description": "Plan content scanner output.",
+          "path": ".omo/evidence/winning-sdd-plan/C001-plan-content-check.txt"
+        },
+        {
+          "id": "artifact-c002",
+          "kind": "cli-transcript",
+          "description": "Guardrail scanner output.",
+          "path": ".omo/evidence/winning-sdd-plan/C002-guardrail-scan.txt"
+        },
+        {
+          "id": "artifact-c003-text",
+          "kind": "cli-transcript",
+          "description": "Loop status text summary.",
+          "path": ".omo/evidence/winning-sdd-plan/C003-loop-status-check.txt"
+        },
+        {
+          "id": "artifact-c003-json",
+          "kind": "log",
+          "description": "Loop status JSON.",
+          "path": ".omo/evidence/winning-sdd-plan/C003-loop-status.json"
+        },
+        {
+          "id": "artifact-c003-git",
+          "kind": "cli-transcript",
+          "description": "Scoped git status.",
+          "path": ".omo/evidence/winning-sdd-plan/C003-git-status.txt"
+        }
+      ]
+    }
+  ]
+}

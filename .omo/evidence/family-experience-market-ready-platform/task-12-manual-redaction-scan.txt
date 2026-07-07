@@ -1,0 +1,3 @@
+scenario=manual QA artifact sensitive text scan
+pattern=FAKE_MARKET_PLAN_SECRET_REDACTED|PRIVATE_PROMPT_CONTENT_MARKER|Minjun|"prompt"|"stack"|Error:
+result=PASS no sensitive markers in manual QA operational artifacts

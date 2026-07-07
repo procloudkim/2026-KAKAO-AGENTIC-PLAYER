@@ -1,0 +1,15 @@
+{
+  "file": "test/fixtures/eval/prompts.json",
+  "baseline_prompt_count": 20,
+  "baseline_groups": [
+    "loose-korean",
+    "rainy-day",
+    "indoor",
+    "age-stage",
+    "nearby",
+    "budget",
+    "adversarial",
+    "no-result",
+    "ambiguous"
+  ]
+}

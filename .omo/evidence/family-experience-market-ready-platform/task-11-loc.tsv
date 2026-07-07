@@ -1,0 +1,6 @@
+apps/family-experience-mcp/scripts/eval-prompts.ts	547
+apps/family-experience-mcp/scripts/eval-prompt-checks.ts	296
+apps/family-experience-mcp/package.json	37
+apps/family-experience-mcp/docs/GOLDEN_RESULTS.md	32
+apps/family-experience-mcp/docs/DEMO_PACK.md	14
+apps/family-experience-mcp/test/fixtures/eval-nationwide/cache/metadata.json	81

@@ -1,0 +1,8 @@
+Scenario: cleanup temporary Todo 7 fix2 include fixtures after manual scanner probes.
+Invocation: Remove-Item -LiteralPath <task-7-fix2 include fixture files> -Force
+Removed files:
+before	D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-7-fix2-red-embedded-placeholder.env	exists=True
+before	D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-7-fix2-mixed-placeholder.env	exists=True
+Post-cleanup observable:
+after	D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-7-fix2-red-embedded-placeholder.env	exists=False
+after	D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\task-7-fix2-mixed-placeholder.env	exists=False

@@ -1,0 +1,15 @@
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+
+  0      0   0      0   0      0      0      0                              0
+100    116 100    116   0      0   9062      0                              0
+100    116 100    116   0      0   8998      0                              0
+100    116 100    116   0      0   8873      0                              0
+HTTP/1.1 406 Not Acceptable
+content-type: application/json
+content-length: 116
+Date: Fri, 03 Jul 2026 04:26:33 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"jsonrpc":"2.0","error":{"code":-32000,"message":"Not Acceptable: Client must accept text/event-stream"},"id":null}

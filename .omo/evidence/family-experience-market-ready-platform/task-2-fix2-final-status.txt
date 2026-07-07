@@ -1,0 +1,7 @@
+?? .omo/evidence/family-experience-market-ready-platform/task-2-code-quality-review.md
+?? .omo/evidence/family-experience-market-ready-platform/task-2-fix2-artifact-sizes.tsv
+?? .omo/evidence/family-experience-market-ready-platform/task-2-fix2-doneclaim.md
+?? apps/family-experience-mcp/scripts/scan-claims.ts
+?? apps/family-experience-mcp/scripts/scan-sources.ts
+?? apps/family-experience-mcp/src/sources/
+?? apps/family-experience-mcp/test/scanClaims.test.ts

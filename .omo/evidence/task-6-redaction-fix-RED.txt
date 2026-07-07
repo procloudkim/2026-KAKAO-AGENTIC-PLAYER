@@ -1,0 +1,35 @@
+
+> family-experience-mcp@0.0.0 test
+> vitest --run test/seoulCulture.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/seoulCulture.test.ts (5 tests | 1 failed) 11ms
+     × redacts request loader error diagnostics when transport failure includes a keyed URL 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/seoulCulture.test.ts > Seoul culture event source adapter > redacts request loader error diagnostics when transport failure includes a keyed URL
+AssertionError: expected '{"redacted_url":"https://openapi.exam…' not to contain 'RAW_SECRET_KEY'
+
+Expected: "RAW_SECRET_KEY"
+Received: "{"redacted_url":"https://openapi.example.test/<redacted>/json/culturalEventInfo/1/100/","detail":"transport failed for https://openapi.example.test/RAW_SECRET_KEY/json/culturalEventInfo/1/100/; apiKey=RAW_SECRET_KEY"}"
+
+ ❯ test/seoulCulture.test.ts:106:33
+    104|     )
+    105|     expect(diagnosticsText).toContain("<redacted>")
+    106|     expect(diagnosticsText).not.toContain(rawKey)
+       |                                 ^
+    107|     expect(diagnosticsText).not.toContain(keyedUrl)
+    108|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  10:27:55
+   Duration  236ms (transform 44ms, setup 0ms, import 99ms, tests 11ms, environment 0ms)
+
+EXIT_CODE=1

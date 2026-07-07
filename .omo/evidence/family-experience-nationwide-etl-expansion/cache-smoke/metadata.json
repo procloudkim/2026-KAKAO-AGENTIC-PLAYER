@@ -1,0 +1,24 @@
+{
+  "generated_at": "2026-07-03T18:06:46.971Z",
+  "mode": "write-cache",
+  "fixture": false,
+  "source_set": [
+    "culture_portal",
+    "kto_tourapi"
+  ],
+  "source_ids": [
+    "culture-portal-oneview",
+    "kto-tourapi-events"
+  ],
+  "ttl_hours": 24,
+  "max_pages": 1,
+  "counts": {
+    "failures": 0,
+    "normalized_records": 2,
+    "raw_snapshots": 0
+  },
+  "files": {
+    "normalized_records": "normalized-records.jsonl",
+    "raw_snapshots": "raw-snapshots.jsonl"
+  }
+}

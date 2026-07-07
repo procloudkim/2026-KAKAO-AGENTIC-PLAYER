@@ -1,0 +1,54 @@
+{
+  "scenario": "missing-age",
+  "prompt": "이번 주말 아이랑 갈 만한 체험행사 골라줘.",
+  "endpoint": "http://127.0.0.1:3345/mcp",
+  "request": {
+    "location": "Seoul",
+    "date_range": {
+      "start": "2026-07-04",
+      "end": "2026-07-05"
+    }
+  },
+  "response": {
+    "isError": true,
+    "text": "요청 조건을 더 구체화해야 해요. 아이 나이 또는 발달 단계를 하나만 알려 주세요.",
+    "action_cards": [],
+    "structuredContent": {
+      "ok": false,
+      "mode": "fixture",
+      "failure": {
+        "code": "invalid_input",
+        "message": "Provide exactly one of child_age or child_stage.",
+        "retryable": false
+      }
+    }
+  },
+  "checks": [
+    {
+      "name": "is_error",
+      "passed": true,
+      "detail": "missing age does not rank candidates"
+    },
+    {
+      "name": "no_candidates",
+      "passed": true,
+      "detail": "no fabricated candidate list"
+    },
+    {
+      "name": "korean_parent_clarification",
+      "passed": true,
+      "detail": "Korean clarification asks for child age or stage"
+    },
+    {
+      "name": "no_english_sdk_validation",
+      "passed": true,
+      "detail": "main visible text is not SDK validation"
+    },
+    {
+      "name": "no_unsupported_claims",
+      "passed": true,
+      "detail": "no unsupported public claim text"
+    }
+  ],
+  "passed": true
+}

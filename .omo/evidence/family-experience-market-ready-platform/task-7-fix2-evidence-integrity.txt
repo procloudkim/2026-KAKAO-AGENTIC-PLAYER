@@ -1,0 +1,14 @@
+Scenario: final evidence integrity receipt for Todo 7 fix2.
+Invocation: Get-Item required artifacts; Get-ChildItem task-7-fix2-*.env leftovers.
+Required artifact lengths:
+task-7-fix2-red-embedded-placeholder.txt	617
+task-7-fix2-focused-scanSecrets.txt	547
+task-7-fix2-scan-secrets.txt	292
+task-7-fix2-full-verify.txt	643
+task-7-fix2-embedded-include-after-fix.txt	811
+task-7-fix2-mixed-include-after-fix.txt	807
+task-7-fix2-implementation-review.md	3567
+task-7-fix2-cleanup.txt	856
+task-7-fix2-done-claim.md	2325
+Temporary fixture leftovers:
+<none>

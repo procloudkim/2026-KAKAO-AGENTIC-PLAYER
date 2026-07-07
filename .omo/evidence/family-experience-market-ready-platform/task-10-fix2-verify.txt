@@ -1,0 +1,65 @@
+COMMAND: npm --prefix apps/family-experience-mcp run verify
+STARTED_AT: 2026-07-07T17:50:33.3297869+09:00
+
+> family-experience-mcp@0.1.0 verify
+> npm run typecheck && npm test -- --run
+
+
+> family-experience-mcp@0.1.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.1.0 test
+> vitest --run
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/scanClaims.test.ts (10 tests | 1 failed) 1089ms
+     × allows exact forbidden-claim fixture literals in eval prompt checks 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/scanClaims.test.ts > claim scanner > allows exact forbidden-claim fixture literals in eval prompt checks
+AssertionError: expected [ { …(3) }, { …(3) }, { …(3) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "claim": "전국 모든 행사",
++     "file": "scripts/eval-prompt-checks.ts",
++     "line": 1,
++   },
++   {
++     "claim": "live now",
++     "file": "scripts/eval-prompt-checks.ts",
++     "line": 2,
++   },
++   {
++     "claim": "suitable for all",
++     "file": "scripts/eval-prompt-checks.ts",
++     "line": 3,
++   },
++ ]
+
+ ❯ test/scanClaims.test.ts:50:22
+     48|     const findings = scanText("scripts/eval-prompt-checks.ts", text, "…
+     49|
+     50|     // Then: the negative-probe vocabulary table is not treated as pro…
+       |                      ^
+     51|     expect(findings).toEqual([])
+     52|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 17 passed (18)
+      Tests  1 failed | 108 passed (109)
+   Start at  17:50:35
+   Duration  23.32s (transform 2.35s, setup 0ms, import 3.79s, tests 25.44s, environment 2ms)
+
+EXIT_CODE=1
+FINISHED_AT: 2026-07-07T17:50:58.8578117+09:00

@@ -1,0 +1,21 @@
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include .omo/tmp/market-plan/false-submission-smuggle.md
+
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\tmp\\market-plan\\false-submission-smuggle.md",
+      "line": 1,
+      "claim": "final review and contest submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\tmp\\market-plan\\false-submission-smuggle.md",
+      "line": 1,
+      "claim": "submission completed"
+    }
+  ]
+}
+
+EXIT_CODE=1

@@ -1,0 +1,9 @@
+# Todo 3 Gate Artifact Check
+.omo/evidence/family-experience-market-ready-platform/task-3-gate-code-quality-review.md	3408 bytes
+.omo/evidence/family-experience-market-ready-platform/task-3-gate-manual-qa-matrix.md	2366 bytes
+.omo/evidence/family-experience-market-ready-platform/task-3-gate-doneclaim.md	3316 bytes
+.omo/evidence/family-experience-market-ready-platform/task-3-gate-changed-files.txt	2016 bytes
+.omo/evidence/family-experience-market-ready-platform/task-3-gate-scan-sources-untracked.diff	10972 bytes
+.omo/evidence/family-experience-market-ready-platform/task-3-gate-scan-sources-happy.txt	133 bytes
+.omo/evidence/family-experience-market-ready-platform/task-3-gate-verify.txt	469 bytes
+.omo/evidence/family-experience-market-ready-platform/task-3-gate-cleanup-receipt.txt	157 bytes

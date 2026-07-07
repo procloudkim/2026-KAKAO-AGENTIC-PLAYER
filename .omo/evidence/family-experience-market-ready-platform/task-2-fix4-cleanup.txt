@@ -1,0 +1,6 @@
+temp_path=.omo/tmp/market-plan-fix4
+temp_path_exists_after_cleanup=False
+cross_scope_exit=1
+direct_caveat_exit=0
+english_fix3_smuggle_exit=1
+korean_fix3_smuggle_exit=1

@@ -1,0 +1,6 @@
+
+LocalAddress LocalPort       State OwningProcess
+------------ ---------       ----- -------------
+127.0.0.1         3345 Established         26700
+127.0.0.1         3345      Listen         26700
+

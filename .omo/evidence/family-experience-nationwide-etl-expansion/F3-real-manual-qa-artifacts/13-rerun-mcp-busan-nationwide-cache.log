@@ -1,0 +1,22 @@
+# surface: 13-rerun-mcp-busan-nationwide-cache.log
+# cwd: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp
+# started_at: 2026-07-04T08:29:04.4981922+09:00
+
+> family-experience-mcp@0.1.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts --assert-tool-count=1 --cache-dir=test/fixtures/eval-nationwide/cache --skip-seed --prompt=부산 7월 5일 3살 야외 유료 체험
+
+{
+  "endpoint": "in-memory",
+  "cache_dir": "test/fixtures/eval-nationwide/cache",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "prompt": "부산 7월 5일 3살 야외 유료 체험",
+  "result_ok": true,
+  "mode": "fixture",
+  "candidate_count": 1,
+  "first_source": "kto_tourapi",
+  "text": "fixture/demo 기준으로 후보 1개를 찾았어요.\naction_card: 1\ntitle: Nationwide Eval Busan Toddler Harbor Walk\ndate_time: 2026-07-05 09:30-10:30\nvenue: Busan Eval Harbor Park\naddress: 1 Jungang-daero, Busan\nage_fit_label: inferred\nage_fit_reason: Inferred from source text: \"Ages 2-4 toddler families\"\nindoor_outdoor: outdoor\nfee_text: Paid fixture program; confirm fees with the official source in live mode.\nsource_name: KTO TourAPI\nsource_url: https://example.invalid/kto-eval/busan-toddler-harbor\nretrieved_at: 2026-07-04T00:00:00.000Z\nconfidence: date=source-stated; venue=source-stated; age_fit=inferred; reservation=unknown\nmode: fixture\nwarnings: fixture/demo data only; not live/current.\nsource_summary: KTO TourAPI fixture/cache candidate only; not live/current. source_refs=kto-tourapi-events:eval-cache:raw:busan-toddler-harbor\nparent_check: Source text states stroller-friendly toddler family walk for ages 2-4. fixture/cache 후보입니다. 방문 전 실제 공식 출처에서 예약/요금을 확인하세요.\nnext_action: fixture/cache source_url=https://example.invalid/kto-eval/busan-toddler-harbor; 방문 전 실제 공식 출처에서 날짜, 장소, 요금, 신청 절차를 확인하세요."
+}
+# exit_code: 0

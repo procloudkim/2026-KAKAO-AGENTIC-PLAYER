@@ -1,0 +1,24 @@
+{
+  "status": "FAIL",
+  "results": [
+    {
+      "name": "fake-seoul-key",
+      "findingRules": [
+        "seoul-open-data-key"
+      ]
+    },
+    {
+      "name": "fake-query-token",
+      "findingRules": [
+        "key-assignment",
+        "query-keyed-url"
+      ]
+    },
+    {
+      "name": "placeholder-env-example",
+      "findingRules": [
+        "seoul-open-data-key"
+      ]
+    }
+  ]
+}

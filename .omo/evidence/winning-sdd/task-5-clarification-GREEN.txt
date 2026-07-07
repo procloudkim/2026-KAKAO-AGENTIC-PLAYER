@@ -1,0 +1,13 @@
+
+> family-experience-mcp@0.1.0 eval:prompts
+> tsx scripts/eval-prompts.ts --prompt 이번 주말 아이랑 갈 곳 --expect-clarification --evidence-dir ../../.omo/evidence/winning-sdd/eval-clarification
+
+{
+  "prompt_count": 1,
+  "passed_count": 1,
+  "pass_rate": 1,
+  "unsupported_claim_failures": 0,
+  "latency_ms_max": 3,
+  "status": "pass"
+}
+cleanup=no runtime resources spawned

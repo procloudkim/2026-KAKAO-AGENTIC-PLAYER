@@ -1,0 +1,48 @@
+TASK 13 FALLBACK COMPILED NODE RUNTIME
+timestamp=2026-07-08T03:45:48.9883571+09:00
+workdir=D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp
+env=HOST=127.0.0.1 PORT=3349 FAMILY_EXPERIENCE_ALLOW_FIXTURE=false FAMILY_EXPERIENCE_ETL_CACHE_DIR=data/family-experience-cache
+note=no .env file is loaded by this command
+
+cleanup-before=Remove-Item D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\.tmp-task-13-build
+===== npx tsc --noEmit false --outDir dist =====
+compile_exit_code=0
+server_pid=44424
+===== curl /health =====
+HTTP/1.1 200 OK
+
+content-type: application/json; charset=utf-8
+
+Date: Tue, 07 Jul 2026 18:45:54 GMT
+
+Connection: keep-alive
+
+Keep-Alive: timeout=5
+
+Transfer-Encoding: chunked
+
+
+
+{"ok":true,"name":"family-experience-mcp","version":"0.1.0","tools":["find_family_experiences"],"config":{"host":"127.0.0.1","port":3349,"allowFixture":false,"toolMode":"live","seoulOpenDataBaseUrl":"http://openapi.seoul.go.kr:8088","seoulOpenDataKey":"missing"},"cache":{"age_seconds":12352,"cacheDir":"data/family-experience-cache","expiresAt":"2026-07-08T15:20:02.314Z","generated_at":"2026-07-07T15:20:02.314Z","mode":"fixture","refreshCommand":"npm run etl:nationwide -- --live --write-cache --cache-dir data/family-experience-cache --source seoul","source_health":{"total_sources":2,"ok_sources":2,"failed_sources":0,"failure_codes":[]},"status":"fresh","ttl_hours":24},"cache_metrics":{"status":"fresh","generated_at":"2026-07-07T15:20:02.314Z","age_seconds":12352,"ttl_hours":24,"source_health":{"total_sources":2,"ok_sources":2,"failed_sources":0,"failure_codes":[]}},"operations":{"deployed_version":"0.1.0","requests":{"total":0,"succeeded":0,"failed":0,"rate_limited":0,"latency_ms":{"last":null,"p95":null}},"tool_calls":{"total":0,"succeeded":0,"failed":0,"invalid_input":0,"no_results":0,"source_failures":0,"latency_ms":{"last":null,"p95":null}}}}
+
+curl_health_exit_code=0
+===== curl malformed /mcp =====
+HTTP/1.1 400 Bad Request
+
+content-type: application/json; charset=utf-8
+
+Date: Tue, 07 Jul 2026 18:45:54 GMT
+
+Connection: keep-alive
+
+Keep-Alive: timeout=5
+
+Transfer-Encoding: chunked
+
+
+
+{"jsonrpc":"2.0","error":{"code":-32700,"message":"Parse error.","data":{"code":"parse_error"}},"id":null}
+
+curl_invalid_exit_code=0
+cleanup=stopped node pid 44424
+cleanup-after=removed D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\dist

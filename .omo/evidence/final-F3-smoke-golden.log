@@ -1,0 +1,29 @@
+
+> family-experience-mcp@0.0.0 smoke:golden
+> tsx scripts/smoke-golden.ts
+
+{
+  "artifact_dir": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence",
+  "scenarios": [
+    {
+      "id": "happy",
+      "passed": true,
+      "isError": false
+    },
+    {
+      "id": "missing-age",
+      "passed": true,
+      "isError": true
+    },
+    {
+      "id": "no-result",
+      "passed": true,
+      "isError": true
+    },
+    {
+      "id": "source-failure",
+      "passed": true,
+      "isError": true
+    }
+  ]
+}

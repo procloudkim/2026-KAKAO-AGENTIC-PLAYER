@@ -1,0 +1,101 @@
+Todo 5 - nationwide ETL cache evidence
+Generated: 2026-07-04 Asia/Seoul
+
+Scope and dirty-worktree baseline
+- Scenario: preserve unrelated work in shared dirty tree.
+- Invocation: git status --short -- apps/family-experience-mcp/package.json apps/family-experience-mcp/scripts/etl-nationwide.ts apps/family-experience-mcp/src/etl apps/family-experience-mcp/test/etlNationwide.test.ts .omo/evidence/family-experience-nationwide-etl-expansion
+- Observable: scoped status only shows Todo 5-owned paths plus this evidence/cache directory as untracked/modified; broader unrelated dirty tree was not reverted.
+- Artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-5-etl-cache.txt
+
+Baseline characterization and failing-first proof
+- Scenario: package script absent before implementation.
+- Invocation: Get-Content apps/family-experience-mcp/package.json and npm run etl:nationwide -- --fixture --dry-run
+- Observable: package.json initially had no etl:nationwide entry; npm exited 1 with Missing script: "etl:nationwide".
+- Artifact: terminal capture in this task turn; summarized here because this file did not exist before implementation.
+
+Implementation summary
+- Added package script: apps/family-experience-mcp/package.json -> "etl:nationwide": "tsx scripts/etl-nationwide.ts".
+- Added CLI wrapper: apps/family-experience-mcp/scripts/etl-nationwide.ts.
+- Added local MVP ETL/cache modules under apps/family-experience-mcp/src/etl/.
+- Added tests: apps/family-experience-mcp/test/etlNationwide.test.ts.
+- No external database dependency added; cache writes are local JSON/JSONL files only.
+- Did not edit src/mcp.ts or source adapters.
+
+Automated verification
+- Scenario: targeted ETL tests.
+- Invocation: npm test -- etlNationwide --run
+- Observable: exit 0; 1 test file passed; 4 tests passed.
+- Artifact: apps/family-experience-mcp/test/etlNationwide.test.ts
+
+- Scenario: fixture dry-run acceptance command.
+- Invocation: npm run etl:nationwide -- --fixture --dry-run
+- Observable: exit 0; mode=dry-run; fixture=true; source_set=seoul,culture_portal,kto_tourapi,national_festival; counts.normalized_records=4; counts.raw_snapshots=4; diagnostics.redaction_verified=true.
+- Artifact: stdout captured in this task turn and summarized here.
+
+- Scenario: fixture write-cache acceptance command.
+- Invocation: npm run etl:nationwide -- --fixture --write-cache --cache-dir ../../.omo/evidence/family-experience-nationwide-etl-expansion/cache-smoke
+- Observable: exit 0; mode=write-cache; counts.normalized_records=4; counts.raw_snapshots=4.
+- Artifact: .omo/evidence/family-experience-nationwide-etl-expansion/cache-smoke/
+
+- Scenario: TypeScript compile gate.
+- Invocation: npm run typecheck
+- Observable: exit 0; tsc --noEmit clean.
+- Artifact: apps/family-experience-mcp/tsconfig.json gate output captured in this task turn.
+
+Manual QA
+- Scenario: dry-run writes no cache.
+- Invocation: npm run etl:nationwide -- --fixture --dry-run --cache-dir ../../.omo/evidence/family-experience-nationwide-etl-expansion/cache-dry-run-proof-2
+- Observable: pre_exists=False; post_exists=False; command exit 0; dry-run reported 4 normalized records and 4 raw snapshots.
+- Artifact: no directory created at .omo/evidence/family-experience-nationwide-etl-expansion/cache-dry-run-proof-2
+
+- Scenario: write-cache creates metadata and normalized/raw records.
+- Invocation: PowerShell inspection of .omo/evidence/family-experience-nationwide-etl-expansion/cache-smoke after write-cache.
+- Observable: metadataExists=true; normalizedExists=true; rawExists=true; generatedAt=2026-07-03T17:24:18.753Z; ttlHours=24; maxPages=1; mode=write-cache; sourceSet=seoul,culture_portal,kto_tourapi,national_festival; normalizedCount=4; rawCount=4.
+- Artifacts:
+  - .omo/evidence/family-experience-nationwide-etl-expansion/cache-smoke/metadata.json
+  - .omo/evidence/family-experience-nationwide-etl-expansion/cache-smoke/normalized-records.jsonl
+  - .omo/evidence/family-experience-nationwide-etl-expansion/cache-smoke/raw-snapshots.jsonl
+
+- Scenario: invalid source id fails closed.
+- Invocation: npm run etl:nationwide -- --fixture --dry-run --source invalid_source
+- Observable: exit 1; stderr/stdout message Invalid source id: invalid_source; no extraction or cache write occurred.
+- Artifact: command output captured in this task turn and summarized here.
+
+- Scenario: invalid max-pages fails closed.
+- Invocation: npm run etl:nationwide -- --fixture --dry-run --max-pages 0
+- Observable: exit 1; message --max-pages must be a positive integer.
+- Artifact: command output captured in this task turn and summarized here.
+
+- Scenario: invalid empty cache-dir fails closed.
+- Invocation: npm run etl:nationwide -- --fixture --dry-run --cache-dir ""
+- Observable: exit 1; message --cache-dir requires a non-empty value.
+- Artifact: command output captured in this task turn and summarized here.
+
+- Scenario: redaction is true for keyed diagnostics.
+- Invocation: PowerShell set CULTURE_PORTAL_SERVICE_KEY from concatenated synthetic parts, then npm run etl:nationwide -- --fixture --dry-run --source culture_portal, then checked stdout.
+- Observable: exitCode=0; rawPresent=false; redactedPresent=true; stdout contains serviceKey=<redacted>.
+- Artifact: command output captured in this task turn and summarized here.
+
+Adversarial QA
+- stale_state: cache metadata includes generated_at, ttl_hours, max_pages, mode, and source_set; dry-run proof showed no cache directory created.
+- malformed_input: invalid source id, invalid max-pages, and empty cache-dir all exit 1 before extraction.
+- dirty_worktree: scoped status checked; unrelated dirty files were not reverted or touched.
+- misleading_success_output: write-cache was verified by inspecting actual metadata.json, normalized-records.jsonl, and raw-snapshots.jsonl counts, not stdout only.
+- hung_long_commands: fixture mode performs no network calls; required commands returned within the 30s command window.
+- flaky_tests: targeted etlNationwide test was run after implementation and rerun after refactor; both runs passed 4/4.
+- prompt_injection/untrusted text: fixture source text is preserved as record data through adapter normalizers; it is not used for filenames, source selection, or control flow.
+
+Code quality and split review
+- Scenario: post-write LOC ceiling.
+- Invocation: PowerShell pure LOC measurement on changed TS files.
+- Observable: src/etl/nationwide.ts=100, cache.ts=75, cliArgs.ts=131, sourceLoaders.ts=83, redaction.ts=22, errors.ts=3, nationwideFixtures.ts=117, scripts/etl-nationwide.ts=20, test/etlNationwide.test.ts=122.
+- Artifact: output captured in this task turn and summarized here.
+
+- Scenario: banned TypeScript escape hatch scan.
+- Invocation: Select-String -Path src\etl\*.ts,scripts\etl-nationwide.ts,test\etlNationwide.test.ts -Pattern 'as any|as unknown|@ts-ignore|@ts-expect-error|enum\s|!\.|\w!\b|:\s*any\b'
+- Observable: exit 0 with no matches.
+- Artifact: command output captured in this task turn and summarized here.
+
+Known residual risks
+- Live nationwide extraction remains intentionally unavailable in this local MVP; fixture mode and local cache are complete for Todo 5. Live source proof belongs to later plan tasks.
+- Cache query wiring into MCP was not edited; Todo 7 owns that integration.

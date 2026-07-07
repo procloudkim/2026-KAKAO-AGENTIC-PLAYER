@@ -1,0 +1,334 @@
+Task: Todo 1 - Expand source contracts, config, and schema surface for nationwide official sources.
+Date: 2026-07-04 Asia/Seoul
+Artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-1-contracts.txt
+
+Scope implemented:
+- Added official source ids: culture-portal-oneview, kto-tourapi-events, national-culture-festival-standard.
+- Preserved existing source ids: fixture-family-experience-v1, seoul-culture-events.
+- Added source tier/role/redaction contract values for official national API and official national standard dataset.
+- Added candidate output source values: culture_portal, kto_tourapi, national_culture_festival.
+- Added config parsing and diagnostics for:
+  CULTURE_PORTAL_SERVICE_KEY, CULTURE_PORTAL_BASE_URL, KTO_TOURAPI_SERVICE_KEY,
+  KTO_TOURAPI_BASE_URL, PUBLIC_DATA_STANDARD_SERVICE_KEY,
+  NATIONAL_CULTURE_FESTIVAL_BASE_URL, FAMILY_EXPERIENCE_SOURCE_SET,
+  FAMILY_EXPERIENCE_ETL_CACHE_DIR, FAMILY_EXPERIENCE_ETL_MAX_PAGES,
+  FAMILY_EXPERIENCE_ETL_TTL_HOURS.
+- Used plan defaults for Culture Portal, KTO TourAPI, source set, cache dir, max pages, and TTL.
+- Did not set a default for NATIONAL_CULTURE_FESTIVAL_BASE_URL; absent config reports missing.
+- Did not wire live source calls.
+- Minimal extra files touched outside the explicit ownership list:
+  apps/family-experience-mcp/src/pipeline/normalize.ts
+  apps/family-experience-mcp/src/pipeline/render.ts
+  Reason: expanding SourceId made existing exhaustive switches fail typecheck; edits only map source ids to display/output labels and do not call live sources.
+
+Changed files:
+- apps/family-experience-mcp/src/sources/types.ts
+- apps/family-experience-mcp/src/types.ts
+- apps/family-experience-mcp/src/schemas.ts
+- apps/family-experience-mcp/src/config.ts
+- apps/family-experience-mcp/src/pipeline/normalize.ts
+- apps/family-experience-mcp/src/pipeline/render.ts
+- apps/family-experience-mcp/.env.example
+- apps/family-experience-mcp/test/config.test.ts
+- apps/family-experience-mcp/test/sources.test.ts
+- apps/family-experience-mcp/test/schemas.test.ts
+- .omo/evidence/family-experience-nationwide-etl-expansion/task-1-contracts.txt
+
+Baseline characterization before production changes:
+Command:
+  cd apps/family-experience-mcp
+  npm test -- config sources schemas
+Observable:
+  Test Files 3 passed (3)
+  Tests 11 passed (11)
+  Duration 227ms
+Interpretation:
+  Existing Seoul/fixture config, source, and schema behavior was green before this task.
+
+Failing-first proof after adding tests and before production changes:
+Command:
+  cd apps/family-experience-mcp
+  npm test -- config sources schemas
+Observable:
+  Exit code 1
+  Test Files 3 failed (3)
+  Tests 5 failed | 12 passed (17)
+  Failures:
+    diagnostics.culturePortalServiceKey was undefined instead of missing
+    config.sourceSet was undefined instead of parsed source set
+    malformed nationwide source env values were not rejected
+    new candidate source values were rejected by schema
+    SOURCE_IDS only contained fixture-family-experience-v1 and seoul-culture-events
+Interpretation:
+  New tests failed for the intended missing contract/config/schema behavior.
+
+Automated verification:
+Command:
+  cd apps/family-experience-mcp
+  npm test -- config sources schemas
+Observable:
+  Test Files 3 passed (3)
+  Tests 17 passed (17)
+  Duration 313ms
+Binary result:
+  exit 0
+
+Repeat targeted verification:
+Command:
+  cd apps/family-experience-mcp
+  npm test -- config sources schemas
+Observable:
+  Test Files 3 passed (3)
+  Tests 17 passed (17)
+Binary result:
+  exit 0
+
+TypeScript verification:
+Command:
+  cd apps/family-experience-mcp
+  npm run typecheck
+Observable:
+  tsc --noEmit
+Binary result:
+  exit 0
+
+Extra regression verification for the two source-id mapping files:
+Command:
+  cd apps/family-experience-mcp
+  npm test -- pipeline
+Observable:
+  Test Files 1 passed (1)
+  Tests 7 passed (7)
+Binary result:
+  exit 0
+
+Manual QA channel:
+Command:
+  cd apps/family-experience-mcp
+  node --import tsx --input-type=module -e 'import { getFamilyExperienceConfigDiagnostics, loadFamilyExperienceConfig } from "./src/config.ts"; const absent = getFamilyExperienceConfigDiagnostics(loadFamilyExperienceConfig({})); const present = getFamilyExperienceConfigDiagnostics(loadFamilyExperienceConfig({ CULTURE_PORTAL_SERVICE_KEY: "<redacted-synthetic-secret>", KTO_TOURAPI_SERVICE_KEY: "kto-tourapi-secret", PUBLIC_DATA_STANDARD_SERVICE_KEY: "<redacted-synthetic-secret>", NATIONAL_CULTURE_FESTIVAL_BASE_URL: "https://standard.example.test/festivals" })); let invalidBaseUrl = "not_rejected"; try { loadFamilyExperienceConfig({ CULTURE_PORTAL_BASE_URL: "not-a-url" }); } catch { invalidBaseUrl = "rejected"; } const presentJson = JSON.stringify(present); console.log(JSON.stringify({ absent: { culturePortalServiceKey: absent.culturePortalServiceKey, ktoTourApiServiceKey: absent.ktoTourApiServiceKey, publicDataStandardServiceKey: absent.publicDataStandardServiceKey, nationalCultureFestivalBaseUrl: absent.nationalCultureFestivalBaseUrl }, present: { culturePortalServiceKey: present.culturePortalServiceKey, ktoTourApiServiceKey: present.ktoTourApiServiceKey, publicDataStandardServiceKey: present.publicDataStandardServiceKey, nationalCultureFestivalBaseUrl: present.nationalCultureFestivalBaseUrl }, invalidBaseUrl, leakedSecrets: presentJson.includes("culture-portal-secret") || presentJson.includes("kto-tourapi-secret") || presentJson.includes("standard-dataset-secret") }, null, 2))'
+Observable:
+  {
+    "absent": {
+      "culturePortalServiceKey": "missing",
+      "ktoTourApiServiceKey": "missing",
+      "publicDataStandardServiceKey": "missing",
+      "nationalCultureFestivalBaseUrl": "missing"
+    },
+    "present": {
+      "culturePortalServiceKey": "redacted",
+      "ktoTourApiServiceKey": "redacted",
+      "publicDataStandardServiceKey": "redacted",
+      "nationalCultureFestivalBaseUrl": "https://standard.example.test/festivals"
+    },
+    "invalidBaseUrl": "rejected",
+    "leakedSecrets": false
+  }
+Binary result:
+  exit 0
+
+Strict review checks:
+Command:
+  node --import tsx C:\Users\K\.codex\plugins\cache\sisyphuslabs\omo\4.15.1\skills\programming\scripts\typescript\check-no-excuse-rules.ts ...
+Observable:
+  Failed before scanning because the skill script could not resolve package 'typescript' from its own plugin path, even when rerun from apps/family-experience-mcp and with NODE_PATH pointed at app node_modules.
+Fallback command:
+  cd apps/family-experience-mcp
+  rg -n 'as any|as unknown|@ts-ignore|@ts-expect-error|:\s*any\b|\bany\b|enum\s+|!\.|\w!\b' src/sources/types.ts src/types.ts src/schemas.ts src/config.ts src/pipeline/normalize.ts src/pipeline/render.ts test/config.test.ts test/sources.test.ts test/schemas.test.ts
+Observable:
+  test/sources.test.ts:37: cache_ttl_seconds: expect.any(Number),
+Interpretation:
+  Only hit is an existing Vitest matcher in a test assertion, not an any type escape hatch.
+
+LOC audit:
+Command:
+  repo root via Git Bash awk pure LOC count on changed TS files.
+Observable:
+  apps/family-experience-mcp/src/sources/types.ts 177
+  apps/family-experience-mcp/src/types.ts 71
+  apps/family-experience-mcp/src/schemas.ts 138
+  apps/family-experience-mcp/src/config.ts 190
+  apps/family-experience-mcp/src/pipeline/normalize.ts 279
+  apps/family-experience-mcp/src/pipeline/render.ts 206
+  apps/family-experience-mcp/test/config.test.ts 82
+  apps/family-experience-mcp/test/sources.test.ts 110
+  apps/family-experience-mcp/test/schemas.test.ts 143
+Interpretation:
+  normalize.ts is over the 250 pure-LOC threshold and was already a large file; this task touched it only for exhaustive SourceId mapping after contract expansion. render.ts is in the warning band. No broad refactor was performed because user scope was Todo 1 contracts/config/schema only.
+
+Git status / stale-state / dirty-worktree:
+Command:
+  git status --short
+Observable summary:
+  Worktree was already heavily dirty before this task with many added/untracked .omo evidence files, docs, scripts, app files, and .codegraph.
+  Task-owned paths appear untracked in this repository snapshot because apps/family-experience-mcp/src and tests are not tracked yet.
+  No unrelated dirty files were reverted or cleaned.
+
+Adversarial QA:
+- malformed_input: covered by tests for invalid CULTURE_PORTAL_BASE_URL, invalid FAMILY_EXPERIENCE_SOURCE_SET, invalid FAMILY_EXPERIENCE_ETL_MAX_PAGES, invalid FAMILY_EXPERIENCE_ETL_TTL_HOURS, and invalid NATIONAL_CULTURE_FESTIVAL_BASE_URL; manual QA also observed invalidBaseUrl=rejected.
+- stale_state: tests and manual QA ran against the current working tree after edits; git status summary recorded above.
+- dirty_worktree: applicable; unrelated dirty files were left untouched.
+- misleading_success_output: mitigated by recording exact assertions and manual JSON observables, not only command success.
+- prompt_injection: N/A; no external text was ingested for runtime behavior.
+- cancel_resume: N/A; no resumable flow was added.
+- hung_long_commands: N/A; observed commands completed normally within seconds.
+- flaky_tests: targeted command passed after implementation and passed again after final edits.
+- repeated_interruptions: N/A.
+
+Known risks:
+- Live source adapters are intentionally not wired in this Todo.
+- NATIONAL_CULTURE_FESTIVAL_BASE_URL has no default until a real endpoint is confirmed.
+- normalize.ts remains oversized; refactoring it would exceed this Todo's contract/config/schema scope.
+
+Todo 1 blocker fix - source registry entries
+Date: 2026-07-04 Asia/Seoul
+Scope:
+- apps/family-experience-mcp/src/sources/registry.ts
+- apps/family-experience-mcp/test/sources.test.ts
+- .omo/evidence/family-experience-nationwide-etl-expansion/task-1-contracts.txt
+
+Fix implemented:
+- Added runtime sourceRegistry registrations for:
+  - culture-portal-oneview
+  - kto-tourapi-events
+  - national-culture-festival-standard
+- Each new registration includes institution, authority tier, official URL, license text, authentication, freshness expectation, cache TTL, allowed claims, and redaction policy.
+- Added a registry-behavior test that resolves each new id through getSourceRegistration and checks service_key_required authentication, redact_service_key_and_keyed_url redaction, authority tier, cache TTL, allowed claims, and canSourceSupportAuthorityClaim behavior.
+- Preserved existing fixture-family-experience-v1 and seoul-culture-events behavior.
+
+Official source references checked during this fix:
+- Culture Portal API guide: https://www.culture.go.kr/portal/main/contents.do?menuNo=200155
+- KTO TourAPI public data page: https://www.data.go.kr/data/15101578/openapi.do
+- National culture festival standard data page: https://www.data.go.kr/data/15013104/standard.do
+
+Failing-first proof:
+Command:
+  cd apps/family-experience-mcp
+  npm test -- config sources schemas
+Observable:
+  Exit code 1
+  Test Files 1 failed | 2 passed (3)
+  Tests 1 failed | 17 passed (18)
+  Failure:
+    test/sources.test.ts > family experience source registry > returns nationwide official source registrations through getSourceRegistration
+    expected undefined to match object for id culture-portal-oneview
+Interpretation:
+  The new test covered getSourceRegistration behavior and failed before sourceRegistry had the three nationwide registrations.
+
+Automated verification:
+Command:
+  cd apps/family-experience-mcp
+  npm test -- config sources schemas
+Observable:
+  Exit code 0
+  Test Files 3 passed (3)
+  Tests 18 passed (18)
+  Duration 244ms
+Interpretation:
+  Registry-backed source tests, config tests, and schema tests pass after the fix.
+
+Repeat targeted verification:
+Command:
+  cd apps/family-experience-mcp
+  npm test -- config sources schemas
+Observable:
+  Exit code 0
+  Test Files 3 passed (3)
+  Tests 18 passed (18)
+  Duration 221ms
+Interpretation:
+  Targeted suite passed again for flaky_tests adversarial coverage.
+
+TypeScript verification:
+Command:
+  cd apps/family-experience-mcp
+  npm run typecheck
+Observable:
+  Exit code 0
+  tsc --noEmit
+Interpretation:
+  TypeScript typecheck passed on the current working tree.
+
+Manual registry probe:
+Command:
+  cd apps/family-experience-mcp
+  node --import tsx --input-type=module -e 'import { getSourceRegistration, sourceRegistry } from "./src/sources/registry.ts"; const ids = ["culture-portal-oneview", "kto-tourapi-events", "national-culture-festival-standard"]; const registrations = ids.map((id) => getSourceRegistration(id)); const result = { registryCount: sourceRegistry.length, nationwideIds: ids.map((id, index) => ({ id, exists: registrations[index] !== undefined, authentication: registrations[index]?.authentication, redaction_policy: registrations[index]?.redaction_policy, authority_tier: registrations[index]?.authority_tier, canUseExpectedAuth: registrations[index]?.authentication === "service_key_required" })) }; console.log(JSON.stringify(result, null, 2))'
+Observable:
+  Exit code 0
+  {
+    "registryCount": 5,
+    "nationwideIds": [
+      {
+        "id": "culture-portal-oneview",
+        "exists": true,
+        "authentication": "service_key_required",
+        "redaction_policy": "redact_service_key_and_keyed_url",
+        "authority_tier": "official_national_api",
+        "canUseExpectedAuth": true
+      },
+      {
+        "id": "kto-tourapi-events",
+        "exists": true,
+        "authentication": "service_key_required",
+        "redaction_policy": "redact_service_key_and_keyed_url",
+        "authority_tier": "official_national_api",
+        "canUseExpectedAuth": true
+      },
+      {
+        "id": "national-culture-festival-standard",
+        "exists": true,
+        "authentication": "service_key_required",
+        "redaction_policy": "redact_service_key_and_keyed_url",
+        "authority_tier": "official_national_standard_dataset",
+        "canUseExpectedAuth": true
+      }
+    ]
+  }
+Interpretation:
+  The actual sourceRegistry/getSourceRegistration behavior now contains all three nationwide official sources with expected authentication and redaction posture.
+
+Post-write audit:
+Command:
+  awk pure LOC count on apps/family-experience-mcp/src/sources/registry.ts
+Observable:
+  109
+Command:
+  awk pure LOC count on apps/family-experience-mcp/test/sources.test.ts
+Observable:
+  162
+Interpretation:
+  Both touched TypeScript files are below the 200 pure-LOC healthy threshold.
+
+No-excuse audit:
+Command:
+  cd apps/family-experience-mcp
+  node --import tsx C:/Users/K/.codex/plugins/cache/sisyphuslabs/omo/4.15.1/skills/programming/scripts/typescript/check-no-excuse-rules.ts src/sources/registry.ts test/sources.test.ts
+Observable:
+  Exit code 1 before scanning; ERR_MODULE_NOT_FOUND for package 'typescript' imported from the plugin script path.
+Fallback command:
+  cd apps/family-experience-mcp
+  rg -n 'as any|as unknown|@ts-ignore|@ts-expect-error|:\s*any\b|\bany\b|enum\s+|!\.|\w!\b' src/sources/registry.ts test/sources.test.ts
+Observable:
+  test/sources.test.ts:37:      cache_ttl_seconds: expect.any(Number),
+Interpretation:
+  The only fallback hit is an existing Vitest matcher, not a TypeScript any escape hatch introduced by this fix.
+
+Git status / stale-state / dirty-worktree:
+Command:
+  git status --short -- apps/family-experience-mcp/src/sources/registry.ts apps/family-experience-mcp/test/sources.test.ts .omo/evidence/family-experience-nationwide-etl-expansion/task-1-contracts.txt
+Observable:
+  ?? .omo/evidence/family-experience-nationwide-etl-expansion/task-1-contracts.txt
+  ?? apps/family-experience-mcp/src/sources/registry.ts
+  ?? apps/family-experience-mcp/test/sources.test.ts
+Interpretation:
+  The three task-owned paths are untracked in this repository snapshot. Broader git status remains heavily dirty with unrelated .omo evidence, docs, scripts, and app files; none were reverted or cleaned.
+
+Adversarial QA:
+- misleading_success_output: passed; failing-first proof and final test assert getSourceRegistration for each nationwide id, not only SOURCE_IDS constants.
+- stale_state: passed; current targeted tests, typecheck, manual probe, and scoped git status were recorded after edits.
+- dirty_worktree: passed; unrelated dirty files were preserved.
+- malformed_input: N/A; this fix did not touch parsing.
+- flaky_tests: passed; targeted test command was rerun after the initial green run.
+
+Known risks after blocker fix:
+- Live source adapters remain intentionally outside this Todo.
+- Authentication uses the existing Todo 1 service_key_required contract for Public Data Portal-backed nationwide sources.

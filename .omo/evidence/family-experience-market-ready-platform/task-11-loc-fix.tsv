@@ -1,0 +1,9 @@
+apps/family-experience-mcp/scripts/smoke-mcp.ts	179
+apps/family-experience-mcp/scripts/smoke-mcp-fixtures.ts	87
+apps/family-experience-mcp/test/smokeMcp.test.ts	22
+apps/family-experience-mcp/scripts/eval-prompts.ts	245
+apps/family-experience-mcp/scripts/eval-prompt-checks.ts	223
+apps/family-experience-mcp/scripts/eval-market-metrics.ts	226
+apps/family-experience-mcp/scripts/eval-prompt-cli.ts	28
+apps/family-experience-mcp/scripts/eval-prompt-no-result.ts	9
+apps/family-experience-mcp/scripts/eval-prompt-request-checks.ts	75

@@ -1,0 +1,1 @@
+scope_fidelity.mode_fixture=True scope_fidelity.fixture_notice=True scope_fidelity.no_official_data_banner=True scope_fidelity.no_example_test=True manual_busan.failure_no_results=True manual_busan.no_failure_invalid_input=True manual_jeju.failure_no_results=True manual_jeju.no_failure_invalid_input=True

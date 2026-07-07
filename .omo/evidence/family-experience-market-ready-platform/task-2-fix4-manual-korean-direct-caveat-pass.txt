@@ -1,0 +1,9 @@
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include .omo/tmp/market-plan-fix4/korean-direct-caveat.md
+
+{
+  "status": "PASS",
+  "scanned_files": 128
+}
+EXIT_CODE=0

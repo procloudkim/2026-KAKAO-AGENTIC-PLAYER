@@ -1,0 +1,8 @@
+file	pure_loc
+test/pipelineNationwide.test.ts	194
+test/pipelineTestHelpers.ts	117
+src/pipeline/normalize.ts	202
+test/pipeline.test.ts	163
+src/pipeline/sourceRecord.ts	88
+src/pipeline/dedupe.ts	118
+src/pipeline/rank.ts	218

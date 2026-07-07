@@ -1,0 +1,19 @@
+Scenario: manual include probe rejects placeholder-embedded longer token after fix.
+Invocation: npm --prefix apps/family-experience-mcp run scan:secrets -- --include ../../.omo/evidence/family-experience-market-ready-platform/task-7-fix2-red-embedded-placeholder.env
+Expected: exit 1 with key-assignment finding.
+ExitCode: 1
+OUTPUT:
+
+> family-experience-mcp@0.1.0 scan:secrets
+> tsx scripts/scan-secrets.ts --include ../../.omo/evidence/family-experience-market-ready-platform/task-7-fix2-red-embedded-placeholder.env
+
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-fix2-red-embedded-placeholder.env",
+      "line": 1,
+      "rule": "key-assignment"
+    }
+  ]
+}

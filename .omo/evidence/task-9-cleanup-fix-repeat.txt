@@ -1,0 +1,15 @@
+task-9 cleanup repeat stress
+2026-07-02T15:23:35+09:00
+cycle=1 preflight
+no LISTENING on :3345 before cycle 1
+cycle=1 captured_SERVER_PID=538
+cycle=1 health_attempt=1 status=000
+cycle=1 health_attempt=2 status=200
+cycle=1 no LISTENING on :3345 after captured PID kill
+cycle=2 preflight
+no LISTENING on :3345 before cycle 2
+cycle=2 captured_SERVER_PID=599
+cycle=2 health_attempt=1 status=000
+cycle=2 health_attempt=2 status=200
+cycle=2 no LISTENING on :3345 after captured PID kill
+repeat stress complete

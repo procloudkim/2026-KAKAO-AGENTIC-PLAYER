@@ -1,0 +1,25 @@
+
+> family-experience-mcp@0.1.0 typecheck
+> tsc --noEmit
+
+src/etl/cacheQuery.ts(102,7): error TS2322: Type 'CacheQueryResult' is not assignable to type 'MetadataReadResult'.
+  Type '{ readonly ok: true; readonly mode: "fixture" | "live"; readonly records: readonly unknown[]; }' is not assignable to type 'MetadataReadResult'.
+    Property 'metadata' is missing in type '{ readonly ok: true; readonly mode: "fixture" | "live"; readonly records: readonly unknown[]; }' but required in type '{ readonly ok: true; readonly metadata: { [x: string]: unknown; generated_at: string; ttl_hours: number; }; }'.
+src/etl/cacheQuery.ts(110,7): error TS2322: Type 'CacheQueryResult' is not assignable to type 'MetadataReadResult'.
+  Type '{ readonly ok: true; readonly mode: "fixture" | "live"; readonly records: readonly unknown[]; }' is not assignable to type 'MetadataReadResult'.
+    Property 'metadata' is missing in type '{ readonly ok: true; readonly mode: "fixture" | "live"; readonly records: readonly unknown[]; }' but required in type '{ readonly ok: true; readonly metadata: { [x: string]: unknown; generated_at: string; ttl_hours: number; }; }'.
+src/etl/cacheQuery.ts(139,9): error TS2322: Type 'CacheQueryResult' is not assignable to type 'CacheRecordsReadResult'.
+  Type '{ readonly ok: true; readonly mode: "fixture" | "live"; readonly records: readonly unknown[]; }' is not assignable to type 'CacheRecordsReadResult'.
+    Type '{ readonly ok: true; readonly mode: "fixture" | "live"; readonly records: readonly unknown[]; }' is not assignable to type '{ readonly ok: true; readonly records: readonly { [x: string]: unknown; mode: "fixture" | "live"; city: string; date: { [x: string]: unknown; start: string; end: string; }; venue: { [x: string]: unknown; name: string; address: string; }; child_stages: ("infant" | ... 3 more ... | "teen")[]; min_child_age: number; ma...'.
+      Types of property 'records' are incompatible.
+        Type 'readonly unknown[]' is not assignable to type 'readonly { [x: string]: unknown; mode: "fixture" | "live"; city: string; date: { [x: string]: unknown; start: string; end: string; }; venue: { [x: string]: unknown; name: string; address: string; }; child_stages: ("infant" | "toddler" | "preschool" | "school_age" | "teen")[]; min_child_age: number; max_child_age: nu...'.
+          Type 'unknown' is not assignable to type '{ [x: string]: unknown; mode: "fixture" | "live"; city: string; date: { [x: string]: unknown; start: string; end: string; }; venue: { [x: string]: unknown; name: string; address: string; }; child_stages: ("infant" | "toddler" | "preschool" | "school_age" | "teen")[]; min_child_age: number; max_child_age: number; }'.
+src/etl/cacheQuery.ts(147,9): error TS2322: Type 'CacheQueryResult' is not assignable to type 'CacheRecordsReadResult'.
+  Type '{ readonly ok: true; readonly mode: "fixture" | "live"; readonly records: readonly unknown[]; }' is not assignable to type 'CacheRecordsReadResult'.
+    Type '{ readonly ok: true; readonly mode: "fixture" | "live"; readonly records: readonly unknown[]; }' is not assignable to type '{ readonly ok: true; readonly records: readonly { [x: string]: unknown; mode: "fixture" | "live"; city: string; date: { [x: string]: unknown; start: string; end: string; }; venue: { [x: string]: unknown; name: string; address: string; }; child_stages: ("infant" | ... 3 more ... | "teen")[]; min_child_age: number; ma...'.
+      Types of property 'records' are incompatible.
+        Type 'readonly unknown[]' is not assignable to type 'readonly { [x: string]: unknown; mode: "fixture" | "live"; city: string; date: { [x: string]: unknown; start: string; end: string; }; venue: { [x: string]: unknown; name: string; address: string; }; child_stages: ("infant" | "toddler" | "preschool" | "school_age" | "teen")[]; min_child_age: number; max_child_age: nu...'.
+          Type 'unknown' is not assignable to type '{ [x: string]: unknown; mode: "fixture" | "live"; city: string; date: { [x: string]: unknown; start: string; end: string; }; venue: { [x: string]: unknown; name: string; address: string; }; child_stages: ("infant" | "toddler" | "preschool" | "school_age" | "teen")[]; min_child_age: number; max_child_age: number; }'.
+src/etl/cacheQuery.ts(168,7): error TS2322: Type 'CacheQueryResult' is not assignable to type 'FileReadResult'.
+  Type '{ readonly ok: true; readonly mode: "fixture" | "live"; readonly records: readonly unknown[]; }' is not assignable to type 'FileReadResult'.
+    Property 'text' is missing in type '{ readonly ok: true; readonly mode: "fixture" | "live"; readonly records: readonly unknown[]; }' but required in type '{ readonly ok: true; readonly text: string; }'.

@@ -1,0 +1,332 @@
+{
+  "manualQa": {
+    "surfaceEvidence": [
+      {
+        "scenario_id": "T10-local-verify",
+        "criterion_ref": "Todo 10 acceptance: full app verification",
+        "surface": "terminal / PowerShell invoking npm",
+        "exact_invocation": "cd apps/family-experience-mcp; npm run verify",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "task-10-verify"
+        ]
+      },
+      {
+        "scenario_id": "T10-etl-fixture",
+        "criterion_ref": "Todo 10 acceptance: ETL fixture proof",
+        "surface": "terminal / PowerShell invoking npm",
+        "exact_invocation": "cd apps/family-experience-mcp; npm run etl:nationwide -- --fixture --dry-run",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "task-10-etl-fixture-dry-run",
+          "task-10-structured-output-proof"
+        ]
+      },
+      {
+        "scenario_id": "T10-mcp-smoke",
+        "criterion_ref": "Todo 10 acceptance: MCP smoke",
+        "surface": "terminal / PowerShell invoking npm",
+        "exact_invocation": "cd apps/family-experience-mcp; npm run smoke:mcp",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "task-10-smoke-mcp",
+          "task-10-structured-output-proof"
+        ]
+      },
+      {
+        "scenario_id": "T10-scans",
+        "criterion_ref": "Todo 10 acceptance: scans",
+        "surface": "terminal / PowerShell invoking npm",
+        "exact_invocation": "cd apps/family-experience-mcp; npm run scan:secrets; npm run scan:claims; npm run scan:sources",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "task-10-scan-secrets",
+          "task-10-scan-claims",
+          "task-10-scan-sources"
+        ]
+      },
+      {
+        "scenario_id": "T10-eval",
+        "criterion_ref": "Verify commands: eval:nationwide-prompts",
+        "surface": "terminal / PowerShell invoking npm",
+        "exact_invocation": "cd apps/family-experience-mcp; npm run eval:nationwide-prompts",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "task-10-eval-nationwide-prompts"
+        ]
+      },
+      {
+        "scenario_id": "T10-live-seoul",
+        "criterion_ref": "Live proof per present key",
+        "surface": "terminal / npm smoke:live loading local .env",
+        "exact_invocation": "cd apps/family-experience-mcp; npm run smoke:live",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "task-10-live-seoul-smoke",
+          "task-10-live-key-presence"
+        ]
+      },
+      {
+        "scenario_id": "T10-missing-culture-portal",
+        "criterion_ref": "Blocked evidence per missing key",
+        "surface": "environment presence check",
+        "exact_invocation": "name-only check for CULTURE_PORTAL_SERVICE_KEY",
+        "verdict": "BLOCKED_MISSING_KEY",
+        "artifactRefs": [
+          "blocked-missing-culture-portal"
+        ]
+      },
+      {
+        "scenario_id": "T10-missing-kto-tourapi",
+        "criterion_ref": "Blocked evidence per missing key",
+        "surface": "environment presence check",
+        "exact_invocation": "name-only check for KTO_TOURAPI_SERVICE_KEY",
+        "verdict": "BLOCKED_MISSING_KEY",
+        "artifactRefs": [
+          "blocked-missing-kto-tourapi"
+        ]
+      },
+      {
+        "scenario_id": "T10-missing-public-data-standard",
+        "criterion_ref": "Blocked evidence per missing key",
+        "surface": "environment presence check",
+        "exact_invocation": "name-only check for PUBLIC_DATA_STANDARD_SERVICE_KEY",
+        "verdict": "BLOCKED_MISSING_KEY",
+        "artifactRefs": [
+          "blocked-missing-public-data-standard"
+        ]
+      },
+      {
+        "scenario_id": "T10-docker",
+        "criterion_ref": "Docker build if deploy path is in scope and available",
+        "surface": "Docker CLI",
+        "exact_invocation": "cd apps/family-experience-mcp; docker build -t family-experience-mcp:task10 .",
+        "verdict": "BLOCKED_ENV_DOCKER_DAEMON",
+        "artifactRefs": [
+          "task-10-docker-build"
+        ]
+      }
+    ],
+    "adversarialCases": [
+      {
+        "scenario_id": "ADV-stale-cache",
+        "criterion_ref": "Adversarial QA: stale_state/generated cache",
+        "adversarial_class": "stale_state/generated cache",
+        "expected_behavior": "Fixture write-cache and rerun smoke complete; metadata shows fixture cache mode and records.",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "task-10-adversarial-cache-write",
+          "task-10-adversarial-fixture-rerun",
+          "task-10-adversarial-smoke-rerun",
+          "task-10-structured-output-proof"
+        ]
+      },
+      {
+        "scenario_id": "ADV-malformed-invalid",
+        "criterion_ref": "Adversarial QA: malformed_input",
+        "adversarial_class": "malformed_input",
+        "expected_behavior": "Invalid source fails closed with expected nonzero exit.",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "task-10-adversarial-invalid-source"
+        ]
+      },
+      {
+        "scenario_id": "ADV-missing-cache",
+        "criterion_ref": "Adversarial QA: malformed_input/missing-cache",
+        "adversarial_class": "missing_cache",
+        "expected_behavior": "MCP smoke returns expected error when cache is not seeded.",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "task-10-adversarial-missing-cache"
+        ]
+      },
+      {
+        "scenario_id": "ADV-dirty-worktree",
+        "criterion_ref": "Adversarial QA: dirty_worktree",
+        "adversarial_class": "dirty_worktree",
+        "expected_behavior": "Record scoped git status without reverting or staging.",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "task-10-dirty-worktree-status"
+        ]
+      },
+      {
+        "scenario_id": "ADV-misleading-success",
+        "criterion_ref": "Adversarial QA: misleading_success_output",
+        "adversarial_class": "misleading_success_output",
+        "expected_behavior": "Parse structured outputs/counts, not only exit codes.",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "task-10-structured-output-proof"
+        ]
+      },
+      {
+        "scenario_id": "ADV-hung-long",
+        "criterion_ref": "Adversarial QA: hung_long_commands",
+        "adversarial_class": "hung_long_commands",
+        "expected_behavior": "Commands record durations and bounded timeouts.",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "task-10-final-local-live",
+          "task-10-live-seoul-smoke",
+          "task-10-docker-build"
+        ]
+      },
+      {
+        "scenario_id": "ADV-flaky",
+        "criterion_ref": "Adversarial QA: flaky_tests",
+        "adversarial_class": "flaky_tests",
+        "expected_behavior": "Critical smoke:mcp rerun succeeds.",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "task-10-adversarial-smoke-rerun"
+        ]
+      },
+      {
+        "scenario_id": "ADV-secret-hygiene",
+        "criterion_ref": "Adversarial QA: secret hygiene",
+        "adversarial_class": "secret_hygiene",
+        "expected_behavior": "No raw service-key values appear in task-10 evidence.",
+        "verdict": "PASS",
+        "artifactRefs": [
+          "task-10-secret-hygiene-proof"
+        ]
+      }
+    ],
+    "artifactRefs": [
+      {
+        "id": "task-10-final-local-live",
+        "kind": "text",
+        "description": "Rollup of required local command invocations, durations, and exit codes.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-final-local-live.txt"
+      },
+      {
+        "id": "task-10-verify",
+        "kind": "terminal-log",
+        "description": "npm run verify output: 16 files and 87 tests passed.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-verify.log"
+      },
+      {
+        "id": "task-10-etl-fixture-dry-run",
+        "kind": "terminal-log",
+        "description": "Fixture ETL dry-run JSON output.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-etl-fixture-dry-run.log"
+      },
+      {
+        "id": "task-10-smoke-mcp",
+        "kind": "terminal-log",
+        "description": "MCP smoke JSON output with candidate count.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-smoke-mcp.log"
+      },
+      {
+        "id": "task-10-scan-secrets",
+        "kind": "terminal-log",
+        "description": "Secret scan output.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-scan-secrets.log"
+      },
+      {
+        "id": "task-10-scan-claims",
+        "kind": "terminal-log",
+        "description": "Claim scan output.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-scan-claims.log"
+      },
+      {
+        "id": "task-10-scan-sources",
+        "kind": "terminal-log",
+        "description": "Source scan output.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-scan-sources.log"
+      },
+      {
+        "id": "task-10-eval-nationwide-prompts",
+        "kind": "terminal-log",
+        "description": "Nationwide prompt eval output: 42 passed.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-eval-nationwide-prompts.log"
+      },
+      {
+        "id": "task-10-live-seoul-smoke",
+        "kind": "terminal-log",
+        "description": "Seoul live smoke with redacted diagnostics and simulated permission/malformed probes.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-live-seoul-smoke.log"
+      },
+      {
+        "id": "task-10-live-key-presence",
+        "kind": "text",
+        "description": "Name-only process/.env key presence checks.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-live-key-presence.txt"
+      },
+      {
+        "id": "blocked-missing-culture-portal",
+        "kind": "markdown",
+        "description": "Missing Culture Portal key evidence.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\BLOCKED_MISSING_KEY_CULTURE_PORTAL.md"
+      },
+      {
+        "id": "blocked-missing-kto-tourapi",
+        "kind": "markdown",
+        "description": "Missing KTO TourAPI key evidence.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\BLOCKED_MISSING_KEY_KTO_TOURAPI.md"
+      },
+      {
+        "id": "blocked-missing-public-data-standard",
+        "kind": "markdown",
+        "description": "Missing public-data standard key evidence.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\BLOCKED_MISSING_KEY_PUBLIC_DATA_STANDARD.md"
+      },
+      {
+        "id": "task-10-adversarial-cache-write",
+        "kind": "terminal-log",
+        "description": "Fixture write-cache proof.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-adversarial-cache-write.log"
+      },
+      {
+        "id": "task-10-adversarial-fixture-rerun",
+        "kind": "terminal-log",
+        "description": "Fixture ETL rerun proof.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-adversarial-fixture-rerun.log"
+      },
+      {
+        "id": "task-10-adversarial-invalid-source",
+        "kind": "terminal-log",
+        "description": "Invalid source fails closed proof.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-adversarial-invalid-source.log"
+      },
+      {
+        "id": "task-10-adversarial-missing-cache",
+        "kind": "terminal-log",
+        "description": "Missing cache returns expected MCP error proof.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-adversarial-missing-cache.log"
+      },
+      {
+        "id": "task-10-adversarial-smoke-rerun",
+        "kind": "terminal-log",
+        "description": "Second smoke:mcp run for flake check.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-adversarial-smoke-rerun.log"
+      },
+      {
+        "id": "task-10-docker-build",
+        "kind": "terminal-log",
+        "description": "Bounded docker build attempt; Docker daemon unavailable in this environment.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-docker-build.log"
+      },
+      {
+        "id": "task-10-dirty-worktree-status",
+        "kind": "text",
+        "description": "Scoped dirty worktree status summary.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-dirty-worktree-status.txt"
+      },
+      {
+        "id": "task-10-structured-output-proof",
+        "kind": "json",
+        "description": "Parsed ETL, MCP, eval, and cache counts.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-structured-output-proof.json"
+      },
+      {
+        "id": "task-10-secret-hygiene-proof",
+        "kind": "text",
+        "description": "Raw service-key value scan of task-10 evidence without printing values.",
+        "path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\task-10-secret-hygiene-proof.txt"
+      }
+    ]
+  }
+}

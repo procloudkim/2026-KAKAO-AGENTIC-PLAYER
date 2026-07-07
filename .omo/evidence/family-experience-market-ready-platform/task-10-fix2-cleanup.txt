@@ -1,0 +1,47 @@
+COMMAND: process/listener cleanup receipt after Todo 10 focused test and verify
+STARTED_AT: 2026-07-07T17:51:34.5300427+09:00
+
+## node processes matching family-experience-mcp/src/server.ts/tsx
+
+ProcessId       : 89204
+ParentProcessId : 35448
+CommandLine     : "C:\Program Files\nodejs\node.exe" "C:\Program Files\nodejs/node_modules/npm/bin/npm-cli.js" --prefix apps/family-experience-mcp run verify
+
+ProcessId       : 70996
+ParentProcessId : 47000
+CommandLine     : "node"   "D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\node_modules\.bin\\..\vitest\vitest.mjs" --run
+
+ProcessId       : 64840
+ParentProcessId : 70996
+CommandLine     : "C:\Program Files\nodejs\node.exe" --experimental-import-meta-resolve --require D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/vitest/suppress-warnings.cjs --conditions node --conditions development D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\node_modules\vitest\dist\workers\forks.js
+
+ProcessId       : 77664
+ParentProcessId : 64064
+CommandLine     : "C:\Program Files\nodejs\node.exe" "C:\Program Files\nodejs/node_modules/npm/bin/npm-cli.js" --prefix apps/family-experience-mcp run verify
+
+ProcessId       : 42220
+ParentProcessId : 25544
+CommandLine     : "node"   "D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\node_modules\.bin\\..\vitest\vitest.mjs" --run
+
+ProcessId       : 92788
+ParentProcessId : 42220
+CommandLine     : "C:\Program Files\nodejs\node.exe" --experimental-import-meta-resolve --require D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/vitest/suppress-warnings.cjs --conditions node --conditions development D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\node_modules\vitest\dist\workers\forks.js
+
+ProcessId       : 60296
+ParentProcessId : 92788
+CommandLine     : "C:\Program Files\nodejs\node.exe" --import tsx src/server.ts
+
+ProcessId       : 73600
+ParentProcessId : 64840
+CommandLine     : "C:\Program Files\nodejs\node.exe" --import tsx src/server.ts
+
+
+
+## listening sockets owned by matching node processes
+
+LocalAddress LocalPort OwningProcess
+------------ --------- -------------
+127.0.0.1        51920         60296
+
+
+FINISHED_AT: 2026-07-07T17:51:36.5780451+09:00

@@ -1,0 +1,11 @@
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include .omo/tmp/market-plan/bad-claim.md
+
+{
+  "status": "PASS",
+  "scanned_files": 122
+}
+EXIT_CODE=0
+SCANNER_GAP=scan:claims accepted --include argument but did not scan the included temporary bad-claim file; Todo 2 must close this include-path gap.
+CLEANUP_TMP_EXISTS=False

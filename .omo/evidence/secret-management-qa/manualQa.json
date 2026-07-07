@@ -1,0 +1,126 @@
+{
+  "surfaceEvidence": [
+    {
+      "scenarioId": "QA-SM-01",
+      "criterionReference": "secret env files ignored; .env.example not ignored",
+      "surface": "PowerShell terminal / git CLI",
+      "exactInvocation": "git check-ignore -v -- .env .env.local apps/family-experience-mcp/.env apps/family-experience-mcp/.env.example",
+      "verdict": "PASS",
+      "artifactRefs": [
+        "art-git-check-ignore"
+      ]
+    },
+    {
+      "scenarioId": "QA-SM-01A",
+      "criterionReference": "effective git ignore decisions",
+      "surface": "PowerShell terminal / git CLI",
+      "exactInvocation": "git check-ignore -q -- <path> for each requested path",
+      "verdict": "PASS",
+      "artifactRefs": [
+        "art-git-check-ignore-effective"
+      ]
+    },
+    {
+      "scenarioId": "QA-SM-02A",
+      "criterionReference": "secret scan passes from relevant app directory",
+      "surface": "PowerShell terminal / npm script",
+      "exactInvocation": "cd apps/family-experience-mcp; npm run scan:secrets",
+      "verdict": "PASS",
+      "artifactRefs": [
+        "art-scan-secrets-app"
+      ]
+    },
+    {
+      "scenarioId": "QA-SM-03",
+      "criterionReference": "typecheck passes from relevant app directory",
+      "surface": "PowerShell terminal / npm script",
+      "exactInvocation": "cd apps/family-experience-mcp; npm run typecheck",
+      "verdict": "PASS",
+      "artifactRefs": [
+        "art-typecheck-app"
+      ]
+    },
+    {
+      "scenarioId": "QA-SM-04",
+      "criterionReference": ".env key presence check does not print raw key",
+      "surface": "PowerShell terminal / Node CLI",
+      "exactInvocation": "cd apps/family-experience-mcp; node --env-file-if-exists=.env -e \"console.log(process.env.SEOUL_OPEN_DATA_KEY ? 'present' : 'missing')\"",
+      "verdict": "PASS_WITH_NOTE",
+      "artifactRefs": [
+        "art-node-env-file"
+      ]
+    }
+  ],
+  "adversarialCases": [
+    {
+      "scenarioId": "QA-SM-05",
+      "criterionReference": "secret env files are not tracked",
+      "adversarialClass": "tracked secret file exposure",
+      "expectedBehavior": "git ls-files emits no secret env files",
+      "verdict": "PASS",
+      "artifactRefs": [
+        "art-git-tracked-secret-files"
+      ]
+    },
+    {
+      "scenarioId": "QA-SM-02",
+      "criterionReference": "script availability from repo root",
+      "adversarialClass": "wrong working directory invocation",
+      "expectedBehavior": "root invocation either works or clearly fails without exposing secrets",
+      "verdict": "PASS_WITH_NOTE",
+      "artifactRefs": [
+        "art-scan-secrets-root"
+      ]
+    }
+  ],
+  "artifactRefs": [
+    {
+      "id": "art-repo-context",
+      "kind": "terminal transcript",
+      "description": "repo status and HEAD context",
+      "path": ".omo/evidence/secret-management-qa/QA-SM-CTX-repo-context.txt"
+    },
+    {
+      "id": "art-git-check-ignore",
+      "kind": "terminal transcript",
+      "description": "git check-ignore verbose rules for requested env paths",
+      "path": ".omo/evidence/secret-management-qa/QA-SM-01-git-check-ignore.txt"
+    },
+    {
+      "id": "art-git-check-ignore-effective",
+      "kind": "terminal transcript",
+      "description": "effective git check-ignore exit codes for requested env paths",
+      "path": ".omo/evidence/secret-management-qa/QA-SM-01A-git-check-ignore-effective.txt"
+    },
+    {
+      "id": "art-scan-secrets-root",
+      "kind": "terminal transcript",
+      "description": "root npm run scan:secrets failure due missing root package.json",
+      "path": ".omo/evidence/secret-management-qa/QA-SM-02-scan-secrets.txt"
+    },
+    {
+      "id": "art-scan-secrets-app",
+      "kind": "terminal transcript",
+      "description": "app-dir npm run scan:secrets PASS",
+      "path": ".omo/evidence/secret-management-qa/QA-SM-02A-scan-secrets-app-dir.txt"
+    },
+    {
+      "id": "art-typecheck-app",
+      "kind": "terminal transcript",
+      "description": "app-dir npm run typecheck PASS",
+      "path": ".omo/evidence/secret-management-qa/QA-SM-03-typecheck-app-dir.txt"
+    },
+    {
+      "id": "art-node-env-file",
+      "kind": "terminal transcript",
+      "description": "Node env-file-if-exists presence check; no raw key printed",
+      "path": ".omo/evidence/secret-management-qa/QA-SM-04-node-env-file-if-exists.txt"
+    },
+    {
+      "id": "art-git-tracked-secret-files",
+      "kind": "terminal transcript",
+      "description": "git ls-files check for tracked secret env files",
+      "path": ".omo/evidence/secret-management-qa/QA-SM-05-git-tracked-secret-files.txt"
+    }
+  ]
+}

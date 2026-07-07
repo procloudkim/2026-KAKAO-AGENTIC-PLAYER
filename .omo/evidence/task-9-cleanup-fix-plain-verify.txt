@@ -1,0 +1,48 @@
+task-9 cleanup fix plain verify
+2026-07-02T15:23:14+09:00
+
+> family-experience-mcp@0.0.0 verify
+> npm run typecheck && npm test -- --run
+
+
+> family-experience-mcp@0.0.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.0.0 test
+> vitest --run
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  9 passed (9)
+      Tests  32 passed (32)
+   Start at  15:23:16
+   Duration  444ms (transform 351ms, setup 0ms, import 1.01s, tests 140ms, environment 1ms)
+
+
+> family-experience-mcp@0.0.0 scan:secrets
+> tsx scripts/scan-secrets.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 77
+}
+
+> family-experience-mcp@0.0.0 scan:claims
+> tsx scripts/scan-claims.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 77
+}
+
+> family-experience-mcp@0.0.0 scan:sources
+> tsx scripts/scan-sources.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 44
+}
+plain verify complete

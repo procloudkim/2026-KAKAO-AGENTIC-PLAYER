@@ -1,0 +1,3 @@
+Cleanup receipt for Todo 7 blocker fix.
+Removed temporary include fixture: .omo/evidence/family-experience-market-ready-platform/task-7-red-mixed-placeholder-real-looking.env
+Kept RED/after-fix command artifacts as durable evidence.

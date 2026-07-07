@@ -1,0 +1,25 @@
+Invocation: cd D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp; npm run smoke:mcp -- --skip-seed --expect-error
+TimeoutSeconds: 60
+ExpectedExitCodes: 0
+DurationSeconds: 0.746
+ExitCode: 0
+Verdict: PASS
+--- output ---
+
+> family-experience-mcp@0.1.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts --skip-seed --expect-error
+
+{
+  "endpoint": "in-memory",
+  "cache_dir": "C:\\Users\\K\\AppData\\Local\\Temp\\family-experience-mcp-smoke-LWTzwx",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "prompt": "遺???대쾲 二쇰쭚 4???ㅻ궡",
+  "result_ok": false,
+  "mode": "live",
+  "candidate_count": 0,
+  "failure_code": "missing_configuration",
+  "text": "?꾩옱 ?ㅼ젙?쇰줈??泥댄뿕 ?꾨낫瑜??뺤씤?????놁뼱?? 怨듭떇 ?곗씠???ㅻ? ?ㅼ젙?섍굅??fixture 紐⑤뱶瑜?耳?二쇱꽭?? Nationwide cache is missing at C:\\Users\\K\\AppData\\Local\\Temp\\family-experience-mcp-smoke-LWTzwx. Run npm run etl:nationwide -- --fixture --write-cache --cache-dir C:\\Users\\K\\AppData\\Local\\Temp\\family-experience-mcp-smoke-LWTzwx."
+}

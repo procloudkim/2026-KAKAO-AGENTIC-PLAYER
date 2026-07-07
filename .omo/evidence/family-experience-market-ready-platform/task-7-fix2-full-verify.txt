@@ -1,0 +1,25 @@
+Scenario: full family-experience-mcp verify after Todo 7 fix2 scanner change.
+Invocation: npm --prefix apps/family-experience-mcp run verify
+ExitCode: 0
+OUTPUT:
+
+> family-experience-mcp@0.1.0 verify
+> npm run typecheck && npm test -- --run
+
+
+> family-experience-mcp@0.1.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.1.0 test
+> vitest --run
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  18 passed (18)
+      Tests  135 passed (135)
+   Start at  21:54:27
+   Duration  18.44s (transform 4.81s, setup 0ms, import 7.49s, tests 22.43s, environment 2ms)
+

@@ -1,0 +1,48 @@
+command: npm --prefix apps/family-experience-mcp test -- --run test/etlNationwide.test.ts
+scenario: focused ETL regression test should reject swapped canonical source/source_id provenance pairs before fix
+--- output ---
+
+> family-experience-mcp@0.1.0 test
+> vitest --run test/etlNationwide.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/etlNationwide.test.ts (19 tests | 1 failed) 418ms
+     × rejects live zero-record cache metadata with swapped source provenance pairs 13ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/etlNationwide.test.ts > nationwide ETL cache runner > rejects live zero-record cache metadata with swapped source provenance pairs
+AssertionError: expected { ok: true, mode: 'live', records: [] } to match object { ok: false, …(1) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "failure": {
+-     "code": "upstream_invalid_response",
+-   },
+-   "ok": false,
++   "ok": true,
+  }
+
+ ❯ test/etlNationwide.test.ts:460:22
+    458|
+    459|       // Then: provenance must preserve the registry's canonical sourc…
+    460|       expect(result).toMatchObject({
+       |                      ^
+    461|         ok: false,
+    462|         failure: { code: "upstream_invalid_response" },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 18 passed (19)
+   Start at  23:05:29
+   Duration  842ms (transform 159ms, setup 0ms, import 278ms, tests 418ms, environment 0ms)
+
+--- exit_code ---
+1

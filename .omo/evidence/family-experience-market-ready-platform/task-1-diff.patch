@@ -1,0 +1,201 @@
+# REQUESTED_COMMAND_EXIT_CODE=0
+# REQUESTED_GIT_DIFF_EMPTY_BECAUSE_TARGET_FILES_ARE_UNTRACKED
+# SCOPED_UNTRACKED_PATCH_FOLLOWS
+diff --git a/.omo/tmp/market-plan/empty-diff-base b/apps/family-experience-mcp/docs/DECISIONS.md
+index e69de29..f71da78 100644
+--- a/.omo/tmp/market-plan/empty-diff-base
++++ b/apps/family-experience-mcp/docs/DECISIONS.md
+@@ -0,0 +1,37 @@
++# Decisions
++
++Date: 2026-07-07
++
++## Current Policy
++
++- Product contract: this service presents source-grounded family experience candidates for bounded parent decision support. It is not a complete event search engine.
++- Keep chat/runtime operation cache-first. Live provider calls belong in ETL proof, smoke, or cache generation, not in every user chat request.
++- Keep fixture rows deterministic and visibly labeled as fixture/demo. Fixture rows prove response shape and safety, not live event freshness.
++- Keep official-source boundaries only: Seoul Open Data, Culture Portal, KTO TourAPI, and national culture festival standard data. Do not add unofficial scraping pipelines or browser parsers.
++- Keep source diagnostics redacted. Raw keys and keyed URLs must not appear in docs, logs, evidence, or user-visible responses.
++- Do not make unsupported public claims: nationwide completeness, live freshness, reservation availability, current operation, or child suitability require an exact supporting source field.
++- Public copy must carry these unsupported-claim caveats: no nationwide completeness, no real-time freshness, no reservation/open-now guarantee, and no child safety certification.
++
++## Nationwide ETL Source Matrix
++
++| Source id | Official source | Role | Key/env | Current proof status | Coverage note |
++| --- | --- | --- | --- | --- | --- |
++| `seoul-culture-events` | Seoul Open Data Plaza culture event API, `https://data.seoul.go.kr/` | City authority source for Seoul events | `SEOUL_OPEN_DATA_KEY`, optional `SEOUL_OPEN_DATA_BASE_URL` | Proven only when the key-backed live smoke or ETL proof is rerun in the current environment | Seoul only. |
++| `culture-portal-oneview` | KCISA/Culture Portal culture information API, `https://www.culture.go.kr/portal/main/contents.do?menuNo=200155`; live route `https://apis.data.go.kr/B553457/cultureinfo/period2` | National culture-event source | `CULTURE_PORTAL_SERVICE_KEY`, `CULTURE_PORTAL_BASE_URL` | Key-backed live proof passed on 2026-07-07. See `docs/QA_REPORT.md`. | National candidate source; not proof of complete coverage. |
++| `kto-tourapi-events` | Korea Tourism Organization TourAPI, `https://www.data.go.kr/data/15101578/openapi.do` | National tourism/event breadth source | `KTO_TOURAPI_SERVICE_KEY`, `KTO_TOURAPI_BASE_URL` | Candidate/cache-backed until current live proof exists | Broader tourism/event source; source-returned fields only. |
++| `national-culture-festival-standard` | National culture festival standard data, `https://www.data.go.kr/data/15013104/standard.do` | Lower-freshness fallback source | `NATIONAL_CULTURE_FESTIVAL_CSV_PATH`; `PUBLIC_DATA_STANDARD_SERVICE_KEY` only for confirmed live endpoint mode | Local CSV fallback is the current canonical data path. | Useful fallback; dataset lag must remain visible. |
++
++## Cache And Coverage Decisions
++
++- MCP requests use cache-first nationwide routing. The chat path must not fan out to all national live APIs on every request.
++- Fixture/cache evidence proves schema shape, normalization, redaction, ranking, and source attribution. It does not prove live nationwide completeness.
++- A source can appear in the registry before live proof, but docs and user-visible copy must distinguish candidate/cache coverage from current key-backed live proof.
++- Live proof requires a current ETL or smoke command with the relevant key present and redacted diagnostics. `docs/QA_REPORT.md` is the canonical verification summary.
++
++## Gate Decisions
++
++- `scan:secrets` covers app docs/source/tests/scripts/package plus current golden JSON and Todo 9 evidence only.
++- `scan:claims` treats prohibited-claim examples as allowed only in guardrail, negative-test, or explicit non-promise context.
++- `scan:sources` allows local endpoints, synthetic fixture/test domains, Seoul official domains, Culture Portal, KTO TourAPI, Public Data Portal URLs, official host/platform documentation URLs, and the PlayMCP-in-KC endpoint hostname pattern recorded in `docs/HOST_REQUIREMENTS_SOT.md`; it rejects scraper/browser-parser packages and unregistered event-source URLs.
++- PlayMCP remains temporary/private-registration preparation only. No final review request, public switch, representative image upload, or contest submission is claimed by these docs.
++- The Kakao AGENTIC PLAYER 10 official page is used only for contest flow boundaries: create/register an MCP endpoint, use temporary registration for testing, request review only when final, switch to public after approval, and submit once. It is not evidence for data coverage, freshness, reservations, open-now state, or safety certification.
+
+
+diff --git a/.omo/tmp/market-plan/empty-diff-base b/apps/family-experience-mcp/docs/SUBMISSION_COPY_DRAFT.md
+index e69de29..a3b45e8 100644
+--- a/.omo/tmp/market-plan/empty-diff-base
++++ b/apps/family-experience-mcp/docs/SUBMISSION_COPY_DRAFT.md
+@@ -0,0 +1,45 @@
++# Submission Copy Draft
++
++This is draft copy for a future operator to paste into PlayMCP temporary/private fields. It is not proof of release, public visibility, contest entry, or final review action.
++
++## Service Name
++
++아이랑 어디가
++
++## Identifier
++
++familyexp
++
++## Short Description
++
++source-grounded family experience candidates를 최대 3개로 좁혀 주는 MCP입니다. 아이 나이, 날짜, 지역, 실내외 선호를 받아 fixture/demo 또는 공식 출처 캐시에서 후보를 고르고, 출처, 나이 적합 근거, 보호자 확인사항, 다음 행동을 함께 보여줍니다. 현재 빌드는 데모/검증용이며 완전한 행사 검색을 약속하지 않습니다.
++
++## Starter Messages
++
++1. 이번 주말 4살 실내 체험 찾아줘
++2. 오늘 아이랑 갈 곳 3개만 골라줘
++3. 비 오는 날 가족 체험 추천해줘
++
++## Endpoint
++
++Use the temporary deployed base URL plus `/mcp`.
++
++## Auth
++
++No auth for the current local fixture/demo build. Do not paste API keys, bearer tokens, cookies, or keyed URLs into PlayMCP copy fields.
++
++## Response Visibility
++
++Keep private/operator-only until a later release gate explicitly changes this.
++
++## Guardrail Copy
++
++Fixture/demo rows are test data. Source-backed rows show their source, freshness label, confidence, parent check, and next action. This is bounded parent decision support, not complete event search.
++
++Unsupported-claim caveats: no nationwide completeness, no real-time freshness, no reservation/open-now guarantee, and no child safety certification. Parents must confirm schedule, venue rules, fees, booking steps, opening state, and safety needs at the cited source before visiting.
++
++For the canonical source and verification policy, see `RUNBOOK.md`, `DECISIONS.md`, and `QA_REPORT.md`.
++
++## Representative Image
++
++TODO: prepare a rights-cleared representative image separately. This Todo does not generate, upload, or submit an image.
+
+
+diff --git a/.omo/tmp/market-plan/empty-diff-base b/apps/family-experience-mcp/docs/DEMO_PACK.md
+index e69de29..3678aab 100644
+--- a/.omo/tmp/market-plan/empty-diff-base
++++ b/apps/family-experience-mcp/docs/DEMO_PACK.md
+@@ -0,0 +1,33 @@
++# Demo Pack
++
++## 30-Second Script
++
++아이랑 어디가는 source-grounded family experience candidates를 부모가 빠르게 비교할 수 있게 좁혀 주는 PlayMCP용 도구입니다. 예를 들어 "오늘 비오는데 4살이랑 갈 곳"처럼 말하면 날짜, 장소, 주소, 연령 근거, 출처, 확인 시점, 부모 확인사항, 다음 행동을 한 장의 action card로 돌려줍니다. 완전한 행사 검색이 아니라 bounded parent decision support이며, 출처가 뒷받침하지 않는 범위, 상태, 신청 관련 주장은 하지 않고 다시 확인해야 할 항목을 분리합니다.
++
++Public caveat: no nationwide completeness, no real-time freshness, no reservation/open-now guarantee, and no child safety certification. Demo users must confirm schedule, venue rules, fees, booking steps, opening state, and safety needs at the cited source.
++
++## Starter Prompts
++
++1. 오늘 비오는데 4살이랑 갈 곳
++2. 이번 주말 초등 저학년 실내 체험
++3. 종로구 근처 5살 아이랑 갈 행사
++
++## Before / After
++
++Before: 부모가 포털, 지도, 기관 페이지를 오가며 날짜, 장소, 연령, 신청 여부를 직접 확인해야 합니다.
++
++After: 카카오톡 채팅에서 아이 나이, 날짜, 지역, 조건을 말하면 출처 기반 후보 3개와 확인사항을 바로 받습니다.
++
++## Representative Image Prompt
++
++Rights plan: generate an original image, do not use third-party logos, event posters, child faces, or Seoul Open Data screenshots.
++
++Prompt: "A warm but practical mobile chat interface showing a parent receiving three concise family activity cards for a rainy weekend in Seoul, with date, venue, address, source, parent checklist, and next action. No brand logos, no real child faces, no copyrighted posters, clean Korean app-style layout."
++
++## Screenshot / Transcript Checklist
++
++- Local `/health` screenshot or transcript.
++- MCP tool discovery transcript with exactly `find_family_experiences`.
++- Starter prompt transcript for "오늘 비오는데 4살이랑 갈 곳".
++- Eval summary showing at least 20 prompts and unsupported claim failures equal to 0.
++- No `.env`, raw API key, keyed URL, cookie, bearer token, private console URL, or account identifier.
+
+
+diff --git a/.omo/tmp/market-plan/empty-diff-base b/apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md
+index e69de29..8b92c99 100644
+--- a/.omo/tmp/market-plan/empty-diff-base
++++ b/apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md
+@@ -0,0 +1,54 @@
++# PlayMCP Temporary Registration
++
++Purpose: prepare the PlayMCP console fields for local/private testing only. This document is for `임시 등록`; it is not a public switch or final release action.
++
++## Metadata
++
++| Field | Value |
++| --- | --- |
++| Name | 아이랑 어디가 |
++| Identifier | familyexp |
++| Endpoint path | /mcp |
++| Description | source-grounded family experience candidates를 최대 3개로 좁혀 주는 MCP입니다. 아이 나이, 날짜, 지역, 실내외 선호를 받아 fixture/demo 또는 공식 출처 캐시에서 후보를 고르고, 출처, 나이 적합 근거, 보호자 확인사항, 다음 행동을 함께 보여줍니다. 현재 빌드는 데모/검증용이며 완전한 행사 검색을 약속하지 않습니다. |
++| Auth method | No auth for the current local fixture/demo build. If the console requires a choice, use the no-auth option and do not paste secrets. |
++| Response visibility | Temporary/private testing only. Keep visibility limited to the operator until later approval and public-release gates are explicitly run. |
++
++## Starter Messages
++
++1. 이번 주말 4살 실내 체험 찾아줘
++2. 오늘 아이랑 갈 곳 3개만 골라줘
++3. 비 오는 날 가족 체험 추천해줘
++
++## Endpoint Note
++
++Register the deployed server endpoint with the MCP path ending in `/mcp`. The local development server exposes `http://127.0.0.1:3345/mcp`; the PlayMCP console should use the actual temporary server URL plus `/mcp`.
++
++For AGENTIC PLAYER 10, use the host SOT in `HOST_REQUIREMENTS_SOT.md`. The official Kakao contest page supports only the registration flow boundary: create a KakaoCloud MCP endpoint, register it in PlayMCP, use temporary registration for testing, request review only when final, switch to public after approval, and submit once. The organizer-provided PlayMCP-in-KC endpoint pattern is:
++
++```text
++https://mcp-name.playmcp-endpoint.kakaocloud.io/mcp
++```
++
++After changing the endpoint in the developer console, click `정보 불러오기` and verify that tool discovery returns exactly `find_family_experiences`. Do not click `등록 및 심사 요청` while this document is being used only for temporary/private testing.
++
++## Deployment Notes
++
++- Keep one public MCP tool: `find_family_experiences`.
++- Set provider keys only through the hosting secret mechanism supported by the target platform. For PlayMCP-in-KC, see `HOST_REQUIREMENTS_SOT.md`: the organizer notice quoted on 2026-07-07 says env/Secret injection is not yet supported, so any private image-baked key workaround is a temporary host-specific exception requiring human approval and key rotation.
++- Configure `FAMILY_EXPERIENCE_ETL_CACHE_DIR` so the runtime can read the cache produced by `npm run etl:nationwide -- --fixture --write-cache` or a later live proof run.
++- See `DECISIONS.md` for source claim boundaries and live-proof policy.
++
++## Copy Guardrails
++
++- Market promise: source-grounded family experience candidates for bounded parent decision support, not complete event search.
++- Label fixture output as `fixture/demo`; do not present fixture rows as live records.
++- Do not claim nationwide coverage, live freshness, reservation status, current opening status, or child suitability unless a cited source field supports that exact claim.
++- Explicit public caveats: no nationwide completeness, no real-time freshness, no reservation/open-now guarantee, and no child safety certification.
++- Do not describe cache-backed candidate coverage as live nationwide completeness.
++- Mention missing or inferred fields plainly with `unknown`, `inferred`, or `stale` where applicable.
++- Do not include raw keys, bearer tokens, keyed URLs, cookies, or private operator logs.
++- TODO: 대표 이미지 must be a rights-cleared representative image. Do not generate, upload, or submit an image in this Todo.
++
++## Operator Stop Line
++
++After saving as temporary/private test material, stop. Do not take any public visibility, contest entry, or final release action in this Todo.
+
+
+# CLEANUP_TMP_EXISTS=False

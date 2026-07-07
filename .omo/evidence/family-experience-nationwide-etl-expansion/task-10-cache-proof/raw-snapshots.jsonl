@@ -1,0 +1,4 @@
+{"snapshot_id":"seoul-culture-events:raw:a15c41de6cf4c17d","source_id":"seoul-culture-events","retrieved_at":"2026-07-04T00:00:00.000Z","request_hash":"a15c41de6cf4c17d","payload_ref":"culturalEventInfo"}
+{"snapshot_id":"culture-portal-oneview:raw:1a1d66bc3acee96c","source_id":"culture-portal-oneview","retrieved_at":"2026-07-04T00:00:00.000Z","request_hash":"1a1d66bc3acee96c","payload_ref":"period"}
+{"snapshot_id":"kto-tourapi-events:raw:4f446509259684af","source_id":"kto-tourapi-events","retrieved_at":"2026-07-04T00:00:00.000Z","request_hash":"4f446509259684af","payload_ref":"searchFestival2"}
+{"snapshot_id":"national-culture-festival-standard:raw:ec19b919754f21dc","source_id":"national-culture-festival-standard","retrieved_at":"2026-07-04T00:00:00.000Z","request_hash":"ec19b919754f21dc","payload_ref":"national-culture-festival-standard"}

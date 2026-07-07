@@ -1,0 +1,31 @@
+{
+  "scenario": "semantic provenance completeness after fix",
+  "cases": [
+    {
+      "name": "reject_empty_source_provenance_zero_records",
+      "result": {
+        "ok": false,
+        "message": "source-level provenance is incomplete for source_set/source_ids"
+      }
+    },
+    {
+      "name": "reject_missing_corresponding_source_provenance",
+      "result": {
+        "ok": false,
+        "message": "source-level provenance is incomplete for source_set/source_ids"
+      }
+    },
+    {
+      "name": "accept_legitimate_zero_result_with_source_provenance",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "name": "accept_legitimate_zero_result_with_failure_status",
+      "result": {
+        "ok": true
+      }
+    }
+  ]
+}

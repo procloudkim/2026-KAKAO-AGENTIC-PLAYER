@@ -1,0 +1,21 @@
+Todo 7 quality-fix RED evidence
+Date: 2026-07-02
+
+Current gate blocker probes were run by inspecting the existing generated golden artifacts before code changes.
+
+FAIL happy_candidate_action_card_fields:
+- .omo/evidence/golden-family-experience-happy.json response.structuredContent.candidates has exactly 3 candidates.
+- Each candidate lacks the required action-card fields: date_time, venue, address, age_fit_label, age_fit_reason, indoor_outdoor, fee_text, source_name, retrieved_at, confidence, parent_check, next_action, source_summary.
+- Existing response.text only lists titles and does not expose the useful parent action-card contract.
+
+FAIL missing_age_korean_parent_actionable:
+- .omo/evidence/golden-family-experience-missing-age.json response.text is:
+  Input validation error: Invalid arguments for tool find_family_experiences: child_age: Provide exactly one of child_age or child_stage.
+- This is an English SDK validation message and not a Korean parent-facing clarification.
+
+FAIL no_result_relax_one_constraint:
+- .omo/evidence/golden-family-experience-no-result.json response.text says no grounded candidate was found and no candidate was fabricated.
+- It does not suggest relaxing exactly one constraint such as time, budget, indoor-only, or distance.
+
+Baseline note:
+- The gate review in .omo/evidence/todo-7-golden-gate-review.md independently records the same failures.

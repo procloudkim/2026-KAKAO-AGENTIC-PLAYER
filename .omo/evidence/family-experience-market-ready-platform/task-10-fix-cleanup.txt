@@ -1,0 +1,9 @@
+Todo 10 fix cleanup receipt
+repo=D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY
+command_process=Get-CimInstance Win32_Process | Where CommandLine contains repo and matches src/server.ts|vitest|tsx
+matching_processes=0
+
+command_listener=For each matching process, Get-NetTCPConnection -State Listen -OwningProcess <pid>
+matching_listeners=0
+
+assertion=matching_processes=0 and matching_listeners=0 means no Todo 10 test server/listener/process remains.

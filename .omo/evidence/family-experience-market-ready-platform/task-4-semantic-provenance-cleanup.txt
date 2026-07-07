@@ -1,0 +1,7 @@
+cleanup_receipt=PASS
+removed_temp_probe=C:\Users\K\AppData\Local\Temp\task-4-semantic-provenance-red.mjs
+background_servers_started=0
+background_servers_left_running=0
+todo_6_output_touched=NO
+todo_7_secret_scanner_touched=NO
+claim_scanner_touched=NO

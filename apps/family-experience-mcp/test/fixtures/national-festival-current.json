@@ -1,0 +1,18 @@
+{
+  "data": [
+    {
+      "festival_name": "Busan Family Sea Festival",
+      "place": "Busan Citizens Park",
+      "start_date": "2026-08-01",
+      "end_date": "2026-08-03",
+      "content": "Family experience booths and outdoor performances for children.",
+      "organization": "Busan Metropolitan City",
+      "phone": "051-000-0000",
+      "homepage": "https://festival.example.test/busan-family-sea",
+      "address": "Busan Busanjin-gu Citizens Park Road 73",
+      "latitude": "35.1682",
+      "longitude": "129.0570",
+      "data_reference_date": "2026-06-30"
+    }
+  ]
+}

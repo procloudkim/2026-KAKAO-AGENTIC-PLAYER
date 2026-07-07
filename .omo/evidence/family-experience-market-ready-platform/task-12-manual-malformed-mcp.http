@@ -1,0 +1,15 @@
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+
+  0      0   0      0   0      0      0      0                              0
+HTTP/1.1 400 Bad Request
+content-type: application/json; charset=utf-8
+Date: Tue, 07 Jul 2026 15:13:49 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+100    115   0    106 100      9    116      9   00:01           00:01      0
+100    115   0    106 100      9    116      9   00:01           00:01      0
+100    115   0    106 100      9    116      9   00:01           00:01      0
+{"jsonrpc":"2.0","error":{"code":-32700,"message":"Parse error.","data":{"code":"parse_error"}},"id":null}

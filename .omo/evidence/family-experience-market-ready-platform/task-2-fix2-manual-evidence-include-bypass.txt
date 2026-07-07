@@ -1,0 +1,23 @@
+COMMAND=npm --prefix apps/family-experience-mcp run scan:claims -- --include D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\tmp\market-plan\.omo\evidence\bad-evidence-copy.md
+INCLUDE=D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\tmp\market-plan\.omo\evidence\bad-evidence-copy.md
+EXIT_CODE=1
+
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\tmp\market-plan\.omo\evidence\bad-evidence-copy.md
+
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\tmp\\market-plan\\.omo\\evidence\\bad-evidence-copy.md",
+      "line": 1,
+      "claim": "final review and contest submission completed"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\tmp\\market-plan\\.omo\\evidence\\bad-evidence-copy.md",
+      "line": 1,
+      "claim": "submission completed"
+    }
+  ]
+}

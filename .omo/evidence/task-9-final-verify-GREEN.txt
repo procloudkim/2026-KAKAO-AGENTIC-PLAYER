@@ -1,0 +1,81 @@
+command: full Todo 9 GREEN verification: npm run verify; server on 3345; HTTP 200; smoke:golden; scan:secrets; scan:claims; scan:sources; cleanup no listener
+
+## verify
+
+> family-experience-mcp@0.0.0 verify
+> npm run typecheck && npm test -- --run
+
+
+> family-experience-mcp@0.0.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.0.0 test
+> vitest --run
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  9 passed (9)
+      Tests  32 passed (32)
+   Start at  14:51:21
+   Duration  435ms (transform 348ms, setup 0ms, import 1.01s, tests 135ms, environment 1ms)
+
+server process id: 61844
+health status: 200
+
+> family-experience-mcp@0.0.0 smoke:golden
+> tsx scripts/smoke-golden.ts
+
+{
+  "artifact_dir": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence",
+  "scenarios": [
+    {
+      "id": "happy",
+      "passed": true,
+      "isError": false
+    },
+    {
+      "id": "missing-age",
+      "passed": true,
+      "isError": true
+    },
+    {
+      "id": "no-result",
+      "passed": true,
+      "isError": true
+    },
+    {
+      "id": "source-failure",
+      "passed": true,
+      "isError": true
+    }
+  ]
+}
+
+> family-experience-mcp@0.0.0 scan:secrets
+> tsx scripts/scan-secrets.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 56
+}
+
+> family-experience-mcp@0.0.0 scan:claims
+> tsx scripts/scan-claims.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 56
+}
+
+> family-experience-mcp@0.0.0 scan:sources
+> tsx scripts/scan-sources.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 44
+}
+SUCCESS: The process with PID 70180 (child process of PID 82884) has been terminated.
+final GREEN exit 0; no LISTENING on :3345

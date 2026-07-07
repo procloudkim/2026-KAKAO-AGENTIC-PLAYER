@@ -1,0 +1,10 @@
+
+> family-experience-mcp@0.1.0 scan:sources
+> tsx scripts/scan-sources.ts --include
+
+Missing path for --include
+Usage: tsx scripts/scan-sources.ts [--include <path> ...]
+
+Scans default app docs, source, tests, scripts, selected evidence, and any included files or directories.
+Use --include for source ledgers, launch docs, fixtures, temporary QA files, and generated evidence outside the default scan set.
+EXIT_CODE=1

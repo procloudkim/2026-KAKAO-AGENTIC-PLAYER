@@ -1,0 +1,60 @@
+{
+  "check": "inventory",
+  "verdict": "PASS",
+  "checks": [
+    {
+      "id": "plan",
+      "path": ".omo\\plans\\family-experience-winning-sdd-to-submission.md",
+      "pass": true,
+      "bytes": 39175
+    },
+    {
+      "id": "c001",
+      "path": ".omo\\evidence\\winning-sdd-plan\\C001-plan-content-check.txt",
+      "pass": true,
+      "bytes": 522
+    },
+    {
+      "id": "c002",
+      "path": ".omo\\evidence\\winning-sdd-plan\\C002-guardrail-scan.txt",
+      "pass": true,
+      "bytes": 183
+    },
+    {
+      "id": "c003StatusText",
+      "path": ".omo\\evidence\\winning-sdd-plan\\C003-loop-status-check.txt",
+      "pass": true,
+      "bytes": 200
+    },
+    {
+      "id": "c003StatusJson",
+      "path": ".omo\\evidence\\winning-sdd-plan\\C003-loop-status.json",
+      "pass": true,
+      "bytes": 4655
+    },
+    {
+      "id": "c003GitStatus",
+      "path": ".omo\\evidence\\winning-sdd-plan\\C003-git-status.txt",
+      "pass": true,
+      "bytes": 153
+    },
+    {
+      "id": "finalGate",
+      "path": ".omo\\evidence\\winning-sdd-plan\\final-quality-gate.json",
+      "pass": true,
+      "bytes": 6015
+    },
+    {
+      "id": "goals",
+      "path": ".omo\\ulw-loop\\family-experience-winning-sdd-20260703\\goals.json",
+      "pass": true,
+      "bytes": 5407
+    },
+    {
+      "id": "ledger",
+      "path": ".omo\\ulw-loop\\family-experience-winning-sdd-20260703\\ledger.jsonl",
+      "pass": true,
+      "bytes": 53418
+    }
+  ]
+}

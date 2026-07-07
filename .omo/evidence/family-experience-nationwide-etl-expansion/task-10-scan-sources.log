@@ -1,0 +1,13 @@
+Invocation: cd apps/family-experience-mcp; npm run scan:sources
+Started: 2026-07-04T07:50:10.3203872+09:00
+DurationSeconds: 0.513
+ExitCode: 0
+--- output ---
+
+> family-experience-mcp@0.1.0 scan:sources
+> tsx scripts/scan-sources.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 84
+}

@@ -1,0 +1,12 @@
+COMMAND=npm --prefix apps/family-experience-mcp run scan:claims -- --include
+EXIT_CODE=1
+
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include
+
+Missing path for --include
+Usage: tsx scripts/scan-claims.ts [--include <path> ...]
+
+Scans default app docs, source, tests, scripts, selected evidence, and any included files or directories.
+Use --include for launch copy, prompts, docs, fixtures, temporary QA files, and generated evidence outside the default scan set.

@@ -1,0 +1,82 @@
+
+> family-experience-mcp@0.1.0 test
+> vitest culturePortal
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/culturePortal.test.ts (5 tests | 5 failed) 5ms
+     × returns a missing_key failure when CULTURE_PORTAL_SERVICE_KEY is absent 3ms
+     × redacts keyed url diagnostics when building Culture Portal requests 0ms
+     × redacts request loader diagnostics when transport failure includes a keyed URL 0ms
+     × returns source_invalid_response when Culture Portal XML is malformed 0ms
+     × normalizes a Culture Portal period fixture into a source-backed candidate 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/culturePortal.test.ts > Culture Portal one-view source adapter > returns a missing_key failure when CULTURE_PORTAL_SERVICE_KEY is absent
+TypeError: createCulturePortalSourceAdapter is not a function
+ ❯ test/culturePortal.test.ts:53:21
+     51|   it("returns a missing_key failure when CULTURE_PORTAL_SERVICE_KEY is…
+     52|     // Given: the optional Culture Portal adapter is configured withou…
+     53|     const adapter = createCulturePortalSourceAdapter({
+       |                     ^
+     54|       baseUrl: "https://apis.example.test",
+     55|     })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  test/culturePortal.test.ts > Culture Portal one-view source adapter > redacts keyed url diagnostics when building Culture Portal requests
+TypeError: buildCulturePortalRequest is not a function
+ ❯ test/culturePortal.test.ts:75:21
+     73|
+     74|     // When: the adapter builds its request URL and safe diagnostics.
+     75|     const request = buildCulturePortalRequest({
+       |                     ^
+     76|       baseUrl: "https://apis.example.test/",
+     77|       serviceKey: rawKey,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  test/culturePortal.test.ts > Culture Portal one-view source adapter > redacts request loader diagnostics when transport failure includes a keyed URL
+TypeError: createCulturePortalSourceAdapter is not a function
+ ❯ test/culturePortal.test.ts:95:21
+     93|     // Given: a request loader throws an infrastructure error containi…
+     94|     const rawKey = "RAW_CULTURE_PORTAL_KEY"
+     95|     const adapter = createCulturePortalSourceAdapter({
+       |                     ^
+     96|       baseUrl: "https://apis.example.test",
+     97|       serviceKey: rawKey,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  test/culturePortal.test.ts > Culture Portal one-view source adapter > returns source_invalid_response when Culture Portal XML is malformed
+TypeError: normalizeCulturePortalXml is not a function
+ ❯ test/culturePortal.test.ts:121:20
+    119|
+    120|     // When: the source boundary parses and normalizes the XML payload.
+    121|     const result = normalizeCulturePortalXml(malformedXml, {
+       |                    ^
+    122|       request: sampleRequest,
+    123|       retrievedAt: "2026-07-04T00:00:00.000Z",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  test/culturePortal.test.ts > Culture Portal one-view source adapter > normalizes a Culture Portal period fixture into a source-backed candidate
+TypeError: normalizeCulturePortalXml is not a function
+ ❯ test/culturePortal.test.ts:138:20
+    136|
+    137|     // When: the source boundary parses and normalizes the XML payload.
+    138|     const result = normalizeCulturePortalXml(xml, {
+       |                    ^
+    139|       request: sampleRequest,
+    140|       retrievedAt: "2026-07-04T00:00:00.000Z",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+   Start at  01:49:04
+   Duration  158ms (transform 22ms, setup 0ms, import 33ms, tests 5ms, environment 0ms)
+

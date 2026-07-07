@@ -1,0 +1,8 @@
+RED: smoke:golden before Todo 7 implementation
+command: EVIDENCE_DIR=... FAMILY_EXPERIENCE_ALLOW_FIXTURE=false SEOUL_OPEN_DATA_KEY= npm run smoke:golden
+
+> family-experience-mcp@0.0.0 smoke:golden
+> tsx scripts/pending-smoke.ts golden
+
+smoke:golden is pending until a later todo.
+exit_status=1

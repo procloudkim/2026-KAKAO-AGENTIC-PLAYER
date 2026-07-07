@@ -1,0 +1,160 @@
+{
+  "codeReview": {
+    "by": "lazycodex-code-reviewer",
+    "recommendation": "APPROVE",
+    "codeQualityStatus": "CLEAR",
+    "reportPath": ".omo/evidence/family-experience-winning-sdd-plan-rereview-code-review.md",
+    "evidence": "Latest re-review approved the plan-only artifacts after fixing PowerShell caller-expansion, task1 evidence write, browser invocation, and cleanup blockers. Reviewer report noted WATCH for non-blocking stale prior report/untracked artifact observations; checkpoint status is CLEAR because blockers are none.",
+    "blockers": []
+  },
+  "manualQa": {
+    "by": "lazycodex-qa-executor",
+    "status": "passed",
+    "evidence": "Read-only QA verified plan/evidence files, required booleans, criteria pass counts, and no raw secret leak patterns.",
+    "surfaceEvidence": [
+      {
+        "id": "surface-c001-plan-content",
+        "criterionRef": "C001",
+        "surface": "cli",
+        "invocation": "node C001 plan content scanner",
+        "verdict": "passed",
+        "artifactRefs": [
+          "artifact-c001"
+        ]
+      },
+      {
+        "id": "surface-c002-guardrails",
+        "criterionRef": "C002",
+        "surface": "cli",
+        "invocation": "node C002 guardrail scanner",
+        "verdict": "passed",
+        "artifactRefs": [
+          "artifact-c002"
+        ]
+      },
+      {
+        "id": "surface-c003-ulw-status",
+        "criterionRef": "C003",
+        "surface": "cli",
+        "invocation": "ulw-loop status --session-id family-experience-winning-sdd-20260703 --json",
+        "verdict": "passed",
+        "artifactRefs": [
+          "artifact-c003-json",
+          "artifact-c003-text",
+          "artifact-c003-git"
+        ]
+      }
+    ],
+    "adversarialCases": [
+      {
+        "id": "adv-shell-expansion",
+        "criterionRef": "C001/C002",
+        "scenario": "PowerShell snippets must not use caller-expanded double-quoted -Command blocks.",
+        "expectedBehavior": "no double-quoted PowerShell command and literal script blocks present",
+        "verdict": "passed",
+        "artifactRefs": [
+          "artifact-c001",
+          "artifact-c002"
+        ]
+      },
+      {
+        "id": "adv-secret-leak",
+        "criterionRef": "C002",
+        "scenario": "plan and evidence must not expose raw keys/tokens/secrets",
+        "expectedBehavior": "no raw secret/key leak pattern",
+        "verdict": "passed",
+        "artifactRefs": [
+          "artifact-c002"
+        ]
+      },
+      {
+        "id": "adv-false-completion",
+        "criterionRef": "C002",
+        "scenario": "plan must not claim deployment PlayMCP public switch or submission complete without evidence",
+        "expectedBehavior": "future gates or BLOCKED receipts only",
+        "verdict": "passed",
+        "artifactRefs": [
+          "artifact-c002"
+        ]
+      }
+    ],
+    "artifactRefs": [
+      {
+        "id": "artifact-plan",
+        "kind": "log",
+        "description": "Final winning SDD plan artifact.",
+        "path": ".omo/plans/family-experience-winning-sdd-to-submission.md"
+      },
+      {
+        "id": "artifact-c001",
+        "kind": "cli-transcript",
+        "description": "Plan content scanner output.",
+        "path": ".omo/evidence/winning-sdd-plan/C001-plan-content-check.txt"
+      },
+      {
+        "id": "artifact-c002",
+        "kind": "cli-transcript",
+        "description": "Guardrail scanner output.",
+        "path": ".omo/evidence/winning-sdd-plan/C002-guardrail-scan.txt"
+      },
+      {
+        "id": "artifact-c003-text",
+        "kind": "cli-transcript",
+        "description": "Loop status text summary.",
+        "path": ".omo/evidence/winning-sdd-plan/C003-loop-status-check.txt"
+      },
+      {
+        "id": "artifact-c003-json",
+        "kind": "log",
+        "description": "Loop status JSON.",
+        "path": ".omo/evidence/winning-sdd-plan/C003-loop-status.json"
+      },
+      {
+        "id": "artifact-c003-git",
+        "kind": "cli-transcript",
+        "description": "Scoped git status.",
+        "path": ".omo/evidence/winning-sdd-plan/C003-git-status.txt"
+      }
+    ]
+  },
+  "gateReview": {
+    "by": "lazycodex-gate-reviewer",
+    "recommendation": "APPROVE",
+    "reportPath": ".omo/evidence/family-experience-winning-sdd-20260703-gate-review.md",
+    "evidence": "Final gate approved C001/C002/C003 pass state, latest code review, QA evidence, plan-only scope, concrete non-empty evidence, and no false completion claims.",
+    "blockers": []
+  },
+  "iteration": {
+    "fullRerun": true,
+    "status": "passed",
+    "rerunCommands": [
+      "node C001 plan content scanner",
+      "node C002 guardrail scanner",
+      "node ulw-loop status --session-id family-experience-winning-sdd-20260703 --json"
+    ],
+    "evidence": "C001, C002, and C003 refreshed after the final code-review blocker fixes and recorded through ulw-loop."
+  },
+  "criteriaCoverage": {
+    "totalCriteria": 3,
+    "passCount": 3,
+    "originalIntent": "User approved ulw-loop execution to produce a strategic SDD plan for winning Family Experience MCP without product implementation in this run.",
+    "desiredOutcome": "Durable, evidence-backed execution plan ready for a future start-work implementation run.",
+    "userOutcomeReview": "Plan artifact and ULW evidence match the approved plan-only scope.",
+    "adversarialClassesCovered": [
+      "shell_expansion",
+      "raw_secret_disclosure",
+      "false_completion_claims",
+      "scope_creep",
+      "sibling_workspace_drift"
+    ]
+  },
+  "codexGoalSnapshot": {
+    "threadId": "019f1d36-af17-7a20-a79b-60c2e6a00e96",
+    "objective": "Complete the durable ulw-loop plan in .omo/ulw-loop/family-experience-winning-sdd-20260703/goals.json, including later accepted/appended stories, under the original brief constraints; use .omo/ulw-loop/family-experience-winning-sdd-20260703/ledger.jsonl as the audit trail.",
+    "status": "complete",
+    "tokensUsed": 605178,
+    "timeUsedSeconds": 3009,
+    "createdAt": 1783060474,
+    "updatedAt": 1783063483
+  }
+}

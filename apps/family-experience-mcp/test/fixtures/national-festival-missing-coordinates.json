@@ -1,0 +1,18 @@
+{
+  "data": [
+    {
+      "festival_name": "Jeju Family Culture Festival",
+      "place": "Jeju Culture Plaza",
+      "start_date": "2026-09-12",
+      "end_date": "2026-09-13",
+      "content": "Local culture activities for families.",
+      "organization": "Jeju Special Self-Governing Province",
+      "phone": "064-000-0000",
+      "homepage": "https://festival.example.test/jeju-family-culture",
+      "address": "Jeju-si Jungang-ro 1",
+      "latitude": "",
+      "longitude": "",
+      "data_reference_date": "2026-06-30"
+    }
+  ]
+}

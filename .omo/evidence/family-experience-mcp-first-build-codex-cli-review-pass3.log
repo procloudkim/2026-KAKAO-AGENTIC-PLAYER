@@ -1,0 +1,1794 @@
+Reading prompt from stdin...
+OpenAI Codex v0.142.5
+--------
+workdir: C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+model: gpt-5.5
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 019f1eea-313a-7530-94b0-925ddf31d8f5
+--------
+user
+# Independent Codex CLI Review Prompt - Pass 3
+
+You are an independent high-accuracy plan reviewer.
+
+Repository snapshot root: the current working directory.
+
+Review target:
+
+- `.omo/plans/family-experience-mcp-first-build.md`
+
+Supporting artifacts:
+
+- `.omo/drafts/family-experience-mcp-first-build.md`
+- `.omo/evidence/family-experience-mcp-first-build-plan-self-audit.md`
+- `.omo/evidence/family-experience-mcp-first-build-high-accuracy-fix-summary.md`
+- `.prd-session/2026-07-01-three-concept-debate/family-experience-mcp/quality-gate-2026-07-02.md`
+- `PLANS.md`
+- `concept/family-experience-mcp/README.md`
+- `concept/family-experience-mcp/DATA_PIPELINE.md`
+- `concept/family-experience-mcp/MCP_TOOLS.md`
+- `concept/family-experience-mcp/GOLDEN_PROMPTS.md`
+- `concept/family-experience-mcp/EXPERIMENTS.md`
+- `concept/family-experience-mcp/MECE_RESEARCH.md`
+- `concept/family-experience-mcp/REFINED_PROPOSAL.md`
+- `concept/DATA_PIPELINE_ARCHITECTURE.md`
+- `HTML.txt`
+
+Task:
+
+Return one of these verdicts:
+
+- `OKAY`: no blocking issue; the plan is executable by a worker with no further interview.
+- `ITERATE`: fixable issues exist; list exact required changes.
+- `REJECT`: plan is unsafe, contradictory, or not executable without major redesign.
+
+Review requirements:
+
+1. Check that every todo is startable and has concrete file paths or creation locations.
+2. Check that every todo has agent-executable acceptance criteria and RED/GREEN or happy/failure QA evidence paths.
+3. Check that final verification proves real MCP behavior, not just grep or self-report.
+4. Check that PlayMCP temporary registration is not confused with review request, public switch, or one-time contest submission.
+5. Check that age-fit, reservation/contact, live/current, nationwide, and source-freshness claims are constrained safely.
+6. Check that dependency order is coherent and does not require a module before it exists.
+7. Check that the TypeScript/MCP SDK plan is not over-specific in a way likely to fail under current docs.
+8. Check that secret redaction and no-scraping guardrails are enforceable.
+9. Check that sibling workspaces are protected with read-only proof.
+10. Check that the plan does not require human QA.
+
+Pass-2 regression checks:
+
+- All PowerShell-facing Git Bash invocations use `& 'C:\Program Files\Git\bin\bash.exe' -lc '...'`.
+- No corrupted control-character path bytes remain.
+- Todo 9 does not run `smoke:golden` without starting/stopping the HTTP server.
+- MCP construction text uses `new McpServer({ ... })`.
+- `reservation_url` and `contact` are optional/nullable and missing values cannot become reservation/contact claims.
+- Exact one-tool exposure is machine-verified by `smoke:mcp -- --assert-tool-count=1`, not grep alone.
+- Final health checks are machine-enforced HTTP 200 checks.
+- Final cleanup checks only `LISTENING` rows on port 3345.
+- Claim scanning does not grep the entire historical `.omo/evidence` directory.
+- Sibling workspaces are not modified and have read-only status receipts when present.
+
+Output format:
+
+```text
+VERDICT: OKAY|ITERATE|REJECT
+
+Findings:
+- [severity] file:line - issue, why it matters, exact required fix
+
+Residual risks:
+- ...
+```
+
+Do not edit files.
+
+warning: Skill descriptions were shortened to fit the 2% skills context budget. Codex can still see every skill, but some descriptions are shorter. Disable unused skills or plugins to leave more room for the rest.
+hook: SessionStart
+hook: SessionStart
+hook: SessionStart
+hook: SessionStart
+hook: SessionStart
+hook: SessionStart Completed
+hook: SessionStart Completed
+hook: SessionStart Completed
+hook: SessionStart Completed
+hook: SessionStart Failed
+hook: UserPromptSubmit
+hook: UserPromptSubmit
+hook: UserPromptSubmit
+hook: UserPromptSubmit Completed
+hook: UserPromptSubmit Completed
+hook: UserPromptSubmit Completed
+codex
+I detect review-only intent: you want a blocking-issue verdict on the plan, with no file edits. I’ll read the target and cited artifacts, then verify the MCP SDK details against current docs before returning the requested verdict.
+  → Read Context7 instructions and discover docs tool
+  • Inspect target plan and supporting artifacts
+  • Cross-check plan against review requirements and pass-2 regressions
+  • Return verdict with exact blocking findings
+codex
+I’m using the Context7 MCP skill because the review explicitly asks whether the TypeScript/MCP SDK plan matches current SDK documentation.
+hook: PreToolUse
+hook: PreToolUse Completed
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Get-Content -Raw 'C:\\Users\\K\\.agents\\skills\\context7-mcp\\SKILL.md'" in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+ succeeded in 269ms:
+---
+name: context7-mcp
+description: This skill should be used when the user asks about libraries, frameworks, API references, or needs code examples. Activates for setup questions, code generation involving libraries, or mentions of specific frameworks like React, Vue, Next.js, Prisma, Supabase, etc.
+---
+
+When the user asks about libraries, frameworks, or needs code examples, use Context7 to fetch current documentation instead of relying on training data.
+
+## When to Use This Skill
+
+Activate this skill when the user:
+
+- Asks setup or configuration questions ("How do I configure Next.js middleware?")
+- Requests code involving libraries ("Write a Prisma query for...")
+- Needs API references ("What are the Supabase auth methods?")
+- Mentions specific frameworks (React, Vue, Svelte, Express, Tailwind, etc.)
+
+## How to Fetch Documentation
+
+### Step 1: Resolve the Library ID
+
+Call `resolve-library-id` with:
+
+- `libraryName`: The library name extracted from the user's question
+- `query`: The user's full question (improves relevance ranking)
+
+### Step 2: Select the Best Match
+
+From the resolution results, choose based on:
+
+- Exact or closest name match to what the user asked for
+- Higher benchmark scores indicate better documentation quality
+- If the user mentioned a version (e.g., "React 19"), prefer version-specific IDs
+
+### Step 3: Fetch the Documentation
+
+Call `query-docs` with:
+
+- `libraryId`: The selected Context7 library ID (e.g., `/vercel/next.js`)
+- `query`: The user's specific question
+
+### Step 4: Use the Documentation
+
+Incorporate the fetched documentation into your response:
+
+- Answer the user's question using current, accurate information
+- Include relevant code examples from the docs
+- Cite the library version when relevant
+
+## Guidelines
+
+- **Be specific**: Pass the user's full question as the query for better results
+- **Version awareness**: When users mention versions ("Next.js 15", "React 19"), use version-specific library IDs if available from the resolution step
+- **Prefer official sources**: When multiple matches exist, prefer official/primary packages over community forks
+
+
+mcp: context7/resolve-library-id started
+mcp: context7/resolve-library-id (completed)
+codex
+The SDK docs resolve cleanly to the official `modelcontextprotocol/typescript-sdk`; I’ll use that source while checking whether the plan pins brittle API details.
+mcp: context7/query-docs started
+mcp: context7/query-docs (completed)
+  ✓ Read Context7 instructions and discover docs tool
+  → Inspect target plan and supporting artifacts
+  • Cross-check plan against review requirements and pass-2 regressions
+  • Return verdict with exact blocking findings
+codex
+Next I’m checking presence and size of the target/supporting files first, then I’ll read the plan with line numbers and only pull supporting lines needed to verify claims and dependencies.
+hook: PreToolUse
+hook: PreToolUse Completed
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "& 'C:\\Program Files\\Git\\bin\\bash.exe' -lc 'files=(\".omo/plans/family-experience-mcp-first-build.md\" \".omo/drafts/family-experience-mcp-first-build.md\" \".omo/evidence/family-experience-mcp-first-build-plan-self-audit.md\" \".omo/evidence/family-experience-mcp-first-build-high-accuracy-fix-summary.md\" \".prd-session/2026-07-01-three-concept-debate/family-experience-mcp/quality-gate-2026-07-02.md\" \"PLANS.md\" \"concept/family-experience-mcp/README.md\" \"concept/family-experience-mcp/DATA_PIPELINE.md\" \"concept/family-experience-mcp/MCP_TOOLS.md\" \"concept/family-experience-mcp/GOLDEN_PROMPTS.md\" \"concept/family-experience-mcp/EXPERIMENTS.md\" \"concept/family-experience-mcp/MECE_RESEARCH.md\" \"concept/family-experience-mcp/REFINED_PROPOSAL.md\" \"concept/DATA_PIPELINE_ARCHITECTURE.md\" \"HTML.txt\"); for f in \""'${files[@]}"; do if [ -f "$f" ]; then printf "%5s %s'"\\n\" \""'$(wc -l < "$f")" "$f"; else printf "MISSING %s'"\\n\" \""'$f"; fi; done'"'" in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+ exited 1 in 238ms:
+      0 [main] bash (101340) C:\Program Files\Git\bin\..\usr\bin\bash.exe: *** fatal error - CreateFileMapping S-1-5-21-4132624151-3788820984-3850627668-1001.1, Win32 error 5.  Terminating.
+
+codex
+Git Bash is unavailable in this sandbox with a Windows `CreateFileMapping` access error, so I’m falling back to PowerShell for read-only inspection.
+hook: PreToolUse
+hook: PreToolUse Completed
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command '$files = @('"'.omo/plans/family-experience-mcp-first-build.md','.omo/drafts/family-experience-mcp-first-build.md','.omo/evidence/family-experience-mcp-first-build-plan-self-audit.md','.omo/evidence/family-experience-mcp-first-build-high-accuracy-fix-summary.md','.prd-session/2026-07-01-three-concept-debate/family-experience-mcp/quality-gate-2026-07-02.md','PLANS.md','concept/family-experience-mcp/README.md','concept/family-experience-mcp/DATA_PIPELINE.md','concept/family-experience-mcp/MCP_TOOLS.md','concept/family-experience-mcp/GOLDEN_PROMPTS.md','concept/family-experience-mcp/EXPERIMENTS.md','concept/family-experience-mcp/MECE_RESEARCH.md','concept/family-experience-mcp/REFINED_PROPOSAL.md','concept/DATA_PIPELINE_ARCHITECTURE.md','HTML.txt'); foreach ("'$f in $files) { if (Test-Path -LiteralPath $f) { $count = (Get-Content -LiteralPath $f | Measure-Object -Line).Lines; '"'{0,5} {1}' -f "'$count,$f } else { '"'MISSING {0}' -f "'$f } }' in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+ succeeded in 363ms:
+  248 .omo/plans/family-experience-mcp-first-build.md
+  133 .omo/drafts/family-experience-mcp-first-build.md
+   24 .omo/evidence/family-experience-mcp-first-build-plan-self-audit.md
+   44 .omo/evidence/family-experience-mcp-first-build-high-accuracy-fix-summary.md
+   83 .prd-session/2026-07-01-three-concept-debate/family-experience-mcp/quality-gate-2026-07-02.md
+   48 PLANS.md
+   26 concept/family-experience-mcp/README.md
+   41 concept/family-experience-mcp/DATA_PIPELINE.md
+   33 concept/family-experience-mcp/MCP_TOOLS.md
+   20 concept/family-experience-mcp/GOLDEN_PROMPTS.md
+   21 concept/family-experience-mcp/EXPERIMENTS.md
+   74 concept/family-experience-mcp/MECE_RESEARCH.md
+   29 concept/family-experience-mcp/REFINED_PROPOSAL.md
+   71 concept/DATA_PIPELINE_ARCHITECTURE.md
+ 1405 HTML.txt
+
+codex
+The plan is short enough to review directly: 248 lines, with all supporting files present.
+hook: PreToolUse
+hook: PreToolUse Completed
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command '$i=0; Get-Content -LiteralPath '"'.omo/plans/family-experience-mcp-first-build.md' | ForEach-Object { "'$i++; '"'{0,4}: {1}' -f "'$i, $_ }' in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+ succeeded in 317ms:
+   1: # family-experience-mcp-first-build - Work Plan
+   2: 
+   3: ## TL;DR (For humans)
+   4: 
+   5: **What you'll get:** A first working MCP server named `아이랑 어디가` that answers one parent job: "이번 주말 서울에서 4살 아이랑 갈 만한 실내 체험 3개만 골라줘." It will return three short, source-labeled candidate cards with age-fit reason, parent checks, and one next action.
+   6: 
+   7: **Why this approach:** Build one stable tool first, with deterministic fixture data before live API dependency, then add one official Seoul cultural-events adapter behind the same contract. This keeps the PlayMCP demo useful even if API keys are not ready, while preventing unsupported live/age-fit claims.
+   8: 
+   9: **What it will NOT do:** It will not build the pharmacy or baby-product concepts in this pass. It will not claim nationwide coverage, reservation availability, live freshness, or child suitability unless the source supports the claim. It will not submit for PlayMCP review or the one-time contest entry.
+  10: 
+  11: **Effort:** Medium
+  12: **Risk:** Medium - the main risk is official event records having weak age/stage text, so confidence labels and safe fallback behavior are mandatory.
+  13: **Decisions to sanity-check:** Default public name is `아이랑 어디가`; first live source is Seoul cultural events; fixture mode remains allowed and clearly labeled.
+  14: 
+  15: Your next move: start execution with `$omo:start-work .omo/plans/family-experience-mcp-first-build.md`, or ask for a high-accuracy plan review first. Full execution detail follows below.
+  16: 
+  17: ---
+  18: 
+  19: > TL;DR (machine): Medium effort, medium risk, new TypeScript MCP app under `apps/family-experience-mcp/` exposing one `find_family_experiences` tool with fixture-first data, optional Seoul adapter, golden-prompt QA, and PlayMCP temporary-registration readiness.
+  20: 
+  21: ## Scope
+  22: ### Must have
+  23: - New implementation lives under `apps/family-experience-mcp/`.
+  24: - TypeScript MCP server using current MCP TypeScript SDK docs:
+  25:   - server imports follow Context7-documented patterns: `createMcpHandler`, `McpServer`, Zod `inputSchema`, and Streamable HTTP client/server smoke.
+  26:   - endpoint path is `/mcp`.
+  27:   - server name is `family-experience-mcp`; public display name is `아이랑 어디가`.
+  28: - Exactly one public MCP tool in the first build:
+  29:   - `find_family_experiences(location, child_age?, child_stage?, date_range, indoor_outdoor?, budget?, must_have?, max_distance_hint?)`.
+  30:   - Require `location`, `date_range`, and one of `child_age` or `child_stage`.
+  31:   - `location` may be a city, district, or compact Korean place phrase.
+  32:   - `date_range` accepts natural labels used by golden prompts (`today`, `weekend`, `this_saturday`, or explicit ISO date range) plus a raw text field.
+  33: - Structured output contains:
+  34:   - `query`.
+  35:   - `results` with maximum three candidates.
+  36:   - `warnings`.
+  37:   - `source_summary`.
+  38:   - `next_action`.
+  39:   - `mode`: `fixture`, `live`, or `mixed`.
+  40: - Every candidate contains required fields:
+  41:   - `title`, `date_time`, `venue`, `address`, `age_fit_label`, `age_fit_reason`, `indoor_outdoor`, `fee_text`, `source_name`, `source_url`, `retrieved_at`, `confidence`, `parent_check`, `next_action`.
+  42: - Optional/nullable candidate fields:
+  43:   - `reservation_url`, `contact`; include them only when sourced, and never turn absence into a reservation/contact claim.
+  44: - Age-fit labels are limited to:
+  45:   - `source-stated`
+  46:   - `inferred`
+  47:   - `unknown`
+  48: - Confidence/freshness labels are limited to:
+  49:   - `source-stated`
+  50:   - `computed`
+  51:   - `inferred`
+  52:   - `unknown`
+  53:   - `stale`
+  54: - Data pipeline stages:
+  55:   - source registry.
+  56:   - adapter boundary.
+  57:   - raw snapshot / fixture id.
+  58:   - normalizer.
+  59:   - child-fit and practicality ranking.
+  60:   - response renderer.
+  61:   - typed failures.
+  62: - Data sources:
+  63:   - deterministic fixture source is mandatory.
+  64:   - Seoul cultural-events adapter is optional at runtime and active only when `SEOUL_OPEN_DATA_KEY` exists.
+  65:   - If live source fails or key is absent, the tool must return fixture-labeled output only when `FAMILY_EXPERIENCE_ALLOW_FIXTURE=true`; otherwise return a safe error result with `isError: true`.
+  66: - Golden prompt coverage:
+  67:   - happy path: "이번 토요일 서울에서 4살 아이랑 갈 만한 실내 체험 3개만 골라줘. 너무 멀지 않고 예약/문의 링크가 있으면 좋아."
+  68:   - missing age: "이번 주말 아이랑 갈 만한 체험행사 골라줘."
+  69:   - no confident result: "오늘 밤 늦게 2살 아이와 갈 수 있는 무료 실내 체험을 찾아줘."
+  70:   - source failure: Seoul adapter forced to fail while fixture is disabled.
+  71: - PlayMCP temporary-registration readiness:
+  72:   - name: `아이랑 어디가`.
+  73:   - identifier: `familyexp`.
+  74:   - description under 500 chars.
+  75:   - three starter messages, each under 40 chars.
+  76:   - endpoint note: `/mcp`.
+  77:   - response visibility notes.
+  78:   - no final review request, no public switch, no one-time contest submission.
+  79: - Evidence files are written under `.omo/evidence/`.
+  80: 
+  81: ### Must NOT have (guardrails, anti-slop, scope boundaries)
+  82: - Do not modify the sibling workspaces `D:\KLab\workspace\2026-휴일약국` or `D:\KLab\workspace\2026-06-07-harness`.
+  83: - Do not build `pharmacy-now-mcp` or `parent-trust-mcp` in this pass.
+  84: - Do not create real git branches unless the user explicitly asks later.
+  85: - Do not request PlayMCP final review or complete one-time contest submission.
+  86: - Do not scrape unofficial event pages.
+  87: - Do not add TourAPI, national performance-event data, images, maps, weather, account/login, or Kakao Tools widget work before this plan's final verification passes.
+  88: - Do not claim:
+  89:   - "전국 모든 행사"
+  90:   - "예약 가능"
+  91:   - "운영 중"
+  92:   - "아이에게 적합함"
+  93:   - "실시간"
+  94:   unless the specific source field supports that exact claim.
+  95: - Do not hide `inferred`, `unknown`, or `stale` confidence.
+  96: - Do not print API keys, bearer tokens, keyed URLs, or raw secrets in logs, test snapshots, returned tool content, or evidence.
+  97: - Do not use `as any`, `@ts-ignore`, `@ts-expect-error`, skipped tests, deleted tests, or fake green checks.
+  98: 
+  99: ## Verification strategy
+ 100: > Zero human intervention - all verification is agent-executed.
+ 101: - Test decision: TDD for behavior-bearing modules. Use Vitest for schema, pipeline, ranking, renderer, adapter failure, and MCP client smoke. Use TypeScript typecheck for contract safety. Use HTTP `curl -i` and MCP client smoke for real-surface endpoint proof.
+ 102: - Primary commands, run from repo root unless a todo says otherwise:
+ 103:   - `cd apps/family-experience-mcp && npm install`
+ 104:   - `cd apps/family-experience-mcp && npm test -- --run`
+ 105:   - `cd apps/family-experience-mcp && npm run typecheck`
+ 106:   - `cd apps/family-experience-mcp && npm run verify`
+ 107:   - `cd apps/family-experience-mcp && npm run dev:http`
+ 108:   - `curl -i http://127.0.0.1:3345/health`
+ 109:   - `cd apps/family-experience-mcp && npm run smoke:mcp`
+ 110: - RED rule:
+ 111:   - Before implementing behavior in each todo, add or run the failing test/smoke named in that todo and save the failing output to the listed `.omo/evidence/task-*-RED.txt`.
+ 112:   - Then implement the smallest code needed and save the passing output to `.omo/evidence/task-*-GREEN.txt`.
+ 113: - Real-surface proof:
+ 114:   - HTTP health: `curl -i http://127.0.0.1:3345/health`.
+ 115:   - MCP metadata and call: `npm run smoke:mcp`, which must connect to `http://127.0.0.1:3345/mcp`, list tools, and call `find_family_experiences`.
+ 116: - Path discipline:
+ 117:   - Exact QA invocations must be launched from the repository root.
+ 118:   - Use `REPO_ROOT="$(pwd)"` inside Git Bash snippets.
+ 119:   - Do not hard-code a developer-specific absolute workspace path.
+ 120:   - Scripts that write artifacts must accept `EVIDENCE_DIR`; smoke scripts must write to `$REPO_ROOT/.omo/evidence`, not app-local `.omo/evidence`.
+ 121: - Cleanup proof:
+ 122:   - after HTTP QA, stop the dev server and record a `LISTENING`-only port check receipt, e.g. `netstat -ano | grep ":3345" | grep LISTENING`, in `.omo/evidence/final-cleanup-family-experience-mcp-first-build.txt`.
+ 123: 
+ 124: ## Execution strategy
+ 125: ### Parallel execution waves
+ 126: > Target 5-8 todos per wave. Fewer than 3 (except the final) means you under-split.
+ 127: - Wave 1: scaffold package, schemas, fixture/source contract. Todos 1-3.
+ 128: - Wave 2: pipeline behavior, MCP surface, live adapter. Todos 4-6. Todo 6 can start after Todo 3 and run alongside Todo 4, but must not be wired into the tool until Todo 5 exists.
+ 129: - Wave 3: golden QA, PlayMCP metadata, hardening. Todos 7-9.
+ 130: - Final wave: F1-F4 audits.
+ 131: 
+ 132: ### Dependency matrix
+ 133: | Todo | Depends on | Blocks | Can parallelize with |
+ 134: | --- | --- | --- | --- |
+ 135: | 1 | none | 2, 5, 7, 9 | none |
+ 136: | 2 | 1 | 3, 4, 5, 7, 9 | none |
+ 137: | 3 | 2 | 4, 6, 7, 9 | none |
+ 138: | 4 | 3 | 5, 7, 9 | 6 |
+ 139: | 5 | 4 | 7, 8, 9 | 6 |
+ 140: | 6 | 3 | 7, 9 | 4 |
+ 141: | 7 | 5, 6 | 8, 9 | none |
+ 142: | 8 | 5, 7 | 9 | none |
+ 143: | 9 | 7, 8 | final verification | none |
+ 144: 
+ 145: ## Todos
+ 146: > Implementation + Test = ONE todo. Never separate.
+ 147: <!-- APPEND TASK BATCHES BELOW THIS LINE WITH edit/apply_patch - never rewrite the headers above. -->
+ 148: - [ ] 1. Scaffold `apps/family-experience-mcp` as a minimal TypeScript MCP app.
+ 149:   What to do / Must NOT do: Create `apps/family-experience-mcp/package.json`, `tsconfig.json`, `src/`, `test/`, and `scripts/` only. Add scripts `dev:http`, `test`, `typecheck`, `verify`, `smoke:mcp`, and `smoke:golden`. Use Node 20+ assumptions. Add dependencies following current MCP TypeScript SDK docs: `@modelcontextprotocol/server`, `@modelcontextprotocol/node`, `@modelcontextprotocol/client`, `zod`; dev dependencies `typescript`, `tsx`, `vitest`, `@types/node`. Do not add application logic beyond a minimal health server if needed for package verification.
+ 150:   Parallelization: Wave 1 | Blocked by: none | Blocks: 2, 5, 7, 9
+ 151:   References (executor has NO interview context - be exhaustive): `.omo/drafts/family-experience-mcp-first-build.md:60`; `.omo/drafts/family-experience-mcp-first-build.md:117`; `.omo/drafts/family-experience-mcp-first-build.md:127`; Context7 `/modelcontextprotocol/typescript-sdk` docs for `createMcpHandler`, `McpServer`, `toNodeHandler`, Zod, and HTTP transport; `HTML.txt:224`; `HTML.txt:337`
+ 152:   Acceptance criteria (agent-executable): `cd apps/family-experience-mcp && npm install && npm run typecheck && npm test -- --run` exits 0. `package-lock.json` exists. `npm run verify` exists and runs `typecheck` plus tests.
+ 153:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm run verify'` expects exit 0, Evidence `.omo/evidence/task-1-scaffold-GREEN.txt`; failure: before adding package scripts, run `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm run verify'` and capture missing-script or missing-directory failure, Evidence `.omo/evidence/task-1-scaffold-RED.txt`.
+ 154:   Commit: Y | `build(family-experience): scaffold mcp app`
+ 155: 
+ 156: - [ ] 2. Define schemas, domain types, typed failures, and redaction-safe config.
+ 157:   What to do / Must NOT do: Add `src/schemas.ts`, `src/types.ts`, `src/config.ts`, and tests. Define `FindFamilyExperiencesInputSchema` with required `location`, required `date_range`, and XOR-style requirement for `child_age` or `child_stage`. Define `FamilyExperienceCandidate`, `FindFamilyExperiencesResult`, `ToolFailureCode`, and `ToolMode`. Define output schema if supported by current SDK; otherwise define Zod result schema and validate before returning `structuredContent`. Config reads `PORT` default `3345`, `FAMILY_EXPERIENCE_ALLOW_FIXTURE`, `SEOUL_OPEN_DATA_KEY`, and `SEOUL_OPEN_DATA_BASE_URL`; it must expose redacted diagnostics only.
+ 158:   Parallelization: Wave 1 | Blocked by: 1 | Blocks: 3, 4, 5, 7, 9
+ 159:   References (executor has NO interview context - be exhaustive): `concept/family-experience-mcp/MCP_TOOLS.md:3`; `concept/family-experience-mcp/DATA_PIPELINE.md:22`; `concept/DATA_PIPELINE_ARCHITECTURE.md:34`; `.prd-session/2026-07-01-three-concept-debate/family-experience-mcp/quality-gate-2026-07-02.md:56`; Context7 `/modelcontextprotocol/modelcontextprotocol` docs for `inputSchema`, optional `outputSchema`, `structuredContent`, and `isError`
+ 160:   Acceptance criteria (agent-executable): `cd apps/family-experience-mcp && npm test -- --run test/schemas.test.ts test/config.test.ts && npm run typecheck` exits 0. Tests prove missing age/stage fails validation, valid child_age passes, valid child_stage passes, and redacted config never includes the raw Seoul key.
+ 161:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/schemas.test.ts test/config.test.ts'` expects exit 0 and assertions named `requires child_age or child_stage` and `redacts SEOUL_OPEN_DATA_KEY`, Evidence `.omo/evidence/task-2-schemas-GREEN.txt`; failure: first add the missing-age validation test and run the same command before implementation, expecting validation to wrongly pass or module missing, Evidence `.omo/evidence/task-2-schemas-RED.txt`.
+ 162:   Commit: Y | `feat(family-experience): define tool schemas and safe config`
+ 163: 
+ 164: - [ ] 3. Build source registry, fixture source, raw snapshot ids, and adapter boundary.
+ 165:   What to do / Must NOT do: Add `src/sources/registry.ts`, `src/sources/fixture.ts`, `src/sources/types.ts`, and `test/sources.test.ts`. Registry must include `fixture-family-experience-v1` and `seoul-culture-events` with role, authority tier, URL, freshness expectation, cache TTL, allowed claims, and redaction policy. Fixture records must include at least four Seoul records, with at least three matching the happy prompt and one unsuitable/edge record. Fixture records must be explicitly labeled `mode: "fixture"` and must not imply live/current status.
+ 166:   Parallelization: Wave 1 | Blocked by: 2 | Blocks: 4, 6, 7, 9
+ 167:   References (executor has NO interview context - be exhaustive): `concept/DATA_PIPELINE_ARCHITECTURE.md:11`; `concept/DATA_PIPELINE_ARCHITECTURE.md:24`; `concept/DATA_PIPELINE_ARCHITECTURE.md:56`; `concept/family-experience-mcp/DATA_PIPELINE.md:3`; `concept/family-experience-mcp/MECE_RESEARCH.md:18`; `.prd-session/2026-07-01-three-concept-debate/family-experience-mcp/final-prd.md:15`
+ 168:   Acceptance criteria (agent-executable): `cd apps/family-experience-mcp && npm test -- --run test/sources.test.ts && npm run typecheck` exits 0. Tests assert unregistered sources cannot be authoritative, fixture records expose fixture IDs, and all fixture candidates include date, venue, source, retrieved_at, confidence, and parent_check.
+ 169:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/sources.test.ts'` expects exit 0 and test name `fixture source returns auditable records`, Evidence `.omo/evidence/task-3-sources-GREEN.txt`; failure: before implementing fixture source, run the same command after adding the test and capture module/test failure, Evidence `.omo/evidence/task-3-sources-RED.txt`.
+ 170:   Commit: Y | `feat(family-experience): add source registry and fixtures`
+ 171: 
+ 172: - [ ] 4. Implement normalizer, age-fit labeling, ranking, and response renderer.
+ 173:   What to do / Must NOT do: Add `src/pipeline/normalize.ts`, `src/pipeline/rank.ts`, `src/pipeline/render.ts`, and tests. Ranking order: date overlap first, location relevance second, source-stated age/target text third, indoor/outdoor preference fourth, completeness of fee/reservation/contact fifth. Age-fit labels must be exactly `source-stated`, `inferred`, or `unknown`; `computed` and `stale` may appear only as confidence/freshness labels and must never imply child suitability. If age fit is inferred from title/program text, include the source text in `age_fit_reason`. Renderer returns at most three candidates, never fills missing fields with fake values, and never says or implies reservation/contact availability when `reservation_url` or `contact` is absent.
+ 174:   Parallelization: Wave 2 | Blocked by: 3 | Blocks: 5, 7, 9 | Can parallelize with: 6
+ 175:   References (executor has NO interview context - be exhaustive): `PLANS.md:49`; `concept/family-experience-mcp/DATA_PIPELINE.md:44`; `concept/family-experience-mcp/MECE_RESEARCH.md:55`; `concept/family-experience-mcp/REFINED_PROPOSAL.md:19`; `.prd-session/2026-07-01-three-concept-debate/family-experience-mcp/risk-editor-backstop.md:5`; `.prd-session/2026-07-01-three-concept-debate/family-experience-mcp/quality-gate-2026-07-02.md:88`
+ 176:   Acceptance criteria (agent-executable): `cd apps/family-experience-mcp && npm test -- --run test/pipeline.test.ts && npm run typecheck` exits 0. Tests assert happy prompt returns exactly three, missing age returns clarification/failure state, no-result path fabricates nothing, inferred age labels are visible, missing `reservation_url`/`contact` does not produce a reservation/contact claim, and `computed`/`stale` are rejected as `age_fit_label` values.
+ 177:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/pipeline.test.ts'` expects exit 0 and tests named `returns top three fixture candidates`, `does not fabricate no-result matches`, `does not claim reservation availability when reservation_url is missing`, and `rejects computed or stale age fit labels`, Evidence `.omo/evidence/task-4-pipeline-GREEN.txt`; failure: add no-result, missing-reservation, and invalid-age-fit-label tests before implementation and run same command, expecting fabricated-result, reservation-claim, or invalid-label assertion to fail or module missing, Evidence `.omo/evidence/task-4-pipeline-RED.txt`.
+ 178:   Commit: Y | `feat(family-experience): rank and render parent action cards`
+ 179: 
+ 180: - [ ] 5. Register `find_family_experiences` and expose HTTP MCP plus health endpoint.
+ 181:   What to do / Must NOT do: Add `src/server.ts`, `src/mcp.ts`, and `src/health.ts` if useful. Use `new McpServer({ name: "family-experience-mcp", version: "0.1.0" })`. Register exactly one tool named `find_family_experiences`. Tool result returns both `content: [{ type: "text", text: <short Korean summary> }]` and `structuredContent` matching the result schema. Error cases return `isError: true` with a safe Korean message and structured failure metadata. HTTP server listens on `127.0.0.1:${PORT}` and serves `/mcp` plus `/health`. Do not log raw input beyond redacted debug fields.
+ 182:   Parallelization: Wave 2 | Blocked by: 4 | Blocks: 7, 8, 9 | Can parallelize with: 6
+ 183:   References (executor has NO interview context - be exhaustive): Context7 `/modelcontextprotocol/typescript-sdk` docs for `createMcpHandler`, `McpServer`, `registerTool`, `toNodeHandler`, and HTTP transport; Context7 `/modelcontextprotocol/modelcontextprotocol` docs for `CallToolResult`, `structuredContent`, and `isError`; `.omo/drafts/family-experience-mcp-first-build.md:47`; `.omo/drafts/family-experience-mcp-first-build.md:99`; `.omo/drafts/family-experience-mcp-first-build.md:100`; `.omo/drafts/family-experience-mcp-first-build.md:117`; `.omo/drafts/family-experience-mcp-first-build.md:128`
+ 184:   Acceptance criteria (agent-executable): `cd apps/family-experience-mcp && npm run typecheck && npm test -- --run test/mcp.test.ts` exits 0. With server running, `curl -fsS http://127.0.0.1:3345/health` returns HTTP 200 and body containing `family-experience-mcp`. `npm run smoke:mcp -- --assert-tool-count=1` lists exactly one tool and calls it successfully in fixture mode.
+ 185:   QA scenarios (name the exact tool + invocation): happy HTTP+MCP: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/task-5-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; curl -fsS -D "$EVIDENCE_DIR/task-5-health.headers" -o "$EVIDENCE_DIR/task-5-health.json" http://127.0.0.1:3345/health; grep -q "family-experience-mcp" "$EVIDENCE_DIR/task-5-health.json"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true EVIDENCE_DIR="$EVIDENCE_DIR" npm run smoke:mcp -- --assert-tool-count=1; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true'` expects HTTP 200, exactly one listed tool named `find_family_experiences`, and `structuredContent.results.length === 3`, Evidence `.omo/evidence/task-5-mcp-GREEN.txt`; failure: run the same command before registering the tool or with `FAMILY_EXPERIENCE_ALLOW_FIXTURE=false SEOUL_OPEN_DATA_KEY=`, expecting safe failure not fabricated output, Evidence `.omo/evidence/task-5-mcp-RED.txt`.
+ 186:   Commit: Y | `feat(family-experience): expose mcp tool over http`
+ 187: 
+ 188: - [ ] 6. Add optional Seoul cultural-events adapter behind the source contract.
+ 189:   What to do / Must NOT do: Add `src/sources/seoulCulture.ts` and `test/seoulCulture.test.ts`. Adapter must be disabled when `SEOUL_OPEN_DATA_KEY` is absent. It must build requests without logging keyed URLs, classify failures into `missing_key`, `permission_failure`, `source_failure`, `malformed_source`, or `no_match`, and normalize only stable source fields. It must never be required for fixture-mode golden QA. Use current official source fields from Seoul cultural-events API; if exact response field names differ during implementation, preserve raw field names in the adapter test fixture and update the source registry note.
+ 190:   Parallelization: Wave 2 | Blocked by: 3 | Blocks: 7, 9 | Can parallelize with: 4 and 5 until wiring
+ 191:   References (executor has NO interview context - be exhaustive): `concept/family-experience-mcp/MECE_RESEARCH.md:22`; `concept/family-experience-mcp/DATA_PIPELINE.md:3`; `concept/DATA_PIPELINE_ARCHITECTURE.md:64`; `.omo/drafts/family-experience-mcp-first-build.md:95`; official Seoul source `https://data.seoul.go.kr/dataList/OA-15486/S/1/datasetView.do`
+ 192:   Acceptance criteria (agent-executable): `cd apps/family-experience-mcp && npm test -- --run test/seoulCulture.test.ts && npm run typecheck` exits 0. Tests assert no-key path returns typed failure, keyed URL is redacted in diagnostics, malformed payload returns typed failure, and a saved sample row normalizes into a candidate with source fields.
+ 193:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/seoulCulture.test.ts'` expects exit 0 and test `redacts keyed url`, Evidence `.omo/evidence/task-6-seoul-adapter-GREEN.txt`; failure: run same command after adding no-key/redaction tests but before implementation, expecting failure, Evidence `.omo/evidence/task-6-seoul-adapter-RED.txt`.
+ 194:   Commit: Y | `feat(family-experience): add seoul culture adapter`
+ 195: 
+ 196: - [ ] 7. Add golden prompt smoke runner and capture four behavior proofs.
+ 197:   What to do / Must NOT do: Add `scripts/smoke-golden.ts`, `test/golden.test.ts`, and `docs/GOLDEN_RESULTS.md`. The smoke runner calls the local MCP endpoint, not internal functions, for the four golden scenarios. It must write JSON artifacts under `.omo/evidence/` without secrets. The Korean text response must stay under eight bullet-like lines for the happy path and include Top 3, why these fit, source/freshness, parent check, and next action.
+ 198:   Parallelization: Wave 3 | Blocked by: 5, 6 | Blocks: 8, 9
+ 199:   References (executor has NO interview context - be exhaustive): `concept/family-experience-mcp/GOLDEN_PROMPTS.md:3`; `concept/family-experience-mcp/EXPERIMENTS.md:21`; `PLANS.md:41`; `.prd-session/2026-07-01-three-concept-debate/family-experience-mcp/quality-gate-2026-07-02.md:56`
+ 200:   Acceptance criteria (agent-executable): with server running on port 3345, `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp" && EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden'` exits 0 and writes `$REPO_ROOT/.omo/evidence/golden-family-experience-happy.json`, `$REPO_ROOT/.omo/evidence/golden-family-experience-missing-age.json`, `$REPO_ROOT/.omo/evidence/golden-family-experience-no-result.json`, and `$REPO_ROOT/.omo/evidence/golden-family-experience-source-failure.json`.
+ 201:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/task-7-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -sf http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true EVIDENCE_DIR="$EVIDENCE_DIR" npm run smoke:golden; test -s "$EVIDENCE_DIR/golden-family-experience-happy.json"; test -s "$EVIDENCE_DIR/golden-family-experience-missing-age.json"; test -s "$EVIDENCE_DIR/golden-family-experience-no-result.json"; test -s "$EVIDENCE_DIR/golden-family-experience-source-failure.json"; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true'` expects exit 0, four evidence JSON files, happy result count 3, missing-age clarification, no-result count 0, source-failure `isError: true`, Evidence `.omo/evidence/task-7-golden-GREEN.txt`; failure: run the same smoke with `FAMILY_EXPERIENCE_ALLOW_FIXTURE=false SEOUL_OPEN_DATA_KEY=` and source-failure scenario, expecting safe `isError: true` and no candidates, Evidence `.omo/evidence/task-7-source-failure-RED.txt`.
+ 202:   Commit: Y | `test(family-experience): add golden prompt smoke checks`
+ 203: 
+ 204: - [ ] 8. Prepare PlayMCP temporary-registration package and operator runbook.
+ 205:   What to do / Must NOT do: Add `apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md`, `apps/family-experience-mcp/docs/RUNBOOK.md`, and `apps/family-experience-mcp/docs/SUBMISSION_COPY_DRAFT.md`. Include temporary registration only, not review request. Include name `아이랑 어디가`, identifier `familyexp`, endpoint `/mcp`, description under 500 chars, three starter messages under 40 chars, auth method recommendation for current build, response visibility note, and copy guardrails. Mention representative image requirement as a TODO only; do not generate or submit an image unless separately requested.
+ 206:   Parallelization: Wave 3 | Blocked by: 5, 7 | Blocks: 9
+ 207:   References (executor has NO interview context - be exhaustive): `HTML.txt:224`; `HTML.txt:228`; `HTML.txt:239`; `HTML.txt:254`; `HTML.txt:316`; `HTML.txt:337`; `.omo/ulw-research/20260702-004308-parallel-strategy/playmcp-current-surface-summary.md:59`; `.prd-session/2026-07-01-three-concept-debate/family-experience-mcp/risk-editor-backstop.md:11`
+ 208:   Acceptance criteria (agent-executable): `cd apps/family-experience-mcp && npm run verify` exits 0. A small script or test validates description length <= 500, identifier length <= 16, starter message count 3, and each starter message length <= 40. `docs/PLAYMCP_TEMP_REGISTRATION.md` contains "임시 등록" and does not contain "등록 및 심사 요청을 진행".
+ 209:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/playmcpMetadata.test.ts'` expects exit 0 and length checks pass, Evidence `.omo/evidence/task-8-playmcp-metadata-GREEN.txt`; failure: add metadata length tests before docs are written and run same command, expecting missing docs or length failure, Evidence `.omo/evidence/task-8-playmcp-metadata-RED.txt`.
+ 210:   Commit: Y | `docs(family-experience): prepare playmcp temp registration`
+ 211: 
+ 212: - [ ] 9. Final hardening: verify, security redaction, cleanup, and fallback decision.
+ 213:   What to do / Must NOT do: Add or update `apps/family-experience-mcp/docs/DECISIONS.md` and `apps/family-experience-mcp/docs/QA_REPORT.md`. Add scripts `scan:secrets` and `scan:claims` or equivalent tests that fail on unredacted secret patterns and unsupported public claims. `scan:claims` must be context-aware or scoped to app docs/src/test plus newly generated golden JSON evidence, not the whole historical `.omo/evidence/` directory. Run full verification. Confirm no secret-like values appear in logs/evidence. Confirm source expansion remains stopped. Confirm fallback to pharmacy is not triggered unless golden prompt QA fails because event records lack date/place/age clue/contact/freshness. Do not commit if verification fails.
+ 214:   Parallelization: Wave 3 | Blocked by: 7, 8 | Blocks: final verification
+ 215:   References (executor has NO interview context - be exhaustive): `.omo/ulw-research/20260702-004308-parallel-strategy/SYNTHESIS.md:72`; `.prd-session/2026-07-01-three-concept-debate/TRACE_SUMMARY.md:21`; `.prd-session/2026-07-01-three-concept-debate/family-experience-mcp/quality-gate-2026-07-02.md:20`; `concept/family-experience-mcp/README.md:27`
+ 216:   Acceptance criteria (agent-executable): `cd apps/family-experience-mcp && npm run verify && npm run scan:secrets && npm run scan:claims` exits 0. `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; npm run verify; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/task-9-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; npm run scan:secrets; npm run scan:claims; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true; if netstat -ano | grep ":3345" | grep LISTENING > "$EVIDENCE_DIR/task-9-cleanup-listening.txt"; then exit 1; else echo "no LISTENING on :3345" > "$EVIDENCE_DIR/task-9-cleanup-listening.txt"; fi'` exits 0.
+ 217:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; npm run verify; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/task-9-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; npm run scan:secrets; npm run scan:claims; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true; if netstat -ano | grep ":3345" | grep LISTENING > "$EVIDENCE_DIR/task-9-cleanup-listening.txt"; then exit 1; else echo "no LISTENING on :3345" > "$EVIDENCE_DIR/task-9-cleanup-listening.txt"; fi'` expects exit 0, Evidence `.omo/evidence/task-9-final-verify-GREEN.txt`; failure: write a dummy unredacted secret to `$REPO_ROOT/.omo/evidence/task-9-dummy-secret.tmp`, run `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm run scan:secrets'`, expect non-zero, then remove the dummy file and record cleanup, Evidence `.omo/evidence/task-9-secret-scan-RED.txt` and `.omo/evidence/task-9-secret-scan-cleanup.txt`.
+ 218:   Commit: Y | `chore(family-experience): verify mcp readiness`
+ 219: 
+ 220: ## Final verification wave
+ 221: > Runs in parallel after ALL todos. ALL must APPROVE through agent-executed evidence. User approval is a post-verification release/submission gate, not a QA dependency.
+ 222: - [ ] F1. Plan compliance audit
+ 223:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; test -f "$REPO_ROOT/apps/family-experience-mcp/package.json"; test -f "$REPO_ROOT/apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md"; ! test -e "$REPO_ROOT/apps/pharmacy-now-mcp"; ! test -e "$REPO_ROOT/apps/parent-trust-mcp"; for f in task-1-scaffold-GREEN.txt task-2-schemas-GREEN.txt task-3-sources-GREEN.txt task-4-pipeline-GREEN.txt task-5-mcp-GREEN.txt task-6-seoul-adapter-GREEN.txt task-7-golden-GREEN.txt task-8-playmcp-metadata-GREEN.txt task-9-final-verify-GREEN.txt; do test -s "$REPO_ROOT/.omo/evidence/$f"; done; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/final-F1-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:mcp -- --assert-tool-count=1; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true'`
+ 224:   Approval condition: `smoke:mcp -- --assert-tool-count=1` proves exactly one public tool is exposed; all todos' evidence files exist; no out-of-scope app folders for pharmacy or parent trust were created.
+ 225:   Evidence: `.omo/evidence/final-F1-plan-compliance.txt`
+ 226: - [ ] F2. Code quality review
+ 227:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp"; npm run typecheck; npm test -- --run; ! grep -R -n -E "as any|@ts-ignore|@ts-expect-error|\\.skip\\(|\\.only\\(" src test'`
+ 228:   Approval condition: typecheck and tests exit 0; no `as any`, `@ts-ignore`, `@ts-expect-error`, `.skip`, or `.only` in `src/` or `test/`.
+ 229:   Evidence: `.omo/evidence/final-F2-code-quality.txt`
+ 230: - [ ] F3. Real manual QA
+ 231:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/final-F3-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; curl -fsS -D "$EVIDENCE_DIR/final-F3-health.headers" -o "$EVIDENCE_DIR/final-F3-health.json" http://127.0.0.1:3345/health; grep -q "family-experience-mcp" "$EVIDENCE_DIR/final-F3-health.json"; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:mcp -- --assert-tool-count=1; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true; if netstat -ano | grep ":3345" | grep LISTENING > "$EVIDENCE_DIR/final-cleanup-family-experience-mcp-first-build.txt"; then exit 1; else echo "no LISTENING on :3345" > "$EVIDENCE_DIR/final-cleanup-family-experience-mcp-first-build.txt"; fi'`
+ 232:   Approval condition: health returns HTTP 200; MCP lists `find_family_experiences`; happy prompt returns three candidates; missing-age/no-result/source-failure behave safely.
+ 233:   Evidence: `.omo/evidence/final-F3-real-manual-qa.txt`
+ 234: - [ ] F4. Scope fidelity
+ 235:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; git status --short > "$EVIDENCE_DIR/final-F4-repo-status.txt"; find "$REPO_ROOT/apps" -maxdepth 3 -type f | sort > "$EVIDENCE_DIR/final-F4-app-files.txt"; if test -d "D:/KLab/workspace/2026-휴일약국/.git"; then git -C "D:/KLab/workspace/2026-휴일약국" status --short > "$EVIDENCE_DIR/final-F4-sibling-holiday-pharmacy-status.txt"; fi; if test -d "D:/KLab/workspace/2026-06-07-harness/.git"; then git -C "D:/KLab/workspace/2026-06-07-harness" status --short > "$EVIDENCE_DIR/final-F4-sibling-harness-status.txt"; fi; cd "$REPO_ROOT/apps/family-experience-mcp"; npm run scan:claims; npm run scan:secrets; claim_outputs=(); for f in "$EVIDENCE_DIR"/golden-family-experience-*.json; do test -e "$f" && claim_outputs+=("$f"); done; test "${#claim_outputs[@]}" -gt 0; ! grep -n -E "전국 모든 행사|전국 전체|예약 가능|예약가능|운영 중|실시간|live now|currently open|suitable for all|아이에게 적합함" "${claim_outputs[@]}"'`
+ 236:   Approval condition: changes are limited to `apps/family-experience-mcp/` plus planned evidence/docs; sibling workspace status receipts are read-only; `scan:claims` covers app docs/src/test and simple grep covers only newly generated golden public-output JSON; no final PlayMCP review/submission action was taken.
+ 237:   Evidence: `.omo/evidence/final-F4-scope-fidelity.txt`
+ 238: 
+ 239: ## Commit strategy
+ 240: - Commit only after each todo's acceptance criteria pass.
+ 241: - Use conventional commits exactly as listed in each todo.
+ 242: - Do not auto-commit unless the user has authorized committing in the execution turn. If not authorized, stage nothing and report the draft commit list.
+ 243: - If committing is authorized, each commit footer must include:
+ 244: 
+ 245: ```text
+ 246: Plan: .omo/plans/family-experience-mcp-first-build.md
+ 247: ```
+ 248: 
+ 249: - Expected commit sequence:
+ 250:   1. `build(family-experience): scaffold mcp app`
+ 251:   2. `feat(family-experience): define tool schemas and safe config`
+ 252:   3. `feat(family-experience): add source registry and fixtures`
+ 253:   4. `feat(family-experience): rank and render parent action cards`
+ 254:   5. `feat(family-experience): expose mcp tool over http`
+ 255:   6. `feat(family-experience): add seoul culture adapter`
+ 256:   7. `test(family-experience): add golden prompt smoke checks`
+ 257:   8. `docs(family-experience): prepare playmcp temp registration`
+ 258:   9. `chore(family-experience): verify mcp readiness`
+ 259: 
+ 260: ## Success criteria
+ 261: - MCP server starts locally on `127.0.0.1:3345`.
+ 262: - `/health` returns HTTP 200.
+ 263: - MCP client smoke lists exactly one public tool: `find_family_experiences`.
+ 264: - Happy golden prompt returns exactly three candidate cards.
+ 265: - Every returned card includes source/freshness, age-fit reason, confidence, parent check, and next action.
+ 266: - Missing age/stage returns a concise clarification or structured error before strong ranking.
+ 267: - No-result prompt returns no fabricated candidates and suggests relaxing one constraint.
+ 268: - Source failure with fixture disabled returns `isError: true` and no fabricated candidates.
+ 269: - Fixture output is clearly labeled as fixture/demo mode.
+ 270: - Seoul adapter is optional and redacts keyed URLs/secrets.
+ 271: - PlayMCP temporary-registration docs are ready, but review/submission is not requested.
+ 272: - Full verification commands pass:
+ 273:   - `cd apps/family-experience-mcp && npm run verify`
+ 274:   - `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/final-success-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:mcp -- --assert-tool-count=1; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true'`
+ 275: - Cleanup receipt proves port 3345 is not left running.
+
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command '$lines=Get-Content -LiteralPath '"'.omo/plans/family-experience-mcp-first-build.md'; for("'$i=220;$i -le 248;$i++){ if($i -le $lines.Count){ '"'{0,4}: {1}' -f "'$i,$lines[$i-1] }}' in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command '$lines=Get-Content -LiteralPath '"'.omo/plans/family-experience-mcp-first-build.md'; for("'$i=176;$i -le 188;$i++){ if($i -le $lines.Count){ '"'{0,4}: {1}' -f "'$i,$lines[$i-1] }}' in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+ succeeded in 410ms:
+ 220: ## Final verification wave
+ 221: > Runs in parallel after ALL todos. ALL must APPROVE through agent-executed evidence. User approval is a post-verification release/submission gate, not a QA dependency.
+ 222: - [ ] F1. Plan compliance audit
+ 223:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; test -f "$REPO_ROOT/apps/family-experience-mcp/package.json"; test -f "$REPO_ROOT/apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md"; ! test -e "$REPO_ROOT/apps/pharmacy-now-mcp"; ! test -e "$REPO_ROOT/apps/parent-trust-mcp"; for f in task-1-scaffold-GREEN.txt task-2-schemas-GREEN.txt task-3-sources-GREEN.txt task-4-pipeline-GREEN.txt task-5-mcp-GREEN.txt task-6-seoul-adapter-GREEN.txt task-7-golden-GREEN.txt task-8-playmcp-metadata-GREEN.txt task-9-final-verify-GREEN.txt; do test -s "$REPO_ROOT/.omo/evidence/$f"; done; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/final-F1-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:mcp -- --assert-tool-count=1; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true'`
+ 224:   Approval condition: `smoke:mcp -- --assert-tool-count=1` proves exactly one public tool is exposed; all todos' evidence files exist; no out-of-scope app folders for pharmacy or parent trust were created.
+ 225:   Evidence: `.omo/evidence/final-F1-plan-compliance.txt`
+ 226: - [ ] F2. Code quality review
+ 227:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp"; npm run typecheck; npm test -- --run; ! grep -R -n -E "as any|@ts-ignore|@ts-expect-error|\\.skip\\(|\\.only\\(" src test'`
+ 228:   Approval condition: typecheck and tests exit 0; no `as any`, `@ts-ignore`, `@ts-expect-error`, `.skip`, or `.only` in `src/` or `test/`.
+ 229:   Evidence: `.omo/evidence/final-F2-code-quality.txt`
+ 230: - [ ] F3. Real manual QA
+ 231:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/final-F3-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; curl -fsS -D "$EVIDENCE_DIR/final-F3-health.headers" -o "$EVIDENCE_DIR/final-F3-health.json" http://127.0.0.1:3345/health; grep -q "family-experience-mcp" "$EVIDENCE_DIR/final-F3-health.json"; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:mcp -- --assert-tool-count=1; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true; if netstat -ano | grep ":3345" | grep LISTENING > "$EVIDENCE_DIR/final-cleanup-family-experience-mcp-first-build.txt"; then exit 1; else echo "no LISTENING on :3345" > "$EVIDENCE_DIR/final-cleanup-family-experience-mcp-first-build.txt"; fi'`
+ 232:   Approval condition: health returns HTTP 200; MCP lists `find_family_experiences`; happy prompt returns three candidates; missing-age/no-result/source-failure behave safely.
+ 233:   Evidence: `.omo/evidence/final-F3-real-manual-qa.txt`
+ 234: - [ ] F4. Scope fidelity
+ 235:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; git status --short > "$EVIDENCE_DIR/final-F4-repo-status.txt"; find "$REPO_ROOT/apps" -maxdepth 3 -type f | sort > "$EVIDENCE_DIR/final-F4-app-files.txt"; if test -d "D:/KLab/workspace/2026-휴일약국/.git"; then git -C "D:/KLab/workspace/2026-휴일약국" status --short > "$EVIDENCE_DIR/final-F4-sibling-holiday-pharmacy-status.txt"; fi; if test -d "D:/KLab/workspace/2026-06-07-harness/.git"; then git -C "D:/KLab/workspace/2026-06-07-harness" status --short > "$EVIDENCE_DIR/final-F4-sibling-harness-status.txt"; fi; cd "$REPO_ROOT/apps/family-experience-mcp"; npm run scan:claims; npm run scan:secrets; claim_outputs=(); for f in "$EVIDENCE_DIR"/golden-family-experience-*.json; do test -e "$f" && claim_outputs+=("$f"); done; test "${#claim_outputs[@]}" -gt 0; ! grep -n -E "전국 모든 행사|전국 전체|예약 가능|예약가능|운영 중|실시간|live now|currently open|suitable for all|아이에게 적합함" "${claim_outputs[@]}"'`
+ 236:   Approval condition: changes are limited to `apps/family-experience-mcp/` plus planned evidence/docs; sibling workspace status receipts are read-only; `scan:claims` covers app docs/src/test and simple grep covers only newly generated golden public-output JSON; no final PlayMCP review/submission action was taken.
+ 237:   Evidence: `.omo/evidence/final-F4-scope-fidelity.txt`
+ 238: 
+ 239: ## Commit strategy
+ 240: - Commit only after each todo's acceptance criteria pass.
+ 241: - Use conventional commits exactly as listed in each todo.
+ 242: - Do not auto-commit unless the user has authorized committing in the execution turn. If not authorized, stage nothing and report the draft commit list.
+ 243: - If committing is authorized, each commit footer must include:
+ 244: 
+ 245: ```text
+ 246: Plan: .omo/plans/family-experience-mcp-first-build.md
+ 247: ```
+ 248: 
+
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command '$lines=Get-Content -LiteralPath '"'.omo/plans/family-experience-mcp-first-build.md'; 'COUNT='+"'$lines.Count' in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+ succeeded in 348ms:
+ 176:   Acceptance criteria (agent-executable): `cd apps/family-experience-mcp && npm test -- --run test/pipeline.test.ts && npm run typecheck` exits 0. Tests assert happy prompt returns exactly three, missing age returns clarification/failure state, no-result path fabricates nothing, inferred age labels are visible, missing `reservation_url`/`contact` does not produce a reservation/contact claim, and `computed`/`stale` are rejected as `age_fit_label` values.
+ 177:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/pipeline.test.ts'` expects exit 0 and tests named `returns top three fixture candidates`, `does not fabricate no-result matches`, `does not claim reservation availability when reservation_url is missing`, and `rejects computed or stale age fit labels`, Evidence `.omo/evidence/task-4-pipeline-GREEN.txt`; failure: add no-result, missing-reservation, and invalid-age-fit-label tests before implementation and run same command, expecting fabricated-result, reservation-claim, or invalid-label assertion to fail or module missing, Evidence `.omo/evidence/task-4-pipeline-RED.txt`.
+ 178:   Commit: Y | `feat(family-experience): rank and render parent action cards`
+ 179: 
+ 180: - [ ] 5. Register `find_family_experiences` and expose HTTP MCP plus health endpoint.
+ 181:   What to do / Must NOT do: Add `src/server.ts`, `src/mcp.ts`, and `src/health.ts` if useful. Use `new McpServer({ name: "family-experience-mcp", version: "0.1.0" })`. Register exactly one tool named `find_family_experiences`. Tool result returns both `content: [{ type: "text", text: <short Korean summary> }]` and `structuredContent` matching the result schema. Error cases return `isError: true` with a safe Korean message and structured failure metadata. HTTP server listens on `127.0.0.1:${PORT}` and serves `/mcp` plus `/health`. Do not log raw input beyond redacted debug fields.
+ 182:   Parallelization: Wave 2 | Blocked by: 4 | Blocks: 7, 8, 9 | Can parallelize with: 6
+ 183:   References (executor has NO interview context - be exhaustive): Context7 `/modelcontextprotocol/typescript-sdk` docs for `createMcpHandler`, `McpServer`, `registerTool`, `toNodeHandler`, and HTTP transport; Context7 `/modelcontextprotocol/modelcontextprotocol` docs for `CallToolResult`, `structuredContent`, and `isError`; `.omo/drafts/family-experience-mcp-first-build.md:47`; `.omo/drafts/family-experience-mcp-first-build.md:99`; `.omo/drafts/family-experience-mcp-first-build.md:100`; `.omo/drafts/family-experience-mcp-first-build.md:117`; `.omo/drafts/family-experience-mcp-first-build.md:128`
+ 184:   Acceptance criteria (agent-executable): `cd apps/family-experience-mcp && npm run typecheck && npm test -- --run test/mcp.test.ts` exits 0. With server running, `curl -fsS http://127.0.0.1:3345/health` returns HTTP 200 and body containing `family-experience-mcp`. `npm run smoke:mcp -- --assert-tool-count=1` lists exactly one tool and calls it successfully in fixture mode.
+ 185:   QA scenarios (name the exact tool + invocation): happy HTTP+MCP: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/task-5-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; curl -fsS -D "$EVIDENCE_DIR/task-5-health.headers" -o "$EVIDENCE_DIR/task-5-health.json" http://127.0.0.1:3345/health; grep -q "family-experience-mcp" "$EVIDENCE_DIR/task-5-health.json"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true EVIDENCE_DIR="$EVIDENCE_DIR" npm run smoke:mcp -- --assert-tool-count=1; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true'` expects HTTP 200, exactly one listed tool named `find_family_experiences`, and `structuredContent.results.length === 3`, Evidence `.omo/evidence/task-5-mcp-GREEN.txt`; failure: run the same command before registering the tool or with `FAMILY_EXPERIENCE_ALLOW_FIXTURE=false SEOUL_OPEN_DATA_KEY=`, expecting safe failure not fabricated output, Evidence `.omo/evidence/task-5-mcp-RED.txt`.
+ 186:   Commit: Y | `feat(family-experience): expose mcp tool over http`
+ 187: 
+ 188: - [ ] 6. Add optional Seoul cultural-events adapter behind the source contract.
+
+ succeeded in 285ms:
+COUNT=275
+
+codex
+I’m widening the read now to the cited proposal and quality-gate files, plus the PlayMCP HTML lines the plan relies on.
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command '$lines=Get-Content -LiteralPath '"'HTML.txt'; foreach("'$range in @(@(214,260),@(306,345))){ for($i=$range[0];$i -le $range[1];$i++){ if($i -le $lines.Count){ '"'{0,4}: {1}' -f "'$i,$lines[$i-1] } }; '"'---' }" in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command '$i=0; Get-Content -LiteralPath '"'.omo/drafts/family-experience-mcp-first-build.md' | ForEach-Object { "'$i++; '"'{0,4}: {1}' -f "'$i, $_ }' in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command 'foreach($f in @('"'.omo/evidence/family-experience-mcp-first-build-plan-self-audit.md','.omo/evidence/family-experience-mcp-first-build-high-accuracy-fix-summary.md','.prd-session/2026-07-01-three-concept-debate/family-experience-mcp/quality-gate-2026-07-02.md','PLANS.md')){ \"===== "'$f"; $i=0; Get-Content -LiteralPath $f | ForEach-Object { $i++; '"'{0,4}: {1}' -f "'$i, $_ } }' in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command 'foreach($f in @('"'concept/family-experience-mcp/README.md','concept/family-experience-mcp/DATA_PIPELINE.md','concept/family-experience-mcp/MCP_TOOLS.md','concept/family-experience-mcp/GOLDEN_PROMPTS.md','concept/family-experience-mcp/EXPERIMENTS.md','concept/family-experience-mcp/MECE_RESEARCH.md','concept/family-experience-mcp/REFINED_PROPOSAL.md','concept/DATA_PIPELINE_ARCHITECTURE.md')){ \"===== "'$f"; $i=0; Get-Content -LiteralPath $f | ForEach-Object { $i++; '"'{0,4}: {1}' -f "'$i, $_ } }' in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+ succeeded in 349ms:
+ 214:                   <span class="txt_num">02.</span> PlayMCP에서 <em class="txt_emph">MCP 서버 등록</em>
+ 215:                 </accordion-title>
+ 216:                 <accordion-content class="cont_how" inert="true" id="how2Content">
+ 217:                   <ul>
+ 218:       <li>
+ 219:         카카오클라우드에서 생성한 MCP 서버 Endpoint로<br>
+ 220:         PlayMCP 개발자 콘솔의 <em class="txt_emph">‘새로운 MCP 서버 등록’</em>에서 등록해주세요.<br>
+ 221:         <a href="https://kko.to/player10" target="_blank" class="link_how" data-tiara-action-name="공식 노션 가이드_클릭">공식 노션 가이드</a>
+ 222:       </li>
+ 223:       <li>
+ 224:         최종 제출용 MCP 서버가 아닌 경우, <em class="txt_emph">‘임시 등록’</em>으로 저장해 PlayMCP에서 테스트합니다.<br>
+ 225:         <span class="txt_sub">※ 임시 등록 상태에서는 등록 및 심사 요청을 진행하지 마세요.</span>
+ 226:       </li>
+ 227:       <li>
+ 228:         최종 제출용 MCP 서버 개발이 완료된 경우, <em class="txt_emph">‘등록 및 심사 요청’</em>으로 심사를 요청해주세요.
+ 229:       </li>
+ 230:     </ul>
+ 231:                 </accordion-content>
+ 232:               </accordion-item><accordion-item class="item_how" pairing-key="how3">
+ 233:                 <accordion-title class="tit_how" role="button" tabindex="0" aria-controls="how3Content" aria-expanded="false">
+ 234:                   <span class="txt_num">03.</span> 심사 통과 후 <em class="txt_emph">전체공개 필수</em>
+ 235:                 </accordion-title>
+ 236:                 <accordion-content class="cont_how" inert="true" id="how3Content">
+ 237:                   <ul>
+ 238:       <li>
+ 239:         PlayMCP 서버 심사 완료 후, 서버의 최초 공개 상태는 <em class="txt_emph">‘나에게만 공개’</em>로 설정됩니다.
+ 240:       </li>
+ 241:       <li>
+ 242:         AGENTIC PLAYER10 참가 접수를 위해서는 반드시 공개 상태를 <em class="txt_emph">‘전체 공개’</em>로 변경해주세요.<br>
+ 243:         <span class="txt_sub">※ ‘나에게만 공개’ 상태일 경우 참가 접수 대상에서 제외됩니다.</span>
+ 244:       </li>
+ 245:     </ul>
+ 246:                 </accordion-content>
+ 247:               </accordion-item><accordion-item class="item_how" pairing-key="how4">
+ 248:                 <accordion-title class="tit_how" role="button" tabindex="0" aria-controls="how4Content" aria-expanded="false">
+ 249:                   <span class="txt_num">04.</span> 하단 버튼 눌러 <em class="txt_emph">예선 참여 접수</em>
+ 250:                 </accordion-title>
+ 251:                 <accordion-content class="cont_how" inert="true" id="how4Content">
+ 252:                   <ul>
+ 253:       <li>
+ 254:         페이지 하단의 <em class="txt_emph">[Player 예선 참여]</em> 버튼을 눌러 최종 제출을 완료해주세요.<br>
+ 255:         <span class="txt_sub">
+ 256:           ※ 제출은 1회만 가능합니다.<br>
+ 257:           ※ 본선 진출 결과는 카카오톡 채널 메시지를 통해 개별 안내될 예정입니다.
+ 258:         </span>
+ 259:       </li>
+ 260:     </ul>
+---
+ 306:                   <span class="txt_faq">수상작 평가 기준이 있나요?</span>
+ 307:                 </accordion-title>
+ 308:                 <accordion-content inert="true" id="faq3Content">
+ 309:                   <div class="wrap_cont">
+ 310:                     <i class="ico_a">
+ 311:                       <span class="screen_out">A</span>
+ 312:                     </i>
+ 313:                     <div class="txt_faq">
+ 314:       예선은 카카오 내부 심사로 진행됩니다. 본선은 내부 심사와 사용자 투표를 함께 반영하여 최종 수상작을 선정합니다.
+ 315:       <br><br>
+ 316:       심사 시에는 다음과 같은 항목들을 종합적으로 고려하여 평가합니다.
+ 317:       <ul>
+ 318:         <li>창의성: 새로운 아이디어로 문제를 해결하고 파급력을 가지는가</li>
+ 319:         <li>편의성: 적합한 UI/UX를 통해 사용자의 일상에 실질적인 가치를 주는가</li>
+ 320:         <li>안정성: 안정적으로 구동되며 정확한 데이터를 제공하고 보안상 문제가 없는가</li>
+ 321:       </ul>
+ 322:     </div>
+ 323:                   </div>
+ 324:                 </accordion-content>
+ 325:               </accordion-item><accordion-item class="item_faq" pairing-key="faq4">
+ 326:                 <accordion-title role="button" tabindex="0" aria-controls="faq4Content" aria-expanded="false">
+ 327:                   <i class="ico_q">
+ 328:                     <span class="screen_out">Q</span>
+ 329:                   </i>
+ 330:                   <span class="txt_faq">PlayMCP 서버 심사에 얼마나 소요되나요?</span>
+ 331:                 </accordion-title>
+ 332:                 <accordion-content inert="true" id="faq4Content">
+ 333:                   <div class="wrap_cont">
+ 334:                     <i class="ico_a">
+ 335:                       <span class="screen_out">A</span>
+ 336:                     </i>
+ 337:                     <div class="txt_faq">영업일 기준 최대 7일이 소요됩니다. 7월 7일(화)까지 심사 요청 건은 7월 10일(금)까지 모두 심사 완료(승인 또는 반려) 예정이며 이후 요청 건은 공모전 응모 기한 내 심사 완료가 어려울 수 있으니 참고하여, 미리 진행 부탁드립니다.</div>
+ 338:                   </div>
+ 339:                 </accordion-content>
+ 340:               </accordion-item><accordion-item class="item_faq" pairing-key="faq5">
+ 341:                 <accordion-title role="button" tabindex="0" aria-controls="faq5Content" aria-expanded="false">
+ 342:                   <i class="ico_q">
+ 343:                     <span class="screen_out">Q</span>
+ 344:                   </i>
+ 345:                   <span class="txt_faq">공모전 관련 문의는 어디로 하나요?</span>
+---
+
+ succeeded in 319ms:
+   1: ---
+   2: slug: family-experience-mcp-first-build
+   3: status: plan-written
+   4: intent: clear
+   5: review_required: true
+   6: pending-action: write .omo/plans/family-experience-mcp-first-build.md
+   7: approach: one-tool TypeScript MCP server for family-experience recommendations, fixture-first plus one Seoul official-data adapter, with PlayMCP temporary-registration readiness
+   8: ---
+   9: 
+  10: # Draft: family-experience-mcp-first-build
+  11: 
+  12: ## Task classification
+  13: 
+  14: - Type: research-heavy / architecture planning.
+  15: - Tier: HEAVY.
+  16: - Reason: greenfield MCP server, external public APIs, deployment/registration surface, data provenance, and hackathon review constraints.
+  17: - Skills used:
+  18:   - `omo:ulw-plan`: user explicitly invoked it; planner-only, no product-code implementation.
+  19:   - `context7-mcp`: current MCP protocol and TypeScript SDK docs are relevant to tool schema, structured output, and HTTP transport.
+  20: - Skills intentionally skipped:
+  21:   - `omo:git-master`: no commit requested.
+  22:   - `omo:programming`: no product code edited in this planning turn.
+  23:   - `babygear-risk-radar` / `parentpick-guard`: not the selected first-priority branch.
+  24: 
+  25: ## Problem Definition
+  26: 
+  27: - Goal: produce one decision-complete implementation plan for the first-priority `concept/family-experience-mcp` branch.
+  28: - Context: the repo already selected family-experience as the primary concept, with pharmacy as fallback and parent-trust on hold.
+  29: - Constraints:
+  30:   - planning only; product code must not be changed in this turn.
+  31:   - use official/public data sources first.
+  32:   - do not fabricate age fit, reservation state, or live/current claims.
+  33:   - PlayMCP review rewards creativity, convenience, stability, accurate data, and security.
+  34: - Success criteria for the later worker:
+  35:   - one MCP tool, `find_family_experiences`, can answer the first golden prompt with Top 3 cards.
+  36:   - missing age, no-result, and source-failure prompts behave safely.
+  37:   - local HTTP MCP smoke proves tool metadata and tool call behavior.
+  38:   - PlayMCP temporary-registration payload/fields are ready.
+  39: - Done-when for this planning turn: approval brief is recorded here and the user explicitly approves or changes the approach.
+  40: 
+  41: ## Components (topology ledger)
+  42: <!-- Lock the SHAPE before depth. One row per top-level component that can succeed or fail independently. -->
+  43: <!-- id | outcome (one line) | status: active|deferred | evidence path -->
+  44: 
+  45: | id | outcome | status | evidence path |
+  46: |---|---|---|---|
+  47: | C1 | TypeScript MCP server surface exposes one HTTP endpoint suitable for local smoke and later PlayMCP registration. | active | Context7 MCP TS SDK docs; `HTML.txt:224`, `HTML.txt:337` |
+  48: | C2 | `find_family_experiences` input/output schemas are strict, short, and provenance-bearing. | active | `concept/family-experience-mcp/MCP_TOOLS.md:3`, `concept/family-experience-mcp/REFINED_PROPOSAL.md:7` |
+  49: | C3 | Data lane uses deterministic fixture first and one official Seoul cultural-events adapter when a key exists. | active | `concept/family-experience-mcp/DATA_PIPELINE.md:3`, `concept/family-experience-mcp/MECE_RESEARCH.md:18` |
+  50: | C4 | Ranking/response renderer returns Top 3 with age-fit reason, confidence label, parent checks, and next action. | active | `PLANS.md:47`, `concept/family-experience-mcp/REFINED_PROPOSAL.md:19` |
+  51: | C5 | QA proves happy, missing-input, no-result, and source-failure behavior via agent-run commands. | active | `concept/family-experience-mcp/GOLDEN_PROMPTS.md:3`, `concept/family-experience-mcp/EXPERIMENTS.md:21` |
+  52: | C6 | PlayMCP temporary-registration readiness is prepared without requesting final review or public submission. | active | `HTML.txt:224`, `.omo/ulw-research/20260702-004308-parallel-strategy/playmcp-current-surface-summary.md:59` |
+  53: 
+  54: ## Open assumptions (announced defaults)
+  55: <!-- Record any default you adopt instead of asking, so the user can veto it at the gate. -->
+  56: <!-- assumption | adopted default | rationale | reversible? -->
+  57: 
+  58: | assumption | adopted default | rationale | reversible? |
+  59: |---|---|---|---|
+  60: | Implementation stack | TypeScript MCP SDK with Streamable HTTP endpoint and Zod validation. | Context7 shows TS SDK support for `McpServer`, `registerTool`, Zod `inputSchema`, and HTTP transport; PlayMCP needs endpoint validation. | yes |
+  61: | Product code location | `apps/family-experience-mcp/` under this repo. | Repo currently has docs/concepts only, so a new app folder avoids mutating concept docs as code. | yes |
+  62: | Public display name | `아이랑 어디가` for draft registration fields; code slug remains `family-experience-mcp`. | Final product name is open, but a human-readable default is needed for starter messages and screenshots. | yes |
+  63: | First source | Seoul cultural-events Open API as the first live adapter; deterministic fixture if key is absent. | Seoul source exposes date, place, target, fee, homepage/contact, coordinates, and program fields useful for family recommendations. | yes |
+  64: | National expansion | Defer TourAPI / national standard data until the Seoul golden prompts pass. | Existing stop rule says stop source expansion after the first stable demo prompt. | yes |
+  65: | PlayMCP action | Prepare temporary registration metadata and local endpoint proof; do not request review or final contest submission. | Official flow distinguishes temporary registration, review request, public visibility, and one-time submission. | yes |
+  66: 
+  67: ## Findings (cited - path:lines)
+  68: 
+  69: - `PLANS.md:7` selects `concept/family-experience-mcp` as primary, `concept/pharmacy-now-mcp` as fallback, and `concept/parent-trust-mcp` as hold.
+  70: - `PLANS.md:34` gives the next path: start family-experience, build one `find_family_experiences` endpoint, use deterministic demo data if keys are not ready, add one Seoul open-data adapter if available, test happy/missing/API-failure, and prepare PlayMCP temporary registration.
+  71: - `PLANS.md:49` requires every MCP answer to include Top 3 choices, fit reasons, source/freshness, parent verification, and one next action.
+  72: - `research/decisions/2026-07-01-three-mcp-idea-branches.md:16` scores family-experience highest at 27, with pharmacy 23 and parent-trust 21.
+  73: - `research/decisions/2026-07-01-three-mcp-idea-branches.md:28` says family-experience has instantly visible chat value, lower medical/legal sensitivity than baby safety, and lower availability criticality than pharmacy.
+  74: - `research/methods/2026-07-01-three-mcp-idea-branches.md:12` chose concept-branch bootstrap over immediately creating three git branches or broad data-source crawling.
+  75: - `.omo/ulw-research/20260702-004308-parallel-strategy/SYNTHESIS.md:7` concluded building all three to submission quality in parallel is disadvantageous, while keeping fallback tracks is useful.
+  76: - `.omo/ulw-research/20260702-004308-parallel-strategy/SYNTHESIS.md:50` recommends a 48-72 hour model: implement/scaffold family-experience only, one public tool, deterministic demo data plus one official adapter if ready, then PlayMCP temporary registration.
+  77: - `.omo/ulw-research/20260702-004308-parallel-strategy/playmcp-current-surface-summary.md:40` found no direct keyword overlap for `체험`, `가족`, `어린이`, `행사`, `박물관`, or `체험학습`; `공연` has ArtBridge overlap but not child-age/family-experience specificity.
+  78: - `.omo/ulw-research/20260702-004308-parallel-strategy/playmcp-current-surface-summary.md:63` says PlayMCP supports temporary registration and later review request; endpoint validation checks tool metadata.
+  79: - `concept/family-experience-mcp/README.md:20` defines first scope as Seoul-first, one child age/stage, today/weekend/date range, and Top 3 output.
+  80: - `concept/family-experience-mcp/README.md:27` says to stop or narrow if event records lack date, place, age/target or program clue, contact/homepage, and source freshness.
+  81: - `concept/family-experience-mcp/DATA_PIPELINE.md:3` prioritizes Seoul cultural events first, TourAPI second, national cultural festival/performance data later, and excludes weak sources.
+  82: - `concept/family-experience-mcp/DATA_PIPELINE.md:22` lists normalized candidate fields including source, URL, retrieved_at, date, venue, address, coordinates, target age text, program text, indoor/outdoor, fee, reservation URL, contact, confidence, and parent checks.
+  83: - `concept/family-experience-mcp/DATA_PIPELINE.md:44` forbids claiming suitability unless source/program text supports it, requires inferred age fit to be labeled, and forbids scraping until terms/robots are recorded.
+  84: - `concept/family-experience-mcp/MCP_TOOLS.md:3` defines `find_family_experiences` as Tool 1 with inputs for location, child age, date range, indoor/outdoor, budget, and must-have constraints.
+  85: - `concept/family-experience-mcp/GOLDEN_PROMPTS.md:3` provides happy, missing-age, no-result, and data-failure golden prompts.
+  86: - `concept/family-experience-mcp/EXPERIMENTS.md:21` promotes only when Top 3/source/freshness, concise missing-age clarification, no fabricated no-result behavior, and safe source failure all pass.
+  87: - `concept/DATA_PIPELINE_ARCHITECTURE.md:11` requires source registry, adapter, raw snapshot, normalization, confidence/provenance, cache/stale, masking, and response card stages.
+  88: - `concept/DATA_PIPELINE_ARCHITECTURE.md:56` sets family-experience TTL at 6-24 hours, with source date and official/reservation link visible.
+  89: - `research/briefs/2026-07-01-mcp-data-pipeline-architecture-and-failure-modes.md:89` chose separated registry/adapters/normalization/provenance/response rendering and rejected monolithic adapters, ETL-first, and broad scraping.
+  90: - `HTML.txt:224` says non-final MCP servers can be saved as temporary registration for PlayMCP testing; `HTML.txt:228` reserves review request for final submission-ready servers.
+  91: - `HTML.txt:239` says approved servers initially become private, and `HTML.txt:242` says AGENTIC PLAYER10 participation requires changing visibility to public.
+  92: - `HTML.txt:254` says final preliminary submission is one-time.
+  93: - `HTML.txt:316` lists judging factors: creativity, convenience, stability, accurate data, and no security issue.
+  94: - `HTML.txt:337` says review can take up to 7 business days and requests by 2026-07-07 are planned for review by 2026-07-10.
+  95: - Current official PlayMCP `llms.txt` confirms PlayMCP is Kakao's MCP-based tool integration platform/playground, approved servers are public, the developer console manages registration, and the gateway/toolbox model is used: https://playmcp.kakao.com/llms.txt
+  96: - Current Seoul Open Data page for `OA-15486` confirms Seoul cultural events provide category, district, event name, venue, dates, target users, fee, homepage, inquiry, coordinates, start/end date, free/paid, and event time: https://data.seoul.go.kr/dataList/OA-15486/S/1/datasetView.do
+  97: - Current data.go.kr page for national performance events confirms fields such as event name, place, content, dates/times, fee, phone, age of admission, homepage, reservation info, parking, address, latitude, longitude, quarterly update, and 2026-01-12 modified date: https://www.data.go.kr/data/15013106/standard.do
+  98: - Current TourAPI page confirms nationwide tourism/event/location/detail/image APIs exist and can provide latest tourism information, but age-fit is not the core schema: https://www.data.go.kr/data/15101578/openapi.do
+  99: - Context7 `/modelcontextprotocol/modelcontextprotocol` confirms MCP tools use `inputSchema`, may expose `outputSchema`, return `CallToolResult` with `content`, optional `structuredContent`, and `isError`, and must validate/sanitize tool outputs.
+ 100: - Context7 `/modelcontextprotocol/typescript-sdk` confirms TypeScript SDK patterns for `McpServer`, `registerTool`, Zod `inputSchema`, HTTP transport, and error tool results.
+ 101: 
+ 102: ## Decisions (with rationale)
+ 103: 
+ 104: - Chosen method: one-tool-first MCP server.
+ 105:   - Why: repo decision and public-surface research both say one stable, reviewable MCP beats three half-built submissions.
+ 106: - Chosen stack: TypeScript MCP SDK.
+ 107:   - Why: current docs support schema-first tools, structured results, and HTTP transport; this is closer to PlayMCP endpoint validation than a local-only script.
+ 108: - Chosen first data method: fixture-first plus one Seoul official-data adapter.
+ 109:   - Why: fixture mode removes API-key dependency for RED/GREEN and smoke tests; Seoul cultural events have the most directly useful family-experience fields.
+ 110: - Chosen output contract: Top 3 cards plus provenance and parent-check language.
+ 111:   - Why: this is already shared across repo docs and minimizes report-like output.
+ 112: - Fallback method: if Seoul live data is blocked or too sparse, keep the same schema and run deterministic fixture mode for registration smoke while evaluating pharmacy fallback separately.
+ 113:   - Why: no fabricated current/live claims; the user can still demo the chat promise safely.
+ 114: 
+ 115: ## Scope IN
+ 116: 
+ 117: - Create a downstream execution plan for a new `apps/family-experience-mcp/` TypeScript MCP server.
+ 118: - Plan exactly one public tool: `find_family_experiences`.
+ 119: - Plan strict input validation:
+ 120:   - required: `location`, `child_age` or `child_stage`, `date_range`.
+ 121:   - optional: `indoor_outdoor`, `budget`, `must_have`, `max_distance_hint`.
+ 122: - Plan structured output:
+ 123:   - `query`, `results`, `warnings`, `source_summary`, `next_action`.
+ 124:   - each result includes title, date/time, venue/address, age-fit reason, fee/reservation/contact if present, source/retrieved_at, confidence, parent check.
+ 125: - Plan a source registry, deterministic fixtures, Seoul cultural-events adapter, normalizer, ranking, response renderer, and typed failures.
+ 126: - Plan four golden prompt checks: happy path, missing age, no confident results, and data/API failure.
+ 127: - Plan PlayMCP temporary-registration readiness:
+ 128:   - server name, identifier, description, starter messages, endpoint path, tool metadata smoke, and response visibility notes.
+ 129: 
+ 130: ## Scope OUT (Must NOT have)
+ 131: 
+ 132: - Do not build all three concepts in parallel.
+ 133: - Do not create real git branches until the user explicitly asks.
+ 134: - Do not request PlayMCP final review or one-time contest submission.
+ 135: - Do not claim live availability, reservation availability, child suitability, or age fit unless source/program text supports it.
+ 136: - Do not scrape unofficial event pages.
+ 137: - Do not add national/worldwide data sources before the Seoul-first golden prompts pass.
+ 138: - Do not store or print API keys, bearer tokens, keyed URLs, or private user data.
+ 139: - Do not turn the answer into a long directory/report; Top 3 only for the first MVP.
+ 140: 
+ 141: ## Open questions
+ 142: 
+ 143: - Resolved by user reply `$omo:ulw-plan 진행`: proceed with default public display name `아이랑 어디가`.
+ 144: - Everything else is handled by defaults in this draft.
+ 145: 
+ 146: ## Approval gate
+ 147: status: approved-and-written
+ 148: pending action: execution only after the user invokes a worker/start command, for example `$omo:start-work .omo/plans/family-experience-mcp-first-build.md`.
+ 149: approval received: user replied `$omo:ulw-plan 진행`, interpreted as approval to write the plan, not approval to implement product code.
+ 150: high accuracy review requested: user replied `고정밀리뷰 진행`.
+ 151: plan path: `.omo/plans/family-experience-mcp-first-build.md`
+ 152: <!-- When exploration is exhausted and unknowns are answered, set status: awaiting-approval. -->
+ 153: <!-- That durable record is the loop guard: on a later turn read it and resume at the gate instead of re-running exploration. -->
+
+ succeeded in 356ms:
+===== .omo/evidence/family-experience-mcp-first-build-plan-self-audit.md
+   1: # Plan Self Audit - family-experience-mcp-first-build
+   2: 
+   3: Date: 2026-07-02 KST
+   4: 
+   5: ## Scope
+   6: 
+   7: Artifact audited:
+   8: 
+   9: - `.omo/plans/family-experience-mcp-first-build.md`
+  10: - `.omo/drafts/family-experience-mcp-first-build.md`
+  11: 
+  12: This audit covers plan completeness only. No product code was implemented.
+  13: 
+  14: ## Checks
+  15: 
+  16: | Check | Result | Evidence |
+  17: |---|---|---|
+  18: | Placeholder scan | PASS | `grep -n -E '<fill|<\\.\\.\\.|<title>|<src/path|<exact|<N>|<Quick|<Low|<Y/N>|placeholder' .omo/plans/family-experience-mcp-first-build.md || true` returned no output after wording cleanup. |
+  19: | Header order | PASS | `## TL;DR`, `## Scope`, `## Verification strategy`, `## Execution strategy`, `## Todos`, `## Final verification wave`, `## Commit strategy`, `## Success criteria`. |
+  20: | Todo count | PASS | 9 implementation todos and 4 final verification todos. |
+  21: | Todo contract | PASS | 27 contract lines found: each of 9 todos has acceptance criteria, exact QA scenario, and commit line. |
+  22: | Draft status | PASS | frontmatter `status: plan-written`; approval gate `status: approved-and-written`. |
+  23: 
+  24: ## Gap Review
+  25: 
+  26: - The prior OML quality gate rejected `final-prd.md` as standalone PRD but accepted it as implementation intake if the execution plan filled schemas, source citations, acceptance criteria, QA commands, and PlayMCP smoke criteria.
+  27: - The current plan fills those missing sections.
+  28: - Native Metis/Momus subagent review was not run in this turn because the user requested normal `ulw-plan` progression, not high-accuracy review or subagent delegation. The plan therefore offers high-accuracy review as the next optional choice before execution.
+  29: 
+  30: ## Verdict
+  31: 
+  32: PASS for normal `ulw-plan` handoff.
+  33: 
+  34: Next allowed action:
+  35: 
+  36: - Start execution from `.omo/plans/family-experience-mcp-first-build.md`, or
+  37: - run a high-accuracy review before execution.
+===== .omo/evidence/family-experience-mcp-first-build-high-accuracy-fix-summary.md
+   1: # High Accuracy Review Fix Summary
+   2: 
+   3: Date: 2026-07-02 KST
+   4: 
+   5: ## Native Momus Iteration 1
+   6: 
+   7: Verdict: ITERATE
+   8: 
+   9: Fixes applied:
+  10: 
+  11: - Replaced invalid `.omo/drafts/...` line references in Todo 1 and Todo 5 with relevant references to implementation-stack, scope, PlayMCP readiness, and MCP docs evidence.
+  12: - Replaced hard-coded `/d/KLab/...` command paths with repo-root-relative Git Bash snippets using `REPO_ROOT="$(pwd)"`.
+  13: - Strengthened final verification so F1 checks evidence files and out-of-scope app folders, F2 checks forbidden TypeScript suppressions and skipped tests, and Todo 9 requires failing `scan:secrets` / `scan:claims` scripts rather than `grep ... || true`.
+  14: 
+  15: ## Independent Codex CLI Iteration 1
+  16: 
+  17: Verdict: ITERATE
+  18: 
+  19: Fixes applied:
+  20: 
+  21: - Removed all developer-specific absolute workspace paths.
+  22: - Changed final verification text so user approval is only a post-verification release gate, not a QA dependency.
+  23: - Split age-fit labels from confidence/freshness labels. Age-fit is now only `source-stated`, `inferred`, or `unknown`; `computed` and `stale` cannot imply suitability.
+  24: - Added exact server start/wait/stop orchestration for Todo 5, Todo 7, and final F3.
+  25: - Required smoke scripts to write to `$REPO_ROOT/.omo/evidence` via `EVIDENCE_DIR`.
+  26: - Replaced weak secret grep with required `scan:secrets` and claim safety with `scan:claims`.
+  27: - Expanded F4 claim-safety checks to docs/src/test/evidence and additional Korean/English variants.
+  28: 
+  29: ## Local Structure Recheck
+  30: 
+  31: - Placeholder / stale absolute path / weak grep scan: PASS.
+  32: - Todo count: 9 implementation todos.
+  33: - Final verification count: 4.
+  34: - Temporary failed review copy under `.omo/evidence/high-accuracy-codex-review-run`: removed after workspace-contained path verification.
+  35: 
+  36: ## Native Momus Iteration 2
+  37: 
+  38: Verdict: ITERATE
+  39: 
+  40: Fixes applied:
+  41: 
+  42: - Repaired all PowerShell-facing Git Bash invocations to use `& 'C:\Program Files\Git\bin\bash.exe' -lc '...'`.
+  43: - Removed corrupted control-character bash path bytes introduced during an earlier mechanical replacement.
+  44: - Replaced broad historical `.omo/evidence` claim grep with scoped checks: `scan:claims` covers app docs/src/test, and simple forbidden-phrase grep covers only newly generated golden public-output JSON.
+  45: - Strengthened port cleanup checks to match only `LISTENING` rows on `:3345`.
+  46: - Changed health checks from `curl -i` observation to `curl -fsS` with saved headers/body and explicit body assertion.
+  47: 
+  48: ## Independent Codex CLI Iteration 2
+  49: 
+  50: Verdict: ITERATE
+  51: 
+  52: Fixes applied:
+  53: 
+  54: - Wrapped Todo 9 `smoke:golden` in the same server start/wait/stop lifecycle used by Todo 7 and final F3.
+  55: - Corrected MCP SDK construction text from `McpServer({ ... })` to `new McpServer({ ... })`.
+  56: - Marked `reservation_url` and `contact` as optional/nullable candidate fields and required tests proving missing values do not become reservation/contact claims.
+  57: - Required `smoke:mcp -- --assert-tool-count=1` in Todo 5, F1, F3, and final success checks so exactly one public tool is machine-verified.
+  58: - Added read-only sibling workspace status receipts for `D:/KLab/workspace/2026-휴일약국` and `D:/KLab/workspace/2026-06-07-harness` when those repos exist.
+  59: 
+  60: ## Local Structure Recheck 2
+  61: 
+  62: - Control-character scan: PASS.
+  63: - Developer-specific `/d/KLab` path scan: PASS.
+  64: - `wait for the user` QA dependency scan: PASS.
+  65: - Whole historical evidence claim grep scan: PASS.
+===== .prd-session/2026-07-01-three-concept-debate/family-experience-mcp/quality-gate-2026-07-02.md
+   1: # OML Quality Gate - family-experience-mcp
+   2: 
+   3: Date: 2026-07-02 KST
+   4: 
+   5: ## Harness Route
+   6: 
+   7: - Requested entrypoint: `$oml:harness`
+   8: - Chosen route: `$oml:quality-gate`
+   9: - Reason: a MAS debate trace, generated final PRD, risk/editor backstop, and current `ulw-plan` draft already exist. The smallest correct OML step is audit, not bootstrap or another debate.
+  10: 
+  11: ## Audited Artifacts
+  12: 
+  13: - `.prd-session/2026-07-01-three-concept-debate/input.md`
+  14: - `.prd-session/2026-07-01-three-concept-debate/TRACE_SUMMARY.md`
+  15: - `.prd-session/2026-07-01-three-concept-debate/family-experience-mcp/final-prd.md`
+  16: - `.prd-session/2026-07-01-three-concept-debate/family-experience-mcp/risk-editor-backstop.md`
+  17: - `.omo/drafts/family-experience-mcp-first-build.md`
+  18: - `schema/AGENTS.md`
+  19: 
+  20: ## Verdict
+  21: 
+  22: REJECT as a standalone shippable PRD.
+  23: 
+  24: ACCEPT as implementation intake for the current `ulw-plan` path, provided the detailed execution plan fills the missing acceptance criteria, source citations, schemas, and QA commands before coding.
+  25: 
+  26: ## Gate 1 - Requirement Traceability
+  27: 
+  28: Status: PARTIAL
+  29: 
+  30: Evidence:
+  31: 
+  32: - The debate input requires three topics, with stop conditions for one narrowed MVP promise, primary MCP tool, source/data policy, golden prompt, dissent/open questions, and implementation next step: `.prd-session/2026-07-01-three-concept-debate/input.md:33`.
+  33: - The trace summary converges on family-experience as primary, pharmacy as fallback, and parent-trust as later safety-sensitive branch: `.prd-session/2026-07-01-three-concept-debate/TRACE_SUMMARY.md:7`.
+  34: - The final PRD includes the product promise, first MCP tool, MVP scope, output contract, dissent, assumptions, open questions, and next step: `.prd-session/2026-07-01-three-concept-debate/family-experience-mcp/final-prd.md:7`.
+  35: - The backstop preserves the main risk and public copy boundary: `.prd-session/2026-07-01-three-concept-debate/family-experience-mcp/risk-editor-backstop.md:5`.
+  36: 
+  37: Gap:
+  38: 
+  39: - The final PRD itself does not cite source references or source-map IDs for research-grounded claims. The current `ulw-plan` draft adds evidence citations, but that evidence is not embedded in the debate PRD.
+  40: 
+  41: Required fix:
+  42: 
+  43: - In the execution plan or revised PRD, attach citations for source selection, PlayMCP constraints, output contract, and data-risk rules.
+  44: 
+  45: ## Gate 2 - PRD / Proposal Completeness
+  46: 
+  47: Status: FAIL
+  48: 
+  49: Passes:
+  50: 
+  51: - Product promise is clear.
+  52: - First MCP tool is named.
+  53: - MVP cut is narrow: Seoul, one date range, one child age/stage, Top 3, fixture fallback.
+  54: - Dissent is preserved.
+  55: 
+  56: Missing:
+  57: 
+  58: - Exact input schema and validation behavior.
+  59: - Structured output schema.
+  60: - Source registry and field-level provenance contract.
+  61: - Cache/stale policy in executable terms.
+  62: - Error taxonomy for missing age, no result, source failure, and permission/key failure.
+  63: - Agent-executable acceptance criteria.
+  64: - Concrete QA commands and evidence paths.
+  65: - PlayMCP temporary-registration fields and smoke criteria.
+  66: - Explicit non-goals beyond the short MVP scope.
+  67: 
+  68: Required fix:
+  69: 
+  70: - Do not implement directly from `final-prd.md`. First generate the detailed `.omo/plans/family-experience-mcp-first-build.md` todos from the current draft.
+  71: 
+  72: ## Gate 3 - Feasibility
+  73: 
+  74: Status: PASS WITH CONDITIONS
+  75: 
+  76: Evidence:
+  77: 
+  78: - The chosen path is fixture-first plus one optional Seoul adapter: `.omo/drafts/family-experience-mcp-first-build.md:57`.
+  79: - The first tool and Top 3 output contract are already scoped: `.omo/drafts/family-experience-mcp-first-build.md:116`.
+  80: - The plan draft explicitly keeps national expansion deferred until Seoul-first prompts pass: `.omo/drafts/family-experience-mcp-first-build.md:63`.
+  81: 
+  82: Conditions:
+  83: 
+  84: - Live adapter must degrade to fixture mode when the Seoul API key is absent.
+  85: - Age-fit must be `source-stated`, `inferred`, or `unknown`, never silently upgraded.
+  86: - No PlayMCP review request or one-time submission should happen until local MCP tool metadata and golden prompt QA pass.
+  87: 
+  88: ## Gate 4 - Adversarial Risk
+  89: 
+  90: Status: PASS WITH CONDITIONS
+  91: 
+  92: Risks preserved:
+  93: 
+  94: - Age-fit inference can become unsupported if labels are hidden.
+  95: - Public copy can overclaim nationwide coverage or reservation availability.
+  96: - Sparse official source text can make ranking look more certain than it is.
+  97: 
+  98: Required mitigations:
+  99: 
+ 100: - Every result card must display confidence and source freshness.
+ 101: - If age/stage is missing, the tool must ask for it or return a clarification state before strong ranking.
+ 102: - If no confident match exists, the tool must not fabricate events.
+ 103: - If source/API fails, the tool must return a typed error or fixture-labeled fallback.
+ 104: 
+ 105: ## Gate 5 - OML Harness AGENTS / ADR Consistency
+ 106: 
+ 107: Status: PASS / ADR NOT APPLICABLE
+ 108: 
+ 109: Evidence:
+ 110: 
+ 111: - `schema/AGENTS.md` is explicitly non-destructive and not a repo-root rule file: `schema/AGENTS.md:1`.
+ 112: - It includes role purpose, inputs, outputs, error handling, and removal criteria for each role: `schema/AGENTS.md:18`.
+ 113: - It includes collaboration protocol and branch-level stop rules: `schema/AGENTS.md:76`.
+ 114: 
+ 115: ADR note:
+ 116: 
+ 117: - No OML harness behavior change is being proposed in this run, so ADR consistency is not applicable. There is no `docs/adr` directory in the current repo.
+ 118: 
+ 119: ## RSI Gate
+ 120: 
+ 121: Status: NOT APPLICABLE
+ 122: 
+ 123: No recursive self-improvement default or RSI promotion is claimed.
+ 124: 
+ 125: ## Exact Next Required Input
+ 126: 
+ 127: Approve the current `ulw-plan` draft or change the default product name before plan generation:
+ 128: 
+ 129: - Default name: `아이랑 어디가`
+ 130: - Pending action: append detailed executable todos to `.omo/plans/family-experience-mcp-first-build.md`
+ 131: - Guardrail: no product-code implementation before the detailed plan is written and approved for execution.
+===== PLANS.md
+   1: # Hackathon MCP Concept Plan
+   2: 
+   3: Date: 2026-07-01 KST
+   4: 
+   5: ## Current Decision
+   6: 
+   7: Primary concept branch: `concept/family-experience-mcp`
+   8: 
+   9: Fallback: `concept/pharmacy-now-mcp`
+  10: 
+  11: Hold: `concept/parent-trust-mcp`
+  12: 
+  13: OML debate result: unchanged ranking after three topic-specific debates.
+  14: 
+  15: No actual git branches were created in this pass. These are concept worktracks. Create real branches only after the user chooses the first implementation target.
+  16: 
+  17: The local folder tree now mirrors the concept branch namespace:
+  18: 
+  19: ```text
+  20: concept/
+  21: ├── family-experience-mcp/
+  22: ├── pharmacy-now-mcp/
+  23: └── parent-trust-mcp/
+  24: ```
+  25: 
+  26: ## Why This Order
+  27: 
+  28: 1. Family experience finder has the strongest Kakao chat demo: parents ask once and get three usable choices.
+  29: 2. Holiday pharmacy has the most existing code, but must handle availability uncertainty very carefully.
+  30: 3. Parent trust/safety is differentiated, but public safety claims require the strictest source and wording controls.
+  31: 
+  32: ## Next Execution Path
+  33: 
+  34: 1. Start `concept/family-experience-mcp`.
+  35: 2. Build one MCP endpoint for `find_family_experiences`.
+  36: 3. Use deterministic demo data if API keys are not ready.
+  37: 4. Add one Seoul open-data adapter if keys are available.
+  38: 5. Test three cases: happy path, missing input, data/API failure.
+  39: 6. Prepare PlayMCP temporary registration.
+  40: 
+  41: ## Recommended First Golden Prompt
+  42: 
+  43: ```text
+  44: 이번 토요일 서울에서 4살 아이랑 갈 만한 실내 체험 3개만 골라줘. 너무 멀지 않고 예약/문의 링크가 있으면 좋아.
+  45: ```
+  46: 
+  47: ## Required Output Contract
+  48: 
+  49: Every MCP answer should return:
+  50: 
+  51: - Top 3 choices.
+  52: - Why each choice fits.
+  53: - Source and freshness.
+  54: - What the parent should verify.
+  55: - One immediate next action.
+  56: 
+  57: ## Files
+  58: 
+  59: - `concept/README.md`
+  60: - `concept/family-experience-mcp/`
+  61: - `concept/pharmacy-now-mcp/`
+  62: - `concept/parent-trust-mcp/`
+  63: - `.prd-session/2026-07-01-three-concept-debate/`
+  64: - `research/briefs/2026-07-01-three-mcp-idea-branches.md`
+  65: - `research/methods/2026-07-01-three-mcp-idea-branches.md`
+  66: - `research/decisions/2026-07-01-three-mcp-idea-branches.md`
+  67: - `research/experiments/2026-07-01-three-mcp-idea-branches.md`
+  68: - `schema/AGENTS.md`
+
+ succeeded in 372ms:
+===== concept/family-experience-mcp/README.md
+   1: # concept/family-experience-mcp
+   2: 
+   3: 상태: 1순위 추천
+   4: 
+   5: ## 제품 약속
+   6: 
+   7: 부모가 채팅에서 한 번 물으면, 바로 행동할 수 있는 아이 맞춤 체험 후보 3개를 받습니다.
+   8: 
+   9: ## 대상 사용자
+  10: 
+  11: 신생아, 영아, 유아, 미취학, 초등학생 아이에게 맞는 체험/행사를 찾는 부모와 보호자.
+  12: 
+  13: ## 대표 상호작용
+  14: 
+  15: ```text
+  16: User: 이번 토요일 서울에서 4살 아이랑 갈 만한 실내 체험 3개만 골라줘.
+  17: MCP: 후보 3개 + 나이 적합 이유 + 실내/실외 + 비용 + 예약/문의 링크 + 부모 체크사항.
+  18: ```
+  19: 
+  20: ## 첫 범위
+  21: 
+  22: - 지역: 서울 우선, 전국 확장은 이후.
+  23: - 나이: 아이 한 명의 나이 또는 학령 단계.
+  24: - 시간: 오늘, 주말, 특정 날짜 범위.
+  25: - 출력: 긴 행사 목록이 아니라 Top 3.
+  26: 
+  27: ## 중단 규칙
+  28: 
+  29: 행사 record가 날짜, 장소, 나이/대상 또는 프로그램 단서, 연락처/홈페이지, 출처 신선도를 제공하지 못하면 중단하거나 범위를 좁힙니다.
+  30: 
+  31: ## 파일
+  32: 
+  33: - `MECE_RESEARCH.md`
+  34: - `DATA_PIPELINE.md`
+  35: - `MCP_TOOLS.md`
+  36: - `GOLDEN_PROMPTS.md`
+  37: - `EXPERIMENTS.md`
+  38: - `DEBATE.md`
+  39: - `REFINED_PROPOSAL.md`
+===== concept/family-experience-mcp/DATA_PIPELINE.md
+   1: # Data Pipeline
+   2: 
+   3: ## Source Priority
+   4: 
+   5: 1. Seoul cultural events Open API for the first city lane.
+   6: 2. Korea TourAPI event/tourism/location/image endpoints for national coverage.
+   7: 3. National cultural festival standard data for baseline festival records.
+   8: 4. Culture arts education resource/program APIs for education and program enrichment.
+   9: 5. Forest/science/local institution datasets only when fields include target, fee, date, venue, homepage/contact, and source freshness.
+  10: 
+  11: ## Pipeline Shape
+  12: 
+  13: ```text
+  14: source adapter
+  15: -> raw event snapshot
+  16: -> normalized event candidate
+  17: -> child-fit scorer
+  18: -> source confidence label
+  19: -> Top 3 answer card
+  20: ```
+  21: 
+  22: ## Normalized Candidate Fields
+  23: 
+  24: - `title`
+  25: - `source_name`
+  26: - `source_url`
+  27: - `retrieved_at`
+  28: - `date_start`
+  29: - `date_end`
+  30: - `time_text`
+  31: - `venue`
+  32: - `address`
+  33: - `lat`
+  34: - `lon`
+  35: - `target_age_text`
+  36: - `program_text`
+  37: - `indoor_outdoor`
+  38: - `fee_text`
+  39: - `reservation_url`
+  40: - `contact`
+  41: - `confidence`
+  42: - `parent_checks`
+  43: 
+  44: ## Safety Rules
+  45: 
+  46: - Do not claim an event is suitable for an age unless the source or program text supports it.
+  47: - If age fit is inferred from program text, label it as inferred.
+  48: - If reservation status is unknown, say "예약/운영 여부 확인 필요."
+  49: - Do not scrape event pages until terms and robots policy are recorded.
+  50: 
+===== concept/family-experience-mcp/MCP_TOOLS.md
+   1: # MCP Tools
+   2: 
+   3: ## Tool 1: `find_family_experiences`
+   4: 
+   5: Purpose: Find candidate events or experiences for a child and caregiver.
+   6: 
+   7: Inputs:
+   8: 
+   9: - `location`: city, district, or coordinates
+  10: - `child_age`: number or stage
+  11: - `date_range`: today, weekend, or explicit dates
+  12: - `indoor_outdoor`: optional
+  13: - `budget`: optional
+  14: - `must_have`: optional list such as parking, stroller-friendly, reservation
+  15: 
+  16: Output:
+  17: 
+  18: - Top 3 normalized candidates
+  19: - source and freshness
+  20: - missing-field warnings
+  21: 
+  22: ## Tool 2: `score_child_fit`
+  23: 
+  24: Purpose: Rank candidates by child fit and parent practicality.
+  25: 
+  26: Inputs:
+  27: 
+  28: - candidates
+  29: - child age/stage
+  30: - constraints
+  31: 
+  32: Output:
+  33: 
+  34: - fit reason
+  35: - friction reason
+  36: - confidence label
+  37: 
+  38: ## Tool 3: `build_family_day_plan`
+  39: 
+  40: Purpose: Convert one selected event into a simple action card.
+  41: 
+  42: Inputs:
+  43: 
+  44: - selected candidate
+  45: - travel context
+  46: 
+  47: Output:
+  48: 
+  49: - what to do now
+  50: - what to verify
+  51: - fallback if unavailable
+  52: 
+===== concept/family-experience-mcp/GOLDEN_PROMPTS.md
+   1: # Golden Prompts
+   2: 
+   3: ## Happy Path
+   4: 
+   5: ```text
+   6: 이번 토요일 서울에서 4살 아이랑 갈 만한 실내 체험 3개만 골라줘. 너무 멀지 않고 예약/문의 링크가 있으면 좋아.
+   7: ```
+   8: 
+   9: ## Missing Age
+  10: 
+  11: ```text
+  12: 이번 주말 아이랑 갈 만한 체험행사 골라줘.
+  13: ```
+  14: 
+  15: Expected behavior: ask for child age or stage before ranking strongly.
+  16: 
+  17: ## No Results
+  18: 
+  19: ```text
+  20: 오늘 밤 늦게 2살 아이와 갈 수 있는 무료 실내 체험을 찾아줘.
+  21: ```
+  22: 
+  23: Expected behavior: say no confident match, relax one constraint, and suggest safer fallback filters.
+  24: 
+  25: ## Data Failure
+  26: 
+  27: ```text
+  28: 이번 주말 서울 강남 근처 유아 체험 3개만 찾아줘.
+  29: ```
+  30: 
+  31: Expected behavior when source API fails: return no fabricated events; explain source failure and ask to retry or use cached/demo mode if enabled.
+  32: 
+===== concept/family-experience-mcp/EXPERIMENTS.md
+   1: # Experiments
+   2: 
+   3: ## First MVP Experiment
+   4: 
+   5: Can one MCP tool return three useful Seoul family-experience candidates for a child age and weekend date?
+   6: 
+   7: ## Fixed Variables
+   8: 
+   9: - Region: Seoul
+  10: - Output count: 3
+  11: - Response shape: under 8 bullets
+  12: - Source policy: official/open data only
+  13: 
+  14: ## Controllable Variables
+  15: 
+  16: - indoor/outdoor filter
+  17: - free/paid filter
+  18: - age-fit strictness
+  19: - source fallback order
+  20: 
+  21: ## Promotion Rule
+  22: 
+  23: Promote when:
+  24: 
+  25: - happy path returns Top 3 with source/freshness
+  26: - missing age asks a concise clarification
+  27: - no-result path does not invent results
+  28: - source failure path is safe
+  29: 
+  30: ## Stop Rule
+  31: 
+  32: Stop adding data sources once the first demo prompt is stable enough for PlayMCP temporary registration.
+  33: 
+===== concept/family-experience-mcp/MECE_RESEARCH.md
+   1: # MECE 리서치: 가족 체험/행사 MCP
+   2: 
+   3: 날짜: 2026-07-01 KST
+   4: 
+   5: ## 제품 설계
+   6: 
+   7: | 영역 | 요구사항 |
+   8: |---|---|
+   9: | 사용자 | 신생아~초등학생 아이와 갈 곳을 고르는 부모/보호자 |
+  10: | 핵심 과업 | "이번 주말/내 주변에서 아이가 할 만한 것 3개만 골라줘" |
+  11: | 첫 도구 | `find_family_experiences(location, child_age, date_range, indoor_outdoor?, budget?, must_have?)` |
+  12: | 응답 | Top 3, 나이 적합 이유, 실내/실외, 비용, 예약/문의 링크, 출처/신선도, 부모 확인사항 |
+  13: | 기본 범위 | 대한민국. 첫 구현은 키 준비 상태에 따라 서울 우선 가능 |
+  14: | 비목표 | 긴 행사 디렉터리, 일반 여행 검색 |
+  15: 
+  16: ## 소스 레지스트리
+  17: 
+  18: | Source ID | 소스 | 역할 | 유용 필드 | 신선도 | 한계 |
+  19: |---|---|---|---|---|---|
+  20: | FAM-01 | 전국공연행사정보표준데이터, https://www.data.go.kr/data/15013106/standard.do | 전국 backbone authority | 행사명, 일시, 요금, 입장연령, 예매정보, 주소, 위도/경도 | 표준데이터 cadence. 리서치상 분기/월 집계 caveat | child/family tag는 추가 필터 필요 |
+  21: | FAM-02 | KTO TourAPI, https://www.data.go.kr/data/15101578/openapi.do | 전국 확장 | 관광, 행사, 위치, 키워드, 상세/이미지 | portal상 실시간 | age-fit 필드가 핵심 schema는 아님 |
+  22: | FAM-03 | 서울시 문화행사 정보, https://data.seoul.go.kr/dataList/OA-15486/S/1/datasetView.do | 서울 authority | 분류, 자치구, 행사명, 장소, 날짜, 이용대상, 요금, 홈페이지, 문의, 좌표 | portal상 일 단위 | 이용대상이 항상 구조화된 나이는 아님 |
+  23: | FAM-04 | 서울 공공서비스예약 계열, 예: https://data.seoul.go.kr/dataList/OA-12099/S/1/datasetView.do | 예약 보강 | 예약/상세 URL, 지역 행사 metadata | 소스별 상이 | 예약은 로그인/상세 payload 확인 필요 |
+  24: | FAM-05 | 산림교육프로그램, https://www.data.go.kr/data/3057832/openapi.do | 자연/교육 vertical | 프로그램/시설, 분류, 기간, 주소 | portal상 실시간 | 나이/요금 sparse 가능 |
+  25: | FAM-06 | 과학관/박물관 교육 데이터, 예: https://www.data.go.kr/data/15084197/fileData.do 및 https://www.data.go.kr/data/15040795/fileData.do | 교육 vertical | 대상, 요금, 교육내용, 일정, 장소 | 대개 연간/file 기반 | 좌표가 항상 없음 |
+  26: 
+  27: ## 데이터 파이프라인 요구사항
+  28: 
+  29: 1. 입력
+  30:    - 필수: `location`, `child_age`, `date_range`.
+  31:    - 선택: 실내/실외, 예산, 대중교통/차량, 예약 필요 여부, 유모차 가능성.
+  32: 2. 어댑터
+  33:    - FAM-03 또는 FAM-01부터 시작한다.
+  34:    - 공식 API/file-converted 데이터만 사용한다.
+  35:    - `source_id`, `retrieved_at`, request parameter, raw snapshot id를 남긴다.
+  36: 3. 정규화 record: `FamilyExperienceCandidate`
+  37:    - `title`
+  38:    - `source_id`
+  39:    - `event_type`
+  40:    - `venue_name`
+  41:    - `address`
+  42:    - `lat`
+  43:    - `lon`
+  44:    - `start_at`
+  45:    - `end_at`
+  46:    - `target_text`
+  47:    - `age_fit_label`
+  48:    - `age_fit_reason`
+  49:    - `fee_text`
+  50:    - `reservation_url`
+  51:    - `contact`
+  52:    - `official_url`
+  53:    - `retrieved_at`
+  54:    - `confidence`
+  55: 4. 랭킹
+  56:    - 날짜와 위치를 먼저 필터링한다.
+  57:    - 소스가 대상 연령/관객을 직접 밝힌 후보를 우선한다.
+  58:    - 비용/예약/문의 metadata가 완전한 후보를 우선한다.
+  59:    - stale, unknown age-fit, 공식 링크 누락은 감점한다.
+  60: 5. 응답
+  61:    - 최대 Top 3만 반환한다.
+  62:    - "왜 이 3개인지"와 "부모가 확인할 것"을 포함한다.
+  63:    - age-fit이 추론이면 근거 텍스트를 같이 보여준다.
+  64: 
+  65: ## 신뢰도 정책
+  66: 
+  67: | 라벨 | 사용 조건 |
+  68: |---|---|
+  69: | `source-stated` | 소스가 어린이, 유아, 초등, 청소년 등 대상/연령을 직접 명시 |
+  70: | `computed` | 날짜 겹침, 거리, 비용 구간처럼 소스 필드에서 계산 |
+  71: | `inferred` | 제목/프로그램 텍스트에서 키워드/규칙으로 추론 |
+  72: | `unknown` | 신뢰 가능한 대상 연령/관객 필드 없음 |
+  73: | `stale` | 행사일 기준 source/cache가 오래됨 |
+  74: 
+  75: ## MVP 절단선
+  76: 
+  77: 도구 1개, deterministic fixture, 공식 어댑터 1개로 시작한다. 추천 첫 어댑터는 키 준비가 빠르면 서울시 문화행사, 전국성을 우선하면 FAM-01 전국공연행사정보표준데이터다.
+  78: 
+  79: ## 중단/정지 규칙
+  80: 
+  81: - 행사일, 장소, 공식 링크를 제공하지 못하는 소스는 중단한다.
+  82: - golden prompt 3개가 confidence label 포함 Top 3 카드를 반환하면 소스 확장을 멈춘다.
+  83: - 대한민국 MVP에서 소스 레지스트리와 나이 적합 라벨링을 검증하기 전에는 세계 도시로 확장하지 않는다.
+  84: 
+  85: ## 미해결
+  86: 
+  87: - 서울 Open Data, data.go.kr, TourAPI API key/account 준비 상태.
+  88: - 최종 제품명.
+  89: - 첫 공개 demo를 서울-only로 할지 전국공연행사 기반으로 할지.
+===== concept/family-experience-mcp/REFINED_PROPOSAL.md
+   1: # Refined Proposal
+   2: 
+   3: ## Product Promise
+   4: 
+   5: 아이 나이, 날짜, 지역을 기준으로 부모가 바로 검토할 수 있는 체험 후보 3개를 출처와 확인사항까지 채팅에서 제공한다.
+   6: 
+   7: ## First Tool
+   8: 
+   9: `find_family_experiences(location, child_age, date_range, indoor_outdoor?, budget?, must_have?)`
+  10: 
+  11: ## First Build Scope
+  12: 
+  13: - Seoul first.
+  14: - One child age or stage.
+  15: - One date range.
+  16: - Top 3 only.
+  17: - Deterministic fixture fallback if live API keys are unavailable.
+  18: 
+  19: ## Response Card
+  20: 
+  21: Each candidate must include:
+  22: 
+  23: - title
+  24: - date/time
+  25: - venue/address
+  26: - age-fit reason
+  27: - fee/reservation/contact if present
+  28: - source and retrieved date
+  29: - confidence label
+  30: - one parent check before going
+  31: 
+  32: ## Assumptions
+  33: 
+  34: - A deterministic demo fixture is acceptable if clearly labeled.
+  35: - Seoul is the first source lane.
+  36: - Recommendation clarity matters more than nationwide coverage in the first MVP.
+  37: 
+  38: ## Open Questions
+  39: 
+  40: - Seoul API key availability.
+  41: - Final product name.
+  42: - Whether images are needed later for a Kakao Tools widget.
+===== concept/DATA_PIPELINE_ARCHITECTURE.md
+   1: # 공통 MCP 데이터 파이프라인 아키텍처
+   2: 
+   3: 날짜: 2026-07-01 KST
+   4: 
+   5: 범위: `family-experience-mcp`, `pharmacy-now-mcp`, `parent-trust-mcp`에 공통 적용할 구현 계약.
+   6: 
+   7: ## 목표
+   8: 
+   9: 공식/공개 데이터를 MCP 도구로 얇게 연결해, 사용자가 바로 행동할 수 있는 짧고 신뢰 가능한 카드를 만든다. 서버는 광범위한 크롤러나 블랙박스 검색엔진이 아니라 출처가 보이는 오케스트레이션 계층이어야 한다.
+  10: 
+  11: ## MECE 파이프라인
+  12: 
+  13: | 단계 | 목적 | 필수 산출 | 실패 규칙 |
+  14: |---|---|---|---|
+  15: | 1. 소스 레지스트리 | 사용 전 소스 권한과 용도를 선언 | source id, 기관, URL, 라이선스, 인증, 갱신주기, 허용 claim | 등록되지 않은 소스는 권위 claim에 쓰지 않는다 |
+  16: | 2. 어댑터 | 한 소스를 typed boundary로 호출 | 정규화 요청, 원본 응답, `retrieved_at`, 에러 유형 | 추측 record 대신 typed failure 반환 |
+  17: | 3. 원본 스냅샷 | 사후 검증 가능성 확보 | raw payload 또는 fixture id, request hash, source id | 감사 불가 record는 unverifiable로 낮춘다 |
+  18: | 4. 정규화 | 브랜치 record로 변환 | 안정 필드만 변환, unknown 보존 | 누락 필드를 fake 값으로 채우지 않는다 |
+  19: | 5. 출처/신뢰도 | 근거 강도 설명 | field-level source/confidence label | enrichment가 authority를 강화하지 못한다 |
+  20: | 6. 캐시/스테일 | 신선도 통제 | cache key, TTL, stale label, 재확인 액션 | stale 데이터는 사용자에게 보인다 |
+  21: | 7. 마스킹 | 비밀값 유출 방지 | key, token, keyed URL, raw secret 제거 | 민감값은 redaction 후 안전 실패 |
+  22: | 8. 응답 카드 | 행동 가능하게 압축 | Top 3, 이유, 출처/신선도, 확인사항, 다음 행동 | 불확실성을 숨기지 않는다 |
+  23: 
+  24: ## 소스 역할
+  25: 
+  26: | 역할 | 의미 | 지원 가능한 claim | 금지 claim |
+  27: |---|---|---|---|
+  28: | Authority | 해당 도메인의 공식 근거 | 후보 존재, registry match, 리콜/인증/행사 필드 | 소스 범위 밖 법적/실시간/안전 확정 |
+  29: | Cross-check | 공식 보조 확인 | identity, 폐업/변동, 충돌 탐지 | 단독으로 더 강한 live claim |
+  30: | Enrichment | 편의 정보 보강 | 지도, 좌표, 이미지, place URL, 표시명 | 영업상태, 안전성, 적합성 확정 |
+  31: | Context | 설명/가이드 | 배경 설명, escalation route | 제품별 판정 |
+  32: | Fixture | deterministic demo 데이터 | schema, UI, smoke test | live/current claim |
+  33: 
+  34: ## 공통 신뢰도 라벨
+  35: 
+  36: - `source-stated`: 상위 소스가 직접 명시한 필드.
+  37: - `api-returned`: API가 반환했지만 의미가 일반적인 필드.
+  38: - `computed`: source-stated 필드에서 결정적으로 계산한 값.
+  39: - `inferred`: 텍스트에서 규칙/모델로 추론한 값. 이유를 보여야 한다.
+  40: - `stale`: 소스 또는 캐시가 브랜치 기준보다 오래됨.
+  41: - `unknown`: 누락 또는 모호함.
+  42: 
+  43: 신뢰도는 근거 품질이지 추천 매력도나 안전 점수가 아니다.
+  44: 
+  45: ## 공통 응답 계약
+  46: 
+  47: 모든 공개 MCP 응답은 다음을 포함한다.
+  48: 
+  49: 1. Top 3 후보 또는 가장 작은 유용 후보 집합.
+  50: 2. 왜 이 후보인지.
+  51: 3. 출처와 `retrieved_at`.
+  52: 4. 사용자가 확인해야 할 것.
+  53: 5. 바로 할 다음 행동.
+  54: 6. 신뢰 가능한 답이 없을 때의 명확한 실패 메시지.
+  55: 
+  56: ## 브랜치별 신선도 정책
+  57: 
+  58: | 브랜치 | 기본 TTL | stale 처리 | 이유 |
+  59: |---|---:|---|---|
+  60: | 약국 | 분 단위~당일 | `확인 필요`로 강등, 전화 우선 | 영업 상태는 시간 민감 |
+  61: | 가족 체험 | 행사 목록 6~24시간 | 소스 일자와 예약/공식 링크 표시 | 행사는 변하지만 분 단위는 아님 |
+  62: | 부모 신뢰 | 소스별, record date 표시 | no-hit으로 안전 추론 금지 | 리콜/인증은 evidence-specific |
+  63: 
+  64: ## 마스킹 규칙
+  65: 
+  66: - API key, bearer token, service key, keyed URL, raw secret, 사용자 개인정보를 로그/응답에 남기지 않는다.
+  67: - credentialed request URL 대신 `request_hash`를 저장한다.
+  68: - debug output에는 source id와 status category만 표시한다.
+  69: - fixture record는 live record와 구조/표기상 구분한다.
+  70: 
+  71: ## 브랜치별 금지선
+  72: 
+  73: ### 가족 체험
+  74: 
+  75: - 소스가 대상 연령/관객을 말하지 않았으면 나이 적합성을 확정하지 않는다.
+  76: - 예약 상태나 가능 여부는 소스가 제공할 때만 말한다.
+  77: - MVP에서는 비공식 행사 페이지 크롤링을 하지 않는다.
+  78: 
+  79: ### 약국
+  80: 
+  81: - 같은 시점의 live evidence가 없으면 `운영 중`, `open now`라고 말하지 않는다.
+  82: - NMC는 후보 authority, HIRA는 registry/cross-check, Kakao Local은 enrichment다.
+  83: - 모든 결과에는 전화/방문 전 확인 액션이 있어야 한다.
+  84: 
+  85: ### 부모 신뢰
+  86: 
+  87: - `safe`, `dangerous`, 점수형 verdict를 만들지 않는다.
+  88: - 리콜 부재를 안전으로 해석하지 않는다.
+  89: - 매칭이 약하면 모델명, KC/인증번호, 제조/수입사, 로트/날짜, 바코드를 요청한다.
+  90: 
+  91: ## MVP 방법
+  92: 
+  93: 1. 최종 schema 뒤에 fixture 모드를 먼저 만든다.
+  94: 2. 공식 어댑터 1개만 붙인다.
+  95: 3. 소스 레지스트리와 confidence label을 붙인다.
+  96: 4. golden prompt 3개를 통과한다.
+  97: 5. 그 다음에만 두 번째 소스를 붙인다.
+  98: 
+  99: field-level evidence 없이 claim을 만들 수 없는 소스나 브랜치는 중단한다.
+
+hook: PreToolUse
+hook: PreToolUse Completed
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command '$lines=Get-Content -LiteralPath '"'.omo/plans/family-experience-mcp-first-build.md'; for("'$i=249;$i -le 275;$i++){ if($i -le $lines.Count){ '"'{0,4}: {1}' -f "'$i,$lines[$i-1] }}' in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+ succeeded in 299ms:
+ 249: - Expected commit sequence:
+ 250:   1. `build(family-experience): scaffold mcp app`
+ 251:   2. `feat(family-experience): define tool schemas and safe config`
+ 252:   3. `feat(family-experience): add source registry and fixtures`
+ 253:   4. `feat(family-experience): rank and render parent action cards`
+ 254:   5. `feat(family-experience): expose mcp tool over http`
+ 255:   6. `feat(family-experience): add seoul culture adapter`
+ 256:   7. `test(family-experience): add golden prompt smoke checks`
+ 257:   8. `docs(family-experience): prepare playmcp temp registration`
+ 258:   9. `chore(family-experience): verify mcp readiness`
+ 259: 
+ 260: ## Success criteria
+ 261: - MCP server starts locally on `127.0.0.1:3345`.
+ 262: - `/health` returns HTTP 200.
+ 263: - MCP client smoke lists exactly one public tool: `find_family_experiences`.
+ 264: - Happy golden prompt returns exactly three candidate cards.
+ 265: - Every returned card includes source/freshness, age-fit reason, confidence, parent check, and next action.
+ 266: - Missing age/stage returns a concise clarification or structured error before strong ranking.
+ 267: - No-result prompt returns no fabricated candidates and suggests relaxing one constraint.
+ 268: - Source failure with fixture disabled returns `isError: true` and no fabricated candidates.
+ 269: - Fixture output is clearly labeled as fixture/demo mode.
+ 270: - Seoul adapter is optional and redacts keyed URLs/secrets.
+ 271: - PlayMCP temporary-registration docs are ready, but review/submission is not requested.
+ 272: - Full verification commands pass:
+ 273:   - `cd apps/family-experience-mcp && npm run verify`
+ 274:   - `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/final-success-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:mcp -- --assert-tool-count=1; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true'`
+ 275: - Cleanup receipt proves port 3345 is not left running.
+
+codex
+I’m now running targeted regression checks: command forms, control characters, missing referenced files, and the final verification paths that prove real MCP behavior.
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Select-String -Path '.omo/plans/family-experience-mcp-first-build.md' -Pattern 'bash\\.exe|bash -lc|/d/KLab|\\u0001|smoke:golden|McpServer|reservation_url|contact|assert-tool-count|curl -i|LISTENING|\\.omo/evidence|D:/KLab|D:\\\\KLab' | ForEach-Object { '{0}:{1}: {2}' -f "'$_.Path,$_.LineNumber,$_.Line }' in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command '$text=[System.IO.File]::ReadAllText((Resolve-Path '"'.omo/plans/family-experience-mcp-first-build.md')); "'$bad=@(); for($i=0;$i -lt $text.Length;$i++){ $c=[int][char]$text[$i]; if(($c -lt 32) -and ($c -notin 9,10,13)){ $bad += [pscustomobject]@{Index=$i;Code=$c} } }; if($bad.Count){ $bad | Format-Table -AutoSize | Out-String } else { '"'NO_CONTROL_CHARS' }" in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Select-String -Path '.omo/plans/family-experience-mcp-first-build.md' -Pattern 'grep -R|grep -n|grep -q|grep \":3345\"|scan:claims|scan:secrets|final review|one-time|temporary|임시 등록|등록 및 심사 요청' | ForEach-Object { '{0}:{1}: {2}' -f "'$_.Path,$_.LineNumber,$_.Line }' in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command '$refs=@('"'.prd-session/2026-07-01-three-concept-debate/family-experience-mcp/final-prd.md','.prd-session/2026-07-01-three-concept-debate/family-experience-mcp/risk-editor-backstop.md','.prd-session/2026-07-01-three-concept-debate/TRACE_SUMMARY.md','.omo/ulw-research/20260702-004308-parallel-strategy/playmcp-current-surface-summary.md','.omo/ulw-research/20260702-004308-parallel-strategy/SYNTHESIS.md','research/decisions/2026-07-01-three-mcp-idea-branches.md','research/methods/2026-07-01-three-mcp-idea-branches.md','research/briefs/2026-07-01-mcp-data-pipeline-architecture-and-failure-modes.md'); foreach("'$r in $refs){ '"'{0} {1}' -f ("'$(if(Test-Path -LiteralPath $r){'"'OK'}else{'MISSING'}),"'$r) }' in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+ succeeded in 380ms:
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:25:   - server imports follow Context7-documented patterns: `createMcpHandler`, `McpServer`, Zod `inputSchema`, and Streamable HTTP client/server smoke.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:43:   - `reservation_url`, `contact`; include them only when sourced, and never turn absence into a reservation/contact claim.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:79: - Evidence files are written under `.omo/evidence/`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:82: - Do not modify the sibling workspaces `D:\KLab\workspace\2026-휴일약국` or `D:\KLab\workspace\2026-06-07-harness`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:101: - Test decision: TDD for behavior-bearing modules. Use Vitest for schema, pipeline, ranking, renderer, adapter failure, and MCP client smoke. Use TypeScript typecheck for contract safety. Use HTTP `curl -i` and MCP client smoke for real-surface endpoint proof.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:108:   - `curl -i http://127.0.0.1:3345/health`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:111:   - Before implementing behavior in each todo, add or run the failing test/smoke named in that todo and save the failing output to the listed `.omo/evidence/task-*-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:112:   - Then implement the smallest code needed and save the passing output to `.omo/evidence/task-*-GREEN.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:114:   - HTTP health: `curl -i http://127.0.0.1:3345/health`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:120:   - Scripts that write artifacts must accept `EVIDENCE_DIR`; smoke scripts must write to `$REPO_ROOT/.omo/evidence`, not app-local `.omo/evidence`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:122:   - after HTTP QA, stop the dev server and record a `LISTENING`-only port check receipt, e.g. `netstat -ano | grep ":3345" | grep LISTENING`, in `.omo/evidence/final-cleanup-family-experience-mcp-first-build.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:149:   What to do / Must NOT do: Create `apps/family-experience-mcp/package.json`, `tsconfig.json`, `src/`, `test/`, and `scripts/` only. Add scripts `dev:http`, `test`, `typecheck`, `verify`, `smoke:mcp`, and `smoke:golden`. Use Node 20+ assumptions. Add dependencies following current MCP TypeScript SDK docs: `@modelcontextprotocol/server`, `@modelcontextprotocol/node`, `@modelcontextprotocol/client`, `zod`; dev dependencies `typescript`, `tsx`, `vitest`, `@types/node`. Do not add application logic beyond a minimal health server if needed for package verification.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:151:   References (executor has NO interview context - be exhaustive): `.omo/drafts/family-experience-mcp-first-build.md:60`; `.omo/drafts/family-experience-mcp-first-build.md:117`; `.omo/drafts/family-experience-mcp-first-build.md:127`; Context7 `/modelcontextprotocol/typescript-sdk` docs for `createMcpHandler`, `McpServer`, `toNodeHandler`, Zod, and HTTP transport; `HTML.txt:224`; `HTML.txt:337`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:153:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm run verify'` expects exit 0, Evidence `.omo/evidence/task-1-scaffold-GREEN.txt`; failure: before adding package scripts, run `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm run verify'` and capture missing-script or missing-directory failure, Evidence `.omo/evidence/task-1-scaffold-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:161:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/schemas.test.ts test/config.test.ts'` expects exit 0 and assertions named `requires child_age or child_stage` and `redacts SEOUL_OPEN_DATA_KEY`, Evidence `.omo/evidence/task-2-schemas-GREEN.txt`; failure: first add the missing-age validation test and run the same command before implementation, expecting validation to wrongly pass or module missing, Evidence `.omo/evidence/task-2-schemas-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:169:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/sources.test.ts'` expects exit 0 and test name `fixture source returns auditable records`, Evidence `.omo/evidence/task-3-sources-GREEN.txt`; failure: before implementing fixture source, run the same command after adding the test and capture module/test failure, Evidence `.omo/evidence/task-3-sources-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:173:   What to do / Must NOT do: Add `src/pipeline/normalize.ts`, `src/pipeline/rank.ts`, `src/pipeline/render.ts`, and tests. Ranking order: date overlap first, location relevance second, source-stated age/target text third, indoor/outdoor preference fourth, completeness of fee/reservation/contact fifth. Age-fit labels must be exactly `source-stated`, `inferred`, or `unknown`; `computed` and `stale` may appear only as confidence/freshness labels and must never imply child suitability. If age fit is inferred from title/program text, include the source text in `age_fit_reason`. Renderer returns at most three candidates, never fills missing fields with fake values, and never says or implies reservation/contact availability when `reservation_url` or `contact` is absent.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:176:   Acceptance criteria (agent-executable): `cd apps/family-experience-mcp && npm test -- --run test/pipeline.test.ts && npm run typecheck` exits 0. Tests assert happy prompt returns exactly three, missing age returns clarification/failure state, no-result path fabricates nothing, inferred age labels are visible, missing `reservation_url`/`contact` does not produce a reservation/contact claim, and `computed`/`stale` are rejected as `age_fit_label` values.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:177:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/pipeline.test.ts'` expects exit 0 and tests named `returns top three fixture candidates`, `does not fabricate no-result matches`, `does not claim reservation availability when reservation_url is missing`, and `rejects computed or stale age fit labels`, Evidence `.omo/evidence/task-4-pipeline-GREEN.txt`; failure: add no-result, missing-reservation, and invalid-age-fit-label tests before implementation and run same command, expecting fabricated-result, reservation-claim, or invalid-label assertion to fail or module missing, Evidence `.omo/evidence/task-4-pipeline-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:181:   What to do / Must NOT do: Add `src/server.ts`, `src/mcp.ts`, and `src/health.ts` if useful. Use `new McpServer({ name: "family-experience-mcp", version: "0.1.0" })`. Register exactly one tool named `find_family_experiences`. Tool result returns both `content: [{ type: "text", text: <short Korean summary> }]` and `structuredContent` matching the result schema. Error cases return `isError: true` with a safe Korean message and structured failure metadata. HTTP server listens on `127.0.0.1:${PORT}` and serves `/mcp` plus `/health`. Do not log raw input beyond redacted debug fields.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:183:   References (executor has NO interview context - be exhaustive): Context7 `/modelcontextprotocol/typescript-sdk` docs for `createMcpHandler`, `McpServer`, `registerTool`, `toNodeHandler`, and HTTP transport; Context7 `/modelcontextprotocol/modelcontextprotocol` docs for `CallToolResult`, `structuredContent`, and `isError`; `.omo/drafts/family-experience-mcp-first-build.md:47`; `.omo/drafts/family-experience-mcp-first-build.md:99`; `.omo/drafts/family-experience-mcp-first-build.md:100`; `.omo/drafts/family-experience-mcp-first-build.md:117`; `.omo/drafts/family-experience-mcp-first-build.md:128`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:184:   Acceptance criteria (agent-executable): `cd apps/family-experience-mcp && npm run typecheck && npm test -- --run test/mcp.test.ts` exits 0. With server running, `curl -fsS http://127.0.0.1:3345/health` returns HTTP 200 and body containing `family-experience-mcp`. `npm run smoke:mcp -- --assert-tool-count=1` lists exactly one tool and calls it successfully in fixture mode.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:185:   QA scenarios (name the exact tool + invocation): happy HTTP+MCP: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/task-5-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; curl -fsS -D "$EVIDENCE_DIR/task-5-health.headers" -o "$EVIDENCE_DIR/task-5-health.json" http://127.0.0.1:3345/health; grep -q "family-experience-mcp" "$EVIDENCE_DIR/task-5-health.json"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true EVIDENCE_DIR="$EVIDENCE_DIR" npm run smoke:mcp -- --assert-tool-count=1; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true'` expects HTTP 200, exactly one listed tool named `find_family_experiences`, and `structuredContent.results.length === 3`, Evidence `.omo/evidence/task-5-mcp-GREEN.txt`; failure: run the same command before registering the tool or with `FAMILY_EXPERIENCE_ALLOW_FIXTURE=false SEOUL_OPEN_DATA_KEY=`, expecting safe failure not fabricated output, Evidence `.omo/evidence/task-5-mcp-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:193:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/seoulCulture.test.ts'` expects exit 0 and test `redacts keyed url`, Evidence `.omo/evidence/task-6-seoul-adapter-GREEN.txt`; failure: run same command after adding no-key/redaction tests but before implementation, expecting failure, Evidence `.omo/evidence/task-6-seoul-adapter-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:197:   What to do / Must NOT do: Add `scripts/smoke-golden.ts`, `test/golden.test.ts`, and `docs/GOLDEN_RESULTS.md`. The smoke runner calls the local MCP endpoint, not internal functions, for the four golden scenarios. It must write JSON artifacts under `.omo/evidence/` without secrets. The Korean text response must stay under eight bullet-like lines for the happy path and include Top 3, why these fit, source/freshness, parent check, and next action.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:200:   Acceptance criteria (agent-executable): with server running on port 3345, `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp" && EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden'` exits 0 and writes `$REPO_ROOT/.omo/evidence/golden-family-experience-happy.json`, `$REPO_ROOT/.omo/evidence/golden-family-experience-missing-age.json`, `$REPO_ROOT/.omo/evidence/golden-family-experience-no-result.json`, and `$REPO_ROOT/.omo/evidence/golden-family-experience-source-failure.json`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:201:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/task-7-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -sf http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true EVIDENCE_DIR="$EVIDENCE_DIR" npm run smoke:golden; test -s "$EVIDENCE_DIR/golden-family-experience-happy.json"; test -s "$EVIDENCE_DIR/golden-family-experience-missing-age.json"; test -s "$EVIDENCE_DIR/golden-family-experience-no-result.json"; test -s "$EVIDENCE_DIR/golden-family-experience-source-failure.json"; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true'` expects exit 0, four evidence JSON files, happy result count 3, missing-age clarification, no-result count 0, source-failure `isError: true`, Evidence `.omo/evidence/task-7-golden-GREEN.txt`; failure: run the same smoke with `FAMILY_EXPERIENCE_ALLOW_FIXTURE=false SEOUL_OPEN_DATA_KEY=` and source-failure scenario, expecting safe `isError: true` and no candidates, Evidence `.omo/evidence/task-7-source-failure-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:209:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/playmcpMetadata.test.ts'` expects exit 0 and length checks pass, Evidence `.omo/evidence/task-8-playmcp-metadata-GREEN.txt`; failure: add metadata length tests before docs are written and run same command, expecting missing docs or length failure, Evidence `.omo/evidence/task-8-playmcp-metadata-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:213:   What to do / Must NOT do: Add or update `apps/family-experience-mcp/docs/DECISIONS.md` and `apps/family-experience-mcp/docs/QA_REPORT.md`. Add scripts `scan:secrets` and `scan:claims` or equivalent tests that fail on unredacted secret patterns and unsupported public claims. `scan:claims` must be context-aware or scoped to app docs/src/test plus newly generated golden JSON evidence, not the whole historical `.omo/evidence/` directory. Run full verification. Confirm no secret-like values appear in logs/evidence. Confirm source expansion remains stopped. Confirm fallback to pharmacy is not triggered unless golden prompt QA fails because event records lack date/place/age clue/contact/freshness. Do not commit if verification fails.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:216:   Acceptance criteria (agent-executable): `cd apps/family-experience-mcp && npm run verify && npm run scan:secrets && npm run scan:claims` exits 0. `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; npm run verify; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/task-9-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; npm run scan:secrets; npm run scan:claims; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true; if netstat -ano | grep ":3345" | grep LISTENING > "$EVIDENCE_DIR/task-9-cleanup-listening.txt"; then exit 1; else echo "no LISTENING on :3345" > "$EVIDENCE_DIR/task-9-cleanup-listening.txt"; fi'` exits 0.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:217:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; npm run verify; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/task-9-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; npm run scan:secrets; npm run scan:claims; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true; if netstat -ano | grep ":3345" | grep LISTENING > "$EVIDENCE_DIR/task-9-cleanup-listening.txt"; then exit 1; else echo "no LISTENING on :3345" > "$EVIDENCE_DIR/task-9-cleanup-listening.txt"; fi'` expects exit 0, Evidence `.omo/evidence/task-9-final-verify-GREEN.txt`; failure: write a dummy unredacted secret to `$REPO_ROOT/.omo/evidence/task-9-dummy-secret.tmp`, run `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm run scan:secrets'`, expect non-zero, then remove the dummy file and record cleanup, Evidence `.omo/evidence/task-9-secret-scan-RED.txt` and `.omo/evidence/task-9-secret-scan-cleanup.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:223:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; test -f "$REPO_ROOT/apps/family-experience-mcp/package.json"; test -f "$REPO_ROOT/apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md"; ! test -e "$REPO_ROOT/apps/pharmacy-now-mcp"; ! test -e "$REPO_ROOT/apps/parent-trust-mcp"; for f in task-1-scaffold-GREEN.txt task-2-schemas-GREEN.txt task-3-sources-GREEN.txt task-4-pipeline-GREEN.txt task-5-mcp-GREEN.txt task-6-seoul-adapter-GREEN.txt task-7-golden-GREEN.txt task-8-playmcp-metadata-GREEN.txt task-9-final-verify-GREEN.txt; do test -s "$REPO_ROOT/.omo/evidence/$f"; done; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/final-F1-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:mcp -- --assert-tool-count=1; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true'`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:224:   Approval condition: `smoke:mcp -- --assert-tool-count=1` proves exactly one public tool is exposed; all todos' evidence files exist; no out-of-scope app folders for pharmacy or parent trust were created.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:225:   Evidence: `.omo/evidence/final-F1-plan-compliance.txt`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:227:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp"; npm run typecheck; npm test -- --run; ! grep -R -n -E "as any|@ts-ignore|@ts-expect-error|\\.skip\\(|\\.only\\(" src test'`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:229:   Evidence: `.omo/evidence/final-F2-code-quality.txt`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:231:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/final-F3-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; curl -fsS -D "$EVIDENCE_DIR/final-F3-health.headers" -o "$EVIDENCE_DIR/final-F3-health.json" http://127.0.0.1:3345/health; grep -q "family-experience-mcp" "$EVIDENCE_DIR/final-F3-health.json"; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:mcp -- --assert-tool-count=1; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true; if netstat -ano | grep ":3345" | grep LISTENING > "$EVIDENCE_DIR/final-cleanup-family-experience-mcp-first-build.txt"; then exit 1; else echo "no LISTENING on :3345" > "$EVIDENCE_DIR/final-cleanup-family-experience-mcp-first-build.txt"; fi'`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:233:   Evidence: `.omo/evidence/final-F3-real-manual-qa.txt`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:235:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; git status --short > "$EVIDENCE_DIR/final-F4-repo-status.txt"; find "$REPO_ROOT/apps" -maxdepth 3 -type f | sort > "$EVIDENCE_DIR/final-F4-app-files.txt"; if test -d "D:/KLab/workspace/2026-휴일약국/.git"; then git -C "D:/KLab/workspace/2026-휴일약국" status --short > "$EVIDENCE_DIR/final-F4-sibling-holiday-pharmacy-status.txt"; fi; if test -d "D:/KLab/workspace/2026-06-07-harness/.git"; then git -C "D:/KLab/workspace/2026-06-07-harness" status --short > "$EVIDENCE_DIR/final-F4-sibling-harness-status.txt"; fi; cd "$REPO_ROOT/apps/family-experience-mcp"; npm run scan:claims; npm run scan:secrets; claim_outputs=(); for f in "$EVIDENCE_DIR"/golden-family-experience-*.json; do test -e "$f" && claim_outputs+=("$f"); done; test "${#claim_outputs[@]}" -gt 0; ! grep -n -E "전국 모든 행사|전국 전체|예약 가능|예약가능|운영 중|실시간|live now|currently open|suitable for all|아이에게 적합함" "${claim_outputs[@]}"'`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:237:   Evidence: `.omo/evidence/final-F4-scope-fidelity.txt`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:274:   - `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/final-success-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:mcp -- --assert-tool-count=1; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true'`
+
+ succeeded in 317ms:
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:9: **What it will NOT do:** It will not build the pharmacy or baby-product concepts in this pass. It will not claim nationwide coverage, reservation availability, live freshness, or child suitability unless the source supports the claim. It will not submit for PlayMCP review or the one-time contest entry.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:19: > TL;DR (machine): Medium effort, medium risk, new TypeScript MCP app under `apps/family-experience-mcp/` exposing one `find_family_experiences` tool with fixture-first data, optional Seoul adapter, golden-prompt QA, and PlayMCP temporary-registration readiness.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:71: - PlayMCP temporary-registration readiness:
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:78:   - no final review request, no public switch, no one-time contest submission.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:85: - Do not request PlayMCP final review or complete one-time contest submission.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:122:   - after HTTP QA, stop the dev server and record a `LISTENING`-only port check receipt, e.g. `netstat -ano | grep ":3345" | grep LISTENING`, in `.omo/evidence/final-cleanup-family-experience-mcp-first-build.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:185:   QA scenarios (name the exact tool + invocation): happy HTTP+MCP: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/task-5-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; curl -fsS -D "$EVIDENCE_DIR/task-5-health.headers" -o "$EVIDENCE_DIR/task-5-health.json" http://127.0.0.1:3345/health; grep -q "family-experience-mcp" "$EVIDENCE_DIR/task-5-health.json"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true EVIDENCE_DIR="$EVIDENCE_DIR" npm run smoke:mcp -- --assert-tool-count=1; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true'` expects HTTP 200, exactly one listed tool named `find_family_experiences`, and `structuredContent.results.length === 3`, Evidence `.omo/evidence/task-5-mcp-GREEN.txt`; failure: run the same command before registering the tool or with `FAMILY_EXPERIENCE_ALLOW_FIXTURE=false SEOUL_OPEN_DATA_KEY=`, expecting safe failure not fabricated output, Evidence `.omo/evidence/task-5-mcp-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:204: - [ ] 8. Prepare PlayMCP temporary-registration package and operator runbook.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:205:   What to do / Must NOT do: Add `apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md`, `apps/family-experience-mcp/docs/RUNBOOK.md`, and `apps/family-experience-mcp/docs/SUBMISSION_COPY_DRAFT.md`. Include temporary registration only, not review request. Include name `아이랑 어디가`, identifier `familyexp`, endpoint `/mcp`, description under 500 chars, three starter messages under 40 chars, auth method recommendation for current build, response visibility note, and copy guardrails. Mention representative image requirement as a TODO only; do not generate or submit an image unless separately requested.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:208:   Acceptance criteria (agent-executable): `cd apps/family-experience-mcp && npm run verify` exits 0. A small script or test validates description length <= 500, identifier length <= 16, starter message count 3, and each starter message length <= 40. `docs/PLAYMCP_TEMP_REGISTRATION.md` contains "임시 등록" and does not contain "등록 및 심사 요청을 진행".
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:213:   What to do / Must NOT do: Add or update `apps/family-experience-mcp/docs/DECISIONS.md` and `apps/family-experience-mcp/docs/QA_REPORT.md`. Add scripts `scan:secrets` and `scan:claims` or equivalent tests that fail on unredacted secret patterns and unsupported public claims. `scan:claims` must be context-aware or scoped to app docs/src/test plus newly generated golden JSON evidence, not the whole historical `.omo/evidence/` directory. Run full verification. Confirm no secret-like values appear in logs/evidence. Confirm source expansion remains stopped. Confirm fallback to pharmacy is not triggered unless golden prompt QA fails because event records lack date/place/age clue/contact/freshness. Do not commit if verification fails.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:216:   Acceptance criteria (agent-executable): `cd apps/family-experience-mcp && npm run verify && npm run scan:secrets && npm run scan:claims` exits 0. `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; npm run verify; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/task-9-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; npm run scan:secrets; npm run scan:claims; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true; if netstat -ano | grep ":3345" | grep LISTENING > "$EVIDENCE_DIR/task-9-cleanup-listening.txt"; then exit 1; else echo "no LISTENING on :3345" > "$EVIDENCE_DIR/task-9-cleanup-listening.txt"; fi'` exits 0.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:217:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; npm run verify; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/task-9-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; npm run scan:secrets; npm run scan:claims; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true; if netstat -ano | grep ":3345" | grep LISTENING > "$EVIDENCE_DIR/task-9-cleanup-listening.txt"; then exit 1; else echo "no LISTENING on :3345" > "$EVIDENCE_DIR/task-9-cleanup-listening.txt"; fi'` expects exit 0, Evidence `.omo/evidence/task-9-final-verify-GREEN.txt`; failure: write a dummy unredacted secret to `$REPO_ROOT/.omo/evidence/task-9-dummy-secret.tmp`, run `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm run scan:secrets'`, expect non-zero, then remove the dummy file and record cleanup, Evidence `.omo/evidence/task-9-secret-scan-RED.txt` and `.omo/evidence/task-9-secret-scan-cleanup.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:227:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp"; npm run typecheck; npm test -- --run; ! grep -R -n -E "as any|@ts-ignore|@ts-expect-error|\\.skip\\(|\\.only\\(" src test'`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:231:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/final-F3-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; curl -fsS -D "$EVIDENCE_DIR/final-F3-health.headers" -o "$EVIDENCE_DIR/final-F3-health.json" http://127.0.0.1:3345/health; grep -q "family-experience-mcp" "$EVIDENCE_DIR/final-F3-health.json"; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:mcp -- --assert-tool-count=1; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true; if netstat -ano | grep ":3345" | grep LISTENING > "$EVIDENCE_DIR/final-cleanup-family-experience-mcp-first-build.txt"; then exit 1; else echo "no LISTENING on :3345" > "$EVIDENCE_DIR/final-cleanup-family-experience-mcp-first-build.txt"; fi'`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:235:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; git status --short > "$EVIDENCE_DIR/final-F4-repo-status.txt"; find "$REPO_ROOT/apps" -maxdepth 3 -type f | sort > "$EVIDENCE_DIR/final-F4-app-files.txt"; if test -d "D:/KLab/workspace/2026-휴일약국/.git"; then git -C "D:/KLab/workspace/2026-휴일약국" status --short > "$EVIDENCE_DIR/final-F4-sibling-holiday-pharmacy-status.txt"; fi; if test -d "D:/KLab/workspace/2026-06-07-harness/.git"; then git -C "D:/KLab/workspace/2026-06-07-harness" status --short > "$EVIDENCE_DIR/final-F4-sibling-harness-status.txt"; fi; cd "$REPO_ROOT/apps/family-experience-mcp"; npm run scan:claims; npm run scan:secrets; claim_outputs=(); for f in "$EVIDENCE_DIR"/golden-family-experience-*.json; do test -e "$f" && claim_outputs+=("$f"); done; test "${#claim_outputs[@]}" -gt 0; ! grep -n -E "전국 모든 행사|전국 전체|예약 가능|예약가능|운영 중|실시간|live now|currently open|suitable for all|아이에게 적합함" "${claim_outputs[@]}"'`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:236:   Approval condition: changes are limited to `apps/family-experience-mcp/` plus planned evidence/docs; sibling workspace status receipts are read-only; `scan:claims` covers app docs/src/test and simple grep covers only newly generated golden public-output JSON; no final PlayMCP review/submission action was taken.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:271: - PlayMCP temporary-registration docs are ready, but review/submission is not requested.
+
+ succeeded in 317ms:
+OK .prd-session/2026-07-01-three-concept-debate/family-experience-mcp/final-prd.md
+OK .prd-session/2026-07-01-three-concept-debate/family-experience-mcp/risk-editor-backstop.md
+OK .prd-session/2026-07-01-three-concept-debate/TRACE_SUMMARY.md
+OK .omo/ulw-research/20260702-004308-parallel-strategy/playmcp-current-surface-summary.md
+OK .omo/ulw-research/20260702-004308-parallel-strategy/SYNTHESIS.md
+OK research/decisions/2026-07-01-three-mcp-idea-branches.md
+OK research/methods/2026-07-01-three-mcp-idea-branches.md
+OK research/briefs/2026-07-01-mcp-data-pipeline-architecture-and-failure-modes.md
+
+ succeeded in 380ms:
+InvalidOperation: 
+Line |
+   2 |  $text=[System.IO.File]::ReadAllText((Resolve-Path '.omo/plans/family- …
+     |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot invoke method. Method invocation is supported only on core types in this language mode.
+NO_CONTROL_CHARS
+
+codex
+One control-character probe hit PowerShell constrained-language behavior, so I’m rerunning that check with a byte-stream read rather than trusting the failed probe.
+hook: PreToolUse
+hook: PreToolUse Completed
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command '$bytes = Get-Content -LiteralPath '"'.omo/plans/family-experience-mcp-first-build.md' -AsByteStream -Raw; "'$bad = @(); for($i=0; $i -lt $bytes.Length; $i++){ $b = [int]$bytes[$i]; if(($b -lt 32) -and ($b -notin 9,10,13)){ $bad += ('"'{0}:{1}' -f "'$i,$b) } }; if($bad.Count){ $bad -join "`n" } else { '"'NO_CONTROL_CHARS' }" in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+ succeeded in 348ms:
+NO_CONTROL_CHARS
+
+codex
+The main remaining ambiguity is the SDK surface named in the plan. I’m checking the specific helper names, because this is where a worker can lose time if the plan names stale APIs.
+mcp: context7/query-docs started
+mcp: context7/query-docs (completed)
+codex
+The SDK check supports the plan’s `new McpServer` and `registerTool` direction. I’m doing one last pass on the client transport/import side and then I’ll issue the verdict.
+mcp: context7/query-docs started
+mcp: context7/query-docs (completed)
+hook: PreToolUse
+hook: PreToolUse Completed
+exec
+"C:\\Program Files\\PowerShell\\7\\pwsh.exe" -Command "Select-String -Path '.omo/plans/family-experience-mcp-first-build.md' -Pattern 'human|manual|user|approval|approve|ask|wait' | ForEach-Object { '{0}:{1}: {2}' -f "'$_.Path,$_.LineNumber,$_.Line }' in C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo
+ succeeded in 270ms:
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:3: ## TL;DR (For humans)
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:15: Your next move: start execution with `$omo:start-work .omo/plans/family-experience-mcp-first-build.md`, or ask for a high-accuracy plan review first. Full execution detail follows below.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:84: - Do not create real git branches unless the user explicitly asks later.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:100: > Zero human intervention - all verification is agent-executed.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:111:   - Before implementing behavior in each todo, add or run the failing test/smoke named in that todo and save the failing output to the listed `.omo/evidence/task-*-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:112:   - Then implement the smallest code needed and save the passing output to `.omo/evidence/task-*-GREEN.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:147: <!-- APPEND TASK BATCHES BELOW THIS LINE WITH edit/apply_patch - never rewrite the headers above. -->
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:153:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm run verify'` expects exit 0, Evidence `.omo/evidence/task-1-scaffold-GREEN.txt`; failure: before adding package scripts, run `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm run verify'` and capture missing-script or missing-directory failure, Evidence `.omo/evidence/task-1-scaffold-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:161:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/schemas.test.ts test/config.test.ts'` expects exit 0 and assertions named `requires child_age or child_stage` and `redacts SEOUL_OPEN_DATA_KEY`, Evidence `.omo/evidence/task-2-schemas-GREEN.txt`; failure: first add the missing-age validation test and run the same command before implementation, expecting validation to wrongly pass or module missing, Evidence `.omo/evidence/task-2-schemas-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:169:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/sources.test.ts'` expects exit 0 and test name `fixture source returns auditable records`, Evidence `.omo/evidence/task-3-sources-GREEN.txt`; failure: before implementing fixture source, run the same command after adding the test and capture module/test failure, Evidence `.omo/evidence/task-3-sources-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:177:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/pipeline.test.ts'` expects exit 0 and tests named `returns top three fixture candidates`, `does not fabricate no-result matches`, `does not claim reservation availability when reservation_url is missing`, and `rejects computed or stale age fit labels`, Evidence `.omo/evidence/task-4-pipeline-GREEN.txt`; failure: add no-result, missing-reservation, and invalid-age-fit-label tests before implementation and run same command, expecting fabricated-result, reservation-claim, or invalid-label assertion to fail or module missing, Evidence `.omo/evidence/task-4-pipeline-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:185:   QA scenarios (name the exact tool + invocation): happy HTTP+MCP: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/task-5-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; curl -fsS -D "$EVIDENCE_DIR/task-5-health.headers" -o "$EVIDENCE_DIR/task-5-health.json" http://127.0.0.1:3345/health; grep -q "family-experience-mcp" "$EVIDENCE_DIR/task-5-health.json"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true EVIDENCE_DIR="$EVIDENCE_DIR" npm run smoke:mcp -- --assert-tool-count=1; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true'` expects HTTP 200, exactly one listed tool named `find_family_experiences`, and `structuredContent.results.length === 3`, Evidence `.omo/evidence/task-5-mcp-GREEN.txt`; failure: run the same command before registering the tool or with `FAMILY_EXPERIENCE_ALLOW_FIXTURE=false SEOUL_OPEN_DATA_KEY=`, expecting safe failure not fabricated output, Evidence `.omo/evidence/task-5-mcp-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:193:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/seoulCulture.test.ts'` expects exit 0 and test `redacts keyed url`, Evidence `.omo/evidence/task-6-seoul-adapter-GREEN.txt`; failure: run same command after adding no-key/redaction tests but before implementation, expecting failure, Evidence `.omo/evidence/task-6-seoul-adapter-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:201:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/task-7-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -sf http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true EVIDENCE_DIR="$EVIDENCE_DIR" npm run smoke:golden; test -s "$EVIDENCE_DIR/golden-family-experience-happy.json"; test -s "$EVIDENCE_DIR/golden-family-experience-missing-age.json"; test -s "$EVIDENCE_DIR/golden-family-experience-no-result.json"; test -s "$EVIDENCE_DIR/golden-family-experience-source-failure.json"; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true'` expects exit 0, four evidence JSON files, happy result count 3, missing-age clarification, no-result count 0, source-failure `isError: true`, Evidence `.omo/evidence/task-7-golden-GREEN.txt`; failure: run the same smoke with `FAMILY_EXPERIENCE_ALLOW_FIXTURE=false SEOUL_OPEN_DATA_KEY=` and source-failure scenario, expecting safe `isError: true` and no candidates, Evidence `.omo/evidence/task-7-source-failure-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:209:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/playmcpMetadata.test.ts'` expects exit 0 and length checks pass, Evidence `.omo/evidence/task-8-playmcp-metadata-GREEN.txt`; failure: add metadata length tests before docs are written and run same command, expecting missing docs or length failure, Evidence `.omo/evidence/task-8-playmcp-metadata-RED.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:216:   Acceptance criteria (agent-executable): `cd apps/family-experience-mcp && npm run verify && npm run scan:secrets && npm run scan:claims` exits 0. `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; npm run verify; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/task-9-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; npm run scan:secrets; npm run scan:claims; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true; if netstat -ano | grep ":3345" | grep LISTENING > "$EVIDENCE_DIR/task-9-cleanup-listening.txt"; then exit 1; else echo "no LISTENING on :3345" > "$EVIDENCE_DIR/task-9-cleanup-listening.txt"; fi'` exits 0.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:217:   QA scenarios (name the exact tool + invocation): happy: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; npm run verify; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/task-9-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; npm run scan:secrets; npm run scan:claims; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true; if netstat -ano | grep ":3345" | grep LISTENING > "$EVIDENCE_DIR/task-9-cleanup-listening.txt"; then exit 1; else echo "no LISTENING on :3345" > "$EVIDENCE_DIR/task-9-cleanup-listening.txt"; fi'` expects exit 0, Evidence `.omo/evidence/task-9-final-verify-GREEN.txt`; failure: write a dummy unredacted secret to `$REPO_ROOT/.omo/evidence/task-9-dummy-secret.tmp`, run `& 'C:\Program Files\Git\bin\bash.exe' -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm run scan:secrets'`, expect non-zero, then remove the dummy file and record cleanup, Evidence `.omo/evidence/task-9-secret-scan-RED.txt` and `.omo/evidence/task-9-secret-scan-cleanup.txt`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:221: > Runs in parallel after ALL todos. ALL must APPROVE through agent-executed evidence. User approval is a post-verification release/submission gate, not a QA dependency.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:223:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; test -f "$REPO_ROOT/apps/family-experience-mcp/package.json"; test -f "$REPO_ROOT/apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md"; ! test -e "$REPO_ROOT/apps/pharmacy-now-mcp"; ! test -e "$REPO_ROOT/apps/parent-trust-mcp"; for f in task-1-scaffold-GREEN.txt task-2-schemas-GREEN.txt task-3-sources-GREEN.txt task-4-pipeline-GREEN.txt task-5-mcp-GREEN.txt task-6-seoul-adapter-GREEN.txt task-7-golden-GREEN.txt task-8-playmcp-metadata-GREEN.txt task-9-final-verify-GREEN.txt; do test -s "$REPO_ROOT/.omo/evidence/$f"; done; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/final-F1-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:mcp -- --assert-tool-count=1; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true'`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:224:   Approval condition: `smoke:mcp -- --assert-tool-count=1` proves exactly one public tool is exposed; all todos' evidence files exist; no out-of-scope app folders for pharmacy or parent trust were created.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:228:   Approval condition: typecheck and tests exit 0; no `as any`, `@ts-ignore`, `@ts-expect-error`, `.skip`, or `.only` in `src/` or `test/`.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:230: - [ ] F3. Real manual QA
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:231:   Invocation: `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/final-F3-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; curl -fsS -D "$EVIDENCE_DIR/final-F3-health.headers" -o "$EVIDENCE_DIR/final-F3-health.json" http://127.0.0.1:3345/health; grep -q "family-experience-mcp" "$EVIDENCE_DIR/final-F3-health.json"; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:mcp -- --assert-tool-count=1; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true; if netstat -ano | grep ":3345" | grep LISTENING > "$EVIDENCE_DIR/final-cleanup-family-experience-mcp-first-build.txt"; then exit 1; else echo "no LISTENING on :3345" > "$EVIDENCE_DIR/final-cleanup-family-experience-mcp-first-build.txt"; fi'`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:232:   Approval condition: health returns HTTP 200; MCP lists `find_family_experiences`; happy prompt returns three candidates; missing-age/no-result/source-failure behave safely.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:233:   Evidence: `.omo/evidence/final-F3-real-manual-qa.txt`
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:236:   Approval condition: changes are limited to `apps/family-experience-mcp/` plus planned evidence/docs; sibling workspace status receipts are read-only; `scan:claims` covers app docs/src/test and simple grep covers only newly generated golden public-output JSON; no final PlayMCP review/submission action was taken.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:242: - Do not auto-commit unless the user has authorized committing in the execution turn. If not authorized, stage nothing and report the draft commit list.
+C:\Users\Public\Documents\ESTsoft\CreatorTemp\tmp.veA0xB1hxe\repo\.omo\plans\family-experience-mcp-first-build.md:274:   - `& 'C:\Program Files\Git\bin\bash.exe' -lc 'set -euo pipefail; REPO_ROOT="$(pwd)"; EVIDENCE_DIR="$REPO_ROOT/.omo/evidence"; cd "$REPO_ROOT/apps/family-experience-mcp"; FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http > "$EVIDENCE_DIR/final-success-server.log" 2>&1 & SERVER_PID=$!; trap "kill $SERVER_PID 2>/dev/null || true" EXIT; for i in {1..30}; do curl -fsS http://127.0.0.1:3345/health >/dev/null && break; sleep 1; done; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:mcp -- --assert-tool-count=1; EVIDENCE_DIR="$EVIDENCE_DIR" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden; kill $SERVER_PID; wait $SERVER_PID 2>/dev/null || true'`
+
+codex
+I found one execution-order blocker in the final verification wave and two smaller enforceability gaps; the rest of the pass-2 regressions look fixed.
+  ✓ Read Context7 instructions and discover docs tool
+  ✓ Inspect target plan and supporting artifacts
+  ✓ Cross-check plan against review requirements and pass-2 regressions
+  → Return verdict with exact blocking findings
+  ✓ Read Context7 instructions and discover docs tool
+  ✓ Inspect target plan and supporting artifacts
+  ✓ Cross-check plan against review requirements and pass-2 regressions
+  ✓ Return verdict with exact blocking findings
+codex
+VERDICT: ITERATE
+
+Findings:
+- [high] `.omo/plans/family-experience-mcp-first-build.md:221` - final verification says F1-F4 run in parallel, but F1 and F3 both start an HTTP server on `PORT=3345` at lines 223 and 231. This can create port collisions and false cleanup failures. Fix: make F1 and F3 sequential, or merge them into one server lifecycle; only F2/F4 should run in parallel.
+- [medium] `.omo/plans/family-experience-mcp-first-build.md:185` - health checks claim HTTP 200, but the command uses `curl -fsS` plus body grep, not an exact status assertion. Same pattern appears in final checks at lines 231 and 274. Fix: assert `200` explicitly with `curl -w "%{http_code}"` or saved header grep for `HTTP/... 200`.
+- [medium] `.omo/plans/family-experience-mcp-first-build.md:213` - no-scraping is a stated guardrail, but final hardening only enforces secret and claim scans. A worker could still add scraper deps or unregistered unofficial URLs. Fix: add `scan:sources` or equivalent tests that enforce registry-only source URLs/adapters and reject scraper/browser-parser deps/imports.
+
+Residual risks:
+- MCP SDK surface looks acceptable against current Context7 docs: `new McpServer({ ... })`, `registerTool`, `@modelcontextprotocol/server`, `@modelcontextprotocol/node`, and `@modelcontextprotocol/client` are supported.
+- PlayMCP temporary registration, optional `reservation_url`/`contact`, exact one-tool smoke, scoped claim scan, sibling read-only receipts, and Todo 9 server lifecycle regressions appear fixed.
+hook: Stop
+hook: Stop Completed
+tokens used
+132,538
+VERDICT: ITERATE
+
+Findings:
+- [high] `.omo/plans/family-experience-mcp-first-build.md:221` - final verification says F1-F4 run in parallel, but F1 and F3 both start an HTTP server on `PORT=3345` at lines 223 and 231. This can create port collisions and false cleanup failures. Fix: make F1 and F3 sequential, or merge them into one server lifecycle; only F2/F4 should run in parallel.
+- [medium] `.omo/plans/family-experience-mcp-first-build.md:185` - health checks claim HTTP 200, but the command uses `curl -fsS` plus body grep, not an exact status assertion. Same pattern appears in final checks at lines 231 and 274. Fix: assert `200` explicitly with `curl -w "%{http_code}"` or saved header grep for `HTTP/... 200`.
+- [medium] `.omo/plans/family-experience-mcp-first-build.md:213` - no-scraping is a stated guardrail, but final hardening only enforces secret and claim scans. A worker could still add scraper deps or unregistered unofficial URLs. Fix: add `scan:sources` or equivalent tests that enforce registry-only source URLs/adapters and reject scraper/browser-parser deps/imports.
+
+Residual risks:
+- MCP SDK surface looks acceptable against current Context7 docs: `new McpServer({ ... })`, `registerTool`, `@modelcontextprotocol/server`, `@modelcontextprotocol/node`, and `@modelcontextprotocol/client` are supported.
+- PlayMCP temporary registration, optional `reservation_url`/`contact`, exact one-tool smoke, scoped claim scan, sibling read-only receipts, and Todo 9 server lifecycle regressions appear fixed.

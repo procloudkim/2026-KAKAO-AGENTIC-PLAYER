@@ -1,0 +1,34 @@
+{
+  "response": {
+    "header": {
+      "resultCode": "0000",
+      "resultMsg": "OK"
+    },
+    "body": {
+      "items": {
+        "item": [
+          {
+            "addr1": "123 Jungmun Beach Road, Seogwipo-si, Jeju-do",
+            "addr2": "Outdoor plaza",
+            "areacode": "39",
+            "contentid": "3012345",
+            "contenttypeid": "15",
+            "eventenddate": "20260803",
+            "eventstartdate": "20260801",
+            "firstimage": "https://cdn.example.test/kto/event-main.jpg",
+            "homepage": "<a href=\"https://festival.example.test/jeju-family\" target=\"_blank\">official event page</a>",
+            "mapx": "126.412345",
+            "mapy": "33.245678",
+            "modifiedtime": "20260701093000",
+            "sigungucode": "4",
+            "tel": "064-000-0000",
+            "title": "Jeju Family Sea Festival"
+          }
+        ]
+      },
+      "numOfRows": 10,
+      "pageNo": 1,
+      "totalCount": 1
+    }
+  }
+}

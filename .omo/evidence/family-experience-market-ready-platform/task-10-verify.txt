@@ -1,0 +1,21 @@
+
+> family-experience-mcp@0.1.0 verify
+> npm run typecheck && npm test -- --run
+
+
+> family-experience-mcp@0.1.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.1.0 test
+> vitest --run
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  17 passed (17)
+      Tests  94 passed (94)
+   Start at  17:14:27
+   Duration  7.94s (transform 1.88s, setup 0ms, import 3.13s, tests 8.42s, environment 1ms)
+

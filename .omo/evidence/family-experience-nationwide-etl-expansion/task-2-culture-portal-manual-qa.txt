@@ -1,0 +1,7 @@
+{
+  "missing_key": "missing_key",
+  "malformed_xml": "source_invalid_response",
+  "redacted_contains_marker": true,
+  "redacted_contains_raw_key": false,
+  "redacted_contains_encoded_key": false
+}

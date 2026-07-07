@@ -1,0 +1,18 @@
+{
+  "isError": true,
+  "content": [
+    {
+      "type": "text",
+      "text": "공식 데이터 응답을 안전하게 확인하지 못했어요. 잠시 후 다시 시도해 주세요. Nationwide cache metadata is malformed at D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\fixtures\\eval-nationwide\\cache\\metadata.json. Run source-specific cache refresh: npm run etl:nationwide -- --live --write-cache --cache-dir D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp/test/fixtures/eval-nationwide/cache --source culture_portal."
+    }
+  ],
+  "structuredContent": {
+    "ok": false,
+    "mode": "live",
+    "failure": {
+      "code": "upstream_invalid_response",
+      "message": "Nationwide cache metadata is malformed at D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\fixtures\\eval-nationwide\\cache\\metadata.json. Run source-specific cache refresh: npm run etl:nationwide -- --live --write-cache --cache-dir D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp/test/fixtures/eval-nationwide/cache --source culture_portal.",
+      "retryable": false
+    }
+  }
+}

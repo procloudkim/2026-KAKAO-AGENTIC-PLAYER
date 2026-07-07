@@ -1,0 +1,12 @@
+# surface: 17-rerun-scan-claims.log
+# cwd: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp
+# started_at: 2026-07-04T08:29:06.9840607+09:00
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 120
+}
+# exit_code: 0

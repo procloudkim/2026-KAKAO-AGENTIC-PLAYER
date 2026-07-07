@@ -1,0 +1,33 @@
+{
+  "schema_version": 2,
+  "active_work_id": "family-experience-market-ready-platform",
+  "works": {
+    "family-experience-winning-sdd": {
+      "work_id": "family-experience-winning-sdd",
+      "active_plan": ".omo/plans/family-experience-winning-sdd-to-submission.md",
+      "plan_name": "family-experience-winning-sdd-to-submission",
+      "session_ids": ["codex:current-family-experience-winning-sdd"],
+      "status": "paused",
+      "worktree_path": null,
+      "last_task": 1
+    },
+    "family-experience-nationwide-etl-expansion": {
+      "work_id": "family-experience-nationwide-etl-expansion",
+      "active_plan": ".omo/plans/family-experience-nationwide-etl-expansion.md",
+      "plan_name": "family-experience-nationwide-etl-expansion",
+      "session_ids": ["codex:current-family-experience-nationwide-etl-expansion"],
+      "status": "completed",
+      "worktree_path": null,
+      "last_task": 10
+    },
+    "family-experience-market-ready-platform": {
+      "work_id": "family-experience-market-ready-platform",
+      "active_plan": ".omo/plans/family-experience-market-ready-platform.md",
+      "plan_name": "family-experience-market-ready-platform",
+      "session_ids": ["codex:019f1d36-af17-7a20-a79b-60c2e6a00e96"],
+      "status": "active",
+      "worktree_path": null,
+      "last_task": 0
+    }
+  }
+}

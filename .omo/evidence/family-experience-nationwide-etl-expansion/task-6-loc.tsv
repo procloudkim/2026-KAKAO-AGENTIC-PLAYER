@@ -1,0 +1,5 @@
+src/pipeline/normalize.ts	283
+src/pipeline/dedupe.ts	118
+src/pipeline/rank.ts	218
+src/pipeline/render.ts	209
+test/pipeline.test.ts	457

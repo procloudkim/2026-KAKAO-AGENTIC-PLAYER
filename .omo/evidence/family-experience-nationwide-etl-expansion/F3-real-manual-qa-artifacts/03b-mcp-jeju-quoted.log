@@ -1,0 +1,10 @@
+Surface: MCP smoke Jeju prompt
+Invocation: npm run smoke:mcp -- --assert-tool-count=1 --cache-dir=../../.omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/cache --skip-seed "--prompt=제주 이번 주말 초등학생 무료"
+Working directory: apps/family-experience-mcp
+--- output ---
+
+> family-experience-mcp@0.1.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts --assert-tool-count=1 --cache-dir=../../.omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/cache --skip-seed --prompt=제주 이번 주말 초등학생 무료
+
+Expected successful cache result: no_results
+EXIT_CODE=1

@@ -1,0 +1,5 @@
+Changed files for Todo 2:
+apps/family-experience-mcp/scripts/scan-claims.ts
+apps/family-experience-mcp/test/scanClaims.test.ts
+
+Note: both files are untracked in the current shared worktree, so plain git diff has no tracked baseline.

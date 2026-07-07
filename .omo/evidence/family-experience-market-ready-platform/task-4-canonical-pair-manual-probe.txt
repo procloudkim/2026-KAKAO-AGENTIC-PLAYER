@@ -1,0 +1,8 @@
+command: npm --prefix apps/family-experience-mcp exec tsx -- <temp task-4-canonical-pair-manual-probe.ts>
+scenario: manual validator probe for canonical source/source_id pair validation after final code
+--- output ---
+{"scenario":"valid_zero_result_complete_provenance","result":{"ok":true}}
+{"scenario":"swapped_canonical_pairs","result":{"ok":false,"message":"source-level provenance source/source_id pair does not match source registry"}}
+{"scenario":"valid_zero_result_failure_status_provenance","result":{"ok":true}}
+--- exit_code ---
+0

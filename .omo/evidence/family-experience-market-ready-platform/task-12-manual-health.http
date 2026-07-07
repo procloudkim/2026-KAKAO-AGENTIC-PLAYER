@@ -1,0 +1,15 @@
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+
+  0      0   0      0   0      0      0      0                              0
+100   1159   0   1159   0      0   2938      0                              0
+100   1159   0   1159   0      0   2938      0                              0
+100   1159   0   1159   0      0   2937      0                              0
+HTTP/1.1 200 OK
+content-type: application/json; charset=utf-8
+Date: Tue, 07 Jul 2026 15:13:49 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"ok":true,"name":"family-experience-mcp","version":"0.1.0","tools":["find_family_experiences"],"config":{"host":"127.0.0.1","port":3349,"allowFixture":false,"toolMode":"live","seoulOpenDataBaseUrl":"http://openapi.seoul.go.kr:8088","seoulOpenDataKey":"missing"},"cache":{"age_seconds":154,"cacheDir":"data/family-experience-cache","expiresAt":"2026-07-08T15:11:14.615Z","generated_at":"2026-07-07T15:11:14.615Z","mode":"fixture","refreshCommand":"npm run etl:nationwide -- --live --write-cache --cache-dir data/family-experience-cache --source seoul","source_health":{"total_sources":2,"ok_sources":2,"failed_sources":0,"failure_codes":[]},"status":"fresh","ttl_hours":24},"cache_metrics":{"status":"fresh","generated_at":"2026-07-07T15:11:14.615Z","age_seconds":154,"ttl_hours":24,"source_health":{"total_sources":2,"ok_sources":2,"failed_sources":0,"failure_codes":[]}},"operations":{"deployed_version":"0.1.0","requests":{"total":0,"succeeded":0,"failed":0,"rate_limited":0,"latency_ms":{"last":null,"p95":null}},"tool_calls":{"total":0,"succeeded":0,"failed":0,"invalid_input":0,"no_results":0,"source_failures":0,"latency_ms":{"last":null,"p95":null}}}}

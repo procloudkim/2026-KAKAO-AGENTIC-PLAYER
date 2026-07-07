@@ -1,0 +1,63 @@
+Task 10 final local/live verification
+Started: 2026-07-04T07:50:03.5496802+09:00
+Surface: terminal / PowerShell / npm scripts
+Working directory: apps/family-experience-mcp
+Raw secret values intentionally not printed.
+
+## verify
+Invocation: cd apps/family-experience-mcp; npm run verify
+Artifact: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-nationwide-etl-expansion\task-10-verify.log
+DurationSeconds: 3.482
+ExitCode: 0
+Verdict: PASS
+
+## etl-fixture-dry-run
+Invocation: cd apps/family-experience-mcp; npm run etl:nationwide -- --fixture --dry-run
+Artifact: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-nationwide-etl-expansion\task-10-etl-fixture-dry-run.log
+DurationSeconds: 0.623
+ExitCode: 0
+Verdict: PASS
+
+## smoke-mcp
+Invocation: cd apps/family-experience-mcp; npm run smoke:mcp
+Artifact: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-nationwide-etl-expansion\task-10-smoke-mcp.log
+DurationSeconds: 0.894
+ExitCode: 0
+Verdict: PASS
+
+## scan-secrets
+Invocation: cd apps/family-experience-mcp; npm run scan:secrets
+Artifact: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-nationwide-etl-expansion\task-10-scan-secrets.log
+DurationSeconds: 0.598
+ExitCode: 0
+Verdict: PASS
+
+## scan-claims
+Invocation: cd apps/family-experience-mcp; npm run scan:claims
+Artifact: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-nationwide-etl-expansion\task-10-scan-claims.log
+DurationSeconds: 0.626
+ExitCode: 0
+Verdict: PASS
+
+## scan-sources
+Invocation: cd apps/family-experience-mcp; npm run scan:sources
+Artifact: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-nationwide-etl-expansion\task-10-scan-sources.log
+DurationSeconds: 0.513
+ExitCode: 0
+Verdict: PASS
+
+## eval-nationwide-prompts
+Invocation: cd apps/family-experience-mcp; npm run eval:nationwide-prompts
+Artifact: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-nationwide-etl-expansion\task-10-eval-nationwide-prompts.log
+DurationSeconds: 1.092
+ExitCode: 0
+Verdict: PASS
+
+Completed: 2026-07-04T07:50:11.4151164+09:00
+OverallExitCode: 0
+
+ManualQaMatrix: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-nationwide-etl-expansion\task-10-adversarial-matrix.json
+
+ManualQaMatrix: D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-nationwide-etl-expansion\task-10-adversarial-matrix.json
+DockerVerdict: BLOCKED_ENV_DOCKER_DAEMON
+SecretHygieneVerdict: PASS

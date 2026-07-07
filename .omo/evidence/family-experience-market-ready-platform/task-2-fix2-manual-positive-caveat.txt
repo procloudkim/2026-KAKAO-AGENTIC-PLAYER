@@ -1,0 +1,12 @@
+COMMAND=npm --prefix apps/family-experience-mcp run scan:claims -- --include D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\tmp\market-plan\positive-caveat.md
+INCLUDE=D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\tmp\market-plan\positive-caveat.md
+EXIT_CODE=0
+
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\tmp\market-plan\positive-caveat.md
+
+{
+  "status": "PASS",
+  "scanned_files": 128
+}

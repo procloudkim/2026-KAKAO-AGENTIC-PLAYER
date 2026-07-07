@@ -1,0 +1,25 @@
+{
+  "isError": true,
+  "logs": [
+    {
+      "timestamp": "2026-07-07T14:34:25.169Z",
+      "service": "family-experience-mcp",
+      "version": "0.1.0",
+      "level": "error",
+      "event": "tool_call",
+      "tool": {
+        "name": "find_family_experiences",
+        "outcome": "failure",
+        "mode": "live",
+        "latency_ms": 2,
+        "candidate_count": 0,
+        "failure_code": "missing_configuration"
+      },
+      "diagnostics": {
+        "failure_code": "missing_configuration",
+        "retryable": false,
+        "message": "Live source is not configured and fixture mode is disabled."
+      }
+    }
+  ]
+}

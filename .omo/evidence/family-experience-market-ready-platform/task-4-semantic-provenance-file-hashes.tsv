@@ -1,0 +1,13 @@
+path`tsha256`tbytes
+apps\family-experience-mcp\src\etl\cacheContract.ts	4fa8036947c3e994ad3b9be0b0b483c079308d4ac12035aa1cdc0604285a975b	10050
+apps\family-experience-mcp\test\etlNationwide.test.ts	3e6e27a4edfc985c7da9c2262a8fbe3b679189963acbea8281c95ac969b08f8d	24919
+.omo\evidence\family-experience-market-ready-platform\task-4-code-quality-review.md	2f99cb185761e7b0fe1250474d7a92a72986ea77701f40ba3f8f5e04b34c4487	3903
+.omo\evidence\family-experience-market-ready-platform\task-4-semantic-provenance-doneclaim.md	93740352b96aa32855a0d5c04d0287bc6f49adf759821136973a29877337997b	3478
+.omo\evidence\family-experience-market-ready-platform\task-4-semantic-provenance-RED.txt	6b5e3d12b9ba823957a3e2999128941e5c2ec35dc359e51876e60190112ed898	182
+.omo\evidence\family-experience-market-ready-platform\task-4-semantic-provenance-focused-tests.txt	ccb430b047cb9eb12228cfbd659820409cd3cadc5e6b38948dce9b3d0db636f2	354
+.omo\evidence\family-experience-market-ready-platform\task-4-semantic-provenance-verify.txt	39225fbb4aac7a1f2cdc3531ae823ebc26ea22ee59d94e84a7a3de755d1fc3a7	478
+.omo\evidence\family-experience-market-ready-platform\task-4-semantic-provenance-manual-probe.txt	687c5b3612e0ad65a8260d544a980e007e1f4e4ccf72d7e7836c20ea82e3e6e7	779
+.omo\evidence\family-experience-market-ready-platform\task-4-semantic-provenance-loc.tsv	6f8bab715edc132eb19a29ab4dc2e37b21e80be58ad573b5ad29a673b1ceaa59	132
+.omo\evidence\family-experience-market-ready-platform\task-4-semantic-provenance-escape-hatch-scan.txt	a35f34d263256641b232208038d2fd599634fecc7e2cc89d34a933d944e5e1ca	91
+.omo\evidence\family-experience-market-ready-platform\task-4-semantic-provenance-status.txt	8869038d072c40bdd02ec0c2a48a51a5ab41666fe12a77699b314ce9ab7bcc8a	2497
+.omo\evidence\family-experience-market-ready-platform\task-4-semantic-provenance-cleanup.txt	b82598aaa2bfcc4ec4080ea6a26871445670882aa9f67d84f23644fd6ddc6c4c	258

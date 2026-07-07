@@ -1,0 +1,18 @@
+Scenario: malformed include without path
+
+> family-experience-mcp@0.1.0 scan:secrets
+> tsx scripts/scan-secrets.ts --include
+
+Missing path for --include
+Usage: tsx scripts/scan-secrets.ts [--include <path> ...]
+
+Scans default app docs, source, tests, scripts, selected evidence, and any included files or directories.
+Use --include for launch copy, env fixtures, temporary QA files, and generated evidence outside the default scan set.
+MALFORMED_EXIT_CODE=1
+Scenario: nonexistent include path
+
+> family-experience-mcp@0.1.0 scan:secrets
+> tsx scripts/scan-secrets.ts --include .omo/tmp/market-plan/no-such-secret-fixture.env
+
+ENOENT: no such file or directory, stat 'D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\tmp\market-plan\no-such-secret-fixture.env'
+NONEXISTENT_EXIT_CODE=1

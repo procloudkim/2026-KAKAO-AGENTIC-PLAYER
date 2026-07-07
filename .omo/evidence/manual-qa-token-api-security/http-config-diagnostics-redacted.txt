@@ -1,0 +1,7 @@
+{
+  "port": 3349,
+  "allowFixture": false,
+  "toolMode": "live",
+  "seoulOpenDataBaseUrl": "http://openapi.seoul.go.kr:8088",
+  "seoulOpenDataKey": "redacted"
+}

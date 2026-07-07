@@ -1,0 +1,1052 @@
+[
+  {
+    "id": "weekend-preschool-indoor",
+    "group": "loose-korean",
+    "prompt": "이번 주말 4살이랑 서울 실내 체험 찾아줘",
+    "expect": "success",
+    "latency_ms": 9,
+    "passed": true,
+    "checks": [
+      {
+        "name": "success_result",
+        "passed": true,
+        "detail": "candidate_count=3"
+      },
+      {
+        "name": "source_shown",
+        "passed": true,
+        "detail": "source_name and source_url present"
+      },
+      {
+        "name": "freshness_shown",
+        "passed": true,
+        "detail": "retrieved_at present"
+      },
+      {
+        "name": "age_fit_basis_shown",
+        "passed": true,
+        "detail": "age fit reason present"
+      },
+      {
+        "name": "date_place_shown",
+        "passed": true,
+        "detail": "date, venue, address present"
+      },
+      {
+        "name": "parent_check_shown",
+        "passed": true,
+        "detail": "parent_check present"
+      },
+      {
+        "name": "next_action_shown",
+        "passed": true,
+        "detail": "next_action present"
+      },
+      {
+        "name": "candidate_schema_valid",
+        "passed": true,
+        "detail": "candidate schema pass"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=9"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "today-rainy-preschool",
+    "group": "rainy-day",
+    "prompt": "오늘 비오는데 4살이랑 갈 곳",
+    "expect": "success",
+    "latency_ms": 1,
+    "passed": true,
+    "checks": [
+      {
+        "name": "success_result",
+        "passed": true,
+        "detail": "candidate_count=3"
+      },
+      {
+        "name": "source_shown",
+        "passed": true,
+        "detail": "source_name and source_url present"
+      },
+      {
+        "name": "freshness_shown",
+        "passed": true,
+        "detail": "retrieved_at present"
+      },
+      {
+        "name": "age_fit_basis_shown",
+        "passed": true,
+        "detail": "age fit reason present"
+      },
+      {
+        "name": "date_place_shown",
+        "passed": true,
+        "detail": "date, venue, address present"
+      },
+      {
+        "name": "parent_check_shown",
+        "passed": true,
+        "detail": "parent_check present"
+      },
+      {
+        "name": "next_action_shown",
+        "passed": true,
+        "detail": "next_action present"
+      },
+      {
+        "name": "candidate_schema_valid",
+        "passed": true,
+        "detail": "candidate schema pass"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=1"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "indoor-weekend",
+    "group": "indoor",
+    "prompt": "이번 주말 실내 가족 체험",
+    "expect": "success",
+    "latency_ms": 1,
+    "passed": true,
+    "checks": [
+      {
+        "name": "success_result",
+        "passed": true,
+        "detail": "candidate_count=3"
+      },
+      {
+        "name": "source_shown",
+        "passed": true,
+        "detail": "source_name and source_url present"
+      },
+      {
+        "name": "freshness_shown",
+        "passed": true,
+        "detail": "retrieved_at present"
+      },
+      {
+        "name": "age_fit_basis_shown",
+        "passed": true,
+        "detail": "age fit reason present"
+      },
+      {
+        "name": "date_place_shown",
+        "passed": true,
+        "detail": "date, venue, address present"
+      },
+      {
+        "name": "parent_check_shown",
+        "passed": true,
+        "detail": "parent_check present"
+      },
+      {
+        "name": "next_action_shown",
+        "passed": true,
+        "detail": "next_action present"
+      },
+      {
+        "name": "candidate_schema_valid",
+        "passed": true,
+        "detail": "candidate schema pass"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=1"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "toddler-three",
+    "group": "age-stage",
+    "prompt": "3살 아이랑 조용한 체험",
+    "expect": "success",
+    "latency_ms": 1,
+    "passed": true,
+    "checks": [
+      {
+        "name": "success_result",
+        "passed": true,
+        "detail": "candidate_count=1"
+      },
+      {
+        "name": "source_shown",
+        "passed": true,
+        "detail": "source_name and source_url present"
+      },
+      {
+        "name": "freshness_shown",
+        "passed": true,
+        "detail": "retrieved_at present"
+      },
+      {
+        "name": "age_fit_basis_shown",
+        "passed": true,
+        "detail": "age fit reason present"
+      },
+      {
+        "name": "date_place_shown",
+        "passed": true,
+        "detail": "date, venue, address present"
+      },
+      {
+        "name": "parent_check_shown",
+        "passed": true,
+        "detail": "parent_check present"
+      },
+      {
+        "name": "next_action_shown",
+        "passed": true,
+        "detail": "next_action present"
+      },
+      {
+        "name": "candidate_schema_valid",
+        "passed": true,
+        "detail": "candidate schema pass"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=1"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "preschool-four",
+    "group": "age-stage",
+    "prompt": "4살 유아 체험 추천",
+    "expect": "success",
+    "latency_ms": 0,
+    "passed": true,
+    "checks": [
+      {
+        "name": "success_result",
+        "passed": true,
+        "detail": "candidate_count=3"
+      },
+      {
+        "name": "source_shown",
+        "passed": true,
+        "detail": "source_name and source_url present"
+      },
+      {
+        "name": "freshness_shown",
+        "passed": true,
+        "detail": "retrieved_at present"
+      },
+      {
+        "name": "age_fit_basis_shown",
+        "passed": true,
+        "detail": "age fit reason present"
+      },
+      {
+        "name": "date_place_shown",
+        "passed": true,
+        "detail": "date, venue, address present"
+      },
+      {
+        "name": "parent_check_shown",
+        "passed": true,
+        "detail": "parent_check present"
+      },
+      {
+        "name": "next_action_shown",
+        "passed": true,
+        "detail": "next_action present"
+      },
+      {
+        "name": "candidate_schema_valid",
+        "passed": true,
+        "detail": "candidate schema pass"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=0"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "preschool-six",
+    "group": "age-stage",
+    "prompt": "6살 아이와 반나절 체험",
+    "expect": "success",
+    "latency_ms": 1,
+    "passed": true,
+    "checks": [
+      {
+        "name": "success_result",
+        "passed": true,
+        "detail": "candidate_count=3"
+      },
+      {
+        "name": "source_shown",
+        "passed": true,
+        "detail": "source_name and source_url present"
+      },
+      {
+        "name": "freshness_shown",
+        "passed": true,
+        "detail": "retrieved_at present"
+      },
+      {
+        "name": "age_fit_basis_shown",
+        "passed": true,
+        "detail": "age fit reason present"
+      },
+      {
+        "name": "date_place_shown",
+        "passed": true,
+        "detail": "date, venue, address present"
+      },
+      {
+        "name": "parent_check_shown",
+        "passed": true,
+        "detail": "parent_check present"
+      },
+      {
+        "name": "next_action_shown",
+        "passed": true,
+        "detail": "next_action present"
+      },
+      {
+        "name": "candidate_schema_valid",
+        "passed": true,
+        "detail": "candidate schema pass"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=1"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "school-age-eight",
+    "group": "age-stage",
+    "prompt": "초등 저학년 무료에 가까운 체험",
+    "expect": "success",
+    "latency_ms": 0,
+    "passed": true,
+    "checks": [
+      {
+        "name": "success_result",
+        "passed": true,
+        "detail": "candidate_count=1"
+      },
+      {
+        "name": "source_shown",
+        "passed": true,
+        "detail": "source_name and source_url present"
+      },
+      {
+        "name": "freshness_shown",
+        "passed": true,
+        "detail": "retrieved_at present"
+      },
+      {
+        "name": "age_fit_basis_shown",
+        "passed": true,
+        "detail": "age fit reason present"
+      },
+      {
+        "name": "date_place_shown",
+        "passed": true,
+        "detail": "date, venue, address present"
+      },
+      {
+        "name": "parent_check_shown",
+        "passed": true,
+        "detail": "parent_check present"
+      },
+      {
+        "name": "next_action_shown",
+        "passed": true,
+        "detail": "next_action present"
+      },
+      {
+        "name": "candidate_schema_valid",
+        "passed": true,
+        "detail": "candidate schema pass"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=0"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "school-age-stage",
+    "group": "age-stage",
+    "prompt": "초등학생 과학 체험",
+    "expect": "success",
+    "latency_ms": 0,
+    "passed": true,
+    "checks": [
+      {
+        "name": "success_result",
+        "passed": true,
+        "detail": "candidate_count=1"
+      },
+      {
+        "name": "source_shown",
+        "passed": true,
+        "detail": "source_name and source_url present"
+      },
+      {
+        "name": "freshness_shown",
+        "passed": true,
+        "detail": "retrieved_at present"
+      },
+      {
+        "name": "age_fit_basis_shown",
+        "passed": true,
+        "detail": "age fit reason present"
+      },
+      {
+        "name": "date_place_shown",
+        "passed": true,
+        "detail": "date, venue, address present"
+      },
+      {
+        "name": "parent_check_shown",
+        "passed": true,
+        "detail": "parent_check present"
+      },
+      {
+        "name": "next_action_shown",
+        "passed": true,
+        "detail": "next_action present"
+      },
+      {
+        "name": "candidate_schema_valid",
+        "passed": true,
+        "detail": "candidate schema pass"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=0"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "nearby-jung-gu",
+    "group": "nearby",
+    "prompt": "중구 근처 4살 실내",
+    "expect": "success",
+    "latency_ms": 0,
+    "passed": true,
+    "checks": [
+      {
+        "name": "success_result",
+        "passed": true,
+        "detail": "candidate_count=1"
+      },
+      {
+        "name": "source_shown",
+        "passed": true,
+        "detail": "source_name and source_url present"
+      },
+      {
+        "name": "freshness_shown",
+        "passed": true,
+        "detail": "retrieved_at present"
+      },
+      {
+        "name": "age_fit_basis_shown",
+        "passed": true,
+        "detail": "age fit reason present"
+      },
+      {
+        "name": "date_place_shown",
+        "passed": true,
+        "detail": "date, venue, address present"
+      },
+      {
+        "name": "parent_check_shown",
+        "passed": true,
+        "detail": "parent_check present"
+      },
+      {
+        "name": "next_action_shown",
+        "passed": true,
+        "detail": "next_action present"
+      },
+      {
+        "name": "candidate_schema_valid",
+        "passed": true,
+        "detail": "candidate schema pass"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=0"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "nearby-jongno",
+    "group": "nearby",
+    "prompt": "종로구 5살 체험",
+    "expect": "success",
+    "latency_ms": 0,
+    "passed": true,
+    "checks": [
+      {
+        "name": "success_result",
+        "passed": true,
+        "detail": "candidate_count=1"
+      },
+      {
+        "name": "source_shown",
+        "passed": true,
+        "detail": "source_name and source_url present"
+      },
+      {
+        "name": "freshness_shown",
+        "passed": true,
+        "detail": "retrieved_at present"
+      },
+      {
+        "name": "age_fit_basis_shown",
+        "passed": true,
+        "detail": "age fit reason present"
+      },
+      {
+        "name": "date_place_shown",
+        "passed": true,
+        "detail": "date, venue, address present"
+      },
+      {
+        "name": "parent_check_shown",
+        "passed": true,
+        "detail": "parent_check present"
+      },
+      {
+        "name": "next_action_shown",
+        "passed": true,
+        "detail": "next_action present"
+      },
+      {
+        "name": "candidate_schema_valid",
+        "passed": true,
+        "detail": "candidate schema pass"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=0"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "free-low-budget",
+    "group": "budget",
+    "prompt": "무료나 저렴한 4살 체험",
+    "expect": "success",
+    "latency_ms": 0,
+    "passed": true,
+    "checks": [
+      {
+        "name": "success_result",
+        "passed": true,
+        "detail": "candidate_count=3"
+      },
+      {
+        "name": "source_shown",
+        "passed": true,
+        "detail": "source_name and source_url present"
+      },
+      {
+        "name": "freshness_shown",
+        "passed": true,
+        "detail": "retrieved_at present"
+      },
+      {
+        "name": "age_fit_basis_shown",
+        "passed": true,
+        "detail": "age fit reason present"
+      },
+      {
+        "name": "date_place_shown",
+        "passed": true,
+        "detail": "date, venue, address present"
+      },
+      {
+        "name": "parent_check_shown",
+        "passed": true,
+        "detail": "parent_check present"
+      },
+      {
+        "name": "next_action_shown",
+        "passed": true,
+        "detail": "next_action present"
+      },
+      {
+        "name": "candidate_schema_valid",
+        "passed": true,
+        "detail": "candidate schema pass"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=0"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "reservation-link-needed",
+    "group": "adversarial",
+    "prompt": "예약 가능한 곳만 보장해서 알려줘",
+    "expect": "success",
+    "latency_ms": 1,
+    "passed": true,
+    "checks": [
+      {
+        "name": "success_result",
+        "passed": true,
+        "detail": "candidate_count=3"
+      },
+      {
+        "name": "source_shown",
+        "passed": true,
+        "detail": "source_name and source_url present"
+      },
+      {
+        "name": "freshness_shown",
+        "passed": true,
+        "detail": "retrieved_at present"
+      },
+      {
+        "name": "age_fit_basis_shown",
+        "passed": true,
+        "detail": "age fit reason present"
+      },
+      {
+        "name": "date_place_shown",
+        "passed": true,
+        "detail": "date, venue, address present"
+      },
+      {
+        "name": "parent_check_shown",
+        "passed": true,
+        "detail": "parent_check present"
+      },
+      {
+        "name": "next_action_shown",
+        "passed": true,
+        "detail": "next_action present"
+      },
+      {
+        "name": "candidate_schema_valid",
+        "passed": true,
+        "detail": "candidate schema pass"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=1"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "current-open-status",
+    "group": "adversarial",
+    "prompt": "지금 운영 중인 곳으로만 알려줘",
+    "expect": "success",
+    "latency_ms": 0,
+    "passed": true,
+    "checks": [
+      {
+        "name": "success_result",
+        "passed": true,
+        "detail": "candidate_count=3"
+      },
+      {
+        "name": "source_shown",
+        "passed": true,
+        "detail": "source_name and source_url present"
+      },
+      {
+        "name": "freshness_shown",
+        "passed": true,
+        "detail": "retrieved_at present"
+      },
+      {
+        "name": "age_fit_basis_shown",
+        "passed": true,
+        "detail": "age fit reason present"
+      },
+      {
+        "name": "date_place_shown",
+        "passed": true,
+        "detail": "date, venue, address present"
+      },
+      {
+        "name": "parent_check_shown",
+        "passed": true,
+        "detail": "parent_check present"
+      },
+      {
+        "name": "next_action_shown",
+        "passed": true,
+        "detail": "next_action present"
+      },
+      {
+        "name": "candidate_schema_valid",
+        "passed": true,
+        "detail": "candidate schema pass"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=0"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "nationwide-overclaim",
+    "group": "adversarial",
+    "prompt": "전국 모든 행사를 검색해서 4살에게 맞는 곳",
+    "expect": "success",
+    "latency_ms": 0,
+    "passed": true,
+    "checks": [
+      {
+        "name": "success_result",
+        "passed": true,
+        "detail": "candidate_count=3"
+      },
+      {
+        "name": "source_shown",
+        "passed": true,
+        "detail": "source_name and source_url present"
+      },
+      {
+        "name": "freshness_shown",
+        "passed": true,
+        "detail": "retrieved_at present"
+      },
+      {
+        "name": "age_fit_basis_shown",
+        "passed": true,
+        "detail": "age fit reason present"
+      },
+      {
+        "name": "date_place_shown",
+        "passed": true,
+        "detail": "date, venue, address present"
+      },
+      {
+        "name": "parent_check_shown",
+        "passed": true,
+        "detail": "parent_check present"
+      },
+      {
+        "name": "next_action_shown",
+        "passed": true,
+        "detail": "next_action present"
+      },
+      {
+        "name": "candidate_schema_valid",
+        "passed": true,
+        "detail": "candidate schema pass"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=0"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "infant-no-result",
+    "group": "no-result",
+    "prompt": "12개월 아기와 오늘 밤 갈 수 있는 곳",
+    "expect": "no_result",
+    "latency_ms": 1,
+    "passed": true,
+    "checks": [
+      {
+        "name": "no_result_error",
+        "passed": true,
+        "detail": "code=no_results"
+      },
+      {
+        "name": "no_fabricated_candidates",
+        "passed": true,
+        "detail": "failure response has no candidates"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=1"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "wrong-city-no-result",
+    "group": "no-result",
+    "prompt": "부산에서 4살 체험",
+    "expect": "no_result",
+    "latency_ms": 0,
+    "passed": true,
+    "checks": [
+      {
+        "name": "no_result_error",
+        "passed": true,
+        "detail": "code=no_results"
+      },
+      {
+        "name": "no_fabricated_candidates",
+        "passed": true,
+        "detail": "failure response has no candidates"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=0"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "wrong-date-no-result",
+    "group": "no-result",
+    "prompt": "다음 달 말 4살 체험",
+    "expect": "no_result",
+    "latency_ms": 0,
+    "passed": true,
+    "checks": [
+      {
+        "name": "no_result_error",
+        "passed": true,
+        "detail": "code=no_results"
+      },
+      {
+        "name": "no_fabricated_candidates",
+        "passed": true,
+        "detail": "failure response has no candidates"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=0"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "missing-age-clarification",
+    "group": "ambiguous",
+    "prompt": "이번 주말 아이랑 갈 곳",
+    "expect": "clarification",
+    "latency_ms": 0,
+    "passed": true,
+    "checks": [
+      {
+        "name": "clarification_error",
+        "passed": true,
+        "detail": "clarification is an error response"
+      },
+      {
+        "name": "asks_child_age_or_stage",
+        "passed": true,
+        "detail": "Korean clarification text present"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=0"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "both-age-and-stage-clarification",
+    "group": "ambiguous",
+    "prompt": "4살 유아 단계 둘 다 넣어서 찾아줘",
+    "expect": "clarification",
+    "latency_ms": 0,
+    "passed": true,
+    "checks": [
+      {
+        "name": "clarification_error",
+        "passed": true,
+        "detail": "clarification is an error response"
+      },
+      {
+        "name": "asks_child_age_or_stage",
+        "passed": true,
+        "detail": "Korean clarification text present"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=0"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  },
+  {
+    "id": "teen-edge-no-result",
+    "group": "age-stage",
+    "prompt": "고등학생 공연 말고 유아 체험",
+    "expect": "success",
+    "latency_ms": 0,
+    "passed": true,
+    "checks": [
+      {
+        "name": "success_result",
+        "passed": true,
+        "detail": "candidate_count=1"
+      },
+      {
+        "name": "source_shown",
+        "passed": true,
+        "detail": "source_name and source_url present"
+      },
+      {
+        "name": "freshness_shown",
+        "passed": true,
+        "detail": "retrieved_at present"
+      },
+      {
+        "name": "age_fit_basis_shown",
+        "passed": true,
+        "detail": "age fit reason present"
+      },
+      {
+        "name": "date_place_shown",
+        "passed": true,
+        "detail": "date, venue, address present"
+      },
+      {
+        "name": "parent_check_shown",
+        "passed": true,
+        "detail": "parent_check present"
+      },
+      {
+        "name": "next_action_shown",
+        "passed": true,
+        "detail": "next_action present"
+      },
+      {
+        "name": "candidate_schema_valid",
+        "passed": true,
+        "detail": "candidate schema pass"
+      },
+      {
+        "name": "latency_captured",
+        "passed": true,
+        "detail": "latency_ms=0"
+      },
+      {
+        "name": "no_unsupported_claim",
+        "passed": true,
+        "detail": "forbidden public claims absent"
+      }
+    ]
+  }
+]

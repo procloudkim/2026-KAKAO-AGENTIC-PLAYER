@@ -1,0 +1,131 @@
+Task 2 Culture Portal/KCISA adapter evidence
+
+Baseline characterization:
+- Scenario: inspect existing Seoul source adapter/test conventions before changes.
+- Invocation: CodeGraph explore for apps/family-experience-mcp/src/sources/seoulCulture.ts, src/sources/types.ts, src/config.ts, and test/seoulCulture.test.ts.
+- Binary observable: existing adapters expose FamilyExperienceSourceAdapter with live mode, SourceAdapterResult, missing_key for absent keys, redacted_url diagnostics, fixture-backed Vitest Given/When/Then tests, and source-backed canonical records.
+- Artifact path: this file.
+
+External source check:
+- Scenario: verify Culture Portal one-view API operation surface before implementation.
+- Invocation: web open https://www.culture.go.kr/portal/main/contents.do?menuNo=200155
+- Binary observable: page lists XML REST one-view operations for period/area/realm/detail, period endpoint https://apis.data.go.kr/B553457/nopenapi/rest/publicperformancedisplays/period, UTF-8 encoded serviceKey, and error codes.
+- Artifact path: this file.
+
+Failing-first proof:
+- Scenario: red-first Culture Portal tests before implementation.
+- Invocation: npm test -- culturePortal
+- Binary observable: exit code 1; expected failure because src/sources/culturePortal.ts does not yet export requested functions.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-red.txt
+
+Final implementation evidence:
+- Scenario: valid Culture Portal period fixture maps to canonical FamilyExperienceSourceRecord.
+- Invocation: npm test -- culturePortal
+- Binary observable: Vitest reports 1 test file passed and 5 tests passed; assertions cover source_id culture-portal-oneview, source URL, title, 2026-07-18 to 2026-07-19 date range, venue, fee_text, unknown age/reservation confidence, null reservation_url, source-provided coordinate/thumbnail tags, and external prompt-injection-like description retained as inert program_text data.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-final-acceptance.txt
+
+- Scenario: malformed_input malformed XML/upstream shape returns typed invalid response.
+- Invocation: npm test -- culturePortal and node --import tsx --eval <manual QA command>
+- Binary observable: Vitest assertion and manual QA JSON report malformed_xml == source_invalid_response.
+- Captured artifact paths: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-final-acceptance.txt; .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-manual-qa.txt
+
+- Scenario: missing Culture Portal service key fails closed.
+- Invocation: npm test -- culturePortal and node --import tsx --eval <manual QA command>
+- Binary observable: Vitest assertion and manual QA JSON report missing_key == missing_key; retryable false in test assertion.
+- Captured artifact paths: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-final-acceptance.txt; .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-manual-qa.txt
+
+- Scenario: diagnostics redact service key and keyed URL.
+- Invocation: npm test -- culturePortal and node --import tsx --eval <manual QA command>
+- Binary observable: Vitest asserts diagnostics contain <redacted> and do not contain raw or encoded key; manual QA JSON reports redacted_contains_marker true, redacted_contains_raw_key false, redacted_contains_encoded_key false.
+- Captured artifact paths: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-final-acceptance.txt; .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-manual-qa.txt
+
+- Scenario: no MCP/live fan-out wiring.
+- Invocation: code inspection of scoped new adapter; no registry/config/MCP files edited by this task.
+- Binary observable: createCulturePortalSourceAdapter requires an injected requestXml loader for XML retrieval and otherwise returns source_unavailable; no MCP registry imports or live fan-out wiring added.
+- Captured artifact path: apps/family-experience-mcp/src/sources/culturePortal.ts
+
+- Scenario: TypeScript compile gate.
+- Invocation: npm run typecheck
+- Binary observable: exit code 0; tsc --noEmit completed without diagnostics.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-typecheck.txt
+
+- Scenario: flaky_tests targeted rerun.
+- Invocation: npm test -- culturePortal repeated after green.
+- Binary observable: rerun reports 1 test file passed and 5 tests passed.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-green-rerun.txt
+
+- Scenario: strict-rule checker on changed TypeScript files.
+- Invocation: NODE_PATH=apps/family-experience-mcp/node_modules bun run C:/Users/K/.codex/plugins/cache/sisyphuslabs/omo/4.15.1/skills/programming/scripts/typescript/check-no-excuse-rules.ts apps/family-experience-mcp/src/sources/culturePortal.ts apps/family-experience-mcp/test/culturePortal.test.ts
+- Binary observable: No violations in 2 file(s).
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-no-excuse.txt
+
+- Scenario: post-write LOC and self-review.
+- Invocation: PowerShell nonblank/noncomment count for changed TS files.
+- Binary observable: apps/family-experience-mcp/src/sources/culturePortal.ts = 250 pure LOC; apps/family-experience-mcp/test/culturePortal.test.ts = 153 pure LOC. Source file is in the warning band but not over the 250 LOC defect threshold; file owns one short responsibility: Culture Portal source adaptation. Boundary parser keeps XML/string input at the adapter boundary. No Any, ts-ignore, ts-expect-error, non-null assertion, or default export introduced. Tests fail if the adapter exports or behavior are reverted.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-loc.txt
+
+- Scenario: stale_state and dirty_worktree preservation.
+- Invocation: git status --short; git status --short -- <scoped task files>
+- Binary observable: full worktree remains dirty with many unrelated pre-existing/unowned files; scoped status output is captured separately. No unrelated dirty files were reverted or edited for this task.
+- Captured artifact paths: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-git-status.txt; .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-scoped-status.txt
+
+- Scenario: misleading_success_output guard.
+- Invocation: npm test -- culturePortal
+- Binary observable: tests contain exact assertions for canonical field values and failure codes, not only pass-log inspection.
+- Captured artifact path: apps/family-experience-mcp/test/culturePortal.test.ts
+
+Completion status: DONE for Todo 2 scope. No commits made. No raw secrets added.
+
+Todo 2 blocker remediation evidence, 2026-07-04:
+
+- Scenario: failing-first exact source value assertions for Culture Portal GPS and thumbnail preservation.
+- Invocation: cd apps/family-experience-mcp && npm test -- culturePortal
+- Binary observable: exit code 1; Vitest failed the valid fixture test because record.tags lacked source_gpsX:129.0934, source_gpsY:35.1379, and source_thumbnail:https://culture.example.test/thumbs/CP-202607-A.jpg while marker-only tags were present.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-value-preservation-red.txt
+
+- Scenario: minimal adapter fix preserves exact source-provided GPS and thumbnail values without shared type changes.
+- Invocation: code inspection of apps/family-experience-mcp/src/sources/culturePortal.ts normalizeRow tag construction.
+- Binary observable: normalized records keep existing coordinates_source_provided and thumbnail_source_provided tags and add deterministic source_gpsX:<value>, source_gpsY:<value>, and source_thumbnail:<value> tags when those source fields are populated.
+- Captured artifact path: apps/family-experience-mcp/src/sources/culturePortal.ts
+
+- Scenario: exact value regression assertions for valid period fixture.
+- Invocation: cd apps/family-experience-mcp && npm test -- culturePortal
+- Binary observable: exit code 0; Vitest reports 1 test file passed and 5 tests passed. The valid fixture test asserts title mapping plus exact source_gpsX:129.0934, source_gpsY:35.1379, and source_thumbnail:https://culture.example.test/thumbs/CP-202607-A.jpg tags, while existing malformed XML, missing key, redaction, prompt-injection-as-data, and no booking/safety claim assertions remain intact.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-value-preservation-green.txt
+
+- Scenario: flaky_tests targeted rerun after green.
+- Invocation: cd apps/family-experience-mcp && npm test -- culturePortal
+- Binary observable: exit code 0; rerun reports 1 test file passed and 5 tests passed.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-value-preservation-rerun.txt
+
+- Scenario: TypeScript compile gate.
+- Invocation: cd apps/family-experience-mcp && npm run typecheck
+- Binary observable: exit code 0; tsc --noEmit completed without diagnostics.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-typecheck-rerun.txt
+
+- Scenario: manual value-preservation and redaction probe.
+- Invocation: cd apps/family-experience-mcp && node --import tsx --input-type=module --eval <fixture normalization and failing-loader redaction probe>
+- Binary observable: JSON report shows title "Busan Family Ocean Concert", gpsX_preserved true, gpsY_preserved true, thumbnail_preserved true, coordinate_marker_present true, thumbnail_marker_present true, raw_key_in_diagnostics false, encoded_key_in_diagnostics false, and redaction_marker_present true.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-manual-value-probe.txt
+
+- Scenario: strict-rule and post-write checks for changed TypeScript files.
+- Invocation: NODE_PATH=apps/family-experience-mcp/node_modules bun run C:/Users/K/.codex/plugins/cache/sisyphuslabs/omo/4.15.1/skills/programming/scripts/typescript/check-no-excuse-rules.ts apps/family-experience-mcp/src/sources/culturePortal.ts apps/family-experience-mcp/test/culturePortal.test.ts
+- Binary observable: No violations in 2 file(s).
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-no-excuse-rerun.txt
+
+- Scenario: post-write LOC check.
+- Invocation: awk nonblank/noncomment count for apps/family-experience-mcp/src/sources/culturePortal.ts and apps/family-experience-mcp/test/culturePortal.test.ts
+- Binary observable: culturePortal.ts remains 250 pure LOC and culturePortal.test.ts is 156 pure LOC. Source file remains in the warning band but not over the defect threshold; this task did not broaden into refactoring because the requested blocker is fixed with no net LOC growth in the adapter.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-loc-rerun.txt
+
+- Scenario: changed-file LSP diagnostics attempt.
+- Invocation: mcp__lsp.status
+- Binary observable: TypeScript language server is missing and active LSP clients are 0, so LSP diagnostics could not run without installing new tooling. npm run typecheck is the captured compiler diagnostic substitute for this task.
+- Captured artifact path: this file.
+
+- Scenario: dirty_worktree scoped preservation.
+- Invocation: git status --short -- apps/family-experience-mcp/src/sources/culturePortal.ts apps/family-experience-mcp/test/culturePortal.test.ts apps/family-experience-mcp/test/fixtures/culture-portal-period-valid.xml .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal.txt
+- Binary observable: scoped status shows only owned task files/evidence as untracked in the already-dirty shared worktree; no unrelated files were reverted or edited.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-2-culture-portal-scoped-status-rerun.txt
+
+Completion status: DONE for Todo 2 blocker remediation. No commits made. Fixture already had required gpsX, gpsY, and thumbnail fields, so it was not edited.

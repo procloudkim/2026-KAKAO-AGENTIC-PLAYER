@@ -1,0 +1,8 @@
+command=npm --prefix apps/family-experience-mcp run verify
+exit=0
+latest_path=D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\etl\etl-proof-latest.json
+before_hash=2813444B45A2BCBA90038755582FCF22B2BB1865EA435E1BC9CD40B1C01118C7
+after_hash=2813444B45A2BCBA90038755582FCF22B2BB1865EA435E1BC9CD40B1C01118C7
+before_last_write_utc=2026-07-07T14:33:24.1897005Z
+after_last_write_utc=2026-07-07T14:33:24.1897005Z
+canonical_latest_mutated_by_verify=false

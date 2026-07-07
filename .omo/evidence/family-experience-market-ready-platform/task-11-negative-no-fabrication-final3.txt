@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "isError": true,
+  "text": "현재 설정으로는 체험 후보를 확인할 수 없어요. 캐시를 새로고침하거나 공식 데이터 설정을 확인해 주세요. Nationwide cache has no matching records and no live source is configured. Rebuild the cache or configure a live source.",
+  "structuredContent": {
+    "ok": false,
+    "mode": "live",
+    "failure": {
+      "code": "missing_configuration",
+      "message": "Nationwide cache has no matching records and no live source is configured. Rebuild the cache or configure a live source.",
+      "retryable": false
+    }
+  }
+}

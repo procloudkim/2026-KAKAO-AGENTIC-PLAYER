@@ -1,0 +1,2 @@
+Command: Push-Location apps/family-experience-mcp; npx tsc --noEmit --ignoreConfig --target ES2022 --module NodeNext --moduleResolution NodeNext --lib ES2022 --types node --strict --noUncheckedIndexedAccess --verbatimModuleSyntax --skipLibCheck scripts/eval-prompts.ts scripts/eval-prompt-checks.ts scripts/eval-prompt-coverage.ts scripts/eval-market-metrics.ts scripts/eval-prompt-no-result.ts scripts/eval-prompt-request-checks.ts scripts/eval-prompt-cli.ts
+Result: PASS exit 0; raw redirected stdout/stderr file was empty because tsc emitted no diagnostics.

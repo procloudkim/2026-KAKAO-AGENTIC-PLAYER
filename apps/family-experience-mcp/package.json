@@ -1,0 +1,37 @@
+{
+  "name": "family-experience-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "dev:http": "node --import tsx src/server.ts",
+    "dev:http:env": "node --env-file-if-exists=.env --import tsx src/server.ts",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "verify": "npm run typecheck && npm test -- --run",
+    "smoke:mcp": "tsx scripts/smoke-mcp.ts",
+    "smoke:golden": "tsx scripts/smoke-golden.ts",
+    "smoke:live": "tsx scripts/smoke-live.ts",
+    "etl:nationwide": "tsx scripts/etl-nationwide.ts",
+    "eval:prompts": "tsx scripts/eval-prompts.ts",
+    "eval:nationwide-prompts": "tsx scripts/eval-prompts.ts --fixtures-dir test/fixtures/eval-nationwide --cache-dir test/fixtures/eval-nationwide/cache --group nationwide --min-prompts 42 --expected-prompts 42 --require-nationwide-coverage --evidence-dir ../../.omo/evidence/family-experience-market-ready-platform/task-11-market-prompt-eval",
+    "scan:secrets": "tsx scripts/scan-secrets.ts",
+    "scan:claims": "tsx scripts/scan-claims.ts",
+    "scan:sources": "tsx scripts/scan-sources.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/client": "2.0.0-beta.1",
+    "@modelcontextprotocol/node": "2.0.0-beta.1",
+    "@modelcontextprotocol/server": "2.0.0-beta.1",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "26.1.0",
+    "tsx": "4.22.4",
+    "typescript": "6.0.3",
+    "vitest": "4.1.9"
+  }
+}

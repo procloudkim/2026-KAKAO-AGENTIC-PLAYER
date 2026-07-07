@@ -1,0 +1,11 @@
+
+> family-experience-mcp@0.1.0 verify
+> npm run typecheck && npm test -- --run
+
+
+> family-experience-mcp@0.1.0 typecheck
+> tsc --noEmit
+
+src/etl/nationwide.ts(81,5): error TS2322: Type 'NationwideSourceSummary[]' is not assignable to type 'readonly CacheSourceProvenance[] & readonly NationwideSourceSummary[]'.
+  Type 'NationwideSourceSummary[]' is not assignable to type 'readonly CacheSourceProvenance[]'.
+    Type 'NationwideSourceSummary' is missing the following properties from type 'CacheSourceProvenance': generated_at, ttl_hours, mode, raw_snapshot_present

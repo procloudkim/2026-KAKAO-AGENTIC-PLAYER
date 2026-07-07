@@ -1,0 +1,277 @@
+F2 Code Quality Verification
+timestamp=2026-07-02T15:47:16+09:00
+repo=/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY
+app=/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+== Required command: cd apps/family-experience-mcp && npm run typecheck && npm test -- --run ==
+
+> family-experience-mcp@0.0.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.0.0 test
+> vitest --run
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  9 passed (9)
+      Tests  32 passed (32)
+   Start at  15:47:18
+   Duration  509ms (transform 323ms, setup 0ms, import 1.06s, tests 162ms, environment 1ms)
+
+REQUIRED_COMMAND_STATUS=0
+
+== Forbidden TS/test patterns in src test scripts ==
+PASS no forbidden patterns found
+FORBIDDEN_PATTERN_STATUS=0
+
+== Pure LOC by source/test/script file ==
+249	src/sources/seoulCulture.ts
+248	src/server.ts
+248	src/pipeline/normalize.ts
+238	scripts/smoke-golden.ts
+226	src/sources/fixture.ts
+219	src/mcp.ts
+165	src/sources/types.ts
+160	test/pipeline.test.ts
+146	test/seoulCulture.test.ts
+146	src/pipeline/render.ts
+144	src/pipeline/rank.ts
+138	test/mcp.test.ts
+99	src/schemas.ts
+96	test/schemas.test.ts
+93	scripts/scan-sources.ts
+88	test/playmcpMetadata.test.ts
+86	test/golden.test.ts
+79	test/sources.test.ts
+77	scripts/scan-claims.ts
+71	scripts/smoke-mcp.ts
+67	src/config.ts
+64	scripts/scan-secrets.ts
+50	src/types.ts
+49	src/sources/registry.ts
+32	src/health.ts
+28	test/config.test.ts
+20	src/index.ts
+20	src/http-health.ts
+15	test/scaffold.test.ts
+9	scripts/pending-smoke.ts
+PASS no file is >=250 pure LOC
+WARN files in 200-249 pure LOC band:
+238	scripts/smoke-golden.ts
+219	src/mcp.ts
+248	src/pipeline/normalize.ts
+248	src/server.ts
+226	src/sources/fixture.ts
+249	src/sources/seoulCulture.ts
+LOC_STATUS=0
+LOC_WARNING_STATUS=1
+
+== Banned scraper/browser-parser dependencies and imports ==
+PASS no banned dependencies in package manifests
+PASS no banned imports in src/test/scripts
+BANNED_DEP_IMPORT_STATUS=0
+
+== Public MCP tool registration scan ==
+NO_STATIC_REGISTRATIONS_FOUND
+MCP_TOOL_REGISTRATION_STATUS=1
+
+MCP registration call sites:
+src\mcp.ts:33:  server.registerTool(
+
+== Secret/keyed URL scan ==
+
+> family-experience-mcp@0.0.0 scan:secrets
+> tsx scripts/scan-secrets.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 77
+}
+apps/family-experience-mcp/docs/QA_REPORT.md:12:- Todo 6: optional Seoul adapter and redaction-fix evidence exists in `.omo/evidence/task-6-redaction-fix-GREEN.txt`.
+apps/family-experience-mcp/docs/QA_REPORT.md:19:- Plain `npm run verify && npm run scan:secrets && npm run scan:claims && npm run scan:sources` passed; see `.omo/evidence/task-9-plain-verify-GREEN.txt`.
+apps/family-experience-mcp/docs/QA_REPORT.md:20:- Server-backed GREEN proof passed with local server on `127.0.0.1:3345`, exact HTTP 200, `smoke:golden`, all three scans, and cleanup with no `3345` listener; see `.omo/evidence/task-9-final-verify-GREEN.txt`.
+SECRET_SCAN_STATUS=1
+
+== Git and artifact context ==
+?? .codegraph/
+?? .omo/
+?? .prd-session/
+?? Agentic-Play.txt
+?? HTML.txt
+?? PLANS.md
+?? apps/
+?? concept/
+?? research/
+?? schema/
+
+Current golden evidence files:
+golden-family-experience-happy.json
+golden-family-experience-missing-age.json
+golden-family-experience-no-result.json
+golden-family-experience-source-failure.json
+
+== Aggregate status ==
+required=0 forbidden=0 loc=0 banned_dep_import=0 mcp_tools=1 secrets=1 warnings_loc=1
+F2_VERDICT=needs-fix
+
+== Corrected MCP tool registration resolution ==
+{
+  "register_calls": [
+    "FAMILY_EXPERIENCE_TOOL_NAME"
+  ],
+  "resolved_names": [
+    "find_family_experiences"
+  ],
+  "public_tools_constant_ok": true
+}
+CORRECTED_MCP_TOOL_STATUS=0
+
+== Corrected independent high-confidence secret/keyed URL scan ==
+PASS no high-confidence raw secret/keyed Seoul URL findings in app src/test/scripts/docs or golden JSON evidence
+CORRECTED_SECRET_STATUS=0
+
+== Additional TypeScript escape hatch scan from programming criteria ==
+test\sources.test.ts:16:    // When: the registry is inspected as the authority boundary.
+test\pipeline.test.ts:117:    // Given: a source record marks age fit as inferred from program text.
+test\pipeline.test.ts:174:  it("rejects computed and stale as child suitability age-fit labels", async () => {
+test\pipeline.test.ts:194:    // Then: computed and stale never pass as age-fit labels.
+src\sources\seoulCulture.ts:3:import * as z from "zod/v4"
+test\golden.test.ts:5:import * as z from "zod/v4"
+src\schemas.ts:1:import * as z from "zod/v4"
+src\config.ts:1:import * as z from "zod/v4"
+src\mcp.ts:3:import * as z from "zod/v4"
+src\pipeline\normalize.ts:1:import * as z from "zod/v4"
+TS_ESCAPE_HATCH_STATUS=1
+
+== Project source scanner cross-check ==
+
+> family-experience-mcp@0.0.0 scan:sources
+> tsx scripts/scan-sources.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 44
+}
+SCAN_SOURCES_STATUS=0
+
+== 200-249 pure LOC warning-band single-responsibility judgment ==
+src/sources/seoulCulture.ts (249): WARN near ceiling; owns Seoul Open Data adapter/request/normalization/failure mapping. Single source-adapter responsibility, split before adding behavior.
+src/server.ts (248): WARN near ceiling; owns HTTP server plus Windows/MSYS lifecycle handling. Operationally cohesive for server runtime but highest split risk.
+src/pipeline/normalize.ts (248): WARN near ceiling; owns source-record normalization and age-fit assessment. Cohesive normalizer, split before extending parsing rules.
+scripts/smoke-golden.ts (238): WARN near ceiling; owns golden MCP smoke runner. Cohesive script, acceptable as first-build QA harness.
+src/sources/fixture.ts (226): WARN; mostly fixture data plus fixture adapter. Cohesive fixture source, data-table weight explains size.
+src/mcp.ts (219): WARN; owns MCP tool registration/call flow/rendered text/error mapping. Cohesive but close to needing response-text extraction.
+
+== Corrected aggregate status ==
+corrected_mcp_tools=0 corrected_secrets=0 ts_escape=1 scan_sources=0
+CORRECTED_STATIC_VERDICT=needs-fix
+
+== Corrected AST TypeScript escape hatch scan ==
+PASS no TypeScript any annotations, non-const type assertions, ts suppressions, or non-null assertions
+AST_TS_ESCAPE_HATCH_STATUS=0
+CORRECTED_AST_STATIC_VERDICT=confirmed
+
+== Final F2 reviewer summary ==
+Required typecheck/test command: PASS
+Forbidden patterns: PASS
+Pure LOC hard gate (<250): PASS
+Pure LOC warning band: WARN six files are 200-249 LOC; single-responsibility judged acceptable, split before growth
+Banned scraper/browser parser dependencies/imports: PASS
+Public MCP tool count/name: PASS after constant-resolution scan; one public tool find_family_experiences
+Raw secret/keyed URL scan: PASS after refined high-confidence scan; earlier task-* filename hits were false positives
+TypeScript escape hatch AST scan: PASS
+OVERALL_F2_VERDICT=confirmed
+
+== Test behavior-shape inventory for remove-ai-slops overfit/slop pass ==
+apps/family-experience-mcp/test\sources.test.ts:10:describe("family experience source registry", () => {
+apps/family-experience-mcp/test\sources.test.ts:11:  it("declares fixture and Seoul culture event source governance contracts", () => {
+apps/family-experience-mcp/test\sources.test.ts:42:  it("rejects authority claims when a source id is unregistered", () => {
+apps/family-experience-mcp/test\sources.test.ts:59:describe("fixture family experience source records", () => {
+apps/family-experience-mcp/test\sources.test.ts:60:  it("exposes fixture IDs and audit fields on every fixture candidate", () => {
+apps/family-experience-mcp/test\sources.test.ts:81:  it("contains three Seoul indoor preschool weekend fixtures and one unsuitable edge record", () => {
+apps/family-experience-mcp/test\seoulCulture.test.ts:44:describe("Seoul culture event source adapter", () => {
+apps/family-experience-mcp/test\seoulCulture.test.ts:45:  it("returns a missing_key failure when SEOUL_OPEN_DATA_KEY is absent", async () => {
+apps/family-experience-mcp/test\seoulCulture.test.ts:64:  it("redacts keyed url diagnostics when building Seoul Open Data requests", () => {
+apps/family-experience-mcp/test\seoulCulture.test.ts:83:  it("redacts request loader error diagnostics when transport failure includes a keyed URL", async () => {
+apps/family-experience-mcp/test\seoulCulture.test.ts:110:  it("returns a malformed_source failure when Seoul payload shape is malformed", () => {
+apps/family-experience-mcp/test\seoulCulture.test.ts:140:  it("normalizes a saved Seoul sample row into a source-backed candidate", () => {
+apps/family-experience-mcp/test\schemas.test.ts:10:describe("FindFamilyExperiencesInputSchema", () => {
+apps/family-experience-mcp/test\schemas.test.ts:11:  it("requires child_age or child_stage when both are missing", () => {
+apps/family-experience-mcp/test\schemas.test.ts:34:  it("rejects input when child_age and child_stage are both present", () => {
+apps/family-experience-mcp/test\schemas.test.ts:59:  it("passes validation when child_age is present", () => {
+apps/family-experience-mcp/test\schemas.test.ts:79:  it("passes validation when child_stage is present", () => {
+apps/family-experience-mcp/test\schemas.test.ts:99:  it("rejects empty location and invalid date_range values", () => {
+apps/family-experience-mcp/test\scaffold.test.ts:5:describe("Todo 1 scaffold marker", () => {
+apps/family-experience-mcp/test\scaffold.test.ts:6:  it("reports scaffold health when the marker module is present", () => {
+apps/family-experience-mcp/test\playmcpMetadata.test.ts:19:    .split(/\r?\n/u)
+apps/family-experience-mcp/test\playmcpMetadata.test.ts:26:    .split("|")
+apps/family-experience-mcp/test\playmcpMetadata.test.ts:44:    .split(/\r?\n/u)
+apps/family-experience-mcp/test\playmcpMetadata.test.ts:75:describe("Todo 8 PlayMCP temporary-registration metadata", () => {
+apps/family-experience-mcp/test\playmcpMetadata.test.ts:76:  it("keeps the PlayMCP temporary-registration package within console constraints", async () => {
+apps/family-experience-mcp/test\pipeline.test.ts:38:describe("Todo 4 family experience pipeline", () => {
+apps/family-experience-mcp/test\pipeline.test.ts:39:  it("returns exactly three ranked candidates when the happy prompt has three matches", async () => {
+apps/family-experience-mcp/test\pipeline.test.ts:64:  it("returns a clarification failure state when child age and stage are missing", async () => {
+apps/family-experience-mcp/test\pipeline.test.ts:90:  it("returns no-results without fabricating candidates when constraints exclude every source record", async () => {
+apps/family-experience-mcp/test\pipeline.test.ts:116:  it("shows inferred age labels and quotes the source text used for inference", async () => {
+apps/family-experience-mcp/test\pipeline.test.ts:149:  it("omits reservation and contact fields when the source does not provide them", async () => {
+apps/family-experience-mcp/test\pipeline.test.ts:174:  it("rejects computed and stale as child suitability age-fit labels", async () => {
+apps/family-experience-mcp/test\mcp.test.ts:35:describe("Todo 5 MCP server", () => {
+apps/family-experience-mcp/test\mcp.test.ts:36:  it("registers exactly one public tool and calls it successfully in fixture mode", async () => {
+apps/family-experience-mcp/test\mcp.test.ts:78:  it("returns a safe tool error when live source is not configured and fixture mode is disabled", async () => {
+apps/family-experience-mcp/test\mcp.test.ts:104:  it("returns Korean clarification through the MCP surface when child age is missing", async () => {
+apps/family-experience-mcp/test\mcp.test.ts:150:  it("reports health with service name and exactly one MCP tool", () => {
+apps/family-experience-mcp/test\golden.test.ts:55:describe("Todo 7 golden evidence semantics", () => {
+apps/family-experience-mcp/test\golden.test.ts:56:  it("locks the happy golden action-card contract", async () => {
+apps/family-experience-mcp/test\golden.test.ts:78:  it("locks Korean missing-age guidance without SDK validation text", async () => {
+apps/family-experience-mcp/test\golden.test.ts:89:  it("locks no-result safety and one-constraint relaxation", async () => {
+apps/family-experience-mcp/test\golden.test.ts:101:  it("locks source-failure safety", async () => {
+apps/family-experience-mcp/test\config.test.ts:8:describe("family experience config", () => {
+apps/family-experience-mcp/test\config.test.ts:9:  it("uses safe defaults when optional environment variables are missing", () => {
+apps/family-experience-mcp/test\config.test.ts:22:  it("redacts SEOUL_OPEN_DATA_KEY from diagnostics", () => {
+
+== Diff/file scope inventory ==
+apps/family-experience-mcp/scripts/pending-smoke.ts
+apps/family-experience-mcp/scripts/scan-claims.ts
+apps/family-experience-mcp/scripts/scan-secrets.ts
+apps/family-experience-mcp/scripts/scan-sources.ts
+apps/family-experience-mcp/scripts/smoke-golden.ts
+apps/family-experience-mcp/scripts/smoke-mcp.ts
+apps/family-experience-mcp/src/config.ts
+apps/family-experience-mcp/src/health.ts
+apps/family-experience-mcp/src/http-health.ts
+apps/family-experience-mcp/src/index.ts
+apps/family-experience-mcp/src/mcp.ts
+apps/family-experience-mcp/src/pipeline/normalize.ts
+apps/family-experience-mcp/src/pipeline/rank.ts
+apps/family-experience-mcp/src/pipeline/render.ts
+apps/family-experience-mcp/src/schemas.ts
+apps/family-experience-mcp/src/server.ts
+apps/family-experience-mcp/src/sources/fixture.ts
+apps/family-experience-mcp/src/sources/registry.ts
+apps/family-experience-mcp/src/sources/seoulCulture.ts
+apps/family-experience-mcp/src/sources/types.ts
+apps/family-experience-mcp/src/types.ts
+apps/family-experience-mcp/test/config.test.ts
+apps/family-experience-mcp/test/golden.test.ts
+apps/family-experience-mcp/test/mcp.test.ts
+apps/family-experience-mcp/test/pipeline.test.ts
+apps/family-experience-mcp/test/playmcpMetadata.test.ts
+apps/family-experience-mcp/test/scaffold.test.ts
+apps/family-experience-mcp/test/schemas.test.ts
+apps/family-experience-mcp/test/seoulCulture.test.ts
+apps/family-experience-mcp/test/sources.test.ts
+
+== remove-ai-slops direct reviewer pass: stale scaffold artifacts ==
+BLOCKER stale scaffold artifacts remain in product/test/script scope.
+Evidence: src/index.ts exports scaffoldMetadata/getScaffoldHealth with phase todo-1-scaffold; actual dev:http runs src/server.ts, not src/http-health.ts.
+Evidence: src/http-health.ts imports getScaffoldHealth but is not referenced by package scripts or source call sites.
+Evidence: test/scaffold.test.ts only asserts scaffold marker constants and getScaffoldHealth output, which mirrors implementation rather than user-visible MCP behavior.
+Evidence: scripts/pending-smoke.ts is not referenced by package scripts and represents obsolete scaffold placeholder behavior after smoke:mcp and smoke:golden exist.
+Commands used for evidence:
+  rg -n getScaffoldHealth|scaffoldMetadata|todo-1-scaffold apps/family-experience-mcp/src apps/family-experience-mcp/test apps/family-experience-mcp/scripts apps/family-experience-mcp/docs apps/family-experience-mcp/package.json
+  rg -n http-health|pending-smoke apps/family-experience-mcp apps/family-experience-mcp/package.json
+REMOVE_AI_SLOPS_VERDICT=needs-fix
+FINAL_REVIEWER_F2_VERDICT=needs-fix

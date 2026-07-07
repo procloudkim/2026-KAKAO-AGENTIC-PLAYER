@@ -1,0 +1,18 @@
+command: npm --prefix apps/family-experience-mcp test -- --run test/etlNationwide.test.ts
+scenario: focused ETL tests after canonical source/source_id pair validation fix and LOC tightening
+--- output ---
+
+> family-experience-mcp@0.1.0 test
+> vitest --run test/etlNationwide.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  1 passed (1)
+      Tests  19 passed (19)
+   Start at  23:07:48
+   Duration  1.03s (transform 210ms, setup 0ms, import 312ms, tests 599ms, environment 0ms)
+
+--- exit_code ---
+0

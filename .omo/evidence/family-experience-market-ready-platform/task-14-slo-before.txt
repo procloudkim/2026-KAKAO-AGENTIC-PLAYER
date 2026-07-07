@@ -1,0 +1,9 @@
+scenario=task-14-slo-before
+timestamp=2026-07-08T03:41:16.6584421+09:00
+path=apps/family-experience-mcp/docs/SLO.md
+exists=False
+contains[99.0%]=False
+contains[P95]=False
+contains[24 hours]=False
+contains[source ETL]=False
+contains[zero raw-secret]=False

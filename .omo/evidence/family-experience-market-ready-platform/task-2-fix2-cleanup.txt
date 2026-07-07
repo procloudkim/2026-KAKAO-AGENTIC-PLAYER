@@ -1,0 +1,4 @@
+Cleanup receipt for Todo 2 fix2 temp dirs
+CHECK=.omo/tmp/market-plan ABSENT=True
+CHECK=.omo/evidence/family-experience-market-ready-platform/tmp-red-include-bypass ABSENT=True
+TIMESTAMP=2026-07-07T17:52:19.4816888+09:00

@@ -1,0 +1,8 @@
+
+> family-experience-mcp@0.1.0 scan:sources
+> tsx scripts/scan-sources.ts --include apps/family-experience-mcp/docs/SLO.md --include .omo/evidence/family-experience-market-ready-platform/task-14-slo-before.txt --include .omo/evidence/family-experience-market-ready-platform/task-14-slo-check.txt --include .omo/evidence/family-experience-market-ready-platform/task-14-alert-sim.txt --include .omo/evidence/family-experience-market-ready-platform/task-14-scan-claims.txt --include .omo/evidence/family-experience-market-ready-platform/task-14-scan-sources.txt --include .omo/evidence/family-experience-market-ready-platform/task-14-scan-secrets.txt --include .omo/evidence/family-experience-market-ready-platform/task-14-doneclaim.md
+
+{
+  "status": "PASS",
+  "scanned_files": 119
+}

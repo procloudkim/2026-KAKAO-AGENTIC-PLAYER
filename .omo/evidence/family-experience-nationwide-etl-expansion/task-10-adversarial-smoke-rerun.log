@@ -1,0 +1,25 @@
+Invocation: cd D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp; npm run smoke:mcp
+TimeoutSeconds: 120
+ExpectedExitCodes: 0
+DurationSeconds: 0.831
+ExitCode: 0
+Verdict: PASS
+--- output ---
+
+> family-experience-mcp@0.1.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts
+
+{
+  "endpoint": "in-memory",
+  "cache_dir": "C:\\Users\\K\\AppData\\Local\\Temp\\family-experience-mcp-smoke-YSnB7m",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "prompt": "遺???대쾲 二쇰쭚 4???ㅻ궡",
+  "result_ok": true,
+  "mode": "live",
+  "candidate_count": 1,
+  "first_source": "culture_portal",
+  "text": "怨듭떇 ?곗씠??湲곗??쇰줈 ?꾨낫 1媛쒕? 李얠븯?댁슂.\naction_card: 1\ntitle: Busan Indoor Family Studio\ndate_time: 2026-07-04~2026-07-05 10:00-12:00\nvenue: Busan Culture Center\naddress: Busan Haeundae-gu indoor hall\nage_fit_label: source-stated\nage_fit_reason: Cached official source states family child suitability.\nindoor_outdoor: indoor\nfee_text: Free with official confirmation\nsource_name: Culture Portal/KCISA\nsource_url: https://example.test/culture-portal-oneview/culture-portal-oneview:task-7-busan-weekend\nretrieved_at: 2026-07-03T22:52:35.676Z\nconfidence: date=source-stated; venue=source-stated; age_fit=source-stated; reservation=unknown\nmode: live\nwarnings: 怨듭떇 異쒖쿂 ?묐떟 湲곗??낅땲?? ?댁쁺 ?щ?, ?붽툑, ?덉빟? 異쒕컻 ???ㅼ떆 ?뺤씤?섏꽭??\nsource_summary: Culture Portal/KCISA 洹쇨굅濡??쒕ぉ, ?좎쭨, ?μ냼, ?곕졊 ?⑥꽌瑜??뺤씤?덉뒿?덈떎. source_refs=culture-portal-oneview:culture-portal-oneview:raw:culture-portal-oneview:task-7-busan-weekend\nparent_check: Cached official source states family child suitability. ?덉빟/?붽툑? 異쒕컻 ??怨듭떇 異쒖쿂?먯꽌 ?뺤씤?섏꽭??\nnext_action: https://example.test/culture-portal-oneview/culture-portal-oneview:task-7-busan-weekend?먯꽌 ?좎쭨, ?μ냼, ?붽툑, ?좎껌 ?덉감瑜??뺤씤?섏꽭??"
+}

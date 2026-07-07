@@ -1,0 +1,24 @@
+Surface: MCP smoke Busan prompt
+Invocation: npm run smoke:mcp -- --assert-tool-count=1 --cache-dir=../../.omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/cache --skip-seed --expect-error --prompt="부산 이번 주말 4살 실내"
+Expected outcome: parsed prompt reaches cache and fails as no_results if no Busan record matches; invalid_input is a failure.
+Working directory: apps/family-experience-mcp
+--- output ---
+
+> family-experience-mcp@0.1.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts --assert-tool-count=1 --cache-dir=../../.omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/cache --skip-seed --expect-error --prompt=부산 이번 주말 4살 실내
+
+{
+  "endpoint": "in-memory",
+  "cache_dir": "../../.omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/cache",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "prompt": "부산 이번 주말 4살 실내",
+  "result_ok": false,
+  "mode": "live",
+  "candidate_count": 0,
+  "failure_code": "no_results",
+  "text": "조건에 맞는 근거 있는 후보를 찾지 못했어요. 후보를 임의로 만들지 않았습니다. 다음에는 날짜 범위 하나만 넓혀서 다시 요청해 주세요."
+}
+EXIT_CODE=0

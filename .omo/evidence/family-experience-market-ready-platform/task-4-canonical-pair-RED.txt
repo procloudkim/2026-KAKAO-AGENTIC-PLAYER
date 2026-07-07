@@ -1,0 +1,7 @@
+command: npm --prefix apps/family-experience-mcp exec tsx -- C:\Users\K\AppData\Local\Temp\task-4-canonical-pair-red.ts
+scenario: zero-record live cache with swapped canonical source/source_id provenance pairs
+--- output ---
+{"scenario":"zero-record live cache with swapped canonical provenance pairs","result":{"ok":true}}
+RED_REPRODUCED: swapped source/source_id pairs were accepted before fix
+--- exit_code ---
+0

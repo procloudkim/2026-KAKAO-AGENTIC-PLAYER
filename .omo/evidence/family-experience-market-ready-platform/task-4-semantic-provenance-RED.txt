@@ -1,0 +1,7 @@
+{
+  "scenario": "RED live zero-record cache with nonempty source_set and empty source_provenance",
+  "expected_before_fix": "BUG: ok true",
+  "result": {
+    "ok": true
+  }
+}

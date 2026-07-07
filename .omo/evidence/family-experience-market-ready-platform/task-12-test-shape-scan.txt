@@ -1,0 +1,6 @@
+scenario=observability test shape scan
+test names:
+125:  it("records redacted tool failure metrics without logging raw prompts or secrets", async () => {
+160:  it("exposes cache freshness, source health, and launch metrics through health", async () => {
+202:  it("emits structured redacted HTTP failure logs without stack traces", async () => {
+result=PASS 3 behavior-surface tests, no deletion-only test names

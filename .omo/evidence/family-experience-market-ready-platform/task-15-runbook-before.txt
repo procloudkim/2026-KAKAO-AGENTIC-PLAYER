@@ -1,0 +1,29 @@
+This runbook is the operator handoff for `아이랑 어디가`. It covers local verification, provider keys, cache-first ETL operation, temporary PlayMCP registration, and rollback. It is not proof of public release or contest submission.
+| Host/organizer deployment and PlayMCP-in-KC requirements | `docs/HOST_REQUIREMENTS_SOT.md` |
+| Temporary PlayMCP field copy | `docs/PLAYMCP_TEMP_REGISTRATION.md` |
+- MCP path: `/mcp`.
+npm test -- --run test/playmcpMetadata.test.ts
+Then check `http://127.0.0.1:3345/health` from the same environment. For `/mcp`, use the MCP smoke path rather than a plain browser GET:
+`npm run smoke:mcp` runs an in-memory MCP client/server smoke by default and does not require `npm run dev:http` to be running. To smoke a deployed HTTP endpoint instead, set `MCP_ENDPOINT` to the full HTTPS `/mcp` URL before running the command.
+Use `/health` as the non-sensitive diagnostics surface for public-beta launch checks. It includes:
+| KakaoCloud/PlayMCP-in-KC with env or Secret injection | KakaoCloud env/Secret injection using the exact variable names in `.env.example` | Yes when the host supports it | Store provider keys server-side only; do not paste keys into PlayMCP copy fields. |
+| PlayMCP-in-KC without env or Secret injection | Private image or private registry containing host-specific runtime secrets | No | `HUMAN_APPROVAL_REQUIRED`; see `docs/HOST_REQUIREMENTS_SOT.md` before selecting this path. |
+The image-baked path cannot be selected by default. It requires a human operator to record approval, use a private repository or registry, rotate affected provider keys after the temporary deployment/review window, and remove the baked-key path when PlayMCP-in-KC env or Secret injection becomes available.
+- For PlayMCP-in-KC, follow `docs/HOST_REQUIREMENTS_SOT.md`. As of the organizer notice quoted on 2026-07-07, that host did not support environment variable or Secret injection. Any image-baked API key workaround is a temporary host-specific exception requiring explicit human approval, private repository or registry, no raw-key logs, and a rotation/removal plan once env/Secret injection is available.
+Public-beta runtime is cache-first. Refresh the cache at least every 24 hours for tier3 public copy, and run an extra refresh before a demo, release candidate, or PlayMCP review smoke. The default TTL is `FAMILY_EXPERIENCE_ETL_TTL_HOURS=24`; use a shorter TTL only when the operator also schedules the matching refresh cadence.
+The service fails closed when the configured cache is missing, stale, malformed, or mid-publish. It must not serve stale records as live output and must not fabricate candidates. `/health` reports the cache `status` as `fresh`, `stale`, `missing`, `refreshing`, or `invalid`, plus the exact `refreshCommand` for the current runtime mode. `find_family_experiences` returns a bounded error with zero candidates for stale or missing cache.
+curl -i http://127.0.0.1:3349/health
+docker build -t family-experience-mcp:local .
+For generic live deployment, set provider keys in the platform secret manager, keep `FAMILY_EXPERIENCE_ALLOW_FIXTURE=false`, configure a writable or pre-baked cache path, and expose `/health` plus `/mcp` through HTTPS. Do not bake `.env` or raw keys into the image.
+For AGENTIC PLAYER 10 PlayMCP-in-KC deployment, `docs/HOST_REQUIREMENTS_SOT.md` is the canonical host SOT. The required endpoint pattern from the organizer notice is:
+https://mcp-name.playmcp-endpoint.kakaocloud.io/mcp
+If the KakaoCloud console issues a different HTTPS `/mcp` endpoint, use the console-issued endpoint and record that proof privately. Current host-secret handling must be decided by the operator before deployment because the organizer notice says PlayMCP-in-KC env/Secret injection is not yet supported.
+## PlayMCP Temporary Entry
+1. Open the PlayMCP web console, sign in with a Kakao account that has developer console access, and create or open the form for a new MCP server. Use the official AGENTIC PLAYER / PlayMCP guide as the source for the console URL if the bookmark is unavailable.
+2. Use `docs/PLAYMCP_TEMP_REGISTRATION.md` as the canonical copy source. Minimum fields:
+   - Endpoint path: `/mcp`
+3. Deploy a temporary HTTPS server, then set the PlayMCP endpoint to that deployed URL ending in `/mcp`. For AGENTIC PLAYER 10, use the KakaoCloud PlayMCP-in-KC endpoint described in `docs/HOST_REQUIREMENTS_SOT.md`.
+4. Choose no-auth for fixture/private validation. For live provider-backed deployment, provider keys must never be pasted into PlayMCP. If PlayMCP-in-KC still lacks env/Secret injection, stop for the human-approved temporary secret strategy in `docs/HOST_REQUIREMENTS_SOT.md`.
+## Rollback
+1. Keep the PlayMCP entry private.
+2. Confirm the endpoint ends in `/mcp`.

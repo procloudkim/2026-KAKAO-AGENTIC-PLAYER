@@ -1,0 +1,25 @@
+RED proof before fix: include-mode caveat smuggling
+Scenario 1 command: npm --prefix apps/family-experience-mcp run scan:claims -- --include .omo\tmp\market-plan-fix3-red\english-smuggle.md
+Scenario 1 EXIT_CODE=0
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include .omo\tmp\market-plan-fix3-red\english-smuggle.md
+
+{
+  "status": "PASS",
+  "scanned_files": 128
+}
+
+Scenario 2 command: npm --prefix apps/family-experience-mcp run scan:claims -- --include .omo\tmp\market-plan-fix3-red\korean-smuggle.md
+Scenario 2 EXIT_CODE=0
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include .omo\tmp\market-plan-fix3-red\korean-smuggle.md
+
+{
+  "status": "PASS",
+  "scanned_files": 128
+}
+
+Expected RED condition: both commands incorrectly exit 0 before fix.
+Observed RED condition: scenario1=0; scenario2=0

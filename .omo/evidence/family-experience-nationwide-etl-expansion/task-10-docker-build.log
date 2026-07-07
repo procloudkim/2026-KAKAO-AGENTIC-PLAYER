@@ -1,0 +1,8 @@
+Invocation: cd apps/family-experience-mcp; docker build -t family-experience-mcp:task10 .
+TimeoutSeconds: 180
+DurationSeconds: 0.604
+ExitCode: 1
+Verdict: BLOCKED_ENV_DOCKER_DAEMON
+Reason: Docker CLI exists, Dockerfile exists, but Docker Desktop/Linux engine daemon is not reachable in this environment.
+--- raw output ---
+ERROR: failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.

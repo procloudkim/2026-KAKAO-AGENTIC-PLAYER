@@ -1,0 +1,32 @@
+# Todo 3 Gate Changed-File Receipt
+
+## Scoped git status
+?? .omo/evidence/family-experience-market-ready-platform/
+?? .omo/plans/family-experience-market-ready-platform.md
+?? apps/family-experience-mcp/scripts/scan-sources.ts
+?? apps/family-experience-mcp/test/scanSources.test.ts
+
+## Normal git diff limitation
+git_diff_exit_code=0
+note=empty diff is expected for untracked files; status above is authoritative for this scoped receipt
+
+## Line counts
+  281 apps/family-experience-mcp/scripts/scan-sources.ts
+   95 apps/family-experience-mcp/test/scanSources.test.ts
+  365 .omo/plans/family-experience-market-ready-platform.md
+    9 .omo/evidence/family-experience-market-ready-platform/task-3-gate-artifact-check.txt
+   14 .omo/evidence/family-experience-market-ready-platform/task-3-gate-baseline-scanSources.txt
+   18 .omo/evidence/family-experience-market-ready-platform/task-3-gate-changed-files.txt
+    3 .omo/evidence/family-experience-market-ready-platform/task-3-gate-cleanup-receipt.txt
+   46 .omo/evidence/family-experience-market-ready-platform/task-3-gate-code-quality-review.md
+   42 .omo/evidence/family-experience-market-ready-platform/task-3-gate-doneclaim.md
+   14 .omo/evidence/family-experience-market-ready-platform/task-3-gate-focused-scanSources.txt
+    1 .omo/evidence/family-experience-market-ready-platform/task-3-gate-loc.tsv
+    1 .omo/evidence/family-experience-market-ready-platform/task-3-gate-long-params-check.txt
+   10 .omo/evidence/family-experience-market-ready-platform/task-3-gate-malformed-include.txt
+   14 .omo/evidence/family-experience-market-ready-platform/task-3-gate-manual-qa-matrix.md
+   16 .omo/evidence/family-experience-market-ready-platform/task-3-gate-negative-include.txt
+    9 .omo/evidence/family-experience-market-ready-platform/task-3-gate-scan-sources-happy.txt
+  288 .omo/evidence/family-experience-market-ready-platform/task-3-gate-scan-sources-untracked.diff
+   22 .omo/evidence/family-experience-market-ready-platform/task-3-gate-verify.txt
+ 1248 total

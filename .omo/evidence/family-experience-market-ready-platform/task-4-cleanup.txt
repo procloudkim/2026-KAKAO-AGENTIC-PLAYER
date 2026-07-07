@@ -1,0 +1,6 @@
+Cleanup receipt:
+- No debugger sessions or background servers started.
+- Manual cache-query probe temp directories were removed by finally blocks.
+- No root .debug-journal.md was created because user write scope restricted evidence to task-4-* paths.
+- Debug/escape-hatch scan artifact: task-4-escape-hatch-scan.txt.
+- Scoped status artifact: task-4-status.txt.

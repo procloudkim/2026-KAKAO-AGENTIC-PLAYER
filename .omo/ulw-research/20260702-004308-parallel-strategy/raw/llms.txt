@@ -1,0 +1,32 @@
+# PlayMCP
+
+> PlayMCP는 카카오에서 운영하는 MCP(Model Context Protocol) 기반 도구 연동 플랫폼이자 플레이그라운드입니다. 사용자는 카카오의 다양한 MCP 서버를 탐색해 자신의 AI 에이전트(Claude, ChatGPT 등)에 연결하거나, PlayMCP 웹사이트 내 AI 채팅에서 직접 Tool의 동작을 체험해볼 수 있습니다. 개발자는 자신의 MCP 서버를 등록해 PlayMCP 사용자에게 노출할 수 있습니다.
+
+주요 용어:
+
+- **MCP 서버**: PlayMCP에 등록·승인된 MCP 프로토콜 서비스. 각 서버는 고유 `id`, 이름, 설명, 툴 목록, 스타터 메시지를 가집니다. 승인된 서버만 공개 목록에 노출됩니다.
+- **도구함 (Toolbox)**: 회원이 선택한 MCP 서버의 모음(최대 10개). PlayMCP 내부의 AI 채팅이나 외부 AI 서비스(Claude, ChatGPT 등)에 연결하여 사용할 수 있습니다. 주소: `https://playmcp.kakao.com/toolbox` (로그인 필요).
+- **AI 채팅 (AI Chat)**: PlayMCP 웹사이트 내에서 제3자 LLM과 연동해 도구함에 담긴 MCP 서버들의 Tool을 직접 체험해볼 수 있는 기능. 별도 URL 없이 로그인 상태의 헤더 `AI 채팅` 버튼으로 오버레이가 열립니다. 질문 수에 일일 한도가 있으며, 시간 경과에 따라 한도가 회복됩니다. 외부 AI 에이전트를 본격 연결하기 전 MCP 서버의 동작을 미리 확인하는 용도로 유용합니다.
+- **MCP 게이트웨이 (`mcp-gateway`)**: 여러 MCP 서버를 하나의 OAuth2 엔드포인트로 묶어 제공하는 프록시. 엔드포인트는 `https://playmcp.kakao.com/mcp`이며 Bearer 액세스 토큰이 필요합니다. 게이트웨이는 사용자의 도구함에 담긴 MCP 서버들로 내부 라우팅합니다.
+- **One Time Token (OTT)**: 도구함의 "OpenClaw와 연결" 흐름에서 사용자에게 발급되는 1회용 교환 토큰. 외부 AI 에이전트는 이 OTT를 OAuth2 액세스·리프레시 토큰과 교환하여 MCP 게이트웨이에 접속합니다. 교환 및 설정 절차는 아래 "에이전트용 연결 가이드"에서 다룹니다.
+- **개발자 콘솔 (Console)**: 개발자가 자신이 등록한 MCP 서버를 관리하는 페이지. 주소: `https://playmcp.kakao.com/console` (로그인 필요). MCP 서버 신규 등록·수정 및 심사 상태 확인 등을 수행합니다. 등록 흐름과 심사 기준은 아래 "정책 및 도움말"의 [이용가이드](https://kko.kakao.com/playmcp_guide), [심사 정책](https://kko.kakao.com/playmcp_review)을 참고하세요.
+
+외부 AI 에이전트가 `mcp-gateway` 게이트웨이에 직접 연결하려면 아래 "에이전트용 연결 가이드"를 따르세요. Claude Desktop, ChatGPT 등 사람이 직접 사용하는 MCP 클라이언트의 설정 방법은 "사용자용 연결 방법" 섹션의 외부 문서를 참고하세요.
+
+## 에이전트용 연결 가이드
+
+- [외부 에이전트용 MCP-GATEWAY 연결 가이드](https://playmcp.kakao.com/llms/mcp-connection-guide.md): 외부 AI 에이전트(예: OpenClaw)가 mcp-gateway MCP 서버에 연결하기 위한 단계별 가이드.
+
+## 사용자용 연결 방법 (사람이 직접 사용하는 MCP 클라이언트)
+
+- [Claude 연결 방법](https://kko.kakao.com/connectclaude): Claude Desktop에서 MCP 게이트웨이를 MCP 서버로 등록하는 방법.
+- [ChatGPT 연결 방법](https://kko.kakao.com/connectchatgpt): ChatGPT에서 MCP 게이트웨이를 MCP 서버로 등록하는 방법.
+- [PlayMCP 연결 방법](https://kko.kakao.com/connectplaymcp): PlayMCP 내 AI 채팅에 PlayMCP의 MCP 서버를 연결하는 방법.
+
+## 정책 및 도움말
+
+- [이용가이드](https://kko.kakao.com/playmcp_guide): PlayMCP 사용법 전반 안내.
+- [공지사항](https://kko.kakao.com/playmcp_notice): 플랫폼 공지 모음.
+- [심사 정책](https://kko.kakao.com/playmcp_review): 등록된 MCP 서버의 심사·공개 기준.
+- [개발자 문의 (Discord)](https://kko.kakao.com/playmcp_discord): MCP 서버 등록·운영 관련 문의 채널.
+- [카카오 개인정보처리방침](https://www.kakao.com/policy/privacy)

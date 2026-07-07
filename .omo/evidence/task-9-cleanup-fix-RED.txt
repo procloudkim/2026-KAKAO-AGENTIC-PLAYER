@@ -1,0 +1,18 @@
+task-9 cleanup fix RED probe
+2026-07-02T15:06:30+09:00
+repo=/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY
+reviewer_report=todo-9-hardening-gate-review.md recorded orphan listener PIDs 80908 and 51404 after captured-PID cleanup
+preflight listener check
+no LISTENING on :3345 before start
+captured_SERVER_PID=85
+health_attempt=1 status=000
+health_attempt=2 status=000
+health_attempt=3 status=200
+killing captured server pid
+post-kill listener check
+  TCP    127.0.0.1:3345         0.0.0.0:0              LISTENING       77644
+RED reproduced: listener remained at PID(s): 77644
+force cleanup pid=77644
+SUCCESS: The process with PID 77644 has been terminated.
+post-force-cleanup listener check
+no LISTENING on :3345 after force cleanup

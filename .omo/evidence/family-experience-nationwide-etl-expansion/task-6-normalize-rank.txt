@@ -1,0 +1,89 @@
+Todo 6 - canonical normalize, dedupe, and rank evidence
+
+Scope:
+- apps/family-experience-mcp/src/pipeline/normalize.ts
+- apps/family-experience-mcp/src/pipeline/dedupe.ts
+- apps/family-experience-mcp/src/pipeline/rank.ts
+- apps/family-experience-mcp/src/pipeline/render.ts
+- apps/family-experience-mcp/test/pipeline.test.ts
+
+Baseline characterization:
+- Scenario: pre-change pipeline behavior.
+- Invocation: npm test -- pipeline
+- Binary observable: exit 0, 1 test file passed, 7 tests passed.
+- Captured artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-6-baseline-pipeline.txt
+
+Failing-first proof:
+- Scenario: Todo 6 tests added before implementation.
+- Invocation: npm test -- pipeline
+- Binary observable: exit 1. Duplicate merge/source retention failed with 2 candidates instead of 1. Exact child-stage promotion failed with broad record ranked first.
+- Captured artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-6-red-pipeline.txt
+
+Implementation:
+- normalize.ts now emits source_references and deduplicates normalized records by canonical title/date/venue/address/city key.
+- sourceRecord.ts owns the source-record Zod parser and age-fit label schema extracted from normalize.ts.
+- dedupe.ts merges duplicate source references and tags, preserves all source refs, and chooses the stronger primary candidate by confidence, authority tier, retrieved_at freshness, then source order.
+- rank.ts now scores exact date, location relevance, exact child-stage/narrow age fit, source confidence, source authority, and retrieved_at freshness.
+- render.ts includes deterministic source_refs in the existing source_summary field without adding unsupported safety/open/booking claims.
+- pipeline.test.ts was split into shared test helpers and pipelineNationwide.test.ts so Todo 4 and Todo 6 assertions stay behavior-preserving and under the LOC guardrail.
+
+Automated verification:
+- Scenario: pipeline acceptance.
+- Invocation: npm test -- pipeline
+- Binary observable: exit 0, 1 test file passed, 12 tests passed.
+- Captured artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-6-green-pipeline.txt
+- Scenario: pipeline flaky-test rerun.
+- Invocation: npm test -- pipeline
+- Binary observable: exit 0, 1 test file passed, 12 tests passed.
+- Captured artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-6-green-pipeline-rerun.txt
+- Scenario: TypeScript gate.
+- Invocation: npm run typecheck
+- Binary observable: exit 0, tsc --noEmit completed.
+- Captured artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-6-typecheck.txt
+- Scenario: LOC-remediated pipeline acceptance.
+- Invocation: npm test -- pipeline
+- Binary observable: exit 0, 2 test files passed, 12 tests passed.
+- Captured artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-6-green-pipeline-after-loc-split.txt
+- Scenario: LOC-remediated pipeline flaky-test rerun.
+- Invocation: npm test -- pipeline
+- Binary observable: exit 0, 2 test files passed, 12 tests passed.
+- Captured artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-6-green-pipeline-after-loc-split-rerun.txt
+- Scenario: LOC-remediated TypeScript gate.
+- Invocation: npm run typecheck
+- Binary observable: exit 0, tsc --noEmit completed.
+- Captured artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-6-typecheck-after-loc-split.txt
+- Scenario: LOC guardrail proof.
+- Invocation: awk pure-LOC command over touched Todo 6 source/test files.
+- Binary observable: normalize.ts=202, sourceRecord.ts=88, dedupe.ts=118, rank.ts=218, pipeline.test.ts=163, pipelineNationwide.test.ts=194, pipelineTestHelpers.ts=117.
+- Captured artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-6-loc-after-remediation.tsv
+
+Manual QA:
+- Scenario: TSX probe for duplicate merge, stale fallback demotion, exact child-stage promotion, and explicit no-result.
+- Invocation: node --import tsx --input-type=module -e <probe>
+- Binary observable:
+  - duplicate_merge.ok=true
+  - duplicate_merge.candidate_count=1
+  - retained_source_refs include culture-portal-oneview and kto-tourapi-events raw snapshot ids
+  - stale_fallback_demoted order starts with culture-portal-oneview before national_culture_festival
+  - exact_child_stage_promoted order starts with culture-portal-oneview:exact-preschool-stage
+  - no_result_explicit.ok=false, code=no_results, has_candidates_field=false
+  - unsupported_claims_absent=true
+- Captured artifact: .omo/evidence/family-experience-nationwide-etl-expansion/task-6-manual-qa.json
+
+Adversarial QA:
+- stale_state: stale national fallback with stale date/venue confidence and older retrieved_at is demoted below fresher exact official source; artifact task-6-manual-qa.json.
+- malformed_input: existing parser-boundary malformed age-fit test still rejects stale/computed as child suitability labels with upstream_invalid_response; covered by npm test -- pipeline.
+- prompt_injection/untrusted_text: ranking uses normalized title/date/venue/address/city strings, source ids, confidence labels, child selector, and timestamps; source title/description text is not executed or used as ranking control beyond normalized event-key/location text.
+- dirty_worktree: worktree was already dirty and app files are untracked; no unrelated paths were reverted or cleaned.
+- misleading_success_output: manual QA asserts actual candidate counts, order, retained source refs, and no candidates field, not only pass logs.
+- flaky_tests: npm test -- pipeline was rerun after first pass; both green artifacts captured.
+
+Cleanup:
+- No commits.
+- No MCP query/cache wiring in src/mcp.ts.
+- No safety/open/booking claims added.
+- LOC receipt captured at .omo/evidence/family-experience-nationwide-etl-expansion/task-6-loc.tsv.
+- LOC remediation receipt captured at .omo/evidence/family-experience-nationwide-etl-expansion/task-6-loc-remediation.md.
+
+Known risks:
+- Previous LOC blocker remediated: all touched Todo 6 source/test files are below 250 pure LOC; no exception requested.

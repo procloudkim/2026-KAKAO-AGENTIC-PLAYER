@@ -1,0 +1,2 @@
+code_line_escape_hatch_matches=0
+comment_only_false_positive=apps/family-experience-mcp/test/etlNationwide.test.ts When/Then comment contains ordinary word any

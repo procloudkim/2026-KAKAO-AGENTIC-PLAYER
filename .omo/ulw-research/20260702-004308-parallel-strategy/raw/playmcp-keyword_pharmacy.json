@@ -1,0 +1,391 @@
+{
+  "page": 0,
+  "totalPages": 1,
+  "totalElements": "1",
+  "content": [
+    {
+      "id": "62",
+      "name": "병원 · 약국 정보 조회",
+      "description": "지역 단위로 병원/약국을 조회하고, 병원/약국에 대한 상세 정보를 확인할 수 있습니다.\n\n- 특정 지역의 병원/약국 정보를 조회할 수 있습니다.\n- 명절 및 휴일에 이용가능한 병원/약국 정보를 조회할 수 있습니다.\n- 이 MCP 는 공공데이터를 사용합니다. 사용량에 따라서 일시적으로 조회되지 않을 수 있습니다",
+      "status": "APPROVED",
+      "starterMessages": [
+        "삼평동에서 야간에 진료하는 소아과 알려줘\u0003",
+        "강남구에서 토요일에 문여는 약국 목록을 찾아서 전화번호도 알려줘",
+        "이번 추석에 삼평동에서 진료 가능한 병원 알려줘"
+      ],
+      "formattedTools": [
+        {
+          "name": "get_pharmacy_list_tool",
+          "description": "약국 목록을 조회합니다 - 시/군/구 단위까지만 지원\n        \n        📍 사용 시나리오:\n        - \"강남구 약국\" → district=\"강남구\" 사용\n        - \"서울 토요일 약국\" → city=\"서울특별시\", day_of_week=\"6\"\n        - \"경기도 용인시 심야약국\" → city=\"경기도\", district=\"용인시\"\n        - \"삼평동 약국\" → ❌ 동 단위 미지원, get_pharmacy_region_tool 사용\n        \n        💡 LLM 사용 가이드:\n        1. 지역 검색 범위:\n           - ✅ 지원: 시/도, 시/군/구 단위 (예: \"강남구\", \"성남시\")\n           - ❌ 미지원: 동/읍/면 단위 (예: \"삼평동\", \"역삼동\")\n           - 동 단위 검색 필요시 → get_pharmacy_region_tool로 좌표 검색\n        \n        2. 주소 입력 방법:\n           - 서울 강남구 → city=\"서울특별시\", district=\"강남구\"\n           - 경기도 용인시 → city=\"경기도\", district=\"용인시\"\n           - 경기도 용인시 기흥구 → city=\"경기도\", district=\"기흥구\"\n           - 특별시/광역시는 전체 이름 사용 (\"서울\" X → \"서울특별시\" O)\n        \n        3. 페이징 처리:\n           - has_next가 true면 page 증가시켜 추가 조회\n           - ⚠️ API 제한: 연속 8-9회까지 안정적\n           - 권장: 첫 5페이지 조회 후 사용자 확인\n           - 예: total_pages=20인 경우 → 5페이지씩 나누어 조회\n\n        Args:\n            city: 시도 (광역시/도 단위: \"서울특별시\", \"경기도\", \"부산광역시\" 등)\n            district: 시군구 (시/군/구 단위: \"강남구\", \"용인시\", \"기흥구\" 등)\n            day_of_week: 진료 요일 (\"1\"-\"7\": 월-일, \"8\": 공휴일)\n            name: 약국명\n            page: 페이지 번호\n            size: 페이지 크기\n\n        Returns:\n            약국 목록 정보 (페이징 처리됨)\n            - pharmacies: 약국 목록 배열\n            - count: 현재 페이지의 약국 수\n            - pagination: 페이징 메타데이터\n              * current_page: 현재 페이지 번호\n              * page_size: 페이지당 항목 수\n              * total_count: 전체 약국 수\n              * total_pages: 전체 페이지 수\n              * has_next: 다음 페이지 존재 여부\n              * has_previous: 이전 페이지 존재 여부\n        ",
+          "parameters": [
+            {
+              "name": "city",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "district",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "day_of_week",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "name",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "page",
+              "type": "integer",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "size",
+              "type": "integer",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "get_pharmacy_region_tool",
+          "description": "좌표 기반 약국 검색 - 동/읍/면 단위 검색이나 정확한 위치 검색용\n        \n        📍 사용 시나리오:\n        - \"삼평동 약국\" → 동 단위 검색 (list 도구가 지원 안함)\n        - \"강남구 토요일 약국\" → get_pharmacy_list_tool로 강남구 검색\n        - 특정 좌표 주변 약국 검색\n        \n        💡 LLM 사용 가이드:\n        1. 지역 단위별 도구 선택:\n           - ✅ 시/군/구 단위: get_pharmacy_list_tool 사용\n           - ✅ 동/읍/면 단위: 이 도구 사용\n        \n        2. 동/읍/면 검색 프로세스:\n           a) 사용자가 동 이름 언급 (예: \"삼평동 심야 약국\")\n           b) 해당 동의 중심 좌표 파악 (일반 지식 활용)\n              * 삼평동(판교): 경도 127.1070, 위도 37.4035\n              * 역삼동(강남): 경도 127.0366, 위도 37.4967\n           c) 파악한 좌표로 이 도구 호출\n        \n        3. 페이징 처리:\n           - has_next가 true면 page 증가시켜 추가 조회\n           - ⚠️ API 제한: 연속 8-9회까지 안정적\n        \n        샘플: 서울시청 (경도: 126.9778, 위도: 37.5664)\n        \n        Args:\n            wgs84lon: 경도\n            wgs84lat: 위도\n            page: 페이지 번호 (기본값: 1)\n            size: 페이지 크기 (기본값: 10, 최대: 10)\n            \n        Returns:\n            위치 기반 약국 목록 (거리순 정렬, 페이징 처리됨)\n            - pharmacies: 약국 목록 배열 (거리순)\n            - count: 현재 페이지의 약국 수\n            - pagination: 페이징 메타데이터\n              * current_page: 현재 페이지 번호\n              * page_size: 페이지당 항목 수\n              * total_count: 전체 약국 수\n              * total_pages: 전체 페이지 수\n              * has_next: 다음 페이지 존재 여부\n              * has_previous: 이전 페이지 존재 여부\n            - location: 검색 위치 (latitude, longitude)\n        ",
+          "parameters": [
+            {
+              "name": "wgs84lon",
+              "type": "number",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "wgs84lat",
+              "type": "number",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "page",
+              "type": "integer",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "size",
+              "type": "integer",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "get_pharmacy_detail_tool",
+          "description": " 약국 ID(HPID)로 상세 정보를 조회합니다.\n\n        약국 목록 조회, 약국 위치 정보 조회 등을 통해 확인한\n        약국의 hpid 를 활용 하여 해당 약국의 상세 정보 조회\n\n\n        :param hpid: 약국ID (샘플데이터 : C1109587)\n        :return: 약국 상세 정보\n        ",
+          "parameters": [
+            {
+              "name": "hpid",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_multiple_pharmacy_details_tool",
+          "description": "\n        여러 약국의 상세정보 조회 (최대 10개)\n        :param hpids: 쉼표로 구분된 기관ID 목록 (예: \"C1101582,C1101582,C1109967\")\n        :return: 약국 상세정보 목록\n        ",
+          "parameters": [
+            {
+              "name": "hpids",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "search_hospitals_tool",
+          "description": "병원 목록을 검색합니다 - 시/군/구 단위까지만 지원\n        \n        📍 사용 시나리오:\n        - \"강남구 병원\" → district=\"강남구\" 사용\n        - \"서울 정형외과\" → city=\"서울특별시\", department=\"D008\"\n        - \"성남시 응급실\" → city=\"경기도\", district=\"성남시\", hospital_type=\"B\"\n        - \"삼평동 병원\" → ❌ 동 단위 미지원, get_hospitals_by_location_tool 사용\n        \n        💡 LLM 사용 가이드:\n        1. 지역 검색 범위:\n           - ✅ 지원: 시/도, 시/군/구 단위 (예: \"강남구\", \"성남시\")\n           - ❌ 미지원: 동/읍/면 단위 (예: \"삼평동\", \"역삼동\")\n           - 동 단위 검색 필요시 → get_hospitals_by_location_tool로 좌표 검색\n        \n        2. 주소 입력 방법:\n           - 서울 강남구 → city=\"서울특별시\", district=\"강남구\"\n           - 경기도 성남시 → city=\"경기도\", district=\"성남시\"\n           - 경기도 성남시 분당구 → city=\"경기도\", district=\"분당구\"\n           - 특별시/광역시는 전체 이름 사용 (\"서울\" X → \"서울특별시\" O)\n        \n        3. 페이징 처리:\n           - has_next가 true면 page 증가시켜 추가 조회\n           - ⚠️ API 제한: 연속 8-9회까지 안정적\n           - 권장: 첫 5페이지 조회 후 사용자 확인\n\n        Args:\n            city: 시도 (광역시/도 단위: \"서울특별시\", \"경기도\", \"부산광역시\" 등)\n            district: 시군구 (시/군/구 단위: \"강남구\", \"성남시\", \"분당구\" 등)\n            hospital_name: 병원명 검색어\n            hospital_type: 병원 유형 (B: 병원, C: 의원)\n            department: 진료과목 (D001, D002, D008 등 - 아래 코드 참조)\n            day_of_week: 진료요일 (\"1\"~\"7\": 월~일, \"8\": 공휴일)\n            page: 페이지 번호 (기본값: 1)\n            size: 페이지당 결과 수 (기본값: 5, 최대: 5)\n\n        진료과목 코드:\n        D001:내과, D002:소아청소년과, D003:신경과, D004:정신건강의학과, D005:피부과, D006:외과,\n        D007:흉부외과, D008:정형외과, D009:신경외과, D010:성형외과, D011:산부인과, D012:안과, D013:이비인후과,\n        D014:비뇨기과, D016:재활의학과, D017:마취통증의학과, D018:영상의학과, D019:치료방사선과,\n        D020:임상병리과, D021:해부병리과, D022:가정의학과, D023:핵의학과, D024:응급의학과, D026:치과, D034:구강악안면외과\n\n        Returns:\n            병원 목록 검색 결과 (페이징 처리됨)\n            - hospitals: 병원 목록 배열\n            - count: 현재 페이지의 병원 수\n            - pagination: 페이징 메타데이터\n              * current_page: 현재 페이지 번호\n              * page_size: 페이지당 항목 수\n              * total_count: 전체 병원 수\n              * total_pages: 전체 페이지 수\n              * has_next: 다음 페이지 존재 여부\n              * has_previous: 이전 페이지 존재 여부\n        ",
+          "parameters": [
+            {
+              "name": "city",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "district",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "hospital_name",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "hospital_type",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "department",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "day_of_week",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "page",
+              "type": "integer",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "size",
+              "type": "integer",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "search_baby_hospitals_tool",
+          "description": "달빛어린이병원 목록을 조회합니다 - 시/군/구 단위까지만 지원\n        \n        📍 사용 시나리오:\n        - \"강남구 달빛어린이병원\" → district=\"강남구\" 사용\n        - \"서울 소아과 야간진료\" → city=\"서울특별시\", medical_dept=\"D002\"\n        - \"성남시 24시 소아과\" → city=\"경기도\", district=\"성남시\"\n        - \"삼평동 달빛어린이병원\" → ❌ 동 단위 미지원, get_baby_hospitals_by_location_tool 사용\n        \n        💡 LLM 사용 가이드:\n        1. 지역 검색 범위:\n           - ✅ 지원: 시/도, 시/군/구 단위 (예: \"강남구\", \"성남시\")\n           - ❌ 미지원: 동/읍/면 단위 (예: \"삼평동\", \"역삼동\")\n           - 동 단위 검색 필요시 → get_baby_hospitals_by_location_tool로 좌표 검색\n        \n        2. 페이징 처리:\n           - has_next가 true면 page 증가시켜 추가 조회\n           - ⚠️ API 제한: 연속 8-9회까지 안정적\n           - 권장: 첫 5페이지 조회 후 사용자 확인\n\n        Args:\n            city: 시도 (예: \"서울특별시\")\n            district: 시군구 (예: \"강남구\")\n            hospital_type: 기관구분 (B: 병원, C: 의원)\n            medical_dept: 진료과목 코드 (D002: 소아청소년과 등)\n            day_of_week: 진료요일 (\"1\"-\"7\": 월-일, \"8\": 공휴일)\n            name: 기관명\n            sort_by: 정렬기준 (NAME: 이름순, ADDR: 주소순)\n            page: 페이지 번호\n            size: 페이지 크기\n\n        Returns:\n            달빛어린이병원 목록 정보 (페이징 처리됨)\n            - hospitals: 병원 목록 배열\n            - count: 현재 페이지의 병원 수\n            - pagination: 페이징 메타데이터\n              * current_page: 현재 페이지 번호\n              * page_size: 페이지당 항목 수\n              * total_count: 전체 병원 수\n              * total_pages: 전체 페이지 수\n              * has_next: 다음 페이지 존재 여부\n              * has_previous: 이전 페이지 존재 여부\n        ",
+          "parameters": [
+            {
+              "name": "city",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "district",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "hospital_type",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "medical_dept",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "day_of_week",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "name",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "sort_by",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "page",
+              "type": "integer",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "size",
+              "type": "integer",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "get_hospitals_by_location_tool",
+          "description": "좌표 기반 병원 검색 - 동/읍/면 단위 검색이나 정확한 위치 검색용\n        \n        📍 사용 시나리오:\n        - \"삼평동 병원\" → 동 단위 검색 (list 도구가 지원 안함)\n        - \"역삼동 내과\" → 동 단위 + 진료과목 검색\n        - \"강남구 정형외과\" → search_hospitals_tool로 강남구 검색\n        - 특정 좌표 주변 병원 검색\n        \n        💡 LLM 사용 가이드:\n        1. 지역 단위별 도구 선택:\n           - ✅ 시/군/구 단위: search_hospitals_tool 사용 (예: \"강남구\", \"성남시\")\n           - ✅ 동/읍/면 단위: 이 도구 사용 (예: \"삼평동\", \"역삼동\")\n        \n        2. 동/읍/면 검색 프로세스:\n           a) 사용자가 동 이름 언급 (예: \"삼평동에서 새벽에 진료하는 소아과\")\n           b) 해당 동의 중심 좌표 파악 (일반 지식 활용)\n              * 삼평동(판교): 위도 37.4035, 경도 127.1070\n              * 역삼동(강남): 위도 37.4967, 경도 127.0366\n              * 서초동: 위도 37.4877, 경도 127.0174\n           c) 파악한 좌표로 이 도구 호출\n        \n        3. 페이징 처리:\n           - has_next가 true면 page 증가시켜 추가 조회\n           - ⚠️ API 제한: 연속 8-9회까지 안정적\n           - 권장: 가까운 곳 위주로 첫 2-3페이지\n        \n        샘플: 서울시청 (위도: 37.5665, 경도: 126.9780)\n        \n        Args:\n            latitude: 위도 (WGS84 좌표계, 한국 범위: 33-39)\n            longitude: 경도 (WGS84 좌표계, 한국 범위: 124-132)\n            page: 페이지 번호 (기본값: 1)\n            size: 페이지 크기 (기본값: 5, 최대: 5)\n            \n        Returns:\n            위치 기반 병원 목록 정보 (거리순 정렬, 페이징 처리됨)\n            - hospitals: 병원 목록 배열 (거리순)\n            - count: 현재 페이지의 병원 수\n            - pagination: 페이징 메타데이터\n              * current_page: 현재 페이지 번호\n              * page_size: 페이지당 항목 수\n              * total_count: 전체 병원 수\n              * total_pages: 전체 페이지 수\n              * has_next: 다음 페이지 존재 여부\n              * has_previous: 이전 페이지 존재 여부\n            - location: 검색 위치 (latitude, longitude)\n        ",
+          "parameters": [
+            {
+              "name": "latitude",
+              "type": "number",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "longitude",
+              "type": "number",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "page",
+              "type": "integer",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "size",
+              "type": "integer",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "get_baby_hospitals_by_location_tool",
+          "description": "좌표 기반 달빛어린이병원 검색 - 동/읍/면 단위 검색이나 정확한 위치 검색용\n        \n        📍 사용 시나리오:\n        - \"삼평동 달빛어린이병원\" → 동 단위 검색\n        - \"역삼동 소아과 야간진료\" → 동 단위 소아과 검색\n        - \"강남구 달빛어린이병원\" → search_baby_hospitals_tool로 강남구 검색\n        \n        💡 LLM 사용 가이드:\n        1. 지역 단위별 도구 선택:\n           - ✅ 시/군/구 단위: search_baby_hospitals_tool 사용\n           - ✅ 동/읍/면 단위: 이 도구 사용\n        \n        2. 동/읍/면 검색 프로세스:\n           a) 사용자가 동 이름 언급 (예: \"삼평동 소아과\")\n           b) 해당 동의 중심 좌표 파악 (일반 지식 활용)\n           c) 파악한 좌표로 이 도구 호출\n        \n        3. 페이징 처리:\n           - has_next가 true면 page 증가시켜 추가 조회\n           - ⚠️ API 제한: 연속 8-9회까지 안정적\n        \n        샘플: 서울시청 (위도: 37.5665, 경도: 126.9780)\n        \n        Args:\n            latitude: 위도 (WGS84 좌표계, 한국 범위: 33-39)\n            longitude: 경도 (WGS84 좌표계, 한국 범위: 124-132)\n            page: 페이지 번호 (기본값: 1)\n            size: 페이지 크기 (기본값: 5, 최대: 5)\n            \n        Returns:\n            위치 기반 달빛어린이병원 목록 정보 (거리순 정렬, 페이징 처리됨)\n            - hospitals: 병원 목록 배열 (거리순)\n            - count: 현재 페이지의 병원 수\n            - pagination: 페이징 메타데이터\n              * current_page: 현재 페이지 번호\n              * page_size: 페이지당 항목 수\n              * total_count: 전체 병원 수\n              * total_pages: 전체 페이지 수\n              * has_next: 다음 페이지 존재 여부\n              * has_previous: 이전 페이지 존재 여부\n            - location: 검색 위치 (latitude, longitude)\n        ",
+          "parameters": [
+            {
+              "name": "latitude",
+              "type": "number",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "longitude",
+              "type": "number",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "page",
+              "type": "integer",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "size",
+              "type": "integer",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "get_hospital_detail_tool",
+          "description": "병원 상세 정보를 조회합니다.\n\n        병원의 기본정보, 응급실 운영여부, 병상 현황, 진료과목,\n        응급의료 역량 등 상세한 정보를 제공합니다.\n\n        Args:\n            hpid: 기관 ID (예: \"A1105874\")\n\n        Returns:\n            병원 상세 정보 (기본정보, 응급실, 병상수, 진료과목 등)\n        ",
+          "parameters": [
+            {
+              "name": "hpid",
+              "type": "string",
+              "description": null,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "get_holiday_emergency_list_tool",
+          "description": "명절 비상진료기관 목록을 조회합니다 - 시/군/구 단위까지만 지원\n        \n        📍 사용 시나리오:\n        - \"강남구 명절 진료병원\" → Q1=\"강남구\" 사용\n        - \"서울 추석 진료병원\" → Q0=\"서울특별시\"\n        - \"성남시 설날 응급실\" → Q0=\"경기도\", Q1=\"성남시\"\n        - \"삼평동 명절 병원\" → ❌ 동 단위 미지원, get_holiday_emergency_by_location_tool 사용\n        \n        💡 LLM 사용 가이드:\n        1. 지역 검색 범위:\n           - ✅ 지원: 시/도, 시/군/구 단위 (예: \"강남구\", \"성남시\")\n           - ❌ 미지원: 동/읍/면 단위 (예: \"삼평동\", \"역삼동\")\n           - 동 단위 검색 필요시 → get_holiday_emergency_by_location_tool로 좌표 검색\n        \n        2. 페이징 처리:\n           - has_next가 true면 page_no 증가시켜 추가 조회\n           - ⚠️ API 제한: 연속 8-9회까지 안정적\n           - 권장: 첫 5페이지 조회 후 사용자 확인\n\n        Args:\n            Q0: 시도명 (예: \"서울특별시\", \"경기도\")\n            Q1: 시군구명 (예: \"강남구\", \"성남시\")\n            page_no: 페이지 번호 (기본값: 1)\n            num_of_rows: 한 페이지 결과 수 (기본값: 5, 최대: 5)\n\n        Returns:\n            명절 비상진료기관 목록 (페이징 처리됨)\n            - hospitals: 진료기관 목록 배열\n            - count: 현재 페이지의 기관 수\n            - pagination: 페이징 메타데이터\n              * current_page: 현재 페이지 번호\n              * page_size: 페이지당 항목 수\n              * total_count: 전체 기관 수\n              * total_pages: 전체 페이지 수\n              * has_next: 다음 페이지 존재 여부\n              * has_previous: 이전 페이지 존재 여부\n        ",
+          "parameters": [
+            {
+              "name": "Q0",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "Q1",
+              "type": "string | null",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "page_no",
+              "type": "integer",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "num_of_rows",
+              "type": "integer",
+              "description": null,
+              "required": false
+            }
+          ]
+        },
+        {
+          "name": "get_holiday_emergency_by_location_tool",
+          "description": "위치 기반 명절 비상진료기관 조회 - 동/읍/면 단위 검색이나 정확한 위치 검색용\n        \n        📍 사용 시나리오:\n        - \"삼평동 명절 진료병원\" → 동 단위 검색 (list 도구가 지원 안함)\n        - \"역삼동 추석 응급실\" → 동 단위 + 명절 진료\n        - \"강남구 설날 병원\" → get_holiday_emergency_list_tool로 강남구 검색\n        - 특정 좌표 주변 명절 진료기관 검색\n        \n        💡 LLM 사용 가이드:\n        1. 지역 단위별 도구 선택:\n           - ✅ 시/군/구 단위: get_holiday_emergency_list_tool 사용\n           - ✅ 동/읍/면 단위: 이 도구 사용\n        \n        2. 동/읍/면 검색 프로세스:\n           a) 사용자가 동 이름 언급 (예: \"삼평동 추석 진료병원\")\n           b) 해당 동의 중심 좌표 파악 (일반 지식 활용)\n              * 삼평동(판교): 위도 37.4035, 경도 127.1070\n              * 역삼동(강남): 위도 37.4967, 경도 127.0366\n           c) 파악한 좌표로 이 도구 호출\n        \n        3. 페이징 처리:\n           - has_next가 true면 page_no 증가시켜 추가 조회\n           - ⚠️ API 제한: 연속 8-9회까지 안정적\n           - 거리순 정렬: 가까운 곳부터 조회됨\n           - 권장: 첫 2-3페이지면 충분\n\n        Args:\n            latitude: 위도 (WGS84 좌표계, 한국 범위: 33-39)\n            longitude: 경도 (WGS84 좌표계, 한국 범위: 124-132)\n            radius: 반경(m) (기본값: 5000, 최소: 100, 최대: 50000)\n            page_no: 페이지 번호 (기본값: 1)\n            num_of_rows: 한 페이지 결과 수 (기본값: 5, 최대: 5)\n\n        Returns:\n            위치 기반 명절 비상진료기관 목록 (페이징 처리됨, 거리순 정렬)\n            - hospitals: 진료기관 목록 배열 (거리순)\n            - count: 현재 페이지의 기관 수\n            - pagination: 페이징 메타데이터\n              * current_page: 현재 페이지 번호\n              * page_size: 페이지당 항목 수\n              * total_count: 전체 기관 수\n              * total_pages: 전체 페이지 수\n              * has_next: 다음 페이지 존재 여부\n              * has_previous: 이전 페이지 존재 여부\n            - search_location: 검색 기준 위치 (latitude, longitude, radius)\n        ",
+          "parameters": [
+            {
+              "name": "latitude",
+              "type": "number",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "longitude",
+              "type": "number",
+              "description": null,
+              "required": true
+            },
+            {
+              "name": "radius",
+              "type": "integer",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "page_no",
+              "type": "integer",
+              "description": null,
+              "required": false
+            },
+            {
+              "name": "num_of_rows",
+              "type": "integer",
+              "description": null,
+              "required": false
+            }
+          ]
+        }
+      ],
+      "identifyName": "MedInfo",
+      "applicableAIServiceScope": "ALL",
+      "featuredLevel": 0,
+      "monthlyToolCallCount": "18",
+      "totalToolCallCount": "217",
+      "image": {
+        "path": "/komi/upload-files/mcp/images/XtObDFUl0Bzsm1uHr2gq4KCkWCmZpnyxygutx2mI47aeNrvpD4kyhSF3kRdnPPoGS8jH5RidJ00KorrmOoeBkD.png",
+        "fullUrl": "https://t1.kakaocdn.net/komi/upload-files/mcp/images/XtObDFUl0Bzsm1uHr2gq4KCkWCmZpnyxygutx2mI47aeNrvpD4kyhSF3kRdnPPoGS8jH5RidJ00KorrmOoeBkD.png",
+        "cdnUrl": "https://t1.kakaocdn.net"
+      },
+      "authConfigSummary": {
+        "type": "NONE"
+      },
+      "teamProfile": {
+        "name": "Kakao",
+        "classification": {
+          "name": "주식회사 카카오",
+          "registrationNumber": "120-81-47521",
+          "ceoName": "정신아",
+          "businessType": "CORPORATE",
+          "type": "BUSINESS"
+        }
+      }
+    }
+  ]
+}

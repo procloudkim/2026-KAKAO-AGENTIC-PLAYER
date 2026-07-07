@@ -1,0 +1,2 @@
+{"timestamp":"2026-07-07T15:13:49.874Z","service":"family-experience-mcp","version":"0.1.0","level":"info","event":"server_start","message":"family-experience-mcp listening on 127.0.0.1:49351"}
+{"timestamp":"2026-07-07T15:13:52.044Z","service":"family-experience-mcp","version":"0.1.0","level":"info","event":"http_request","http":{"method":"GET","path":"/health","status_code":200,"outcome":"success","latency_ms":6}}

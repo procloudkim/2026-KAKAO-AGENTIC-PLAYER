@@ -1,0 +1,11 @@
+scenario=QA-SM-03
+criterion=typecheck passes from relevant app directory
+surface=PowerShell terminal / npm script
+cwd=apps/family-experience-mcp
+invocation=npm run typecheck
+--- output ---
+
+> family-experience-mcp@0.0.0 typecheck
+> tsc --noEmit
+
+--- exit_code=0 ---

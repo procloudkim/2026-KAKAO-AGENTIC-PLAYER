@@ -1,0 +1,101 @@
+
+> family-experience-mcp@0.0.0 test
+> vitest --run test/pipeline.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/pipeline.test.ts (6 tests | 6 failed) 13ms
+     × returns exactly three ranked candidates when the happy prompt has three matches 6ms
+     × returns a clarification failure state when child age and stage are missing 2ms
+     × returns no-results without fabricating candidates when constraints exclude every source record 1ms
+     × shows inferred age labels and quotes the source text used for inference 1ms
+     × omits reservation and contact fields when the source does not provide them 1ms
+     × rejects computed and stale as child suitability age-fit labels 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/pipeline.test.ts > Todo 4 family experience pipeline > returns exactly three ranked candidates when the happy prompt has three matches
+Error: Cannot find module '/src/pipeline/normalize.js' imported from D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/pipeline.test.ts
+ ❯ loadPipeline test/pipeline.test.ts:27:21
+     25|
+     26| async function loadPipeline() {
+     27|   const normalize = await import("../src/pipeline/normalize.js")
+       |                     ^
+     28|   const rank = await import("../src/pipeline/rank.js")
+     29|   const render = await import("../src/pipeline/render.js")
+ ❯ test/pipeline.test.ts:41:48
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  test/pipeline.test.ts > Todo 4 family experience pipeline > returns a clarification failure state when child age and stage are missing
+Error: Cannot find module '/src/pipeline/normalize.js' imported from D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/pipeline.test.ts
+ ❯ loadPipeline test/pipeline.test.ts:27:21
+     25|
+     26| async function loadPipeline() {
+     27|   const normalize = await import("../src/pipeline/normalize.js")
+       |                     ^
+     28|   const rank = await import("../src/pipeline/rank.js")
+     29|   const render = await import("../src/pipeline/render.js")
+ ❯ test/pipeline.test.ts:66:48
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  test/pipeline.test.ts > Todo 4 family experience pipeline > returns no-results without fabricating candidates when constraints exclude every source record
+Error: Cannot find module '/src/pipeline/normalize.js' imported from D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/pipeline.test.ts
+ ❯ loadPipeline test/pipeline.test.ts:27:21
+     25|
+     26| async function loadPipeline() {
+     27|   const normalize = await import("../src/pipeline/normalize.js")
+       |                     ^
+     28|   const rank = await import("../src/pipeline/rank.js")
+     29|   const render = await import("../src/pipeline/render.js")
+ ❯ test/pipeline.test.ts:92:48
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  test/pipeline.test.ts > Todo 4 family experience pipeline > shows inferred age labels and quotes the source text used for inference
+Error: Cannot find module '/src/pipeline/normalize.js' imported from D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/pipeline.test.ts
+ ❯ loadPipeline test/pipeline.test.ts:27:21
+     25|
+     26| async function loadPipeline() {
+     27|   const normalize = await import("../src/pipeline/normalize.js")
+       |                     ^
+     28|   const rank = await import("../src/pipeline/rank.js")
+     29|   const render = await import("../src/pipeline/render.js")
+ ❯ test/pipeline.test.ts:129:50
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  test/pipeline.test.ts > Todo 4 family experience pipeline > omits reservation and contact fields when the source does not provide them
+Error: Cannot find module '/src/pipeline/normalize.js' imported from D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/pipeline.test.ts
+ ❯ loadPipeline test/pipeline.test.ts:27:21
+     25|
+     26| async function loadPipeline() {
+     27|   const normalize = await import("../src/pipeline/normalize.js")
+       |                     ^
+     28|   const rank = await import("../src/pipeline/rank.js")
+     29|   const render = await import("../src/pipeline/render.js")
+ ❯ test/pipeline.test.ts:151:48
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  test/pipeline.test.ts > Todo 4 family experience pipeline > rejects computed and stale as child suitability age-fit labels
+Error: Cannot find module '/src/pipeline/normalize.js' imported from D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/pipeline.test.ts
+ ❯ loadPipeline test/pipeline.test.ts:27:21
+     25|
+     26| async function loadPipeline() {
+     27|   const normalize = await import("../src/pipeline/normalize.js")
+       |                     ^
+     28|   const rank = await import("../src/pipeline/rank.js")
+     29|   const render = await import("../src/pipeline/render.js")
+ ❯ test/pipeline.test.ts:176:69
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed (6)
+   Start at  10:15:23
+   Duration  243ms (transform 42ms, setup 0ms, import 95ms, tests 13ms, environment 0ms)
+

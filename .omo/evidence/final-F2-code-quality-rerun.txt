@@ -1,0 +1,315 @@
+# final-F2-code-quality-rerun
+timestamp_utc=2026-07-02T07:04:18Z
+workspace=/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY
+
+
+## command: cd apps/family-experience-mcp && npm run typecheck && npm test -- --run
+
+> family-experience-mcp@0.0.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.0.0 test
+> vitest --run
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  8 passed (8)
+      Tests  31 passed (31)
+   Start at  16:04:21
+   Duration  555ms (transform 426ms, setup 0ms, import 1.15s, tests 204ms, environment 1ms)
+
+exit_code=0
+
+## command: cd apps/family-experience-mcp && npm run verify && npm run scan:secrets && npm run scan:claims && npm run scan:sources
+
+> family-experience-mcp@0.0.0 verify
+> npm run typecheck && npm test -- --run
+
+
+> family-experience-mcp@0.0.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.0.0 test
+> vitest --run
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  8 passed (8)
+      Tests  31 passed (31)
+   Start at  16:04:26
+   Duration  516ms (transform 356ms, setup 0ms, import 1.02s, tests 167ms, environment 1ms)
+
+
+> family-experience-mcp@0.0.0 scan:secrets
+> tsx scripts/scan-secrets.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 73
+}
+
+> family-experience-mcp@0.0.0 scan:claims
+> tsx scripts/scan-claims.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 73
+}
+
+> family-experience-mcp@0.0.0 scan:sources
+> tsx scripts/scan-sources.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 40
+}
+exit_code=0
+
+## current src/test/scripts tree
+apps/family-experience-mcp/scripts/scan-claims.ts
+apps/family-experience-mcp/scripts/scan-secrets.ts
+apps/family-experience-mcp/scripts/scan-sources.ts
+apps/family-experience-mcp/scripts/smoke-golden.ts
+apps/family-experience-mcp/scripts/smoke-mcp.ts
+apps/family-experience-mcp/src/config.ts
+apps/family-experience-mcp/src/health.ts
+apps/family-experience-mcp/src/mcp.ts
+apps/family-experience-mcp/src/pipeline/normalize.ts
+apps/family-experience-mcp/src/pipeline/rank.ts
+apps/family-experience-mcp/src/pipeline/render.ts
+apps/family-experience-mcp/src/schemas.ts
+apps/family-experience-mcp/src/server.ts
+apps/family-experience-mcp/src/sources/fixture.ts
+apps/family-experience-mcp/src/sources/registry.ts
+apps/family-experience-mcp/src/sources/seoulCulture.ts
+apps/family-experience-mcp/src/sources/types.ts
+apps/family-experience-mcp/src/types.ts
+apps/family-experience-mcp/test/config.test.ts
+apps/family-experience-mcp/test/fixtures/seoul-culture-sample.json
+apps/family-experience-mcp/test/golden.test.ts
+apps/family-experience-mcp/test/mcp.test.ts
+apps/family-experience-mcp/test/pipeline.test.ts
+apps/family-experience-mcp/test/playmcpMetadata.test.ts
+apps/family-experience-mcp/test/schemas.test.ts
+apps/family-experience-mcp/test/seoulCulture.test.ts
+apps/family-experience-mcp/test/sources.test.ts
+
+## current docs/golden files in secret-scan scope
+apps/family-experience-mcp/docs/DECISIONS.md
+apps/family-experience-mcp/docs/GOLDEN_RESULTS.md
+apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md
+apps/family-experience-mcp/docs/QA_REPORT.md
+apps/family-experience-mcp/docs/RUNBOOK.md
+apps/family-experience-mcp/docs/SUBMISSION_COPY_DRAFT.md
+.omo/evidence/golden-family-experience-happy.json
+.omo/evidence/golden-family-experience-missing-age.json
+.omo/evidence/golden-family-experience-no-result.json
+.omo/evidence/golden-family-experience-source-failure.json
+
+## prior blocker stale file existence
+PASS absent: apps/family-experience-mcp/src/index.ts
+PASS absent: apps/family-experience-mcp/src/http-health.ts
+PASS absent: apps/family-experience-mcp/test/scaffold.test.ts
+PASS absent: apps/family-experience-mcp/scripts/pending-smoke.ts
+
+## stale scaffold/slop pattern scan over src/test/scripts
+PASS no stale scaffold/slop pattern matches
+
+## broad placeholder/TODO scan over src/test/scripts
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test\playmcpMetadata.test.ts:101:    expect(combinedDocs).toContain("TODO")
+
+## forbidden pattern scan over src/test/scripts
+PASS no forbidden patterns
+
+## TypeScript escape-hatch scan: any annotations/assertions, non-null assertions, TS suppressions
+PASS no direct TS escape-hatch matches
+
+## pure LOC scan over src/test/scripts
+249 apps/family-experience-mcp/src/sources/seoulCulture.ts
+248 apps/family-experience-mcp/src/server.ts
+248 apps/family-experience-mcp/src/pipeline/normalize.ts
+238 apps/family-experience-mcp/scripts/smoke-golden.ts
+226 apps/family-experience-mcp/src/sources/fixture.ts
+219 apps/family-experience-mcp/src/mcp.ts
+165 apps/family-experience-mcp/src/sources/types.ts
+160 apps/family-experience-mcp/test/pipeline.test.ts
+146 apps/family-experience-mcp/test/seoulCulture.test.ts
+146 apps/family-experience-mcp/src/pipeline/render.ts
+144 apps/family-experience-mcp/src/pipeline/rank.ts
+138 apps/family-experience-mcp/test/mcp.test.ts
+99 apps/family-experience-mcp/src/schemas.ts
+96 apps/family-experience-mcp/test/schemas.test.ts
+93 apps/family-experience-mcp/scripts/scan-sources.ts
+88 apps/family-experience-mcp/test/playmcpMetadata.test.ts
+86 apps/family-experience-mcp/test/golden.test.ts
+79 apps/family-experience-mcp/test/sources.test.ts
+77 apps/family-experience-mcp/scripts/scan-claims.ts
+71 apps/family-experience-mcp/scripts/smoke-mcp.ts
+67 apps/family-experience-mcp/src/config.ts
+64 apps/family-experience-mcp/scripts/scan-secrets.ts
+50 apps/family-experience-mcp/src/types.ts
+49 apps/family-experience-mcp/src/sources/registry.ts
+32 apps/family-experience-mcp/src/health.ts
+28 apps/family-experience-mcp/test/config.test.ts
+
+## pure LOC files >=250
+PASS no files >=250 pure LOC
+
+## scraper/browser parser dependency/import scan
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/scripts\scan-sources.ts:13:const scraperPackages = ["cheerio", "puppeteer", "playwright", "jsdom", "got-scraping"] as const
+
+## MCP public tool registration scan
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/scripts\smoke-mcp.ts:41:    if (toolNames.length !== 1 || toolNames[0] !== "find_family_experiences") {
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/scripts\smoke-mcp.ts:46:      name: "find_family_experiences",
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/scripts\smoke-mcp.ts:66:          called: "find_family_experiences",
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/scripts\smoke-golden.ts:12:const toolName = "find_family_experiences"
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test\mcp.test.ts:49:        name: "find_family_experiences",
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test\mcp.test.ts:116:        name: "find_family_experiences",
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test\mcp.test.ts:159:      tools: ["find_family_experiences"],
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src\health.ts:15:    tools: z.array(z.literal("find_family_experiences")).length(1),
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src\mcp.ts:13:export const FAMILY_EXPERIENCE_TOOL_NAME = "find_family_experiences"
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src\mcp.ts:14:export const FAMILY_EXPERIENCE_PUBLIC_TOOLS = [FAMILY_EXPERIENCE_TOOL_NAME] as const
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src\mcp.ts:33:  server.registerTool(
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src\mcp.ts:34:    FAMILY_EXPERIENCE_TOOL_NAME,
+registerTool_count_in_src=1
+
+## raw secret/keyed URL scan over app source/test/scripts/docs and current golden JSON
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/docs\QA_REPORT.md:12:- Todo 6: optional Seoul adapter and redaction-fix evidence exists in `.omo/evidence/task-6-redaction-fix-GREEN.txt`.
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/docs\QA_REPORT.md:19:- Plain `npm run verify && npm run scan:secrets && npm run scan:claims && npm run scan:sources` passed; see `.omo/evidence/task-9-plain-verify-GREEN.txt`.
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/docs\QA_REPORT.md:20:- Server-backed GREEN proof passed with local server on `127.0.0.1:3345`, exact HTTP 200, `smoke:golden`, all three scans, and cleanup with no `3345` listener; see `.omo/evidence/task-9-final-verify-GREEN.txt`.
+
+## refined scraper/browser parser dependency/import scan
+PASS no scraper/browser parser package dependencies
+PASS no scraper/browser parser imports
+
+## refined raw secret/keyed URL scan
+PASS no high-confidence raw secret or keyed URL matches
+
+## real-surface preservation check: fixture server on 3345, /health, smoke:mcp, smoke:golden
+PASS no LISTENING on :3345 before start
+server_pid=471
+health_http_status=200
+--- /health response headers/body ---
+HTTP/1.1 200 OK
+content-type: application/json; charset=utf-8
+Date: Thu, 02 Jul 2026 07:07:41 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"ok":true,"name":"family-experience-mcp","version":"0.1.0","tools":["find_family_experiences"],"config":{"port":3345,"allowFixture":false,"toolMode":"live","seoulOpenDataBaseUrl":"http://openapi.seoul.go.kr:8088","seoulOpenDataKey":"missing"}}
+## command: cd apps/family-experience-mcp && npm run smoke:mcp -- --assert-tool-count=1
+
+> family-experience-mcp@0.0.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts --assert-tool-count=1
+
+Expected successful fixture result: missing_configuration
+smoke_mcp_exit_code=1
+
+## command: cd apps/family-experience-mcp && npm run smoke:golden
+
+> family-experience-mcp@0.0.0 smoke:golden
+> tsx scripts/smoke-golden.ts
+
+{
+  "artifact_dir": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence",
+  "scenarios": [
+    {
+      "id": "happy",
+      "passed": false,
+      "isError": true
+    },
+    {
+      "id": "missing-age",
+      "passed": true,
+      "isError": true
+    },
+    {
+      "id": "no-result",
+      "passed": false,
+      "isError": true
+    },
+    {
+      "id": "source-failure",
+      "passed": true,
+      "isError": true
+    }
+  ]
+}
+Golden smoke failed: happy:fixture_mode:fixture mode is visible; happy:exactly_three_candidates:candidate_count=0; happy:exactly_three_action_cards:card_count=0; no-result:relax_exactly_one_constraint:suggests relaxing exactly the date range
+smoke_golden_exit_code=1
+
+## fixture server cleanup
+PASS no LISTENING on :3345 after cleanup
+
+## real-surface preservation check rerun: explicit fixture server on 3345
+server_command: FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http
+PASS no LISTENING on :3345 before fixture start
+server_pid=1043
+health_http_status=200
+--- /health response headers/body ---
+HTTP/1.1 200 OK
+content-type: application/json; charset=utf-8
+Date: Thu, 02 Jul 2026 07:08:57 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"ok":true,"name":"family-experience-mcp","version":"0.1.0","tools":["find_family_experiences"],"config":{"port":3345,"allowFixture":true,"toolMode":"fixture","seoulOpenDataBaseUrl":"http://openapi.seoul.go.kr:8088","seoulOpenDataKey":"missing"}}
+## command: cd apps/family-experience-mcp && FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run smoke:mcp -- --assert-tool-count=1
+
+> family-experience-mcp@0.0.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts --assert-tool-count=1
+
+{
+  "endpoint": "http://127.0.0.1:3345/mcp",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "result_ok": true,
+  "candidate_count": 3,
+  "text": "fixture/demo 기준으로 후보 3개를 찾았어요.\naction_card: 1\ntitle: Demo Seoul Kids Makers Studio\ndate_time: 2026-07-04\nvenue: DDP Design Lab Demo Room\naddress: DDP Design Lab Demo Room\nage_fit_label: source-stated\nage_fit_reason: Demo program text states ages 4-6 and guardian participation.\nindoor_outdoor: indoor\nfee_text: Demo field; confirm fees with an official source in live mode.\nsource_name: fixture/demo source\nsource_url: https://example.invalid/family-experience/fixture-v1\nretrieved_at: fixture/demo snapshot\nconfidence: age_fit=source-stated\nmode: fixture\nwarnings: fixture/demo data only; not live/current.\nsource_summary: fixture/demo source 근거로 제목, 날짜, 장소, 연령 단서를 확인했습니다.\nparent_check: Demo program text states ages 4-6 and guardian participation. 예약/요금은 출발 전 공식 출처에서 확인하세요.\nnext_action: https://example.invalid/family-experience/fixture-v1에서 날짜, 장소, 요금, 신청 절차를 확인하세요.\naction_card: 2\ntitle: Demo Rainy Day Story Theater\ndate_time: 2026-07-04\nvenue: Seoul Children's Library Demo Hall\naddress: Seoul Children's Library Demo Hall\nage_fit_label: source-stated\nage_fit_reason: Demo program text states preschool family story play for ages 3-7.\nindoor_outdoor: indoor\nfee_text: Demo field; confirm fees with an official source in live mode.\nsource_name: fixture/demo source\nsource_url: https://example.invalid/family-experience/fixture-v1\nretrieved_at: fixture/demo snapshot\nconfidence: age_fit=source-stated\nmode: fixture\nwarnings: fixture/demo data only; not live/current.\nsource_summary: fixture/demo source 근거로 제목, 날짜, 장소, 연령 단서를 확인했습니다.\nparent_check: Demo program text states preschool family story play for ages 3-7. 예약/요금은 출발 전 공식 출처에서 확인하세요.\nnext_action: https://example.invalid/family-experience/fixture-v1에서 날짜, 장소, 요금, 신청 절차를 확인하세요.\naction_card: 3\ntitle: Demo Family Science Light Lab\ndate_time: 2026-07-04\nvenue: Seoul Science Center Demo Classroom\naddress: Seoul Science Center Demo Classroom\nage_fit_label: source-stated\nage_fit_reason: Demo program text states a preschool-friendly guardian lab for ages 4-8.\nindoor_outdoor: indoor\nfee_text: Demo field; confirm fees with an official source in live mode.\nsource_name: fixture/demo source\nsource_url: https://example.invalid/family-experience/fixture-v1\nretrieved_at: fixture/demo snapshot\nconfidence: age_fit=source-stated\nmode: fixture\nwarnings: fixture/demo data only; not live/current.\nsource_summary: fixture/demo source 근거로 제목, 날짜, 장소, 연령 단서를 확인했습니다.\nparent_check: Demo program text states a preschool-friendly guardian lab for ages 4-8. 예약/요금은 출발 전 공식 출처에서 확인하세요.\nnext_action: https://example.invalid/family-experience/fixture-v1에서 날짜, 장소, 요금, 신청 절차를 확인하세요."
+}
+smoke_mcp_exit_code=0
+
+## command: cd apps/family-experience-mcp && FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run smoke:golden
+
+> family-experience-mcp@0.0.0 smoke:golden
+> tsx scripts/smoke-golden.ts
+
+{
+  "artifact_dir": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence",
+  "scenarios": [
+    {
+      "id": "happy",
+      "passed": true,
+      "isError": false
+    },
+    {
+      "id": "missing-age",
+      "passed": true,
+      "isError": true
+    },
+    {
+      "id": "no-result",
+      "passed": true,
+      "isError": true
+    },
+    {
+      "id": "source-failure",
+      "passed": true,
+      "isError": true
+    }
+  ]
+}
+smoke_golden_exit_code=0
+
+## fixture server cleanup
+PASS no LISTENING on :3345 after fixture cleanup

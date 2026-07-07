@@ -1,0 +1,11 @@
+command: cleanup audit for task-4 canonical pair validation
+scenario: confirm no long-running dev server or temp probe remains from this task
+--- observations ---
+No dev server was started for this validation-only task.
+TEMP task-4-canonical-pair-red.ts exists: False
+TEMP task-4-canonical-pair-manual-probe.ts exists: False
+Todo 6 files: not touched.
+Todo 7 files: not touched.
+Claim scanner files: not touched.
+--- exit_code ---
+0

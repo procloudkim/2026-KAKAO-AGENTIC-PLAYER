@@ -1,0 +1,57 @@
+
+> family-experience-mcp@0.1.0 test
+> vitest --run test/scanClaims.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/scanClaims.test.ts (18 tests | 2 failed) 1987ms
+     × allows explicit include with a public unsupported-claim caveat 175ms
+     × allows explicit include with an English live-now caveat only 161ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/scanClaims.test.ts > claim scanner > allows explicit include with a public unsupported-claim caveat
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/scanClaims.test.ts:232:29
+    230|
+    231|       // Then: explicit caveat language is accepted.
+    232|       expect(result.status).toBe(0)
+       |                             ^
+    233|       expect(result.stdout).toContain('"status": "PASS"')
+    234|     } finally {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  test/scanClaims.test.ts > claim scanner > allows explicit include with an English live-now caveat only
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/scanClaims.test.ts:251:29
+    249|
+    250|       // Then: caveat-only launch copy is accepted.
+    251|       expect(result.status).toBe(0)
+       |                             ^
+    252|       expect(result.stdout).toContain('"status": "PASS"')
+    253|     } finally {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 16 passed (18)
+   Start at  18:49:02
+   Duration  2.15s (transform 34ms, setup 0ms, import 46ms, tests 1.99s, environment 0ms)
+

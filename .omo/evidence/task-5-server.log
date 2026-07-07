@@ -1,0 +1,5 @@
+
+> family-experience-mcp@0.0.0 dev:http
+> tsx src/server.ts
+
+family-experience-mcp listening on 127.0.0.1:3345

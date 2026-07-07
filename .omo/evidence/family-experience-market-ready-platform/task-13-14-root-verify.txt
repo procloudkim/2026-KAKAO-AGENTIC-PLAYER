@@ -1,0 +1,51 @@
+
+> family-experience-mcp@0.1.0 verify
+> npm run typecheck && npm test -- --run
+
+
+> family-experience-mcp@0.1.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.1.0 test
+> vitest --run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.9 [39m[90mD:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp[39m
+
+ [32m✓[39m test/playmcpMetadata.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m test/config.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m test/culturePortal.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m test/schemas.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m test/sources.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m test/golden.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m test/ktoTourApi.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m test/pipelineNationwide.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 132[2mms[22m[39m
+ [32m✓[39m test/seoulCulture.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m test/pipeline.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 146[2mms[22m[39m
+ [32m✓[39m test/nationalFestival.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 125[2mms[22m[39m
+ [32m✓[39m test/health.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m test/mcpCache.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 71[2mms[22m[39m
+ [32m✓[39m test/mcp.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 93[2mms[22m[39m
+ [32m✓[39m test/observability.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 74[2mms[22m[39m
+ [32m✓[39m test/scanSources.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 486[2mms[22m[39m
+ [32m✓[39m test/smokeMcp.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 586[2mms[22m[39m
+     [33m[2m✓[22m[39m uses the prompt passed as a space-separated CLI value [33m 585[2mms[22m[39m
+ [32m✓[39m test/etlNationwide.test.ts [2m([22m[2m20 tests[22m[2m)[22m[33m 404[2mms[22m[39m
+ [32m✓[39m test/scanSecrets.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 825[2mms[22m[39m
+ [32m✓[39m test/scanClaims.test.ts [2m([22m[2m18 tests[22m[2m)[22m[33m 2141[2mms[22m[39m
+[90mstdout[2m | test/httpJson.test.ts[2m > [22m[2mFamily experience MCP HTTP request limits[2m > [22m[2mreturns internal_error when an unexpected MCP HTTP route error escapes
+[22m[39m{"timestamp":"2026-07-07T18:52:33.701Z","service":"family-experience-mcp","version":"0.1.0","level":"error","event":"http_request","http":{"method":"POST","path":"/mcp","status_code":500,"outcome":"failure","latency_ms":0}}
+
+ [32m✓[39m test/httpJson.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 20723[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects invalid JSON with a safe parse-error shape [33m 2206[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects oversized JSON bodies before MCP tool dispatch [33m 1979[2mms[22m[39m
+     [33m[2m✓[22m[39m returns request_timeout when the MCP JSON body stalls [33m 12490[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects overlong prompt requests with a safe JSON-RPC error [33m 1909[2mms[22m[39m
+     [33m[2m✓[22m[39m rate limits rapid repeated MCP requests per process [33m 2095[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m21 passed[39m[22m[90m (21)[39m
+[2m      Tests [22m [1m[32m150 passed[39m[22m[90m (150)[39m
+[2m   Start at [22m 03:52:16
+[2m   Duration [22m 21.45s[2m (transform 3.03s, setup 0ms, import 5.19s, tests 25.93s, environment 2ms)[22m
+

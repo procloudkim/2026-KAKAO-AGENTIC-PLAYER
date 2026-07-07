@@ -1,0 +1,13 @@
+
+> family-experience-mcp@0.1.0 test
+> vitest --run test/etlNationwide.test.ts test/mcpCache.test.ts test/health.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  3 passed (3)
+      Tests  28 passed (28)
+   Start at  00:13:16
+   Duration  804ms (transform 561ms, setup 0ms, import 1.08s, tests 441ms, environment 0ms)
+

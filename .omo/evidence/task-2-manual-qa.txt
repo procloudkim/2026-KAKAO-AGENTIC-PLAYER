@@ -1,0 +1,18 @@
+COMMAND: C:/Program\ Files/Git/bin/bash.exe -lc 'REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/schemas.test.ts test/config.test.ts && npm run typecheck'
+
+> family-experience-mcp@0.0.0 test
+> vitest --run test/schemas.test.ts test/config.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  2 passed (2)
+      Tests  7 passed (7)
+   Start at  09:53:58
+   Duration  241ms (transform 72ms, setup 0ms, import 185ms, tests 9ms, environment 0ms)
+
+
+> family-experience-mcp@0.0.0 typecheck
+> tsc --noEmit
+

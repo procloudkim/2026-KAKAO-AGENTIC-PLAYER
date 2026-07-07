@@ -1,0 +1,11 @@
+{
+  "goal": {
+    "threadId": "019f1d36-af17-7a20-a79b-60c2e6a00e96",
+    "objective": "Complete the durable ulw-loop plan in .omo/ulw-loop/family-experience-winning-sdd-20260703/goals.json, including later accepted/appended stories, under the original brief constraints; use .omo/ulw-loop/family-experience-winning-sdd-20260703/ledger.jsonl as the audit trail.",
+    "status": "complete",
+    "tokensUsed": 605178,
+    "timeUsedSeconds": 3009,
+    "createdAt": 1783060474,
+    "updatedAt": 1783063483
+  }
+}

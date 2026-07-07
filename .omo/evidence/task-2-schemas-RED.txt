@@ -1,0 +1,43 @@
+COMMAND: REPO_ROOT="$(pwd)"; cd "$REPO_ROOT/apps/family-experience-mcp" && npm test -- --run test/schemas.test.ts test/config.test.ts
+
+> family-experience-mcp@0.0.0 test
+> vitest --run test/schemas.test.ts test/config.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/schemas.test.ts (0 test)
+ ❯ test/config.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/config.test.ts [ test/config.test.ts ]
+Error: Cannot find module '../src/config.js' imported from D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/config.test.ts
+ ❯ test/config.test.ts:3:1
+      1| import { describe, expect, it } from "vitest"
+      2|
+      3| import {
+       | ^
+      4|   getFamilyExperienceConfigDiagnostics,
+      5|   loadFamilyExperienceConfig,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  test/schemas.test.ts [ test/schemas.test.ts ]
+Error: Cannot find module '../src/schemas.js' imported from D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/schemas.test.ts
+ ❯ test/schemas.test.ts:3:1
+      1| import { describe, expect, it } from "vitest"
+      2|
+      3| import { FindFamilyExperiencesInputSchema } from "../src/schemas.js"
+       | ^
+      4|
+      5| const validDateRange = {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  no tests
+   Start at  09:52:07
+   Duration  154ms (transform 35ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+

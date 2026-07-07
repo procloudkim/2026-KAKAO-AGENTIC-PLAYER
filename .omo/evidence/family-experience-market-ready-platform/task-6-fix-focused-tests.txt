@@ -1,0 +1,15 @@
+
+> family-experience-mcp@0.1.0 test
+> vitest --run test/golden.test.ts test/mcpCache.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Start at  22:02:47
+   Duration  690ms (transform 274ms, setup 0ms, import 566ms, tests 107ms, environment 0ms)
+
+
+EXIT_CODE=0

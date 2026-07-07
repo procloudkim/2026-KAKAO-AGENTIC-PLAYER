@@ -1,0 +1,16 @@
+Command: npm --prefix apps/family-experience-mcp test -- --run test/scanClaims.test.ts
+EXIT_CODE=0
+
+
+> family-experience-mcp@0.1.0 test
+> vitest --run test/scanClaims.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  1 passed (1)
+      Tests  16 passed (16)
+   Start at  18:10:27
+   Duration  2.00s (transform 31ms, setup 0ms, import 44ms, tests 1.84s, environment 0ms)
+

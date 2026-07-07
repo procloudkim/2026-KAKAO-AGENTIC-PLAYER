@@ -1,0 +1,15 @@
+# task-5 cleanup fix iteration notes
+
+During fix iteration, two intermediate lifecycle attempts still left listeners after the captured Git Bash/npm PID was killed.
+
+Cleanups performed before the final GREEN run:
+- PID 14000: listener left by first direct-parent watcher attempt; cleaned with `taskkill /PID 14000 /F`.
+- PID 7992: listener from process-tree inspection run; cleaned with `taskkill /PID 7992 /F`.
+- PID 57808: listener left by first MSYS watcher attempt; cleaned with `taskkill /PID 57808 /F`.
+- PID 25092: listener left while diagnosing empty MSYS mapping; cleaned with `taskkill /PID 25092 /F`.
+- PID 58036: listener left before the final timeout adjustment; cleaned with `taskkill /PID 58036 /F`.
+- PID 39420, PID 54840, PID 48356: stale `npm-cli.js run dev:http` processes from failed attempts; cleaned with targeted `taskkill` over that command line.
+
+Final state:
+- `.omo/evidence/task-5-cleanup-fix-GREEN.txt` records the passing captured-PID cleanup gate.
+- Final netstat checks showed no `LISTENING` socket on `:3345`; remaining entries were `TIME_WAIT` only.

@@ -1,0 +1,4 @@
+BLOCKED_CURRENT_RUNTIME_IMPORT: apps/family-experience-mcp/src/mcp.ts imports ./observability.js but apps/family-experience-mcp/src/observability.ts and .js are absent.
+This file is outside task-11 prompt-eval scope and appears in git status as unrelated untracked src/mcp.ts work.
+Last passing task-11 market eval before this concurrent blocker: .omo/evidence/family-experience-market-ready-platform/task-11-market-eval-refactor.txt
+Current failing artifacts after blocker appeared: task-11-market-eval-final.txt, task-11-negative-no-fabrication-final2.txt, task-11-focused-typecheck-final2.txt.

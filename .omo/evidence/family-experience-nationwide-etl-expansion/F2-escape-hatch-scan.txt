@@ -1,0 +1,3 @@
+apps/family-experience-mcp/src/etl/cacheQuery.ts:94:  } catch (error: unknown) {
+apps/family-experience-mcp/src/etl/cacheQuery.ts:129:    } catch (error: unknown) {
+apps/family-experience-mcp/src/etl/cacheQuery.ts:148:  } catch (error: unknown) {

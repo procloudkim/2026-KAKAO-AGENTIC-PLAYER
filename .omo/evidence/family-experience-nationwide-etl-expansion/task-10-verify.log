@@ -1,0 +1,26 @@
+Invocation: cd apps/family-experience-mcp; npm run verify
+Started: 2026-07-04T07:50:07.0396664+09:00
+DurationSeconds: 3.482
+ExitCode: 0
+--- output ---
+
+> family-experience-mcp@0.1.0 verify
+> npm run typecheck && npm test -- --run
+
+
+> family-experience-mcp@0.1.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.1.0 test
+> vitest --run
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  16 passed (16)
+      Tests  87 passed (87)
+   Start at  07:50:06
+   Duration  800ms (transform 1.32s, setup 0ms, import 2.72s, tests 740ms, environment 2ms)
+

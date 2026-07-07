@@ -1,0 +1,13 @@
+{
+  "success": false,
+  "issues": [
+    {
+      "expected": "string",
+      "code": "invalid_type",
+      "path": [
+        "parent_check"
+      ],
+      "message": "Invalid input: expected string, received undefined"
+    }
+  ]
+}

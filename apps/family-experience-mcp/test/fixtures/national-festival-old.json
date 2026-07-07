@@ -1,0 +1,18 @@
+{
+  "data": [
+    {
+      "festival_name": "Old Regional Lantern Festival",
+      "place": "Old Town Plaza",
+      "start_date": "2023-05-01",
+      "end_date": "2023-05-05",
+      "content": "Archived local festival listing retained for fallback coverage only.",
+      "organization": "Example County",
+      "phone": "033-000-0000",
+      "homepage": "https://festival.example.test/old-lantern",
+      "address": "Gangwon Example-gun Old Town 1",
+      "latitude": "37.0000",
+      "longitude": "128.0000",
+      "data_reference_date": "2023-03-31"
+    }
+  ]
+}

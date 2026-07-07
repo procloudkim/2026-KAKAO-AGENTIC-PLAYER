@@ -1,0 +1,5 @@
+{
+  "scenario": "RED Korean cross-scope caveat bypass",
+  "findings": [],
+  "count": 0
+}

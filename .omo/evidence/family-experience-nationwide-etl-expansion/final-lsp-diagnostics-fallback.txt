@@ -1,0 +1,3 @@
+typescript_lsp_status=missing
+lsp_install_decision=declined
+fallback_typecheck=PASS final-verify-typecheck-final2.txt

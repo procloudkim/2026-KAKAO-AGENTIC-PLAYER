@@ -1,0 +1,9 @@
+scenario=QA-SM-01A
+criterion=effective git ignore decisions; secret env files ignored; .env.example not ignored
+surface=PowerShell terminal / git CLI
+invocation=git check-ignore -q -- <path> for each requested path; record exit codes only
+--- output ---
+.env exit_code=0
+.env.local exit_code=0
+apps/family-experience-mcp/.env exit_code=0
+apps/family-experience-mcp/.env.example exit_code=1

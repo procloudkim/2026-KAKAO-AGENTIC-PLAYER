@@ -1,0 +1,37 @@
+{
+  "duplicate_merge": {
+    "ok": true,
+    "candidate_count": 1,
+    "primary_source": "kto-tourapi-events",
+    "retained_source_refs": [
+      {
+        "id": "culture-portal-oneview",
+        "raw_snapshot_id": "culture-portal-oneview:raw:busan-stage"
+      },
+      {
+        "id": "kto-tourapi-events",
+        "raw_snapshot_id": "kto-tourapi-events:raw:busan-stage"
+      }
+    ]
+  },
+  "stale_fallback_demoted": [
+    {
+      "id": "culture-portal-oneview:busan-child-stage",
+      "source": "culture_portal"
+    },
+    {
+      "id": "national-culture-festival-standard:busan-child-stage",
+      "source": "national_culture_festival"
+    }
+  ],
+  "exact_child_stage_promoted": [
+    "culture-portal-oneview:exact-preschool-stage",
+    "culture-portal-oneview:broad-family-stage"
+  ],
+  "no_result_explicit": {
+    "ok": false,
+    "code": "no_results",
+    "has_candidates_field": false
+  },
+  "unsupported_claims_absent": true
+}

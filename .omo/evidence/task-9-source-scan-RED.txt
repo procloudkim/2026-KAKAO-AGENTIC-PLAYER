@@ -1,0 +1,21 @@
+
+> family-experience-mcp@0.0.0 scan:sources
+> tsx scripts/scan-sources.ts
+
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\fixtures\\unregistered-source.tmp.ts",
+      "line": 1,
+      "rule": "scraper-browser-parser-dependency",
+      "value": "cheerio"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\fixtures\\unregistered-source.tmp.ts",
+      "line": 2,
+      "rule": "unregistered-event-source-url",
+      "value": "https://example.com/unregistered"
+    }
+  ]
+}

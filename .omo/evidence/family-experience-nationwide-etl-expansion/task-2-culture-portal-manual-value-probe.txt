@@ -1,0 +1,11 @@
+{
+  "title": "Busan Family Ocean Concert",
+  "gpsX_preserved": true,
+  "gpsY_preserved": true,
+  "thumbnail_preserved": true,
+  "coordinate_marker_present": true,
+  "thumbnail_marker_present": true,
+  "raw_key_in_diagnostics": false,
+  "encoded_key_in_diagnostics": false,
+  "redaction_marker_present": true
+}

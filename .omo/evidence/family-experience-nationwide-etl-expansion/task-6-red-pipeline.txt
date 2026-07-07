@@ -1,0 +1,54 @@
+
+> family-experience-mcp@0.1.0 test
+> vitest pipeline
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/pipeline.test.ts (12 tests | 2 failed) 48ms
+     × merges duplicate official records and retains every source reference 4ms
+     × promotes an exact child-stage match above a broader age-fit record 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/pipeline.test.ts > Todo 4 family experience pipeline > merges duplicate official records and retains every source reference
+AssertionError: expected [ { …(30) }, { …(30) } ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ test/pipeline.test.ts:351:35
+    349|       throw new Error(normalized.failure.message)
+    350|     }
+    351|     expect(normalized.candidates).toHaveLength(1)
+       |                                   ^
+    352|     expect(normalized.candidates[0]).toMatchObject({
+    353|       source_id: "kto-tourapi-events",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  test/pipeline.test.ts > Todo 4 family experience pipeline > promotes an exact child-stage match above a broader age-fit record
+AssertionError: expected 'culture-portal-oneview:broad-family-s…' to be 'culture-portal-oneview:exact-preschoo…' // Object.is equality
+
+Expected: "culture-portal-oneview:exact-preschool-stage"
+Received: "culture-portal-oneview:broad-family-stage"
+
+ ❯ test/pipeline.test.ts:507:40
+    505|       throw new Error(response.failure.message)
+    506|     }
+    507|     expect(response.candidates[0]?.id).toBe("culture-portal-oneview:ex…
+       |                                        ^
+    508|   })
+    509|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 10 passed (12)
+   Start at  02:39:22
+   Duration  314ms (transform 76ms, setup 0ms, import 123ms, tests 48ms, environment 0ms)
+

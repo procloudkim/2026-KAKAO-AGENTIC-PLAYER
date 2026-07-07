@@ -1,0 +1,11 @@
+.omo/evidence/family-experience-market-ready-platform/task-7-red-mixed-placeholder-cli-before-fix.txt	713
+.omo/evidence/family-experience-market-ready-platform/task-7-red-focused-scanSecrets-before-fix.txt	2030
+.omo/evidence/family-experience-market-ready-platform/task-7-mixed-placeholder-cli-after-fix.txt	841
+.omo/evidence/family-experience-market-ready-platform/task-7-final-focused-scanSecrets.txt	350
+.omo/evidence/family-experience-market-ready-platform/task-7-final-scan-secrets.txt	130
+.omo/evidence/family-experience-market-ready-platform/task-7-final-verify.txt	4835
+.omo/evidence/family-experience-market-ready-platform/task-7-focused-scanClaims-after-fix.txt	1810
+.omo/evidence/family-experience-market-ready-platform/task-7-scan-claims-direct-after-fix.txt	4995
+.omo/evidence/family-experience-market-ready-platform/task-7-code-quality-doc-review.md	7896
+.omo/evidence/family-experience-market-ready-platform/task-7-cleanup.txt	236
+.omo/evidence/family-experience-market-ready-platform/task-7-done-claim.md	2590

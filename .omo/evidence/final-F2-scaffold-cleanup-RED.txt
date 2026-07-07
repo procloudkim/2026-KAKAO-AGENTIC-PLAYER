@@ -1,0 +1,68 @@
+# final-F2-scaffold-cleanup RED
+timestamp_utc=2026-07-02T06:54:48Z
+
+## package scripts
+{
+  "name": "family-experience-mcp",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev:http": "node --import tsx src/server.ts",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "verify": "npm run typecheck && npm test -- --run",
+    "smoke:mcp": "tsx scripts/smoke-mcp.ts",
+    "smoke:golden": "tsx scripts/smoke-golden.ts",
+    "scan:secrets": "tsx scripts/scan-secrets.ts",
+    "scan:claims": "tsx scripts/scan-claims.ts",
+    "scan:sources": "tsx scripts/scan-sources.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/client": "2.0.0-beta.1",
+    "@modelcontextprotocol/node": "2.0.0-beta.1",
+    "@modelcontextprotocol/server": "2.0.0-beta.1",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "26.1.0",
+    "tsx": "4.22.4",
+    "typescript": "6.0.3",
+    "vitest": "4.1.9"
+  }
+}
+
+## stale file presence
+FOUND apps/family-experience-mcp/src/index.ts
+FOUND apps/family-experience-mcp/src/http-health.ts
+FOUND apps/family-experience-mcp/test/scaffold.test.ts
+FOUND apps/family-experience-mcp/scripts/pending-smoke.ts
+
+## stale artifact pattern scan in scoped source/test/scripts
+apps/family-experience-mcp/test\scaffold.test.ts:3:import { getScaffoldHealth, scaffoldMetadata } from "../src/index.js"
+apps/family-experience-mcp/test\scaffold.test.ts:5:describe("Todo 1 scaffold marker", () => {
+apps/family-experience-mcp/test\scaffold.test.ts:7:    // Given: the scaffold marker module is importable.
+apps/family-experience-mcp/test\scaffold.test.ts:11:    const health = getScaffoldHealth()
+apps/family-experience-mcp/test\scaffold.test.ts:13:    // Then: the observable metadata identifies this Todo 1 scaffold.
+apps/family-experience-mcp/test\scaffold.test.ts:14:    expect(scaffoldMetadata.packageName).toBe(expectedPackageName)
+apps/family-experience-mcp/test\scaffold.test.ts:18:      phase: "todo-1-scaffold",
+apps/family-experience-mcp/src\index.ts:3:export const scaffoldMetadata = {
+apps/family-experience-mcp/src\index.ts:5:  phase: "todo-1-scaffold",
+apps/family-experience-mcp/src\index.ts:11:  packageName: z.literal(scaffoldMetadata.packageName),
+apps/family-experience-mcp/src\index.ts:12:  phase: z.literal(scaffoldMetadata.phase),
+apps/family-experience-mcp/src\index.ts:13:  runtime: z.literal(scaffoldMetadata.runtime),
+apps/family-experience-mcp/src\index.ts:18:export const getScaffoldHealth = (): ScaffoldHealth =>
+apps/family-experience-mcp/src\index.ts:21:    packageName: scaffoldMetadata.packageName,
+apps/family-experience-mcp/src\index.ts:22:    phase: scaffoldMetadata.phase,
+apps/family-experience-mcp/src\index.ts:23:    runtime: scaffoldMetadata.runtime,
+apps/family-experience-mcp/src\http-health.ts:4:import { getScaffoldHealth } from "./index.js"
+apps/family-experience-mcp/src\http-health.ts:15:    const body = JSON.stringify(getScaffoldHealth())
+
+## reference scan excluding node_modules
+apps/family-experience-mcp\test\scaffold.test.ts:3:import { getScaffoldHealth, scaffoldMetadata } from "../src/index.js"
+apps/family-experience-mcp\src\http-health.ts:4:import { getScaffoldHealth } from "./index.js"
+
+NOTE: dependency noise from local node_modules was omitted; the stale blocker evidence above is scoped to src/test/scripts plus package scripts.

@@ -1,0 +1,117 @@
+{
+  "codeReview": {
+    "by": "lazycodex-code-reviewer",
+    "recommendation": "APPROVE",
+    "codeQualityStatus": "CLEAR",
+    "reportPath": ".omo/evidence/token-api-security-code-review.md",
+    "evidence": "Strict TypeScript and remove-ai-slops/overfit review passed for scanner, test, runbook, and evidence scope.",
+    "blockers": []
+  },
+  "manualQa": {
+    "by": "lazycodex-qa-executor",
+    "status": "passed",
+    "evidence": "Config policy dump, RED-to-GREEN scanner proof, final verify/scans, and HTTP /health plus /mcp surface proof passed.",
+    "surfaceEvidence": [
+      {
+        "id": "surface-config-policy",
+        "criterionRef": "C001",
+        "surface": "cli",
+        "invocation": "git check-ignore and .env.example parsed dump",
+        "verdict": "passed",
+        "artifactRefs": [
+          "config-policy-dump"
+        ]
+      },
+      {
+        "id": "surface-secret-scanner",
+        "criterionRef": "C002",
+        "surface": "cli",
+        "invocation": "npm run scan:secrets with synthetic bypass file before/after patch",
+        "verdict": "passed",
+        "artifactRefs": [
+          "secret-scanner-prepatch",
+          "secret-scanner-postpatch"
+        ]
+      },
+      {
+        "id": "surface-http-mcp",
+        "criterionRef": "C003",
+        "surface": "http",
+        "invocation": "Invoke-WebRequest /health and POST /mcp on 127.0.0.1:3349",
+        "verdict": "passed",
+        "artifactRefs": [
+          "http-surface"
+        ]
+      }
+    ],
+    "adversarialCases": [
+      {
+        "id": "adv-guardrail-redacted-secret",
+        "criterionRef": "C002",
+        "scenario": "synthetic sk and SEOUL_OPEN_DATA_KEY on guardrail/redacted lines",
+        "expectedBehavior": "scanner rejects",
+        "verdict": "passed",
+        "artifactRefs": [
+          "secret-scanner-postpatch"
+        ]
+      }
+    ],
+    "artifactRefs": [
+      {
+        "id": "config-policy-dump",
+        "kind": "cli-transcript",
+        "description": "Local .env ignore and .env.example policy dump.",
+        "path": ".omo/evidence/token-api-security/config-policy-dump.txt"
+      },
+      {
+        "id": "secret-scanner-prepatch",
+        "kind": "cli-transcript",
+        "description": "Prepatch bypass proof.",
+        "path": ".omo/evidence/token-api-security/secret-scanner-prepatch.txt"
+      },
+      {
+        "id": "secret-scanner-postpatch",
+        "kind": "cli-transcript",
+        "description": "Postpatch rejection proof.",
+        "path": ".omo/evidence/token-api-security/secret-scanner-postpatch.txt"
+      },
+      {
+        "id": "http-surface",
+        "kind": "http-dump",
+        "description": "HTTP health and MCP tool-list proof.",
+        "path": ".omo/evidence/token-api-security/http-surface.txt"
+      }
+    ]
+  },
+  "gateReview": {
+    "by": "lazycodex-gate-reviewer",
+    "recommendation": "APPROVE",
+    "reportPath": ".omo/evidence/token-api-security-gate-review.md",
+    "evidence": "Gate Reviewer the 7th approved local secret policy, scanner hardening, live rerun, HTTP proof, and cleanup.",
+    "blockers": []
+  },
+  "iteration": {
+    "fullRerun": true,
+    "status": "passed",
+    "rerunCommands": [
+      "npm run verify",
+      "npm run scan:secrets",
+      "npm run scan:sources",
+      "npm run scan:claims"
+    ],
+    "evidence": ".omo/evidence/token-api-security/final-verify.txt and final scan logs passed."
+  },
+  "criteriaCoverage": {
+    "totalCriteria": 3,
+    "passCount": 3,
+    "originalIntent": "Complete token/API security management items 1-7 after .env creation without exposing secrets.",
+    "desiredOutcome": "Local secrets ignored, scanner hardened, deployment/runbook policy documented, tests/scans pass, and real MCP HTTP surface works with redacted key diagnostics.",
+    "userOutcomeReview": "All criteria passed with captured artifacts and no raw secret pattern found in scoped evidence.",
+    "adversarialClassesCovered": [
+      "secret_leakage",
+      "misleading_success_output",
+      "leftover_port_listener",
+      "malformed_secret_context"
+    ]
+  }
+}

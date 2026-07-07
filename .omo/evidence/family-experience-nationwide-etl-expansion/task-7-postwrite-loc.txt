@@ -1,0 +1,7 @@
+src/etl/cacheQuery.ts	236
+src/mcpSourceRecords.ts	113
+src/mcp.ts	179
+src/promptParser.ts	73
+scripts/smoke-mcp.ts	246
+test/mcp.test.ts	192
+test/mcpCache.test.ts	195

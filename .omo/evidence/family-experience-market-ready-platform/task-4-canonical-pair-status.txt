@@ -1,0 +1,19 @@
+command: git status --short -- apps/family-experience-mcp/src/etl/cacheContract.ts apps/family-experience-mcp/test/etlNationwide.test.ts .omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-*
+scenario: final touched-file status after canonical pair validation DoneClaim
+--- output ---
+?? .omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-RED.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-cleanup.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-code-quality-review.md
+?? .omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-doneclaim.md
+?? .omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-escape-hatch-scan.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-file-hashes.tsv
+?? .omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-focused-tests.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-loc.tsv
+?? .omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-manual-probe.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-status.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-test-RED.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-4-canonical-pair-verify.txt
+?? apps/family-experience-mcp/src/etl/cacheContract.ts
+?? apps/family-experience-mcp/test/etlNationwide.test.ts
+--- exit_code ---
+0

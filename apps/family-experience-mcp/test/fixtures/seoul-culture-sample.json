@@ -1,0 +1,37 @@
+{
+  "culturalEventInfo": {
+    "list_total_count": 3927,
+    "RESULT": {
+      "CODE": "INFO-000",
+      "MESSAGE": "정상 처리되었습니다"
+    },
+    "row": [
+      {
+        "CODENAME": "콘서트",
+        "GUNAME": "강북구",
+        "TITLE": "[꿈의숲아트센터] 꿈의숲 마티네 콘서트 [벨에포크 아트&뮤직] 시리즈3",
+        "DATE": "2026-10-28~2026-10-28",
+        "PLACE": "북서울꿈의숲 상상톡톡미술관",
+        "ORG_NAME": "세종문화회관",
+        "USE_TRGT": "8세 이상 관람 가능",
+        "USE_FEE": "전석 15,000원",
+        "INQUIRY": "02-399-1000",
+        "PLAYER": "",
+        "PROGRAM": "",
+        "ETC_DESC": "",
+        "ORG_LINK": "https://www.sejongpac.or.kr/dfac/dfacPerformance/dfacPerformance/performTicket.do?performIdx=37104&menuNo=1200007",
+        "MAIN_IMG": "https://culture.seoul.go.kr/cmmn/file/getImage.do?atchFileId=75a26c72552b4b38acca7be54e15cf8b&thumb=Y",
+        "RGSTDATE": "2026-06-30",
+        "TICKET": "기관",
+        "STRTDATE": "2026-10-28 00:00:00.0",
+        "END_DATE": "2026-10-28 00:00:00.0",
+        "THEMECODE": "기타",
+        "LOT": "127.044324732036",
+        "LAT": "37.6202544613023",
+        "IS_FREE": "유료",
+        "HMPG_ADDR": "https://culture.seoul.go.kr/culture/culture/cultureEvent/view.do?cultcode=158447&menuNo=200008",
+        "PRO_TIME": "수요일 11:00"
+      }
+    ]
+  }
+}

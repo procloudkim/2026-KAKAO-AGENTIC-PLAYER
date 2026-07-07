@@ -1,0 +1,6 @@
+no_template_placeholders=true
+no_false_completion_claim=true
+no_positive_guarantee_overclaim=true
+negative_guardrails_allowed=true
+no_double_quoted_powershell_command=true
+bad_items=

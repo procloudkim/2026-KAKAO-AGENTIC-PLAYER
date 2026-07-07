@@ -1,0 +1,862 @@
+# Untracked-aware no-index patch for Todo 4 touched files
+
+# git -c core.autocrlf=false diff --no-index -- /dev/null apps/family-experience-mcp/src/etl/cacheContract.ts
+diff --git a/apps/family-experience-mcp/src/etl/cacheContract.ts b/apps/family-experience-mcp/src/etl/cacheContract.ts
+new file mode 100644
+index 0000000..108ea56
+--- /dev/null
++++ b/apps/family-experience-mcp/src/etl/cacheContract.ts
+@@ -0,0 +1,291 @@
++import { createHash } from "node:crypto"
++
++import * as z from "zod/v4"
++
++import { FAMILY_EXPERIENCE_SOURCE_SET_VALUES } from "../config.js"
++import { SOURCE_IDS } from "../sources/types.js"
++
++const hexSha256Schema = z.string().regex(/^[a-f0-9]{64}$/)
++const sourceModeSchema = z.enum(["fixture", "live"])
++
++export const cacheMetadataSchema = z
++  .object({
++    schema_version: z.literal(2),
++    generated_at: z.iso.datetime(),
++    mode: z.enum(["dry-run", "write-cache"]),
++    fixture: z.boolean(),
++    source_set: z.array(z.enum(FAMILY_EXPERIENCE_SOURCE_SET_VALUES)).min(1),
++    source_ids: z.array(z.enum(SOURCE_IDS)).min(1),
++    ttl_hours: z.number().int().min(1),
++    max_pages: z.number().int().min(1),
++    counts: z.object({
++      failures: z.number().int().min(0),
++      normalized_records: z.number().int().min(0),
++      raw_snapshots: z.number().int().min(0),
++    }),
++    files: z.object({
++      normalized_records: z.string().trim().min(1),
++      raw_snapshots: z.string().trim().min(1),
++    }),
++    publish_id: z.string().trim().min(1),
++    raw_snapshots_present: z.boolean().optional(),
++    file_digests: z.object({
++      normalized_records_sha256: hexSha256Schema,
++      raw_snapshots_sha256: hexSha256Schema,
++    }),
++    source_provenance: z.array(
++      z.object({
++        source: z.enum(FAMILY_EXPERIENCE_SOURCE_SET_VALUES),
++        source_id: z.enum(SOURCE_IDS),
++        generated_at: z.iso.datetime(),
++        ttl_hours: z.number().int().min(1),
++        mode: sourceModeSchema,
++        ok: z.boolean(),
++        records: z.number().int().min(0),
++        raw_snapshots: z.number().int().min(0),
++        raw_snapshot_present: z.boolean(),
++        failure_code: z.string().trim().min(1).optional(),
++      }),
++    ),
++  })
++  .passthrough()
++
++const legacyCacheMetadataSchema = z
++  .object({
++    generated_at: z.iso.datetime(),
++    fixture: z.literal(true),
++    ttl_hours: z.number().int().min(1),
++  })
++  .passthrough()
++  .refine(
++    (metadata) =>
++      metadata.fixture &&
++      !("mode" in metadata) &&
++      !("source_set" in metadata) &&
++      !("counts" in metadata) &&
++      !("files" in metadata),
++  )
++
++export const cacheRecordSchema = z
++  .object({
++    mode: sourceModeSchema,
++    city: z.string().trim().min(1),
++    date: z.object({ start: z.string().trim().min(1), end: z.string().trim().min(1) }).passthrough(),
++    venue: z.object({ name: z.string().trim().min(1), address: z.string().trim().min(1) }).passthrough(),
++    child_stages: z.array(z.enum(["infant", "toddler", "preschool", "school_age", "teen"])),
++    min_child_age: z.number().int().min(0).max(17),
++    max_child_age: z.number().int().min(0).max(17),
++    parent_check: z.object({ live_status: z.enum(["fixture_not_live", "source_timestamp_required"]) }).passthrough(),
++    source: z
++      .object({
++        id: z.enum(SOURCE_IDS),
++        mode: sourceModeSchema,
++        url: z.string().url(),
++      })
++      .passthrough(),
++  })
++  .passthrough()
++
++type LegacyFixtureCacheMetadata = {
++  readonly schema_version?: undefined
++  readonly generated_at: string
++  readonly mode: "write-cache"
++  readonly fixture: true
++  readonly source_set: readonly ["fixture"]
++  readonly source_ids: readonly ["fixture-family-experience-v1"]
++  readonly ttl_hours: number
++  readonly max_pages: 1
++  readonly counts: {
++    readonly failures: 0
++    readonly normalized_records: 0
++    readonly raw_snapshots: 0
++  }
++  readonly files: {
++    readonly normalized_records: "normalized-records.jsonl"
++    readonly raw_snapshots: "raw-snapshots.jsonl"
++  }
++  readonly publish_id?: never
++  readonly raw_snapshots_present?: never
++  readonly file_digests?: never
++  readonly source_provenance?: never
++}
++
++export type CacheMetadata = z.infer<typeof cacheMetadataSchema> | LegacyFixtureCacheMetadata
++export type CacheRecord = z.infer<typeof cacheRecordSchema>
++
++type CacheContractValidationResult = { readonly ok: true } | { readonly ok: false; readonly message: string }
++
++export function sha256Hex(text: string): string {
++  return createHash("sha256").update(text, "utf8").digest("hex")
++}
++
++export function parseCacheMetadata(value: unknown): CacheMetadata | undefined {
++  const current = cacheMetadataSchema.safeParse(value)
++  if (current.success) {
++    return current.data
++  }
++
++  const legacy = legacyCacheMetadataSchema.safeParse(value)
++  if (!legacy.success) {
++    return undefined
++  }
++
++  const legacyMetadata: LegacyFixtureCacheMetadata = {
++    generated_at: legacy.data.generated_at,
++    mode: "write-cache",
++    fixture: legacy.data.fixture,
++    source_set: ["fixture"],
++    source_ids: ["fixture-family-experience-v1"],
++    ttl_hours: legacy.data.ttl_hours,
++    max_pages: 1,
++    counts: {
++      failures: 0,
++      normalized_records: 0,
++      raw_snapshots: 0,
++    },
++    files: {
++      normalized_records: "normalized-records.jsonl",
++      raw_snapshots: "raw-snapshots.jsonl",
++    },
++  }
++
++  return legacyMetadata
++}
++
++export function countJsonlRecords(text: string): number {
++  return text.split(/\r?\n/).filter((line) => line.trim().length > 0).length
++}
++
++export function validateCacheContract(input: {
++  readonly metadata: CacheMetadata
++  readonly records: readonly CacheRecord[]
++  readonly recordsText: string
++  readonly rawSnapshotsText: string
++}): CacheContractValidationResult {
++  const rawSnapshotCount = countJsonlRecords(input.rawSnapshotsText)
++  const recordCount = input.records.length
++  const expectedRawSnapshotPresence = rawSnapshotCount > 0
++
++  if (input.metadata.counts.normalized_records !== recordCount) {
++    return contractFailure("metadata normalized record count does not match normalized-records.jsonl")
++  }
++
++  if (input.metadata.counts.raw_snapshots !== rawSnapshotCount) {
++    return contractFailure("metadata raw snapshot count does not match raw-snapshots.jsonl")
++  }
++
++  if (
++    input.metadata.raw_snapshots_present !== undefined &&
++    input.metadata.raw_snapshots_present !== expectedRawSnapshotPresence
++  ) {
++    return contractFailure("metadata raw snapshot presence does not match raw-snapshots.jsonl")
++  }
++
++  const fileDigestResult = validateFileDigests(input)
++  if (!fileDigestResult.ok) {
++    return fileDigestResult
++  }
++
++  const modeResult = validateFixtureLiveContract(input)
++  if (!modeResult.ok) {
++    return modeResult
++  }
++
++  const sourceResult = validateSourceContract(input.metadata)
++  if (!sourceResult.ok) {
++    return sourceResult
++  }
++
++  return { ok: true }
++}
++
++function validateFileDigests(input: {
++  readonly metadata: CacheMetadata
++  readonly recordsText: string
++  readonly rawSnapshotsText: string
++}): CacheContractValidationResult {
++  if (input.metadata.file_digests === undefined) {
++    return input.metadata.schema_version === undefined
++      ? { ok: true }
++      : contractFailure("metadata file digests are required")
++  }
++
++  if (input.metadata.file_digests.normalized_records_sha256 !== sha256Hex(input.recordsText)) {
++    return contractFailure("metadata normalized record digest does not match normalized-records.jsonl")
++  }
++
++  if (input.metadata.file_digests.raw_snapshots_sha256 !== sha256Hex(input.rawSnapshotsText)) {
++    return contractFailure("metadata raw snapshot digest does not match raw-snapshots.jsonl")
++  }
++
++  return { ok: true }
++}
++
++function validateFixtureLiveContract(input: {
++  readonly metadata: CacheMetadata
++  readonly records: readonly CacheRecord[]
++}): CacheContractValidationResult {
++  if (input.metadata.fixture) {
++    return { ok: true }
++  }
++
++  const fixtureRecord = input.records.find(
++    (record) => record.mode === "fixture" || record.source.mode === "fixture",
++  )
++
++  if (fixtureRecord !== undefined) {
++    return contractFailure("live cache metadata points at fixture records")
++  }
++
++  return { ok: true }
++}
++
++function validateSourceContract(metadata: CacheMetadata): CacheContractValidationResult {
++  if (metadata.source_provenance === undefined) {
++    return metadata.schema_version === undefined
++      ? { ok: true }
++      : contractFailure("source-level provenance is required")
++  }
++
++  const sourceRecordTotal = metadata.source_provenance.reduce((total, source) => total + source.records, 0)
++  const sourceRawSnapshotTotal = metadata.source_provenance.reduce(
++    (total, source) => total + source.raw_snapshots,
++    0,
++  )
++  const sourceFailureTotal = metadata.source_provenance.filter((source) => !source.ok).length
++
++  if (sourceRecordTotal !== metadata.counts.normalized_records) {
++    return contractFailure("source-level record counts do not match metadata total")
++  }
++
++  if (sourceRawSnapshotTotal !== metadata.counts.raw_snapshots) {
++    return contractFailure("source-level raw snapshot counts do not match metadata total")
++  }
++
++  if (sourceFailureTotal !== metadata.counts.failures) {
++    return contractFailure("source-level failure count does not match metadata total")
++  }
++
++  const missingInputSource = metadata.source_provenance.find((source) => !metadata.source_set.includes(source.source))
++  if (missingInputSource !== undefined) {
++    return contractFailure("source-level provenance includes a source outside source_set")
++  }
++
++  const missingSourceId = metadata.source_provenance.find((source) => !metadata.source_ids.includes(source.source_id))
++  if (missingSourceId !== undefined) {
++    return contractFailure("source-level provenance includes a source id outside source_ids")
++  }
++
++  const rawSnapshotMismatch = metadata.source_provenance.find(
++    (source) => source.raw_snapshot_present !== (source.raw_snapshots > 0),
++  )
++  if (rawSnapshotMismatch !== undefined) {
++    return contractFailure("source-level raw snapshot presence does not match source counts")
++  }
++
++  return { ok: true }
++}
++
++function contractFailure(message: string): CacheContractValidationResult {
++  return { ok: false, message }
++}
+
+# git -c core.autocrlf=false diff --no-index -- /dev/null apps/family-experience-mcp/test/etlNationwide.test.ts
+diff --git a/apps/family-experience-mcp/test/etlNationwide.test.ts b/apps/family-experience-mcp/test/etlNationwide.test.ts
+new file mode 100644
+index 0000000..c29abfa
+--- /dev/null
++++ b/apps/family-experience-mcp/test/etlNationwide.test.ts
+@@ -0,0 +1,554 @@
++// allow: SIZE_OK - Nationwide ETL cache runner integration contract suite; splitting is Todo 4 test refactor scope.
++import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs"
++import { mkdtemp, rm } from "node:fs/promises"
++import { tmpdir } from "node:os"
++import { join, resolve } from "node:path"
++import { spawnSync } from "node:child_process"
++
++import { describe, expect, it } from "vitest"
++
++import {
++  ETL_CACHE_FILES,
++  NationwideEtlInputError,
++  parseNationwideEtlArgs,
++  redactDiagnosticText,
++  runNationwideEtl,
++} from "../src/etl/nationwide.js"
++import { buildMetadata, writeCache } from "../src/etl/cache.js"
++import {
++  cacheMetadataSchema,
++  cacheRecordSchema,
++  sha256Hex,
++} from "../src/etl/cacheContract.js"
++import { queryNationwideCache } from "../src/etl/cacheQuery.js"
++import type { FamilyExperienceSourceRecord, SourceAdapterRequest } from "../src/sources/types.js"
++
++async function tempCacheDir(): Promise<string> {
++  return mkdtemp(join(tmpdir(), "family-experience-etl-"))
++}
++
++function readJsonFile(path: string): unknown {
++  return JSON.parse(readFileSync(path, "utf8"))
++}
++
++function readJsonl(path: string): readonly unknown[] {
++  return readFileSync(path, "utf8")
++    .trim()
++    .split("\n")
++    .filter((line) => line.length > 0)
++    .map((line): unknown => JSON.parse(line))
++}
++
++const busanCacheRequest: SourceAdapterRequest = {
++  location: "Busan",
++  date_range: { start: "2026-07-04", end: "2026-07-05" },
++  child_age: 4,
++}
++
++function queryCacheRecord(): FamilyExperienceSourceRecord {
++  return {
++    id: "culture-portal-oneview:task-4-busan",
++    raw_snapshot_id: "culture-portal-oneview:raw:task-4-busan",
++    mode: "live",
++    title: "Busan Todo 4 Cache Contract",
++    city: "Busan",
++    date: { start: "2026-07-04", end: "2026-07-05", time_text: "10:00-12:00" },
++    venue: { name: "Busan Culture Center", address: "Busan Haeundae-gu" },
++    source: {
++      id: "culture-portal-oneview",
++      mode: "live",
++      url: "https://example.test/culture-portal-oneview/task-4",
++      raw_snapshot_id: "culture-portal-oneview:raw:task-4-busan",
++    },
++    retrieved_at: "2026-07-04T00:00:00.000Z",
++    confidence: { date: "source-stated", venue: "source-stated", age_fit: "source-stated", reservation: "unknown" },
++    parent_check: {
++      age_fit: "Official source marks this as a preschool family program.",
++      reservation: "confirmation_needed",
++      live_status: "source_timestamp_required",
++    },
++    child_stages: ["preschool"],
++    min_child_age: 3,
++    max_child_age: 6,
++    indoor_outdoor: "indoor",
++    target_age_text: "ages 3-6",
++    program_text: "Preschool family program.",
++    reservation_url: null,
++    contact: null,
++    fee_text: "Confirm at the source before visiting.",
++    tags: ["busan", "preschool"],
++    suitability: "happy_prompt_match",
++    fixture_notice: "",
++  }
++}
++
++async function writeQueryableCache(input: {
++  readonly cacheDir: string
++  readonly generatedAt?: string
++  readonly records?: readonly FamilyExperienceSourceRecord[]
++  readonly ttlHours?: number
++}): Promise<void> {
++  const records = input.records ?? [queryCacheRecord()]
++  const metadata = buildMetadata({
++    generatedAt: input.generatedAt ?? "2026-07-07T00:00:00.000Z",
++    fixture: false,
++    maxPages: 1,
++    mode: "write-cache",
++    rawSnapshots: [],
++    records,
++    sourceSet: ["culture_portal"],
++    sourceSummaries: [{ ok: true, records: records.length, raw_snapshots: 0 }],
++    ttlHours: input.ttlHours ?? 24,
++  })
++
++  await writeCache({ cacheDir: input.cacheDir, metadata, rawSnapshots: [], records })
++}
++
++describe("nationwide ETL cache runner", () => {
++  it("reports fixture dry-run counts without writing cache files", async () => {
++    // Given: a fixture ETL request pointed at an empty temp cache directory.
++    const cacheDir = await tempCacheDir()
++
++    try {
++      // When: the ETL runs in dry-run mode.
++      const report = await runNationwideEtl({
++        cacheDir: resolve(cacheDir, "cache"),
++        fixture: true,
++        maxPages: 1,
++        mode: "dry-run",
++        sourceSet: ["culture_portal", "kto_tourapi", "national_festival"],
++        ttlHours: 24,
++        nowIso: () => "2026-07-04T00:00:00.000Z",
++      })
++
++      // Then: extraction and normalization counts are visible, but no cache files exist.
++      expect(report.ok).toBe(true)
++      expect(report.counts.normalized_records).toBe(3)
++      expect(report.counts.raw_snapshots).toBe(3)
++      expect(report.mode).toBe("dry-run")
++      expect(existsSync(resolve(cacheDir, "cache"))).toBe(false)
++    } finally {
++      await rm(cacheDir, { recursive: true, force: true })
++    }
++  })
++
++  it("writes metadata, raw snapshot JSONL, and normalized record JSONL in write-cache mode", async () => {
++    // Given: a fixture ETL request with an explicit cache directory.
++    const cacheDir = await tempCacheDir()
++
++    try {
++      // When: the ETL writes the local cache.
++      const report = await runNationwideEtl({
++        cacheDir,
++        fixture: true,
++        maxPages: 2,
++        mode: "write-cache",
++        sourceSet: ["seoul", "culture_portal", "kto_tourapi", "national_festival"],
++        ttlHours: 48,
++        nowIso: () => "2026-07-04T00:00:00.000Z",
++      })
++      const metadata = readJsonFile(resolve(cacheDir, ETL_CACHE_FILES.metadata))
++      const rawSnapshots = readJsonl(resolve(cacheDir, ETL_CACHE_FILES.rawSnapshots))
++      const normalizedRecords = readJsonl(resolve(cacheDir, ETL_CACHE_FILES.normalized))
++
++      // Then: the on-disk cache has generated_at, TTL, source set, and real record counts.
++      expect(report.ok).toBe(true)
++      expect(metadata).toMatchObject({
++        schema_version: 2,
++        generated_at: "2026-07-04T00:00:00.000Z",
++        ttl_hours: 48,
++        max_pages: 2,
++        source_set: ["seoul", "culture_portal", "kto_tourapi", "national_festival"],
++        counts: {
++          normalized_records: 4,
++        },
++        raw_snapshots_present: true,
++      })
++      expect(metadata).toHaveProperty(
++        "source_provenance",
++        expect.arrayContaining([
++          expect.objectContaining({
++            source: "seoul",
++            generated_at: "2026-07-04T00:00:00.000Z",
++            ttl_hours: 48,
++            mode: "fixture",
++            ok: true,
++            records: 1,
++            raw_snapshot_present: true,
++          }),
++        ]),
++      )
++      expect(metadata).toMatchObject({
++        file_digests: {
++          normalized_records_sha256: expect.stringMatching(/^[a-f0-9]{64}$/),
++          raw_snapshots_sha256: expect.stringMatching(/^[a-f0-9]{64}$/),
++        },
++        publish_id: expect.stringContaining("cache-"),
++      })
++      expect(rawSnapshots).toHaveLength(4)
++      expect(normalizedRecords).toHaveLength(4)
++      expect(existsSync(resolve(cacheDir, ETL_CACHE_FILES.publishMarker))).toBe(false)
++      expect(readdirSync(cacheDir).filter((entry) => entry.endsWith(".tmp"))).toEqual([])
++    } finally {
++      await rm(cacheDir, { recursive: true, force: true })
++    }
++  })
++
++  it("rejects invalid generated timestamps in cache metadata", async () => {
++    // Given: a published cache has metadata with an invalid generated_at timestamp.
++    const cacheDir = await tempCacheDir()
++
++    try {
++      await writeQueryableCache({ cacheDir })
++      const metadataPath = resolve(cacheDir, ETL_CACHE_FILES.metadata)
++      const metadata = cacheMetadataSchema.parse(readJsonFile(metadataPath))
++      writeFileSync(metadataPath, `${JSON.stringify({ ...metadata, generated_at: "not-a-date" }, null, 2)}\n`, "utf8")
++
++      // When: the cache is queried through the runtime cache boundary.
++      const result = await queryNationwideCache({
++        cacheDir,
++        request: busanCacheRequest,
++        now: new Date("2026-07-07T01:00:00.000Z"),
++      })
++
++      // Then: malformed metadata fails closed instead of returning candidates.
++      expect(result).toMatchObject({
++        ok: false,
++        failure: { code: "upstream_invalid_response" },
++      })
++    } finally {
++      await rm(cacheDir, { recursive: true, force: true })
++    }
++  })
++
++  it("rejects live cache metadata missing schema_version", async () => {
++    // Given: a published live cache has provenance metadata without its schema version.
++    const cacheDir = await tempCacheDir()
++
++    try {
++      await writeQueryableCache({ cacheDir })
++      const metadataPath = resolve(cacheDir, ETL_CACHE_FILES.metadata)
++      const metadata = cacheMetadataSchema.parse(readJsonFile(metadataPath))
++      const { schema_version: omittedSchemaVersion, ...metadataWithoutSchemaVersion } = metadata
++      void omittedSchemaVersion
++      writeFileSync(metadataPath, `${JSON.stringify(metadataWithoutSchemaVersion, null, 2)}\n`, "utf8")
++
++      // When: the cache is queried through the runtime cache boundary.
++      const result = await queryNationwideCache({
++        cacheDir,
++        request: busanCacheRequest,
++        now: new Date("2026-07-07T01:00:00.000Z"),
++      })
++
++      // Then: missing versioned metadata fails closed instead of returning candidates.
++      expect(result).toMatchObject({
++        ok: false,
++        failure: { code: "upstream_invalid_response" },
++      })
++    } finally {
++      await rm(cacheDir, { recursive: true, force: true })
++    }
++  })
++
++  it("rejects live cache metadata missing publish_id", async () => {
++    // Given: a published live cache has provenance metadata without its publish id.
++    const cacheDir = await tempCacheDir()
++
++    try {
++      await writeQueryableCache({ cacheDir })
++      const metadataPath = resolve(cacheDir, ETL_CACHE_FILES.metadata)
++      const metadata = cacheMetadataSchema.parse(readJsonFile(metadataPath))
++      const { publish_id: omittedPublishId, ...metadataWithoutPublishId } = metadata
++      void omittedPublishId
++      writeFileSync(metadataPath, `${JSON.stringify(metadataWithoutPublishId, null, 2)}\n`, "utf8")
++
++      // When: the cache is queried through the runtime cache boundary.
++      const result = await queryNationwideCache({
++        cacheDir,
++        request: busanCacheRequest,
++        now: new Date("2026-07-07T01:00:00.000Z"),
++      })
++
++      // Then: missing publish integrity metadata fails closed instead of returning candidates.
++      expect(result).toMatchObject({
++        ok: false,
++        failure: { code: "upstream_invalid_response" },
++      })
++    } finally {
++      await rm(cacheDir, { recursive: true, force: true })
++    }
++  })
++
++  it("rejects live cache metadata missing file_digests", async () => {
++    // Given: a published live cache has provenance metadata without file digests.
++    const cacheDir = await tempCacheDir()
++
++    try {
++      await writeQueryableCache({ cacheDir })
++      const metadataPath = resolve(cacheDir, ETL_CACHE_FILES.metadata)
++      const metadata = cacheMetadataSchema.parse(readJsonFile(metadataPath))
++      const { file_digests: omittedFileDigests, ...metadataWithoutFileDigests } = metadata
++      void omittedFileDigests
++      writeFileSync(metadataPath, `${JSON.stringify(metadataWithoutFileDigests, null, 2)}\n`, "utf8")
++
++      // When: the cache is queried through the runtime cache boundary.
++      const result = await queryNationwideCache({
++        cacheDir,
++        request: busanCacheRequest,
++        now: new Date("2026-07-07T01:00:00.000Z"),
++      })
++
++      // Then: missing file integrity metadata fails closed instead of returning candidates.
++      expect(result).toMatchObject({
++        ok: false,
++        failure: { code: "upstream_invalid_response" },
++      })
++    } finally {
++      await rm(cacheDir, { recursive: true, force: true })
++    }
++  })
++
++  it("rejects live cache metadata missing source_provenance", async () => {
++    // Given: a published live cache has integrity metadata without source provenance.
++    const cacheDir = await tempCacheDir()
++
++    try {
++      await writeQueryableCache({ cacheDir })
++      const metadataPath = resolve(cacheDir, ETL_CACHE_FILES.metadata)
++      const metadata = cacheMetadataSchema.parse(readJsonFile(metadataPath))
++      const { source_provenance: omittedSourceProvenance, ...metadataWithoutSourceProvenance } = metadata
++      void omittedSourceProvenance
++      writeFileSync(metadataPath, `${JSON.stringify(metadataWithoutSourceProvenance, null, 2)}\n`, "utf8")
++
++      // When: the cache is queried through the runtime cache boundary.
++      const result = await queryNationwideCache({
++        cacheDir,
++        request: busanCacheRequest,
++        now: new Date("2026-07-07T01:00:00.000Z"),
++      })
++
++      // Then: missing source provenance metadata fails closed instead of returning candidates.
++      expect(result).toMatchObject({
++        ok: false,
++        failure: { code: "upstream_invalid_response" },
++      })
++    } finally {
++      await rm(cacheDir, { recursive: true, force: true })
++    }
++  })
++
++  it("rejects stale cache metadata before reading candidates", async () => {
++    // Given: a published cache is older than its metadata TTL.
++    const cacheDir = await tempCacheDir()
++
++    try {
++      await writeQueryableCache({
++        cacheDir,
++        generatedAt: "2000-01-01T00:00:00.000Z",
++        ttlHours: 1,
++      })
++
++      // When: the cache is queried with a current clock.
++      const result = await queryNationwideCache({
++        cacheDir,
++        request: busanCacheRequest,
++        now: new Date("2026-07-07T01:00:00.000Z"),
++      })
++
++      // Then: stale cache is a bounded configuration failure with no records.
++      expect(result).toMatchObject({
++        ok: false,
++        failure: { code: "missing_configuration", retryable: false },
++      })
++    } finally {
++      await rm(cacheDir, { recursive: true, force: true })
++    }
++  })
++
++  it("rejects fixture records under live cache metadata", async () => {
++    // Given: a cache claims live mode but normalized records are fixture-mode.
++    const cacheDir = await tempCacheDir()
++
++    try {
++      await writeQueryableCache({ cacheDir })
++      const metadataPath = resolve(cacheDir, ETL_CACHE_FILES.metadata)
++      const recordsPath = resolve(cacheDir, ETL_CACHE_FILES.normalized)
++      const rawSnapshotsPath = resolve(cacheDir, ETL_CACHE_FILES.rawSnapshots)
++      const metadata = cacheMetadataSchema.parse(readJsonFile(metadataPath))
++      const record = cacheRecordSchema.parse(readJsonl(recordsPath)[0])
++      const fixtureRecord = {
++        ...record,
++        mode: "fixture",
++        source: { ...record.source, mode: "fixture" },
++      }
++      const recordsText = `${JSON.stringify(fixtureRecord)}\n`
++      const rawSnapshotsText = readFileSync(rawSnapshotsPath, "utf8")
++
++      writeFileSync(recordsPath, recordsText, "utf8")
++      writeFileSync(
++        metadataPath,
++        `${JSON.stringify(
++          {
++            ...metadata,
++            file_digests: {
++              normalized_records_sha256: sha256Hex(recordsText),
++              raw_snapshots_sha256: sha256Hex(rawSnapshotsText),
++            },
++          },
++          null,
++          2,
++        )}\n`,
++        "utf8",
++      )
++
++      // When: the cache is queried.
++      const result = await queryNationwideCache({
++        cacheDir,
++        request: busanCacheRequest,
++        now: new Date("2026-07-07T01:00:00.000Z"),
++      })
++
++      // Then: fixture/live mismatch is rejected at the cache boundary.
++      expect(result).toMatchObject({
++        ok: false,
++        failure: { code: "upstream_invalid_response" },
++      })
++    } finally {
++      await rm(cacheDir, { recursive: true, force: true })
++    }
++  })
++
++  it("rejects malformed normalized record JSONL", async () => {
++    // Given: metadata exists but normalized-records.jsonl contains a partial line.
++    const cacheDir = await tempCacheDir()
++
++    try {
++      await writeQueryableCache({ cacheDir })
++      writeFileSync(resolve(cacheDir, ETL_CACHE_FILES.normalized), "{\"id\":", "utf8")
++
++      // When: the cache is queried.
++      const result = await queryNationwideCache({
++        cacheDir,
++        request: busanCacheRequest,
++        now: new Date("2026-07-07T01:00:00.000Z"),
++      })
++
++      // Then: the malformed record is rejected before candidate filtering.
++      expect(result).toMatchObject({
++        ok: false,
++        failure: { code: "upstream_invalid_response" },
++      })
++    } finally {
++      await rm(cacheDir, { recursive: true, force: true })
++    }
++  })
++
++  it("rejects partial publish state and mixed-generation metadata counts", async () => {
++    // Given: one cache has an active publish marker and another has mismatched metadata counts.
++    const publishDir = await tempCacheDir()
++    const mismatchDir = await tempCacheDir()
++
++    try {
++      await writeQueryableCache({ cacheDir: publishDir })
++      await writeQueryableCache({ cacheDir: mismatchDir })
++      writeFileSync(resolve(publishDir, ETL_CACHE_FILES.publishMarker), "refreshing\n", "utf8")
++      const metadataPath = resolve(mismatchDir, ETL_CACHE_FILES.metadata)
++      const metadata = cacheMetadataSchema.parse(readJsonFile(metadataPath))
++      writeFileSync(
++        metadataPath,
++        `${JSON.stringify(
++          { ...metadata, counts: { ...metadata.counts, normalized_records: 99 } },
++          null,
++          2,
++        )}\n`,
++        "utf8",
++      )
++
++      // When: both caches are queried through the same reader surface.
++      const publishResult = await queryNationwideCache({
++        cacheDir: publishDir,
++        request: busanCacheRequest,
++        now: new Date("2026-07-07T01:00:00.000Z"),
++      })
++      const mismatchResult = await queryNationwideCache({
++        cacheDir: mismatchDir,
++        request: busanCacheRequest,
++        now: new Date("2026-07-07T01:00:00.000Z"),
++      })
++
++      // Then: refresh-in-progress and mixed-generation cache state fail closed.
++      expect(publishResult).toMatchObject({
++        ok: false,
++        failure: { code: "missing_configuration", retryable: true },
++      })
++      expect(mismatchResult).toMatchObject({
++        ok: false,
++        failure: { code: "upstream_invalid_response" },
++      })
++    } finally {
++      await rm(publishDir, { recursive: true, force: true })
++      await rm(mismatchDir, { recursive: true, force: true })
++    }
++  })
++
++  it("fails closed for invalid source ids and malformed bounded args", () => {
++    // Given: CLI input contains malformed operator-controlled values.
++    const invalidSource = () => parseNationwideEtlArgs({ args: ["--fixture", "--source", "scraper"] })
++    const invalidMaxPages = () => parseNationwideEtlArgs({ args: ["--fixture", "--max-pages", "0"] })
++    const invalidCacheDir = () => parseNationwideEtlArgs({ args: ["--fixture", "--cache-dir", ""] })
++
++    // When/Then: every malformed value is rejected before any extraction or cache write.
++    expect(invalidSource).toThrow(NationwideEtlInputError)
++    expect(invalidMaxPages).toThrow(NationwideEtlInputError)
++    expect(invalidCacheDir).toThrow(NationwideEtlInputError)
++  })
++
++  it("redacts raw service keys from CLI diagnostics", async () => {
++    // Given: the CLI environment contains synthetic service keys.
++    const cacheDir = await tempCacheDir()
++    const serviceKey = "CLI_SYNTHETIC_SERVICE_KEY_12345"
++
++    try {
++      // When: the real script surface runs in fixture dry-run mode.
++      const result = spawnSync(
++        process.execPath,
++        [
++          "--import",
++          "tsx",
++          "scripts/etl-nationwide.ts",
++          "--fixture",
++          "--dry-run",
++          "--cache-dir",
++          cacheDir,
++          "--source",
++          "culture_portal",
++        ],
++        {
++          cwd: process.cwd(),
++          encoding: "utf8",
++          env: {
++            ...process.env,
++            CULTURE_PORTAL_SERVICE_KEY: serviceKey,
++          },
++        },
++      )
++
++      // Then: the command succeeds and stdout contains only redacted keyed diagnostics.
++      expect(result.status).toBe(0)
++      expect(result.stdout).toContain("redaction_verified")
++      expect(result.stdout).toContain("<redacted>")
++      expect(result.stdout).not.toContain(serviceKey)
++      expect(result.stderr).toBe("")
++    } finally {
++      await rm(cacheDir, { recursive: true, force: true })
++    }
++  })
++
++  it("keeps already-redacted encoded service keys from being treated as leaks", () => {
++    const redactedUrl = "https://apis.example.test/events?serviceKey=%3Credacted%3E&page=1"
++
++    expect(
++      redactDiagnosticText(redactedUrl, { CULTURE_PORTAL_SERVICE_KEY: ["SYNTHETIC", "_SECRET_KEY"].join("") }),
++    ).toBe(redactedUrl)
++  })
++})

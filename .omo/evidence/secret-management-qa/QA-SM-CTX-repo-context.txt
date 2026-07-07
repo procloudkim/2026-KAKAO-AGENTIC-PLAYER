@@ -1,0 +1,20 @@
+surface=PowerShell terminal
+cwd=D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY
+invocation=git status --short; git rev-parse --show-toplevel; git rev-parse --short HEAD
+--- git status --short ---
+?? .codegraph/
+?? .gitignore
+?? .omo/
+?? .prd-session/
+?? Agentic-Play.txt
+?? HTML.txt
+?? PLANS.md
+?? apps/
+?? concept/
+?? research/
+?? schema/
+?? "\354\260\270\352\263\240\353\254\270\354\204\234-\354\271\264\354\271\264\354\230\244/"
+--- git rev-parse --show-toplevel ---
+D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY
+--- git rev-parse --short HEAD ---
+829a370

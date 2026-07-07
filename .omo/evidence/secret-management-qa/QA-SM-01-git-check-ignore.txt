@@ -1,0 +1,10 @@
+scenario=QA-SM-01
+criterion=secret env files ignored; .env.example not ignored
+surface=PowerShell terminal / git CLI
+invocation=git check-ignore -v -- .env .env.local apps/family-experience-mcp/.env apps/family-experience-mcp/.env.example
+--- output ---
+.gitignore:1:.env	.env
+.gitignore:2:.env.*	.env.local
+.gitignore:1:.env	apps/family-experience-mcp/.env
+.gitignore:3:!.env.example	apps/family-experience-mcp/.env.example
+--- exit_code=0 ---

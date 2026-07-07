@@ -1,0 +1,27 @@
+
+> family-experience-mcp@0.1.0 verify
+> npm run typecheck && npm test -- --run
+
+
+> family-experience-mcp@0.1.0 typecheck
+> tsc --noEmit
+
+src/etl/cacheStatus.ts(90,9): error TS2322: Type '{ status: "stale"; age_seconds: number; expiresAt: string; generated_at: string; mode: string; source_health: SourceHealthSummary; ttl_hours: number; cacheDir: string; refreshCommand: string; }' is not assignable to type 'CacheOperationalStatus'.
+  Type '{ status: "stale"; age_seconds: number; expiresAt: string; generated_at: string; mode: string; source_health: SourceHealthSummary; ttl_hours: number; cacheDir: string; refreshCommand: string; }' is not assignable to type 'CacheStatusBase & { readonly age_seconds: number; readonly expiresAt: string; readonly generated_at: string; readonly mode: "fixture" | "live"; readonly status: "stale" | "fresh"; readonly ttl_hours: number; }'.
+    Type '{ status: "stale"; age_seconds: number; expiresAt: string; generated_at: string; mode: string; source_health: SourceHealthSummary; ttl_hours: number; cacheDir: string; refreshCommand: string; }' is not assignable to type '{ readonly age_seconds: number; readonly expiresAt: string; readonly generated_at: string; readonly mode: "fixture" | "live"; readonly status: "stale" | "fresh"; readonly ttl_hours: number; }'.
+      Types of property 'mode' are incompatible.
+        Type 'string' is not assignable to type '"fixture" | "live"'.
+src/etl/cacheStatus.ts(91,9): error TS2322: Type '{ status: "fresh"; age_seconds: number; expiresAt: string; generated_at: string; mode: string; source_health: SourceHealthSummary; ttl_hours: number; cacheDir: string; refreshCommand: string; }' is not assignable to type 'CacheOperationalStatus'.
+  Type '{ status: "fresh"; age_seconds: number; expiresAt: string; generated_at: string; mode: string; source_health: SourceHealthSummary; ttl_hours: number; cacheDir: string; refreshCommand: string; }' is not assignable to type 'CacheStatusBase & { readonly age_seconds: number; readonly expiresAt: string; readonly generated_at: string; readonly mode: "fixture" | "live"; readonly status: "stale" | "fresh"; readonly ttl_hours: number; }'.
+    Type '{ status: "fresh"; age_seconds: number; expiresAt: string; generated_at: string; mode: string; source_health: SourceHealthSummary; ttl_hours: number; cacheDir: string; refreshCommand: string; }' is not assignable to type '{ readonly age_seconds: number; readonly expiresAt: string; readonly generated_at: string; readonly mode: "fixture" | "live"; readonly status: "stale" | "fresh"; readonly ttl_hours: number; }'.
+      Types of property 'mode' are incompatible.
+        Type 'string' is not assignable to type '"fixture" | "live"'.
+src/health.ts(89,38): error TS2379: Argument of type '{ allowFixture: boolean; cacheDir: string; sourceSet: readonly ("fixture" | "culture_portal" | "kto_tourapi" | "seoul" | "national_festival")[] | undefined; }' is not assignable to parameter of type 'CacheStatusInput' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'sourceSet' are incompatible.
+    Type 'readonly ("fixture" | "culture_portal" | "kto_tourapi" | "seoul" | "national_festival")[] | undefined' is not assignable to type 'readonly ("fixture" | "culture_portal" | "kto_tourapi" | "seoul" | "national_festival")[]'.
+      Type 'undefined' is not assignable to type 'readonly ("fixture" | "culture_portal" | "kto_tourapi" | "seoul" | "national_festival")[]'.
+src/mcpSourceRecords.ts(34,52): error TS2379: Argument of type '{ allowFixture: false; cacheDir: string; request: SourceAdapterRequest; sourceSet: readonly ("fixture" | "culture_portal" | "kto_tourapi" | "seoul" | "national_festival")[] | undefined; }' is not assignable to parameter of type '{ readonly allowFixture?: boolean; readonly cacheDir: string; readonly request: SourceAdapterRequest; readonly now?: Date; readonly sourceSet?: readonly ("fixture" | "culture_portal" | "kto_tourapi" | "seoul" | "national_festival")[]; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'sourceSet' are incompatible.
+    Type 'readonly ("fixture" | "culture_portal" | "kto_tourapi" | "seoul" | "national_festival")[] | undefined' is not assignable to type 'readonly ("fixture" | "culture_portal" | "kto_tourapi" | "seoul" | "national_festival")[]'.
+      Type 'undefined' is not assignable to type 'readonly ("fixture" | "culture_portal" | "kto_tourapi" | "seoul" | "national_festival")[]'.
+test/observability.test.ts(188,27): error TS2339: Property 'age_seconds' does not exist on type '{ cacheDir: string; refreshCommand: string; status: "missing" | "stale" | "invalid" | "refreshing" | "available"; expiresAt?: string | undefined; generatedAt?: string | undefined; mode?: "fixture" | ... 1 more ... | undefined; ttlHours?: number | undefined; }'.

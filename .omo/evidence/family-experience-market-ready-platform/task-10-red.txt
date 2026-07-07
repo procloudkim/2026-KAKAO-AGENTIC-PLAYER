@@ -1,0 +1,40 @@
+
+> family-experience-mcp@0.1.0 test
+> vitest --run test/httpJson.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/httpJson.test.ts (3 tests | 1 failed) 1808ms
+     × rejects overlong prompt requests with a safe JSON-RPC error 1783ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/httpJson.test.ts > Family experience MCP HTTP request limits > rejects overlong prompt requests with a safe JSON-RPC error
+AssertionError: expected 'event: message\ndata: {"result":{"con…' to contain 'at most'
+
+- Expected
++ Received
+
+- at most
++ event: message
++ data: {"result":{"content":[{"type":"text","text":"요청 조건을 더 구체화해야 해요. 아이 나이 또는 발달 단계를 하나만 알려 주세요."}],"structuredContent":{"ok":false,"mode":"fixture","failure":{"code":"invalid_input","message":"missing_child_selector","retryable":false}},"isError":true},"jsonrpc":"2.0","id":"long-1"}
++
++
+
+ ❯ test/httpJson.test.ts:221:27
+    219|     expect(response.statusCode).toBeLessThan(500)
+    220|     expect(response.body).toContain("invalid_input")
+    221|     expect(response.body).toContain("at most")
+       |                           ^
+    222|     expect(response.body).not.toContain(longPrompt)
+    223|     expect(response.body).not.toMatch(/stack|SyntaxError|TypeError/i)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  17:06:28
+   Duration  1.97s (transform 24ms, setup 0ms, import 48ms, tests 1.81s, environment 0ms)
+

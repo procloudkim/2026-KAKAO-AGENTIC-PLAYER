@@ -1,0 +1,5 @@
+Invocation: node --import tsx --input-type=module -e <inline cache-query probes>
+{"scenario":"missing_metadata_schema_version","ok":false,"code":"upstream_invalid_response","retryable":false}
+{"scenario":"stale_cache","ok":false,"code":"missing_configuration","retryable":false}
+{"scenario":"partial_publish_marker","ok":false,"code":"missing_configuration","retryable":true}
+{"scenario":"malformed_record_jsonl","ok":false,"code":"upstream_invalid_response","retryable":false}

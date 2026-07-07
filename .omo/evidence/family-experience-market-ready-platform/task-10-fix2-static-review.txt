@@ -1,0 +1,63 @@
+COMMAND: scoped static checks for Todo 10 abuse-control slop review
+STARTED_AT: 2026-07-07T17:51:34.4326711+09:00
+
+## escape hatches / skipped tests
+RG_EXIT_CODE=1
+
+## logging / secret-ish terms
+apps/family-experience-mcp/test/httpJson.test.ts:206:    expect(response.body).not.toMatch(/stack|SyntaxError|TypeError/i)
+apps/family-experience-mcp/test/httpJson.test.ts:229:    expect(response.body).not.toMatch(/stack|SyntaxError|TypeError/i)
+apps/family-experience-mcp/test/httpJson.test.ts:243:    expect(response.body).not.toMatch(/stack|SyntaxError|TypeError/i)
+apps/family-experience-mcp/test/httpJson.test.ts:263:    expect(response.body).not.toMatch(/stack|SyntaxError|TypeError/i)
+apps/family-experience-mcp/test/httpJson.test.ts:285:    // Then: the server rejects it without echoing the prompt or a stack trace.
+apps/family-experience-mcp/test/httpJson.test.ts:289:    expect(response.body).not.toMatch(/stack|SyntaxError|TypeError/i)
+apps/family-experience-mcp/src/serverLifecycle.ts:34:    console.log(`family-experience-mcp shutting down: ${reason}`)
+apps/family-experience-mcp/src/serverLifecycle.ts:45:        console.error(`family-experience-mcp shutdown error: ${error.message}`)
+apps/family-experience-mcp/src/serverLifecycle.ts:139:  const tokens = line.trim().split(/\s+/)
+apps/family-experience-mcp/src/serverLifecycle.ts:140:  const pidText = tokens[0]
+apps/family-experience-mcp/src/serverLifecycle.ts:141:  const ppidText = tokens[1]
+apps/family-experience-mcp/src/serverLifecycle.ts:142:  const winpidText = tokens[3]
+apps/family-experience-mcp/src/server.ts:99:    console.log(`family-experience-mcp listening on ${config.host}:${config.port}`)
+RG_EXIT_CODE=0
+
+## bounded controls
+apps/family-experience-mcp/test/mcpHttpTestHelpers.ts:34:      reject(new Error("timed out waiting for MCP request_timeout response"))
+apps/family-experience-mcp/test/mcpHttpTestHelpers.ts:53:      if (!rawResponse.includes("request_timeout")) {
+apps/family-experience-mcp/test/httpJson.test.ts:205:    expect(response.body).toContain("parse_error")
+apps/family-experience-mcp/test/httpJson.test.ts:227:    expect(response.body).toContain("request_body_too_large")
+apps/family-experience-mcp/test/httpJson.test.ts:232:  it("returns request_timeout when the MCP JSON body stalls", async () => {
+apps/family-experience-mcp/test/httpJson.test.ts:242:    expect(response.body).toContain("request_timeout")
+apps/family-experience-mcp/test/httpJson.test.ts:246:  it("returns internal_error when an unexpected MCP HTTP route error escapes", async () => {
+apps/family-experience-mcp/test/httpJson.test.ts:261:    expect(response.body).toContain("internal_error")
+apps/family-experience-mcp/src/schemas.ts:6:export const MAX_FAMILY_EXPERIENCE_PROMPT_LENGTH = 4_096
+apps/family-experience-mcp/src/schemas.ts:54:        MAX_FAMILY_EXPERIENCE_PROMPT_LENGTH,
+apps/family-experience-mcp/src/schemas.ts:55:        `prompt must be at most ${MAX_FAMILY_EXPERIENCE_PROMPT_LENGTH} characters`,
+apps/family-experience-mcp/src/schemas.ts:140:    code: z.enum(["invalid_input", "missing_configuration", "upstream_unavailable", "upstream_invalid_response", "no_results", "internal_error"]),
+apps/family-experience-mcp/src/server.ts:11:  MCP_REQUEST_TIMEOUT_MS,
+apps/family-experience-mcp/src/server.ts:56:        jsonRpcError(-32000, "Too many requests. Try again later.", "rate_limited"),
+apps/family-experience-mcp/src/server.ts:84:      writeJson(response, 500, jsonRpcError(-32603, "Internal server error.", "internal_error"))
+apps/family-experience-mcp/src/server.ts:88:  server.requestTimeout = MCP_REQUEST_TIMEOUT_MS + 1_000
+apps/family-experience-mcp/src/server.ts:89:  server.headersTimeout = MCP_REQUEST_TIMEOUT_MS + 2_000
+apps/family-experience-mcp/src/mcpRequestLimits.ts:3:export const MCP_REQUEST_TIMEOUT_MS = 10_000
+apps/family-experience-mcp/src/mcpRequestLimits.ts:5:const maxMcpRequestBodyBytes = 64 * 1_024
+apps/family-experience-mcp/src/mcpRequestLimits.ts:6:const rateLimitWindowMs = 60_000
+apps/family-experience-mcp/src/mcpRequestLimits.ts:7:const maxMcpRequestsPerWindow = 60
+apps/family-experience-mcp/src/mcpRequestLimits.ts:60:  if (current === undefined || nowMs - current.windowStartedAtMs >= rateLimitWindowMs) {
+apps/family-experience-mcp/src/mcpRequestLimits.ts:65:  if (current.count >= maxMcpRequestsPerWindow) {
+apps/family-experience-mcp/src/mcpRequestLimits.ts:78:  if (bodyLength !== undefined && bodyLength > maxMcpRequestBodyBytes) {
+apps/family-experience-mcp/src/mcpRequestLimits.ts:82:        jsonRpcError(-32000, "Request body is too large.", "request_body_too_large"),
+apps/family-experience-mcp/src/mcpRequestLimits.ts:97:      reject(new HttpResponseError(408, jsonRpcError(-32000, "Request timed out.", "request_timeout")))
+apps/family-experience-mcp/src/mcpRequestLimits.ts:98:    }, MCP_REQUEST_TIMEOUT_MS)
+apps/family-experience-mcp/src/mcpRequestLimits.ts:107:      if (receivedBytes > maxMcpRequestBodyBytes) {
+apps/family-experience-mcp/src/mcpRequestLimits.ts:113:            jsonRpcError(-32000, "Request body is too large.", "request_body_too_large"),
+apps/family-experience-mcp/src/mcpRequestLimits.ts:133:          reject(new HttpResponseError(400, jsonRpcError(-32700, "Parse error.", "parse_error")))
+RG_EXIT_CODE=0
+
+## pure LOC
+apps/family-experience-mcp/src/server.ts	90
+apps/family-experience-mcp/src/schemas.ts	146
+apps/family-experience-mcp/src/mcpRequestLimits.ts	139
+apps/family-experience-mcp/src/serverLifecycle.ts	202
+apps/family-experience-mcp/test/httpJson.test.ts	232
+apps/family-experience-mcp/test/mcpHttpTestHelpers.ts	82
+FINISHED_AT: 2026-07-07T17:51:34.5566183+09:00

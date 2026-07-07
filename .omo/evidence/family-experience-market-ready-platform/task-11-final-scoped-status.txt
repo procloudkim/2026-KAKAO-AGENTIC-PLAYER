@@ -1,0 +1,11 @@
+?? .omo/evidence/family-experience-market-ready-platform/task-11-doneclaim.md
+?? apps/family-experience-mcp/docs/DEMO_PACK.md
+?? apps/family-experience-mcp/docs/GOLDEN_RESULTS.md
+?? apps/family-experience-mcp/package.json
+?? apps/family-experience-mcp/scripts/eval-market-metrics.ts
+?? apps/family-experience-mcp/scripts/eval-prompt-checks.ts
+?? apps/family-experience-mcp/scripts/eval-prompt-cli.ts
+?? apps/family-experience-mcp/scripts/eval-prompt-no-result.ts
+?? apps/family-experience-mcp/scripts/eval-prompt-request-checks.ts
+?? apps/family-experience-mcp/scripts/eval-prompts.ts
+?? apps/family-experience-mcp/test/fixtures/eval-nationwide/cache/metadata.json

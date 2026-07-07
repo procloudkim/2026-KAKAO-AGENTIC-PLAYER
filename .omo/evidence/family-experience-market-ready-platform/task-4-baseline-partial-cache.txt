@@ -1,0 +1,72 @@
+{
+  "scenario": "task-4-baseline-before-change",
+  "partial_mixed_generation_current_result": {
+    "ok": true,
+    "mode": "fixture",
+    "records": [
+      {
+        "mode": "fixture",
+        "city": "Busan",
+        "date": {
+          "start": "2026-07-04",
+          "end": "2026-07-05",
+          "time_text": "10:00-12:00"
+        },
+        "venue": {
+          "name": "Busan Culture Center",
+          "address": "Busan Haeundae-gu"
+        },
+        "child_stages": [
+          "preschool"
+        ],
+        "min_child_age": 3,
+        "max_child_age": 6,
+        "parent_check": {
+          "live_status": "fixture_not_live",
+          "age_fit": "baseline",
+          "reservation": "confirmation_needed"
+        },
+        "source": {
+          "mode": "fixture",
+          "url": "https://example.test/culture-portal-oneview/partial-baseline",
+          "id": "culture-portal-oneview",
+          "raw_snapshot_id": "culture-portal-oneview:raw:partial-baseline"
+        },
+        "id": "culture-portal-oneview:partial-baseline",
+        "raw_snapshot_id": "culture-portal-oneview:raw:partial-baseline",
+        "title": "Busan Partial Cache Baseline",
+        "retrieved_at": "2026-07-04T00:00:00.000Z",
+        "confidence": {
+          "date": "source-stated",
+          "venue": "source-stated",
+          "age_fit": "source-stated",
+          "reservation": "unknown"
+        },
+        "indoor_outdoor": "indoor",
+        "target_age_text": "ages 3-6",
+        "program_text": "baseline",
+        "reservation_url": null,
+        "contact": null,
+        "fee_text": "confirm at source",
+        "tags": [
+          "busan"
+        ],
+        "suitability": "happy_prompt_match",
+        "fixture_notice": ""
+      }
+    ]
+  },
+  "stale_current_result": {
+    "ok": false,
+    "mode": "live",
+    "failure": {
+      "code": "missing_configuration",
+      "message": "Nationwide cache is stale at D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\tmp\\market-plan\\task-4-baseline\\stale. Rebuild it with npm run etl:nationwide -- --fixture --write-cache --cache-dir D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\tmp\\market-plan\\task-4-baseline\\stale.",
+      "retryable": false
+    }
+  },
+  "expected_after_fix": {
+    "partial_mixed_generation": "reject as invalid cache/provenance mismatch",
+    "stale": "reject as missing_configuration stale cache"
+  }
+}

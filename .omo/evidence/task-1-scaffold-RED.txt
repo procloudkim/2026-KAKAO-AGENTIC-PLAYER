@@ -1,0 +1,1 @@
+/usr/bin/bash: line 1: cd: /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp: No such file or directory

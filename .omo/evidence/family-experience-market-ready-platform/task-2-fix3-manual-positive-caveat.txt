@@ -1,0 +1,12 @@
+Manual probe: caveat-only include copy must pass
+Command: npm --prefix apps/family-experience-mcp run scan:claims -- --include .omo\tmp\market-plan-fix3\positive-caveats.md
+EXIT_CODE=0
+
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include .omo\tmp\market-plan-fix3\positive-caveats.md
+
+{
+  "status": "PASS",
+  "scanned_files": 128
+}

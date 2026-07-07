@@ -1,0 +1,13 @@
+captured_SERVER_PID=1536
+listener_windows_pid=77872
+git_ps_excerpt
+      PID    PPID    PGID     WINPID   TTY         UID    STIME COMMAND
+     1536    1521    1521      71396  ?         197609 15:08:01 /usr/bin/bash
+     1546    1536    1521      83340  ?         197609 15:08:01 /c/Program Files/nodejs/node
+  4272176       0       0      77872  ?              0 15:08:02 C:\Program Files\nodejs\node.exe
+powershell_ancestors
+PID=77872 PPID=58480 Name=node.exe Command=node  --import tsx src/server.ts
+PID=58480 PPID=83340 Name=cmd.exe Command=C:\Windows\system32\cmd.exe /d /s /c node --import tsx src/server.ts
+PID=83340 PPID=82932 Name=node.exe Command="C:\Program Files\nodejs\node.exe" "C:\Program Files\nodejs/node_modules/npm/bin/npm-cli.js" run dev:http
+PID=82932 PPID=71396 Name=bash.exe Command="C:\Program Files\Git\usr\bin\bash.exe" "/c/Program Files/nodejs/npm" run dev:http
+PID=71396 PPID=32564 Name=bash.exe Command="C:\Program Files\Git\usr\bin\bash.exe" "/c/Program Files/nodejs/npm" run dev:http

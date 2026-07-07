@@ -1,0 +1,37 @@
+# task-5 cleanup fix verification
+## typecheck
+
+> family-experience-mcp@0.0.0 typecheck
+> tsc --noEmit
+
+## focused tests
+
+> family-experience-mcp@0.0.0 test
+> vitest --run test/mcp.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  11:24:33
+   Duration  369ms (transform 68ms, setup 0ms, import 215ms, tests 40ms, environment 0ms)
+
+## smoke:mcp
+
+> family-experience-mcp@0.0.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts --assert-tool-count=1
+
+{
+  "endpoint": "http://127.0.0.1:3345/mcp",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "result_ok": true,
+  "candidate_count": 3,
+  "text": "fixture/demo 기준으로 후보 3개를 찾았어요.\n1. Demo Seoul Kids Makers Studio\n2. Demo Rainy Day Story Theater\n3. Demo Family Science Light Lab"
+}
+## cleanup
+no LISTENING on :3345 after verification smoke

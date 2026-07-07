@@ -1,0 +1,5 @@
+Artifact non-empty proof
+CheckedAt: 2026-07-04T07:54:53.3915722+09:00
+FileCount: 24
+EmptyCount: 0
+Verdict: PASS

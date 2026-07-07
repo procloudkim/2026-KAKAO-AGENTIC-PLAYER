@@ -1,0 +1,54 @@
+{
+  "prompt_count": 41,
+  "passed_count": 41,
+  "pass_rate": 1,
+  "unsupported_claim_failures": 0,
+  "prompt_path": {
+    "accepted_count": 41,
+    "failure_count": 0,
+    "mode": "public_loose_prompt"
+  },
+  "coverage": {
+    "required": true,
+    "prompt_count_minimum": 42,
+    "prompt_count_expected": 42,
+    "region_counts": {
+      "Seoul": 4,
+      "Busan": 4,
+      "Daegu": 4,
+      "Daejeon": 2,
+      "Gwangju": 3,
+      "Incheon": 3,
+      "Gyeonggi": 3,
+      "Gangwon": 4,
+      "Chungcheong": 3,
+      "Jeolla": 3,
+      "Gyeongsang": 3,
+      "Jeju": 4
+    },
+    "child_stage_counts": {
+      "infant": 5,
+      "toddler": 13,
+      "preschool": 14,
+      "school_age": 10
+    },
+    "fee_counts": {
+      "free": 25,
+      "paid": 16
+    },
+    "environment_counts": {
+      "indoor": 20,
+      "outdoor": 16
+    },
+    "no_result_count": 6,
+    "unsupported_claim_prompt_count": 6,
+    "prompt_injection_count": 2,
+    "missing_buckets": [
+      "prompt_count>=42",
+      "prompt_count=42"
+    ],
+    "status": "fail"
+  },
+  "latency_ms_max": 9,
+  "status": "fail"
+}

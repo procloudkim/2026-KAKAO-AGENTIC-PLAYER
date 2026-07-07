@@ -1,0 +1,91 @@
+Todo 7 quality-fix GREEN evidence
+Date: 2026-07-02
+
+
+COMMAND: cd apps/family-experience-mcp && npm run typecheck
+
+> family-experience-mcp@0.0.0 typecheck
+> tsc --noEmit
+
+
+COMMAND: cd apps/family-experience-mcp && npm test -- --run test/mcp.test.ts test/pipeline.test.ts test/golden.test.ts
+
+> family-experience-mcp@0.0.0 test
+> vitest --run test/mcp.test.ts test/pipeline.test.ts test/golden.test.ts
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  3 passed (3)
+      Tests  14 passed (14)
+   Start at  14:17:13
+   Duration  423ms (transform 159ms, setup 0ms, import 444ms, tests 101ms, environment 0ms)
+
+
+COMMAND: cd apps/family-experience-mcp && npm run verify
+
+> family-experience-mcp@0.0.0 verify
+> npm run typecheck && npm test -- --run
+
+
+> family-experience-mcp@0.0.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.0.0 test
+> vitest --run
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  8 passed (8)
+      Tests  31 passed (31)
+   Start at  14:17:16
+   Duration  456ms (transform 297ms, setup 0ms, import 940ms, tests 138ms, environment 1ms)
+
+
+PLAN-STYLE SERVER SMOKE
+NO_LISTENER:3345
+SERVER_PID:83796
+HEALTH_HTTP_STATUS:200
+
+COMMAND: cd apps/family-experience-mcp && EVIDENCE_DIR="$REPO_ROOT/.omo/evidence" FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden
+
+> family-experience-mcp@0.0.0 smoke:golden
+> tsx scripts/smoke-golden.ts
+
+{
+  "artifact_dir": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence",
+  "scenarios": [
+    {
+      "id": "happy",
+      "passed": true,
+      "isError": false
+    },
+    {
+      "id": "missing-age",
+      "passed": true,
+      "isError": true
+    },
+    {
+      "id": "no-result",
+      "passed": true,
+      "isError": true
+    },
+    {
+      "id": "source-failure",
+      "passed": true,
+      "isError": true
+    }
+  ]
+}
+
+COMMAND: parse and semantically validate four golden JSON artifacts
+SEMANTIC_JSON: PASS four artifacts parse and meet Todo 7 semantics
+KILLED_SERVER_PID:83796
+NO_LISTENER:3345
+NO_LISTENER:3346
+
+GREEN_STATUS: PASS

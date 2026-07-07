@@ -1,0 +1,235 @@
+
+> family-experience-mcp@0.1.0 verify
+> npm run typecheck && npm test -- --run
+
+
+> family-experience-mcp@0.1.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.1.0 test
+> vitest --run
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/golden.test.ts (6 tests | 4 failed) 25ms
+     × locks the happy golden action-card contract 12ms
+     × locks Korean missing-age guidance without SDK validation text 2ms
+     × locks no-result safety and one-constraint relaxation 1ms
+     × locks source-failure safety 2ms
+ ❯ test/mcpCache.test.ts (6 tests | 1 failed) 66ms
+     × rejects unsupported availability or safety claims in structured descriptions 15ms
+ ❯ test/scanClaims.test.ts (18 tests | 2 failed) 2111ms
+     × allows explicit include with a public unsupported-claim caveat 172ms
+     × allows explicit include with an English live-now caveat only 170ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/golden.test.ts > Todo 7 golden evidence semantics > locks the happy golden action-card contract
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/golden.test.ts:70:29
+     68|
+     69|     // Then: the evidence contains exactly three fixture cards with th…
+     70|     expect(artifact.passed).toBe(true)
+       |                             ^
+     71|     expect(structuredContent?.ok).toBe(true)
+     72|     if (structuredContent?.ok !== true) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  test/golden.test.ts > Todo 7 golden evidence semantics > locks Korean missing-age guidance without SDK validation text
+AssertionError: expected '' to match /아이 나이|발달 단계/
+
+- Expected:
+/아이 나이|발달 단계/
+
++ Received:
+""
+
+ ❯ test/golden.test.ts:169:36
+    167|     // When / Then: it asks for child age or stage in Korean and retur…
+    168|     expect(artifact.response.isError).toBe(true)
+    169|     expect(artifact.response.text).toMatch(/아이 나이|발달 단계/)
+       |                                    ^
+    170|     expect(artifact.response.text).not.toMatch(/Input validation error…
+    171|     expect(artifact.response.structuredContent?.ok).toBe(false)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  test/golden.test.ts > Todo 7 golden evidence semantics > locks no-result safety and one-constraint relaxation
+AssertionError: expected undefined to be false // Object.is equality
+
+- Expected:
+false
+
++ Received:
+undefined
+
+ ❯ test/golden.test.ts:180:53
+    178|     // When / Then: it fabricates no candidates and suggests relaxing …
+    179|     expect(artifact.response.isError).toBe(true)
+    180|     expect(artifact.response.structuredContent?.ok).toBe(false)
+       |                                                     ^
+    181|     expect(artifact.response.action_cards).toHaveLength(0)
+    182|     expect(artifact.response.text).toMatch(/날짜 범위 하나만/)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  test/golden.test.ts > Todo 7 golden evidence semantics > locks source-failure safety
+AssertionError: expected '조건에 맞는 근거 있는 후보를 찾지 못했어요. 후보를 임의로 만들지…' to match /현재 설정|공식 데이터|fixture 모드/
+
+- Expected:
+/현재 설정|공식 데이터|fixture 모드/
+
++ Received:
+"조건에 맞는 근거 있는 후보를 찾지 못했어요. 후보를 임의로 만들지 않았습니다. 다음에는 날짜 범위 하나만 넓혀서 다시 요청해 주세요."
+
+ ❯ test/golden.test.ts:194:36
+    192|     expect(artifact.response.structuredContent?.ok).toBe(false)
+    193|     expect(artifact.response.action_cards).toHaveLength(0)
+    194|     expect(artifact.response.text).toMatch(/현재 설정|공식 데이터|fixture 모드/)
+       |                                    ^
+    195|     expect(JSON.stringify(artifact)).not.toMatch(/SEOUL_OPEN_DATA_KEY|…
+    196|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  test/mcpCache.test.ts > Todo 7 MCP nationwide cache routing > rejects unsupported availability or safety claims in structured descriptions
+AssertionError: promise resolved "{ content: [ { …(2) } ], …(1) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "content": [
++     {
++       "text": "fixture/demo 기준으로 후보 1개를 찾았어요.
++ action_card: 1
++ title: Busan Indoor Family Studio
++ date_time: 2026-07-04~2026-07-05 10:00-12:00
++ venue: Busan Culture Center
++ address: Busan Haeundae-gu indoor hall
++ age_fit_label: source-stated
++ age_fit_reason: Synthetic cache text marks preschool family participation.
++ indoor_outdoor: indoor
++ fee_text: Synthetic fixture fee text; confirm with the official source before visiting
++ source_name: Culture Portal/KCISA
++ source_url: https://example.test/culture-portal-oneview/task-7
++ retrieved_at: 2026-07-04T00:00:00.000Z
++ confidence: date=source-stated; venue=source-stated; age_fit=source-stated; reservation=unknown
++ mode: fixture
++ warnings: fixture/demo data only; not live/current.
++ source_summary: Culture Portal/KCISA fixture/cache candidate only; not live/current. source_refs=culture-portal-oneview:culture-portal-oneview:raw:task-7-busan
++ parent_check: Synthetic cache text marks preschool family participation. fixture/cache 후보입니다. 방문 전 실제 공식 출처에서 예약/요금을 확인하세요.
++ next_action: fixture/cache source_url=https://example.test/culture-portal-oneview/task-7; 방문 전 실제 공식 출처에서 날짜, 장소, 요금, 신청 절차를 확인하세요.",
++       "type": "text",
++     },
++   ],
++   "structuredContent": {
++     "candidates": [
++       {
++         "address": "Busan Haeundae-gu indoor hall",
++         "age_fit_label": "source-stated",
++         "age_fit_reason": "Synthetic cache text marks preschool family participation.",
++         "child_stages": [
++           "preschool",
++         ],
++         "confidence": "date=source-stated; venue=source-stated; age_fit=source-stated; reservation=unknown",
++         "date_time": "2026-07-04~2026-07-05 10:00-12:00",
++         "description": "available to book and safe for children",
++         "ends_at": "2026-07-05",
++         "fee_text": "Synthetic fixture fee text; confirm with the official source before visiting",
++         "id": "culture-portal-oneview:task-7-busan-indoor",
++         "indoor_outdoor": "indoor",
++         "location": "Busan Culture Center",
++         "max_child_age": 6,
++         "min_child_age": 3,
++         "mode": "fixture",
++         "next_action": "fixture/cache source_url=https://example.test/culture-portal-oneview/task-7; 방문 전 실제 공식 출처에서 날짜, 장소, 요금, 신청 절차를 확인하세요.",
++         "parent_check": "Synthetic cache text marks preschool family participation. fixture/cache 후보입니다. 방문 전 실제 공식 출처에서 예약/요금을 확인하세요.",
++         "retrieved_at": "2026-07-04T00:00:00.000Z",
++         "source": "culture_portal",
++         "source_name": "Culture Portal/KCISA",
++         "source_summary": "Culture Portal/KCISA fixture/cache candidate only; not live/current. source_refs=culture-portal-oneview:culture-portal-oneview:raw:task-7-busan",
++         "source_url": "https://example.test/culture-portal-oneview/task-7",
++         "starts_at": "2026-07-04",
++         "tags": [
++           "busan",
++           "indoor",
++           "preschool",
++           "cache",
++         ],
++         "title": "Busan Indoor Family Studio",
++         "venue": "Busan Culture Center",
++         "warnings": "fixture/demo data only; not live/current.",
++       },
++     ],
++     "mode": "fixture",
++     "ok": true,
++   },
+  }
+
+ ❯ test/mcpCache.test.ts:235:8
+    233|           config: { ...noFixtureConfig, etlCacheDir: cacheDir },
+    234|         }),
+    235|       ).rejects.toThrow(/unsupported availability or safety claim/)
+       |        ^
+    236|     } finally {
+    237|       await rm(cacheDir, { recursive: true, force: true })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  test/scanClaims.test.ts > claim scanner > allows explicit include with a public unsupported-claim caveat
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/scanClaims.test.ts:232:29
+    230|
+    231|       // Then: explicit caveat language is accepted.
+    232|       expect(result.status).toBe(0)
+       |                             ^
+    233|       expect(result.stdout).toContain('"status": "PASS"')
+    234|     } finally {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  test/scanClaims.test.ts > claim scanner > allows explicit include with an English live-now caveat only
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ test/scanClaims.test.ts:251:29
+    249|
+    250|       // Then: caveat-only launch copy is accepted.
+    251|       expect(result.status).toBe(0)
+       |                             ^
+    252|       expect(result.stdout).toContain('"status": "PASS"')
+    253|     } finally {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  3 failed | 15 passed (18)
+      Tests  7 failed | 126 passed (133)
+   Start at  19:10:52
+   Duration  26.00s (transform 1.91s, setup 0ms, import 3.76s, tests 29.64s, environment 2ms)
+

@@ -1,0 +1,5 @@
+scope=task-5 redaction/culture/review/doneclaim artifacts plus etl/*.json
+excludes=self-referential search receipts and source test literals
+files_checked=20
+fake_key_occurrences=0
+result=PASS

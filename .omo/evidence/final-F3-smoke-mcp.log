@@ -1,0 +1,14 @@
+
+> family-experience-mcp@0.0.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts --assert-tool-count=1
+
+{
+  "endpoint": "http://127.0.0.1:3345/mcp",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "result_ok": true,
+  "candidate_count": 3,
+  "text": "fixture/demo 기준으로 후보 3개를 찾았어요.\naction_card: 1\ntitle: Demo Seoul Kids Makers Studio\ndate_time: 2026-07-04\nvenue: DDP Design Lab Demo Room\naddress: DDP Design Lab Demo Room\nage_fit_label: source-stated\nage_fit_reason: Demo program text states ages 4-6 and guardian participation.\nindoor_outdoor: indoor\nfee_text: Demo field; confirm fees with an official source in live mode.\nsource_name: fixture/demo source\nsource_url: https://example.invalid/family-experience/fixture-v1\nretrieved_at: fixture/demo snapshot\nconfidence: age_fit=source-stated\nmode: fixture\nwarnings: fixture/demo data only; not live/current.\nsource_summary: fixture/demo source 근거로 제목, 날짜, 장소, 연령 단서를 확인했습니다.\nparent_check: Demo program text states ages 4-6 and guardian participation. 예약/요금은 출발 전 공식 출처에서 확인하세요.\nnext_action: https://example.invalid/family-experience/fixture-v1에서 날짜, 장소, 요금, 신청 절차를 확인하세요.\naction_card: 2\ntitle: Demo Rainy Day Story Theater\ndate_time: 2026-07-04\nvenue: Seoul Children's Library Demo Hall\naddress: Seoul Children's Library Demo Hall\nage_fit_label: source-stated\nage_fit_reason: Demo program text states preschool family story play for ages 3-7.\nindoor_outdoor: indoor\nfee_text: Demo field; confirm fees with an official source in live mode.\nsource_name: fixture/demo source\nsource_url: https://example.invalid/family-experience/fixture-v1\nretrieved_at: fixture/demo snapshot\nconfidence: age_fit=source-stated\nmode: fixture\nwarnings: fixture/demo data only; not live/current.\nsource_summary: fixture/demo source 근거로 제목, 날짜, 장소, 연령 단서를 확인했습니다.\nparent_check: Demo program text states preschool family story play for ages 3-7. 예약/요금은 출발 전 공식 출처에서 확인하세요.\nnext_action: https://example.invalid/family-experience/fixture-v1에서 날짜, 장소, 요금, 신청 절차를 확인하세요.\naction_card: 3\ntitle: Demo Family Science Light Lab\ndate_time: 2026-07-04\nvenue: Seoul Science Center Demo Classroom\naddress: Seoul Science Center Demo Classroom\nage_fit_label: source-stated\nage_fit_reason: Demo program text states a preschool-friendly guardian lab for ages 4-8.\nindoor_outdoor: indoor\nfee_text: Demo field; confirm fees with an official source in live mode.\nsource_name: fixture/demo source\nsource_url: https://example.invalid/family-experience/fixture-v1\nretrieved_at: fixture/demo snapshot\nconfidence: age_fit=source-stated\nmode: fixture\nwarnings: fixture/demo data only; not live/current.\nsource_summary: fixture/demo source 근거로 제목, 날짜, 장소, 연령 단서를 확인했습니다.\nparent_check: Demo program text states a preschool-friendly guardian lab for ages 4-8. 예약/요금은 출발 전 공식 출처에서 확인하세요.\nnext_action: https://example.invalid/family-experience/fixture-v1에서 날짜, 장소, 요금, 신청 절차를 확인하세요."
+}

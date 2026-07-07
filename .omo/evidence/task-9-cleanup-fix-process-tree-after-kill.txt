@@ -1,0 +1,11 @@
+captured_SERVER_PID=189
+before_listener_windows_pid=84000
+after_listener_windows_pid=84000
+git_ps_after_kill
+      PID    PPID    PGID     WINPID   TTY         UID    STIME COMMAND
+  4278304       0       0      84000  ?              0 15:08:55 C:\Program Files\nodejs\node.exe
+powershell_ancestors_after_kill
+PID=84000 PPID=84884 Name=node.exe Command=node  --import tsx src/server.ts
+PID=84884 PPID=61360 Name=cmd.exe Command=C:\Windows\system32\cmd.exe /d /s /c node --import tsx src/server.ts
+PID=61360 PPID=70780 Name=node.exe Command="C:\Program Files\nodejs\node.exe" "C:\Program Files\nodejs/node_modules/npm/bin/npm-cli.js" run dev:http
+PID=70780 PPID=78800 Name=bash.exe Command="C:\Program Files\Git\usr\bin\bash.exe" "/c/Program Files/nodejs/npm" run dev:http

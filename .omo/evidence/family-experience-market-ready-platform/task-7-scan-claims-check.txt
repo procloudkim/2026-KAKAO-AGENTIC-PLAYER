@@ -1,0 +1,139 @@
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts
+
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\src\\schemas.ts",
+      "line": 80,
+      "claim": "전국 모든 행사"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\src\\schemas.ts",
+      "line": 80,
+      "claim": "전국 전체"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\src\\schemas.ts",
+      "line": 80,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\src\\schemas.ts",
+      "line": 80,
+      "claim": "예약가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\src\\schemas.ts",
+      "line": 80,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\src\\schemas.ts",
+      "line": 80,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\src\\schemas.ts",
+      "line": 80,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\src\\schemas.ts",
+      "line": 80,
+      "claim": "currently open"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\src\\schemas.ts",
+      "line": 80,
+      "claim": "아이에게 적합함"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\golden.test.ts",
+      "line": 52,
+      "claim": "전국 모든 행사"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\golden.test.ts",
+      "line": 52,
+      "claim": "전국 전체"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\golden.test.ts",
+      "line": 52,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\golden.test.ts",
+      "line": 52,
+      "claim": "예약가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\golden.test.ts",
+      "line": 52,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\golden.test.ts",
+      "line": 52,
+      "claim": "실시간"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\golden.test.ts",
+      "line": 52,
+      "claim": "live now"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\golden.test.ts",
+      "line": 52,
+      "claim": "currently open"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\golden.test.ts",
+      "line": 52,
+      "claim": "아이에게 적합함"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\golden.test.ts",
+      "line": 125,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\golden.test.ts",
+      "line": 140,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\golden.test.ts",
+      "line": 146,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\golden.test.ts",
+      "line": 148,
+      "claim": "아이에게 적합함"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\mcpCache.test.ts",
+      "line": 208,
+      "claim": "예약 가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\mcpCache.test.ts",
+      "line": 208,
+      "claim": "예약가능"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\mcpCache.test.ts",
+      "line": 208,
+      "claim": "운영 중"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\test\\mcpCache.test.ts",
+      "line": 208,
+      "claim": "currently open"
+    }
+  ]
+}

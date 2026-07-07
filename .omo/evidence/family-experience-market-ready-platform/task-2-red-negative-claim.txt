@@ -1,0 +1,8 @@
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include .omo/tmp/market-plan/bad-public-copy.md
+
+{
+  "status": "PASS",
+  "scanned_files": 124
+}

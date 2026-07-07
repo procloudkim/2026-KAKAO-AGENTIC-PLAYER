@@ -1,0 +1,13 @@
+VERDICT: ITERATE
+
+Findings:
+- [high] `.omo/plans/family-experience-mcp-first-build.md:142` - QA commands hard-code `/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY`, repeated through todos and F1-F4. This is not executable from the current snapshot root and may verify or mutate the wrong workspace. Replace every absolute workspace command with repo-root-relative commands using a declared `REPO_ROOT`/current cwd.
+- [high] `.omo/plans/family-experience-mcp-first-build.md:210` - Final verification says to “wait for the user's explicit okay,” conflicting with zero-human verification at line 94 and the no-human-QA requirement. Remove this as a completion dependency; make user approval a post-run release gate only.
+- [medium] `.omo/plans/family-experience-mcp-first-build.md:162` - `age_fit_label` allows `computed` and `stale`, conflicting with the quality gate condition that age-fit be `source-stated`, `inferred`, or `unknown` only. Split `age_fit_label` from `confidence`/freshness labels and add tests preventing computed/stale from implying suitability.
+- [medium] `.omo/plans/family-experience-mcp-first-build.md:173` - MCP/HTTP QA says “With server running” but the todo QA invocation only shows `curl`/`smoke:mcp`, not how to start, wait for, log, and stop the server. Add exact background server orchestration and cleanup evidence for todo 5 and todo 7, not only final F3.
+- [medium] `.omo/plans/family-experience-mcp-first-build.md:189` - `smoke:golden` runs from `apps/family-experience-mcp` but writes `.omo/evidence/...`; that path is ambiguous and likely app-local unless the script resolves repo root. Define `EVIDENCE_DIR=$REPO_ROOT/.omo/evidence` or use explicit `../../.omo/evidence`.
+- [medium] `.omo/plans/family-experience-mcp-first-build.md:205` - Secret scan uses `grep ... | grep -v 'redacted' || true`, so the command can exit 0 even when leaks exist and can hide leaked values on lines containing “redacted.” Replace with a failing redaction test/script with an explicit allowlist.
+- [low] `.omo/plans/family-experience-mcp-first-build.md:224` - Final claim grep is too narrow for the claim-safety requirement; it misses several Korean/English variants and generated golden evidence. Add behavior assertions over `structuredContent` and golden JSON for nationwide, reservation, live/current, suitability, and freshness wording.
+
+Residual risks:
+- Current MCP TypeScript SDK docs broadly support the planned server/client package split and `createMcpHandler`/`McpServer`/HTTP patterns, so I did not mark the SDK shape as blocking. Re-fetch docs during execution because the plan explicitly depends on current SDK behavior.

@@ -1,0 +1,50 @@
+{
+  "scenario": "source-failure",
+  "prompt": "서울에서 4살 아이랑 갈 만한 실내 체험 3개만 골라줘.",
+  "endpoint": "http://127.0.0.1:3346/mcp",
+  "request": {
+    "location": "Seoul",
+    "date_range": {
+      "start": "2026-07-04",
+      "end": "2026-07-04"
+    },
+    "child_age": 4
+  },
+  "response": {
+    "isError": true,
+    "text": "조건에 맞는 근거 있는 후보를 찾지 못했어요. 후보를 임의로 만들지 않았습니다. 다음에는 날짜 범위 하나만 넓혀서 다시 요청해 주세요.",
+    "action_cards": [],
+    "structuredContent": {
+      "ok": false,
+      "mode": "live",
+      "failure": {
+        "code": "no_results",
+        "message": "No family experiences matched the requested date, location, and child age constraints.",
+        "retryable": false
+      }
+    }
+  },
+  "checks": [
+    {
+      "name": "is_error_true",
+      "passed": true,
+      "detail": "source failure sets isError true"
+    },
+    {
+      "name": "no_candidates",
+      "passed": true,
+      "detail": "no candidates on source failure"
+    },
+    {
+      "name": "safe_korean_message",
+      "passed": false,
+      "detail": "safe Korean source-failure text"
+    },
+    {
+      "name": "no_raw_keyed_url",
+      "passed": true,
+      "detail": "no raw secret or keyed URL"
+    }
+  ],
+  "passed": false
+}

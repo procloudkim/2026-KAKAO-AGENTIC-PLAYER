@@ -1,0 +1,13 @@
+Scenario: Todo 7 fix2 changed-file receipt scoped to user-approved files.
+Invocation: git status --short -- apps/family-experience-mcp/scripts/scan-secrets.ts apps/family-experience-mcp/test/scanSecrets.test.ts .omo/evidence/family-experience-market-ready-platform/task-7-fix2-*
+OUTPUT:
+ A apps/family-experience-mcp/scripts/scan-secrets.ts
+ A apps/family-experience-mcp/test/scanSecrets.test.ts
+?? .omo/evidence/family-experience-market-ready-platform/task-7-fix2-cleanup.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-7-fix2-embedded-include-after-fix.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-7-fix2-focused-scanSecrets.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-7-fix2-full-verify.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-7-fix2-loc.tsv
+?? .omo/evidence/family-experience-market-ready-platform/task-7-fix2-mixed-include-after-fix.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-7-fix2-red-embedded-placeholder.txt
+?? .omo/evidence/family-experience-market-ready-platform/task-7-fix2-scan-secrets.txt

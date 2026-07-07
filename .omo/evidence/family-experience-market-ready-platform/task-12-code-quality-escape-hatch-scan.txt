@@ -1,0 +1,12 @@
+scenario=escape hatch scan over Todo 12 reviewed TS files
+pattern=@ts-ignore|@ts-expect-error|\bas\s+any\b|:\s*any\b|<any>|!\.|!\[
+files=
+apps/family-experience-mcp/src/observability.ts
+apps/family-experience-mcp/src/observabilityTypes.ts
+apps/family-experience-mcp/src/observabilityCache.ts
+apps/family-experience-mcp/src/observabilityRedaction.ts
+apps/family-experience-mcp/src/mcp.ts
+apps/family-experience-mcp/src/server.ts
+apps/family-experience-mcp/src/health.ts
+apps/family-experience-mcp/test/observability.test.ts
+result=PASS no escape hatch matches

@@ -1,0 +1,1 @@
+{"ok":true,"name":"family-experience-mcp","version":"0.1.0","tools":["find_family_experiences"],"config":{"port":3347,"allowFixture":true,"toolMode":"fixture","seoulOpenDataBaseUrl":"http://openapi.seoul.go.kr:8088","seoulOpenDataKey":"missing"}}

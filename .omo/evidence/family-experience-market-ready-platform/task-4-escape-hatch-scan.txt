@@ -1,0 +1,1 @@
+PASS changed-file escape-hatch/debug scan: no matches for as any|as unknown|@ts-ignore|@ts-expect-error|debugger;|console\.log\("\[DEBUG\]|TODO DEBUG|HACK|XXX|\.catch\(\(\) => \{\}\)|catch \{\}

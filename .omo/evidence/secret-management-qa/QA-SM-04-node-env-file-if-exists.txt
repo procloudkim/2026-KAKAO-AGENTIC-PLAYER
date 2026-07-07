@@ -1,0 +1,9 @@
+scenario=QA-SM-04
+criterion=.env can supply SEOUL_OPEN_DATA_KEY without printing raw key
+surface=PowerShell terminal / Node CLI
+cwd=apps/family-experience-mcp
+invocation=node --env-file-if-exists=.env -e "console.log(process.env.SEOUL_OPEN_DATA_KEY ? 'present' : 'missing')"
+--- output ---
+.env not found. Continuing without it.
+present
+--- exit_code=0 ---

@@ -1,0 +1,273 @@
+
+> family-experience-mcp@0.1.0 scan:sources
+> tsx scripts/scan-sources.ts --include .omo/evidence/family-experience-market-ready-platform
+
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-07T14-24-34-665Z.json",
+      "line": 53,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-07T14-24-35-625Z.json",
+      "line": 52,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-07T14-27-08-798Z.json",
+      "line": 55,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-07T14-27-35-743Z.json",
+      "line": 55,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-07T14-27-51-438Z.json",
+      "line": 94,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-07T14-28-08-185Z.json",
+      "line": 55,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-07T14-28-51-294Z.json",
+      "line": 55,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-07T14-29-35-495Z.json",
+      "line": 55,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-07T14-30-03-001Z.json",
+      "line": 55,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-07T14-32-42-636Z.json",
+      "line": 55,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-07T14-33-12-120Z.json",
+      "line": 55,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-07T14-33-24-186Z.json",
+      "line": 55,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-07T15-05-03-090Z.json",
+      "line": 52,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-07T15-12-58-245Z.json",
+      "line": 94,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-latest.json",
+      "line": 94,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-13-fallback-verify.txt",
+      "line": 292,
+      "rule": "unregistered-event-source-url",
+      "value": "https://apis.example.test/period2?from=2026…"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-13-fallback-verify.txt",
+      "line": 318,
+      "rule": "unregistered-event-source-url",
+      "value": "https://apis.example.test/period2?from=2026…"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-3-gate-scan-sources-untracked.diff",
+      "line": 20,
+      "rule": "scraper-browser-parser-dependency",
+      "value": "cheerio"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-3-gate-scan-sources-untracked.diff",
+      "line": 20,
+      "rule": "scraper-browser-parser-dependency",
+      "value": "puppeteer"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-3-gate-scan-sources-untracked.diff",
+      "line": 20,
+      "rule": "scraper-browser-parser-dependency",
+      "value": "playwright"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-3-gate-scan-sources-untracked.diff",
+      "line": 20,
+      "rule": "scraper-browser-parser-dependency",
+      "value": "jsdom"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-3-gate-scan-sources-untracked.diff",
+      "line": 20,
+      "rule": "scraper-browser-parser-dependency",
+      "value": "got-scraping"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-baseline-partial-cache.txt",
+      "line": 31,
+      "rule": "unregistered-event-source-url",
+      "value": "https://example.test/culture-portal-oneview/partial-baseline"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-diff.patch",
+      "line": 370,
+      "rule": "unregistered-event-source-url",
+      "value": "https://example.test/culture-portal-oneview/task-4"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-4-diff.patch",
+      "line": 867,
+      "rule": "unregistered-event-source-url",
+      "value": "https://apis.example.test/events?serviceKey=%3Credacted%3E&page=1"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-5-culture-etl-20260708-000500.txt",
+      "line": 39,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-5-culture-etl.txt",
+      "line": 39,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-5-redaction-negative.txt",
+      "line": 40,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-5-redaction-negative.txt",
+      "line": 124,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 395,
+      "rule": "unregistered-event-source-url",
+      "value": "https://example.test/${sourceId}/task-7"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 487,
+      "rule": "unregistered-event-source-url",
+      "value": "https://example.test/culture-portal-oneview/task-7"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 508,
+      "rule": "unregistered-event-source-url",
+      "value": "https://example.test/culture-portal-oneview/reservation"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-fix-changed-files-status-no-index.txt",
+      "line": 529,
+      "rule": "unregistered-event-source-url",
+      "value": "https://example.test/culture-portal-oneview/reservation"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-red-schema-probe.mjs",
+      "line": 21,
+      "rule": "unregistered-event-source-url",
+      "value": "https://example.com/source"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-red-tests-after-regressions.txt",
+      "line": 116,
+      "rule": "unregistered-event-source-url",
+      "value": "https://example.test/culture-portal-oneview/task-7"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-red-tests-after-regressions.txt",
+      "line": 123,
+      "rule": "unregistered-event-source-url",
+      "value": "https://example.test/culture-portal-oneview/task-7"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-red-tests-after-regressions.txt",
+      "line": 147,
+      "rule": "unregistered-event-source-url",
+      "value": "https://example.test/culture-portal-oneview/task-7"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-6-red-tests-after-regressions.txt",
+      "line": 153,
+      "rule": "unregistered-event-source-url",
+      "value": "https://example.test/culture-portal-oneview/task-7"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-code-quality-doc-review.md",
+      "line": 16,
+      "rule": "unregistered-event-source-url",
+      "value": "https://12factor.net/config"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-full-verify-after-fix.txt",
+      "line": 127,
+      "rule": "unregistered-event-source-url",
+      "value": "https://example.test/culture-portal-oneview/task-7"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-full-verify-after-fix.txt",
+      "line": 134,
+      "rule": "unregistered-event-source-url",
+      "value": "https://example.test/culture-portal-oneview/task-7"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-full-verify-after-fix.txt",
+      "line": 158,
+      "rule": "unregistered-event-source-url",
+      "value": "https://example.test/culture-portal-oneview/task-7"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-full-verify-after-fix.txt",
+      "line": 164,
+      "rule": "unregistered-event-source-url",
+      "value": "https://example.test/culture-portal-oneview/task-7"
+    },
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-9-cache-refresh-seed.txt",
+      "line": 82,
+      "rule": "unregistered-event-source-url",
+      "value": "https://fixture.example.test/etl?serviceKey="
+    }
+  ]
+}

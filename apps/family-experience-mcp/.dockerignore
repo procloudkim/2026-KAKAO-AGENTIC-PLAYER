@@ -1,0 +1,13 @@
+.env
+.env.*
+.npmrc
+node_modules
+*.log
+npm-debug.log*
+coverage
+dist
+.tmp-*
+.git
+.omo
+test
+docs

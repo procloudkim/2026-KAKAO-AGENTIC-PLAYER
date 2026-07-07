@@ -1,0 +1,74 @@
+Invocation: cd D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp; npm run smoke:live
+TimeoutSeconds: 120
+DurationSeconds: 0.674
+ExitCode: 0
+--- output ---
+
+> family-experience-mcp@0.1.0 smoke:live
+> tsx scripts/smoke-live.ts
+
+{
+  "ok": true,
+  "status": "complete",
+  "config": {
+    "host": "127.0.0.1",
+    "port": 3349,
+    "allowFixture": false,
+    "toolMode": "live",
+    "seoulOpenDataBaseUrl": "http://openapi.seoul.go.kr:8088",
+    "culturePortalBaseUrl": "https://apis.data.go.kr/B553457/nopenapi/rest/publicperformancedisplays",
+    "ktoTourApiBaseUrl": "https://apis.data.go.kr/B551011/KorService2",
+    "nationalCultureFestivalBaseUrl": "missing",
+    "sourceSet": [
+      "seoul",
+      "culture_portal",
+      "kto_tourapi",
+      "national_festival"
+    ],
+    "etlCacheDir": "data/family-experience-cache",
+    "etlMaxPages": 1,
+    "etlTtlHours": 24,
+    "seoulOpenDataKey": "redacted",
+    "culturePortalServiceKey": "missing",
+    "ktoTourApiServiceKey": "missing",
+    "publicDataStandardServiceKey": "missing"
+  },
+  "probes": [
+    {
+      "name": "live_seoul_open_data",
+      "ok": true,
+      "mode": "live",
+      "source_id": "seoul-culture-events",
+      "record_count": 5,
+      "retrieved_at": "2026-07-03T22:50:59.863Z",
+      "latency_ms": 195
+    },
+    {
+      "name": "permission_failure_simulated",
+      "ok": false,
+      "mode": "live",
+      "source_id": "seoul-culture-events",
+      "code": "permission_failure",
+      "retryable": false,
+      "diagnostics": {
+        "redacted_url": "http://openapi.seoul.go.kr:8088/<redacted>/json/culturalEventInfo/1/100/",
+        "source_code": "ERROR-300",
+        "source_message": "Authentication failed for test key."
+      },
+      "latency_ms": 0
+    },
+    {
+      "name": "malformed_source_simulated",
+      "ok": false,
+      "mode": "live",
+      "source_id": "seoul-culture-events",
+      "code": "malformed_source",
+      "retryable": false,
+      "diagnostics": {
+        "redacted_url": "http://openapi.seoul.go.kr:8088/<redacted>/json/culturalEventInfo/1/100/",
+        "detail": "culturalEventInfo.list_total_count, culturalEventInfo.RESULT"
+      },
+      "latency_ms": 0
+    }
+  ]
+}

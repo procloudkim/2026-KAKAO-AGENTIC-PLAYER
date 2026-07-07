@@ -1,0 +1,45 @@
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\src\etl\cacheQuery.ts:24:  parent_check: z.object({ live_status: z.enum(["fixture_not_live", "source_timestamp_required"]) }).passthrough(),
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\src\etl\cacheQuery.ts:30:type CacheQueryFailure = { readonly ok: false; readonly mode: "live"; readonly failure: ToolFailure }
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\src\etl\cacheQuery.ts:162:}): { readonly ok: true } | { readonly ok: false; readonly mode: "live"; readonly failure: ToolFailure } {
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\src\etl\cacheQuery.ts:176:      mode: "live",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\src\etl\cacheQuery.ts:247:  return hostname === "example.test" || hostname === "example.invalid"
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\src\etl\cacheQuery.ts:253:    mode: "fixture",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\src\etl\cacheQuery.ts:254:    parent_check: { ...record.parent_check, live_status: "fixture_not_live" },
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\src\etl\cacheQuery.ts:255:    source: { ...record.source, mode: "fixture" },
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\src\etl\cacheQuery.ts:274:    mode: "live",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\src\etl\cacheQuery.ts:286:    mode: "live",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\src\pipeline\render.ts:191:    return "fixture/demo data only; not live/current."
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\src\pipeline\render.ts:194:  return "공식 출처 응답 기준입니다. 운영 여부, 요금, 예약은 출발 전 다시 확인하세요."
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\src\pipeline\render.ts:203:    return `${candidate.source_name} fixture/cache candidate only; not live/current. source_refs=${sourceReferences}`
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\src\pipeline\render.ts:211:    return `${candidate.parent_check} fixture/cache 후보입니다. 방문 전 실제 공식 출처에서 예약/요금을 확인하세요.`
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\src\pipeline\render.ts:219:    return `fixture/cache source_url=${candidate.source_url}; 방문 전 실제 공식 출처에서 날짜, 장소, 요금, 신청 절차를 확인하세요.`
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\scripts\smoke-mcp.ts:238:    mode: "fixture",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\scripts\smoke-mcp.ts:245:      mode: "fixture",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\scripts\smoke-mcp.ts:246:      url: `https://example.invalid/${input.sourceId}/${input.id}`,
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\scripts\smoke-mcp.ts:254:      live_status: "fixture_not_live",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:57:    mode: "live",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:67:      mode: "live",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:68:      url: `https://example.test/${sourceId}/task-7`,
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:76:      live_status: "source_timestamp_required",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:90:    fixture_notice: "Synthetic cache record for tests; not live/current.",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:117:  it("does not present synthetic cache candidates as live official proof when cache matches the request", async () => {
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:123:      mode: "fixture",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:139:      // Then: the result is fixture/cache-backed, source-attributed, and treats cached text as data.
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:147:        text: expect.stringContaining("fixture/demo 기준"),
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:151:        text: expect.stringContaining("공식 데이터 기준"),
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:157:        mode: "fixture",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:160:        source_url: "https://example.test/culture-portal-oneview/task-7",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:161:        warnings: expect.stringContaining("fixture/demo data only"),
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:162:        source_summary: expect.stringContaining("fixture/cache candidate only"),
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:163:        parent_check: expect.stringContaining("fixture/cache 후보"),
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:164:        next_action: expect.stringContaining("fixture/cache source_url="),
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:193:      mode: "live",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\mcpCache.test.ts:228:        mode: "live",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\pipeline.test.ts:19:      mode: "fixture",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\pipeline.test.ts:47:      mode: "fixture",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\pipeline.test.ts:73:      mode: "fixture",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\pipeline.test.ts:129:      mode: "fixture",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\pipeline.test.ts:154:      mode: "fixture",
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\pipeline.test.ts:169:      expect(candidate.source_name).toBe("fixture/demo source")
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\pipeline.test.ts:171:      expect(candidate.parent_check).toContain("fixture/cache 후보")
+D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp\test\pipeline.test.ts:174:    expect(JSON.stringify(response)).not.toMatch(/예약 가능|예약가능|운영 중|실시간|아이에게 적합함/)

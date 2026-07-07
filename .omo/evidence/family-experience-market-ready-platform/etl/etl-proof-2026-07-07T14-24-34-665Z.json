@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-07T14:24:34.665Z",
+  "command": {
+    "argv": [
+      "--dry-run",
+      "--source",
+      "culture_portal"
+    ],
+    "cwd": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp",
+    "node": "v24.15.0"
+  },
+  "ok": false,
+  "report": {
+    "generated_at": "2026-07-07T14:24:34.602Z",
+    "mode": "dry-run",
+    "fixture": false,
+    "source_set": [
+      "culture_portal"
+    ],
+    "source_ids": [
+      "culture-portal-oneview"
+    ],
+    "ttl_hours": 24,
+    "max_pages": 1,
+    "counts": {
+      "failures": 1,
+      "normalized_records": 0,
+      "raw_snapshots": 0
+    },
+    "raw_snapshots_present": false,
+    "files": {
+      "normalized_records": "normalized-records.jsonl",
+      "raw_snapshots": "raw-snapshots.jsonl"
+    },
+    "source_provenance": [
+      {
+        "source": "culture_portal",
+        "source_id": "culture-portal-oneview",
+        "generated_at": "2026-07-07T14:24:34.602Z",
+        "ttl_hours": 24,
+        "mode": "live",
+        "ok": false,
+        "records": 0,
+        "raw_snapshots": 0,
+        "raw_snapshot_present": false,
+        "failure_code": "source_failure"
+      }
+    ],
+    "ok": false,
+    "cache_dir": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp\\data\\family-experience-cache",
+    "diagnostics": {
+      "redacted_sample_url": "https://fixture.example.test/etl?serviceKey=<redacted>",
+      "redaction_verified": true
+    },
+    "sources": [
+      {
+        "ok": false,
+        "source": "culture_portal",
+        "source_id": "culture-portal-oneview",
+        "records": 0,
+        "raw_snapshots": 0,
+        "failure_code": "source_failure",
+        "diagnostics": {
+          "redacted_url": "https://apis.data.go.kr/B553457/cultureinfo/period2?from=20260704&to=20260731&cPage=1&rows=10&place=&gpsxfrom=&gpsyfrom=&gpsxto=&gpsyto=&keyword=&sortStdr=1&serviceKey=%3Credacted%3E",
+          "detail": "request failed with HTTP 401: https://apis.data.go.kr/B553457/cultureinfo/period2?from=20260704&to=20260731&cPage=1&rows=10&place=&gpsxfrom=&gpsyfrom=&gpsxto=&gpsyto=&keyword=&sortStdr=1&serviceKey=%3Credacted%3E"
+        }
+      }
+    ]
+  },
+  "proof": {
+    "evidence_dir": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl",
+    "latest_path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-latest.json",
+    "timestamped_path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-07T14-24-34-665Z.json",
+    "redaction_verified": true
+  }
+}

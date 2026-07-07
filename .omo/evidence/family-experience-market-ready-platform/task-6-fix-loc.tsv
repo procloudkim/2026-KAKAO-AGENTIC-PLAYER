@@ -1,0 +1,7 @@
+
+path                                               pure_loc
+----                                               --------
+apps/family-experience-mcp/scripts/smoke-golden.ts      250
+apps/family-experience-mcp/test/mcpCache.test.ts        320
+
+

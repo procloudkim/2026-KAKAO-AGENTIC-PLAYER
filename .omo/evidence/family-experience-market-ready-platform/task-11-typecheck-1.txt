@@ -1,0 +1,7 @@
+
+> family-experience-mcp@0.1.0 typecheck
+> tsc --noEmit
+
+test/health.test.ts(18,2): error TS1005: ',' expected.
+test/health.test.ts(20,7): error TS1005: ',' expected.
+test/health.test.ts(110,1): error TS1005: ')' expected.

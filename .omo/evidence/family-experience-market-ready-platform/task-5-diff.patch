@@ -1,0 +1,5 @@
+git diff was empty for scoped files because paths are untracked or no tracked baseline exists.
+git status --short for scoped files:
+?? .omo/evidence/family-experience-market-ready-platform/
+?? apps/family-experience-mcp/scripts/etl-nationwide.ts
+?? apps/family-experience-mcp/test/etlNationwide.test.ts

@@ -1,0 +1,35 @@
+{
+  "req": {
+    "location": "Seoul",
+    "date_range": {
+      "start": "2026-07-04",
+      "end": "2026-07-04"
+    },
+    "child_age": 0
+  },
+  "text": "현재 설정으로는 체험 후보를 확인할 수 없어요. 공식 데이터 키를 설정하거나 fixture 모드를 켜 주세요. Nationwide cache has no matching records and no live source is configured. Rebuild the cache or configure a live source.",
+  "structuredContent": {
+    "ok": false,
+    "mode": "live",
+    "failure": {
+      "code": "missing_configuration",
+      "message": "Nationwide cache has no matching records and no live source is configured. Rebuild the cache or configure a live source.",
+      "retryable": false
+    }
+  }
+}
+{
+  "req": {
+    "prompt": "서울 6개월 아기 오늘 무료 실내 체험"
+  },
+  "text": "현재 설정으로는 체험 후보를 확인할 수 없어요. 공식 데이터 키를 설정하거나 fixture 모드를 켜 주세요. Nationwide cache has no matching records and no live source is configured. Rebuild the cache or configure a live source.",
+  "structuredContent": {
+    "ok": false,
+    "mode": "live",
+    "failure": {
+      "code": "missing_configuration",
+      "message": "Nationwide cache has no matching records and no live source is configured. Rebuild the cache or configure a live source.",
+      "retryable": false
+    }
+  }
+}

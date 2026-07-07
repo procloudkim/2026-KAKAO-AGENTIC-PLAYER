@@ -1,0 +1,7 @@
+Scoped status for Todo 4 allowed paths
+?? .omo/evidence/family-experience-market-ready-platform/
+?? apps/family-experience-mcp/src/etl/cache.ts
+?? apps/family-experience-mcp/src/etl/cacheContract.ts
+?? apps/family-experience-mcp/src/etl/cacheQuery.ts
+?? apps/family-experience-mcp/src/etl/cacheRecordScope.ts
+?? apps/family-experience-mcp/test/etlNationwide.test.ts

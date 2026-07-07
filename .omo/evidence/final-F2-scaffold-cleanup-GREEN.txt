@@ -1,0 +1,153 @@
+# final-F2-scaffold-cleanup GREEN
+timestamp_utc=2026-07-02T06:58:31Z
+
+## command: cd apps/family-experience-mcp && npm run typecheck && npm test -- --run
+
+> family-experience-mcp@0.0.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.0.0 test
+> vitest --run
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  8 passed (8)
+      Tests  31 passed (31)
+   Start at  15:58:34
+   Duration  448ms (transform 280ms, setup 0ms, import 847ms, tests 144ms, environment 1ms)
+
+
+## command: cd apps/family-experience-mcp && npm run verify && npm run scan:secrets && npm run scan:claims && npm run scan:sources
+
+> family-experience-mcp@0.0.0 verify
+> npm run typecheck && npm test -- --run
+
+
+> family-experience-mcp@0.0.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.0.0 test
+> vitest --run
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  8 passed (8)
+      Tests  31 passed (31)
+   Start at  15:58:36
+   Duration  492ms (transform 477ms, setup 0ms, import 1.12s, tests 161ms, environment 1ms)
+
+
+> family-experience-mcp@0.0.0 scan:secrets
+> tsx scripts/scan-secrets.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 73
+}
+
+> family-experience-mcp@0.0.0 scan:claims
+> tsx scripts/scan-claims.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 73
+}
+
+> family-experience-mcp@0.0.0 scan:sources
+> tsx scripts/scan-sources.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 40
+}
+
+## forbidden pattern scan over src/test/scripts
+PASS no forbidden patterns in src/test/scripts
+
+## stale artifact scan proving four F2 blockers are gone
+PASS stale file removed: apps/family-experience-mcp/src/index.ts
+PASS stale file removed: apps/family-experience-mcp/src/http-health.ts
+PASS stale file removed: apps/family-experience-mcp/test/scaffold.test.ts
+PASS stale file removed: apps/family-experience-mcp/scripts/pending-smoke.ts
+PASS no stale scaffold patterns in src/test/scripts
+
+## pure LOC scan over src/test/scripts
+67 apps/family-experience-mcp/src/config.ts
+32 apps/family-experience-mcp/src/health.ts
+219 apps/family-experience-mcp/src/mcp.ts
+248 apps/family-experience-mcp/src/pipeline/normalize.ts
+144 apps/family-experience-mcp/src/pipeline/rank.ts
+146 apps/family-experience-mcp/src/pipeline/render.ts
+99 apps/family-experience-mcp/src/schemas.ts
+248 apps/family-experience-mcp/src/server.ts
+226 apps/family-experience-mcp/src/sources/fixture.ts
+49 apps/family-experience-mcp/src/sources/registry.ts
+249 apps/family-experience-mcp/src/sources/seoulCulture.ts
+165 apps/family-experience-mcp/src/sources/types.ts
+50 apps/family-experience-mcp/src/types.ts
+28 apps/family-experience-mcp/test/config.test.ts
+86 apps/family-experience-mcp/test/golden.test.ts
+138 apps/family-experience-mcp/test/mcp.test.ts
+160 apps/family-experience-mcp/test/pipeline.test.ts
+88 apps/family-experience-mcp/test/playmcpMetadata.test.ts
+96 apps/family-experience-mcp/test/schemas.test.ts
+146 apps/family-experience-mcp/test/seoulCulture.test.ts
+79 apps/family-experience-mcp/test/sources.test.ts
+77 apps/family-experience-mcp/scripts/scan-claims.ts
+64 apps/family-experience-mcp/scripts/scan-secrets.ts
+93 apps/family-experience-mcp/scripts/scan-sources.ts
+238 apps/family-experience-mcp/scripts/smoke-golden.ts
+71 apps/family-experience-mcp/scripts/smoke-mcp.ts
+
+## real-surface preservation check: /health, smoke:mcp, smoke:golden
+PASS no LISTENING on :3345 before start
+
+> family-experience-mcp@0.0.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts --assert-tool-count=1
+
+{
+  "endpoint": "http://127.0.0.1:3345/mcp",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "result_ok": true,
+  "candidate_count": 3,
+  "text": "fixture/demo 기준으로 후보 3개를 찾았어요.\naction_card: 1\ntitle: Demo Seoul Kids Makers Studio\ndate_time: 2026-07-04\nvenue: DDP Design Lab Demo Room\naddress: DDP Design Lab Demo Room\nage_fit_label: source-stated\nage_fit_reason: Demo program text states ages 4-6 and guardian participation.\nindoor_outdoor: indoor\nfee_text: Demo field; confirm fees with an official source in live mode.\nsource_name: fixture/demo source\nsource_url: https://example.invalid/family-experience/fixture-v1\nretrieved_at: fixture/demo snapshot\nconfidence: age_fit=source-stated\nmode: fixture\nwarnings: fixture/demo data only; not live/current.\nsource_summary: fixture/demo source 근거로 제목, 날짜, 장소, 연령 단서를 확인했습니다.\nparent_check: Demo program text states ages 4-6 and guardian participation. 예약/요금은 출발 전 공식 출처에서 확인하세요.\nnext_action: https://example.invalid/family-experience/fixture-v1에서 날짜, 장소, 요금, 신청 절차를 확인하세요.\naction_card: 2\ntitle: Demo Rainy Day Story Theater\ndate_time: 2026-07-04\nvenue: Seoul Children's Library Demo Hall\naddress: Seoul Children's Library Demo Hall\nage_fit_label: source-stated\nage_fit_reason: Demo program text states preschool family story play for ages 3-7.\nindoor_outdoor: indoor\nfee_text: Demo field; confirm fees with an official source in live mode.\nsource_name: fixture/demo source\nsource_url: https://example.invalid/family-experience/fixture-v1\nretrieved_at: fixture/demo snapshot\nconfidence: age_fit=source-stated\nmode: fixture\nwarnings: fixture/demo data only; not live/current.\nsource_summary: fixture/demo source 근거로 제목, 날짜, 장소, 연령 단서를 확인했습니다.\nparent_check: Demo program text states preschool family story play for ages 3-7. 예약/요금은 출발 전 공식 출처에서 확인하세요.\nnext_action: https://example.invalid/family-experience/fixture-v1에서 날짜, 장소, 요금, 신청 절차를 확인하세요.\naction_card: 3\ntitle: Demo Family Science Light Lab\ndate_time: 2026-07-04\nvenue: Seoul Science Center Demo Classroom\naddress: Seoul Science Center Demo Classroom\nage_fit_label: source-stated\nage_fit_reason: Demo program text states a preschool-friendly guardian lab for ages 4-8.\nindoor_outdoor: indoor\nfee_text: Demo field; confirm fees with an official source in live mode.\nsource_name: fixture/demo source\nsource_url: https://example.invalid/family-experience/fixture-v1\nretrieved_at: fixture/demo snapshot\nconfidence: age_fit=source-stated\nmode: fixture\nwarnings: fixture/demo data only; not live/current.\nsource_summary: fixture/demo source 근거로 제목, 날짜, 장소, 연령 단서를 확인했습니다.\nparent_check: Demo program text states a preschool-friendly guardian lab for ages 4-8. 예약/요금은 출발 전 공식 출처에서 확인하세요.\nnext_action: https://example.invalid/family-experience/fixture-v1에서 날짜, 장소, 요금, 신청 절차를 확인하세요."
+}
+
+> family-experience-mcp@0.0.0 smoke:golden
+> tsx scripts/smoke-golden.ts
+
+{
+  "artifact_dir": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence",
+  "scenarios": [
+    {
+      "id": "happy",
+      "passed": true,
+      "isError": false
+    },
+    {
+      "id": "missing-age",
+      "passed": true,
+      "isError": true
+    },
+    {
+      "id": "no-result",
+      "passed": true,
+      "isError": true
+    },
+    {
+      "id": "source-failure",
+      "passed": true,
+      "isError": true
+    }
+  ]
+}
+PASS no LISTENING on :3345 after real-surface check

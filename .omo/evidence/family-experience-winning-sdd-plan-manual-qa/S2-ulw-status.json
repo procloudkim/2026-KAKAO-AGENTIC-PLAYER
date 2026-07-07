@@ -1,0 +1,96 @@
+{
+  "ok": true,
+  "plan": {
+    "version": 1,
+    "createdAt": "2026-07-03T06:34:11.359Z",
+    "updatedAt": "2026-07-03T07:26:08.713Z",
+    "briefPath": ".omo/ulw-loop/family-experience-winning-sdd-20260703/brief.md",
+    "goalsPath": ".omo/ulw-loop/family-experience-winning-sdd-20260703/goals.json",
+    "ledgerPath": ".omo/ulw-loop/family-experience-winning-sdd-20260703/ledger.jsonl",
+    "codexGoalMode": "aggregate",
+    "goals": [
+      {
+        "id": "G001-family-experience-winning-sdd-to-sub",
+        "title": "승인된 family-experience-winning-sdd-to-submission 계획을 구현 없이 상세화한다. 산출물은...",
+        "objective": "승인된 family-experience-winning-sdd-to-submission 계획을 구현 없이 상세화한다. 산출물은 .omo/plans/family-experience-winning-sdd-to-submission.md이며, Family Experience MCP 우승 가능성을 높이기 위한 SDD 실행계획, 정확한 QA 명령, evidence path, dependency matrix, scope guardrails, final verification wave를 포함해야 한다.",
+        "status": "complete",
+        "successCriteria": [
+          {
+            "id": "C001",
+            "scenario": "CLI auxiliary surface: PowerShell reads .omo/plans/family-experience-winning-sdd-to-submission.md and confirms it contains no <fill placeholders>, has at least 8 todos, includes exact QA scenarios, dependency matrix, final verification wave, scope guardrails, and human TLDR.",
+            "userModel": "happy",
+            "expectedEvidence": ".omo/evidence/winning-sdd-plan/C001-plan-content-check.txt",
+            "essential": true,
+            "capturedEvidence": ".omo/evidence/winning-sdd-plan/C001-plan-content-check.txt | cleanup: no runtime resources spawned",
+            "status": "pass",
+            "capturedAt": "2026-07-03T07:12:17.332Z",
+            "notes": "Rechecked after code review blocker fixes: PowerShell literal script blocks, task1 green evidence write, browser tool invocations, browser cleanup receipts."
+          },
+          {
+            "id": "C002",
+            "scenario": "CLI auxiliary surface: PowerShell scans the detailed plan for forbidden unresolved placeholders and forbidden implementation claims such as completed deployment, PlayMCP review, public switch, contest submission, or nationwide/live/reservation/child-suitability guarantees.",
+            "userModel": "edge",
+            "expectedEvidence": ".omo/evidence/winning-sdd-plan/C002-guardrail-scan.txt",
+            "essential": true,
+            "capturedEvidence": ".omo/evidence/winning-sdd-plan/C002-guardrail-scan.txt | cleanup: no runtime resources spawned",
+            "status": "pass",
+            "capturedAt": "2026-07-03T07:12:17.509Z",
+            "notes": "Rechecked after code review blocker fixes; no double-quoted PowerShell command, placeholders, false completion, or positive overclaim."
+          },
+          {
+            "id": "C003",
+            "scenario": "CLI auxiliary surface: ulw-loop status for session family-experience-winning-sdd-20260703 reports the goal and ledger paths, and git status shows only draft/plan/loop/evidence artifacts related to this planning task as newly touched by this task.",
+            "userModel": "regression",
+            "expectedEvidence": ".omo/evidence/winning-sdd-plan/C003-loop-status-check.txt",
+            "essential": false,
+            "capturedEvidence": ".omo/evidence/winning-sdd-plan/C003-loop-status-check.txt; .omo/evidence/winning-sdd-plan/C003-loop-status.json; .omo/evidence/winning-sdd-plan/C003-git-status.txt | cleanup: no runtime resources spawned",
+            "status": "pass",
+            "capturedAt": "2026-07-03T07:12:17.673Z",
+            "notes": "Refreshed after code review blocker fixes; criteria pass=3, pending=0, fail=0."
+          }
+        ],
+        "attempt": 1,
+        "createdAt": "2026-07-03T06:34:11.359Z",
+        "updatedAt": "2026-07-03T07:26:08.713Z",
+        "startedAt": "2026-07-03T06:34:24.194Z",
+        "completedAt": "2026-07-03T07:26:08.713Z",
+        "evidence": "Plan artifact .omo/plans/family-experience-winning-sdd-to-submission.md; criteria C001/C002/C003 pass with refreshed evidence under .omo/evidence/winning-sdd-plan/; code review APPROVE; QA PASSED; gate APPROVE; cleanup: no runtime resources spawned"
+      }
+    ],
+    "codexObjective": "Complete the durable ulw-loop plan in .omo/ulw-loop/family-experience-winning-sdd-20260703/goals.json, including later accepted/appended stories, under the original brief constraints; use .omo/ulw-loop/family-experience-winning-sdd-20260703/ledger.jsonl as the audit trail.",
+    "aggregateCompletion": {
+      "status": "complete",
+      "completedAt": "2026-07-03T07:26:08.713Z",
+      "evidence": "Plan artifact .omo/plans/family-experience-winning-sdd-to-submission.md; criteria C001/C002/C003 pass with refreshed evidence under .omo/evidence/winning-sdd-plan/; code review APPROVE; QA PASSED; gate APPROVE; cleanup: no runtime resources spawned",
+      "codexGoal": {
+        "goal": {
+          "threadId": "019f1d36-af17-7a20-a79b-60c2e6a00e96",
+          "objective": "Complete the durable ulw-loop plan in .omo/ulw-loop/family-experience-winning-sdd-20260703/goals.json, including later accepted/appended stories, under the original brief constraints; use .omo/ulw-loop/family-experience-winning-sdd-20260703/ledger.jsonl as the audit trail.",
+          "status": "complete",
+          "tokensUsed": 605178,
+          "timeUsedSeconds": 3009,
+          "createdAt": 1783060474,
+          "updatedAt": 1783063483
+        }
+      }
+    }
+  },
+  "summary": {
+    "total": 1,
+    "pending": 0,
+    "in_progress": 0,
+    "complete": 1,
+    "failed": 0,
+    "blocked": 0,
+    "review_blocked": 0,
+    "needs_user_decision": 0,
+    "superseded": 0,
+    "criteria": {
+      "total": 3,
+      "pass": 3,
+      "pending": 0,
+      "fail": 0,
+      "blocked": 0
+    }
+  }
+}

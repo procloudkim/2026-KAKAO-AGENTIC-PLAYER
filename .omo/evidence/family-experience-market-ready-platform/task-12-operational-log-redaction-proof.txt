@@ -1,0 +1,13 @@
+scenario=fresh operational tool failure log probe
+pass=true
+result_is_error=true
+operational_log_count=1
+raw_secret_absent=true
+child_name_absent=true
+raw_prompt_key_absent=true
+raw_prompt_content_absent=true
+stack_absent=true
+bounded_failure_present=true
+event_is_tool_call=true
+operational_logs_json=[{"timestamp":"2026-07-07T15:13:45.108Z","service":"family-experience-mcp","version":"0.1.0","level":"error","event":"tool_call","tool":{"name":"find_family_experiences","outcome":"failure","mode":"live","latency_ms":1,"candidate_count":0,"failure_code":"missing_configuration"},"diagnostics":{"failure_code":"missing_configuration","retryable":false,"message":"Live source is not configured and fixture mode is disabled."}}]
+exit_code=0

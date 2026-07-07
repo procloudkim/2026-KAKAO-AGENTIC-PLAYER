@@ -1,0 +1,25 @@
+RED include-bypass proof before Todo 2 fix2
+eval_include=D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\tmp-red-include-bypass\test\fixtures\eval\bad-public-copy.md
+evidence_include=D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\tmp-red-include-bypass\.omo\evidence\bad-evidence-copy.md
+
+SCENARIO 1: explicit include path containing test/fixtures/eval should be rejected but currently bypasses
+EXIT_CODE=0
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\tmp-red-include-bypass\test\fixtures\eval\bad-public-copy.md
+
+{
+  "status": "PASS",
+  "scanned_files": 128
+}
+
+SCENARIO 2: explicit include path containing .omo/evidence with RED/finding wording should be rejected but currently bypasses
+EXIT_CODE=0
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\.omo\evidence\family-experience-market-ready-platform\tmp-red-include-bypass\.omo\evidence\bad-evidence-copy.md
+
+{
+  "status": "PASS",
+  "scanned_files": 128
+}

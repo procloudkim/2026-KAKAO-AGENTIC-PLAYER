@@ -1,0 +1,18 @@
+
+> family-experience-mcp@0.1.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts
+
+{
+  "endpoint": "in-memory",
+  "cache_dir": "C:\\Users\\K\\AppData\\Local\\Temp\\family-experience-mcp-smoke-86aG9c",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "prompt": "부산 이번 주말 4살 실내",
+  "result_ok": true,
+  "mode": "live",
+  "candidate_count": 1,
+  "first_source": "culture_portal",
+  "text": "공식 데이터 기준으로 후보 1개를 찾았어요.\naction_card: 1\ntitle: Busan Indoor Family Studio\ndate_time: 2026-07-04~2026-07-05 10:00-12:00\nvenue: Busan Culture Center\naddress: Busan Haeundae-gu indoor hall\nage_fit_label: source-stated\nage_fit_reason: Cached official source states family child suitability.\nindoor_outdoor: indoor\nfee_text: Free with official confirmation\nsource_name: Culture Portal/KCISA\nsource_url: https://example.test/culture-portal-oneview/culture-portal-oneview:task-7-busan-weekend\nretrieved_at: 2026-07-03T18:02:00.275Z\nconfidence: date=source-stated; venue=source-stated; age_fit=source-stated; reservation=unknown\nmode: live\nwarnings: 공식 출처 응답 기준입니다. 운영 여부, 요금, 예약은 출발 전 다시 확인하세요.\nsource_summary: Culture Portal/KCISA 근거로 제목, 날짜, 장소, 연령 단서를 확인했습니다. source_refs=culture-portal-oneview:culture-portal-oneview:raw:culture-portal-oneview:task-7-busan-weekend\nparent_check: Cached official source states family child suitability. 예약/요금은 출발 전 공식 출처에서 확인하세요.\nnext_action: https://example.test/culture-portal-oneview/culture-portal-oneview:task-7-busan-weekend에서 날짜, 장소, 요금, 신청 절차를 확인하세요."
+}

@@ -1,0 +1,130 @@
+Task 4 evidence: national culture festival standard adapter
+
+Scope lock
+- Owned files only:
+  - apps/family-experience-mcp/src/sources/nationalFestival.ts
+  - apps/family-experience-mcp/test/nationalFestival.test.ts
+  - apps/family-experience-mcp/test/fixtures/national-festival-*.json
+  - .omo/evidence/family-experience-nationwide-etl-expansion/task-4-national-festival.txt
+- No MCP registry/live fan-out wiring planned.
+
+Baseline characterization before implementation
+- Existing adapter pattern inspected:
+  - createSeoulCultureSourceAdapter returns FamilyExperienceSourceAdapter with source_id, mode, async list().
+  - SourceAdapterResult is a discriminated ok true/false union.
+  - Failures carry typed codes such as missing_key, source_failure, malformed_source, no_match.
+  - Success carries retrieved_at, raw_snapshots, and FamilyExperienceSourceRecord[].
+  - Source records expose date/venue/source confidence, parent_check, child_stages, suitability, and fixture_notice.
+  - Secret diagnostics use redacted_url and must not include raw keyed URLs or keys.
+- Todo 1 contract already includes source id national-culture-festival-standard, fallback_authority role support, official_national_standard_dataset tier, service key config, and national_festival source-set entry.
+- Dirty worktree observed before changes: many unrelated existing .omo, docs, scripts, src, and test files are untracked/added. This task will not revert or modify them.
+
+Research gate/lightweight classification
+- Classification: trivial scoped implementation inside an existing adapter boundary, not broad architecture/search.
+- Verification plan: red test proof, green npm test -- nationalFestival, typecheck, manual QA command.
+
+Failing-first proof
+- Scenario: tests added before adapter implementation.
+- Invocation: from apps/family-experience-mcp, npm test -- nationalFestival --run
+- Binary observable: exit 1.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-4-national-festival.txt
+- Key output:
+  - FAIL test/nationalFestival.test.ts [ test/nationalFestival.test.ts ]
+  - Error: Cannot find module '../src/sources/nationalFestival.js'
+  - Test Files 1 failed (1)
+
+Implementation summary
+- Added apps/family-experience-mcp/src/sources/nationalFestival.ts.
+- Exports:
+  - buildNationalFestivalRequest
+  - createNationalFestivalSourceAdapter
+  - normalizeNationalFestivalPayload
+- Source id: national-culture-festival-standard.
+- Live fan-out/MCP wiring: not added.
+- Live loader behavior: no network default; adapter only calls an injected requestJson loader. Without a loader it returns source_unavailable.
+- Lower freshness expression:
+  - confidence.age_fit = unknown because the standard dataset has no child-age field.
+  - confidence.date = stale for historical/outdated rows.
+  - parent_check.live_status = source_timestamp_required.
+  - fixture_notice starts with Data lag warning and says lower-freshness fallback.
+  - tags include standard_dataset and fallback_authority; stale rows also include stale.
+- No completeness/current-open/safety claims added.
+
+Automated tests
+- Scenario: acceptance test for national festival adapter, fixtures, malformed input, stale handling, missing coordinates, missing key/redaction, untrusted content.
+- Invocation: from apps/family-experience-mcp, npm test -- nationalFestival
+- Binary observable: exit 0.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-4-national-festival.txt
+- Key output:
+  - Test Files 1 passed (1)
+  - Tests 8 passed (8)
+
+TypeScript verification
+- Scenario: full project typecheck after touching TypeScript.
+- Invocation: from apps/family-experience-mcp, npm run typecheck
+- Binary observable: exit 1.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-4-national-festival.txt
+- Boundary: failure is outside owned Task 4 files.
+- Key output:
+  - test/culturePortal.test.ts(7,3): error TS2305: Module '"../src/sources/culturePortal.js"' has no exported member 'buildCulturePortalRequest'.
+  - test/culturePortal.test.ts(8,3): error TS2305: Module '"../src/sources/culturePortal.js"' has no exported member 'createCulturePortalSourceAdapter'.
+  - test/culturePortal.test.ts(9,3): error TS2305: Module '"../src/sources/culturePortal.js"' has no exported member 'normalizeCulturePortalXml'.
+  - test/culturePortal.test.ts(98,26): error TS7006: Parameter 'request' implicitly has an 'any' type.
+
+- Scenario: scoped compile for owned Task 4 TypeScript files.
+- Invocation: from apps/family-experience-mcp, npx tsc --ignoreConfig --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --strict --noUncheckedIndexedAccess --exactOptionalPropertyTypes --verbatimModuleSyntax --isolatedModules --esModuleInterop --resolveJsonModule --skipLibCheck --types node,vitest/globals src/sources/nationalFestival.ts test/nationalFestival.test.ts
+- Binary observable: exit 0.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-4-national-festival.txt
+
+Manual QA
+- Scenario: current fixture maps, stale warning appears, missing coordinates accepted, service key redacted.
+- Invocation: from apps/family-experience-mcp, node --import tsx --eval "<imports normalizeNationalFestivalPayload/buildNationalFestivalRequest, reads national-festival fixtures, prints observable fields>"
+- Binary observable: exit 0.
+- Captured artifact path: .omo/evidence/family-experience-nationwide-etl-expansion/task-4-national-festival.txt
+- Key output:
+  {
+    "current": {
+      "ok": true,
+      "title": "Busan Family Sea Festival",
+      "notice": "Data lag warning: national culture festival standard data is a lower-freshness fallback with data reference date 2026-06-30; parent must verify schedule, booking, and child fit.",
+      "age_fit": "unknown"
+    },
+    "stale": {
+      "ok": true,
+      "title": "Old Regional Lantern Festival",
+      "date_confidence": "stale",
+      "notice": "Data lag warning: stale historical listing; national culture festival standard data is a lower-freshness fallback with data reference date 2023-03-31; parent must verify schedule, booking, and child fit."
+    },
+    "missing_coordinates": {
+      "ok": true,
+      "title": "Jeju Family Culture Festival",
+      "venue": {
+        "name": "Jeju Culture Plaza",
+        "address": "Jeju-si Jungang-ro 1"
+      }
+    },
+    "redaction": {
+      "redacted_url": "https://festival.example.test/api?serviceKey=<redacted>&page=1&perPage=100",
+      "contains_secret": false
+    }
+  }
+
+Adversarial QA
+- malformed_input: covered by test "returns malformed_source when required standard fields are missing"; binary observable npm test -- nationalFestival exit 0.
+- stale_state: covered by test "marks old festival data as stale and lower freshness"; manual QA shows date_confidence stale and stale historical listing warning.
+- untrusted external text/prompt_injection: covered by test "keeps untrusted festival content as data"; content remains program_text and source identity/warnings remain unchanged.
+- dirty_worktree: git status before work showed many unrelated existing untracked/added files. Owned status after work is limited to the new Task 4 source, test, fixtures, and this evidence file.
+- misleading_success_output: acceptance was checked by process exit code plus Vitest "Tests 8 passed (8)" and manual JSON observables.
+- flaky_tests: focused test was run before and after source compaction; final exact acceptance invocation exit 0.
+
+Post-write review
+- Pure LOC check:
+  - src/sources/nationalFestival.ts: 232
+  - test/nationalFestival.test.ts: 213
+- Both changed TypeScript files are below the 250 pure LOC defect threshold. They are in the warning band; a future expansion should split responsibilities, but this task's ownership scope only permits one new source module.
+- Single responsibility: nationalFestival.ts owns national festival standard dataset boundary parsing and normalization.
+- Boundary purity: untrusted payloads are parsed with Zod at normalizeNationalFestivalPayload.
+- Variant discrimination: no tagged union switch was added.
+- Escape hatches: no any, ts-ignore, ts-expect-error, or non-null assertion added.
+- Defensive layer: no redundant post-action verification added.
+- Tests: reverting nationalFestival.ts makes nationalFestival tests fail at import/behavior boundary.

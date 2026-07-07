@@ -1,0 +1,8 @@
+TASK 13 FINAL DOCKER BUILD
+timestamp=2026-07-08T03:43:48.3190426+09:00
+command=docker build --platform linux/amd64 -t family-experience-mcp:market .
+workdir=D:\KLab\2026-Hackathon\2026-07-KAKAO-AGENTIC-PLAY\apps\family-experience-mcp
+
+ERROR: failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+
+exit_code=1

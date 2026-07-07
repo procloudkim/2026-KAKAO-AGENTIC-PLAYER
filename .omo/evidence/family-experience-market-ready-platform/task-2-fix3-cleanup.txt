@@ -1,0 +1,6 @@
+Cleanup receipt for Todo 2 fix3 manual probes
+Removed: .omo/tmp/market-plan-fix3
+Removed: .omo/tmp/market-plan-fix3-red
+Test-Path .omo/tmp/market-plan-fix3 = False
+Test-Path .omo/tmp/market-plan-fix3-red = False
+Observed exit codes: english=1; korean=1; positive=0

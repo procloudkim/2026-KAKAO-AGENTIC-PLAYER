@@ -1,0 +1,18 @@
+
+> family-experience-mcp@0.1.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts --cache-dir=data/family-experience-cache --prompt 2099년 화성에서 초등학생이 참여할 수 있는 체험행사 3개 --expect-error
+
+{
+  "endpoint": "in-memory",
+  "cache_dir": "data/family-experience-cache",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "prompt": "2099년 화성에서 초등학생이 참여할 수 있는 체험행사 3개",
+  "result_ok": false,
+  "mode": "live",
+  "candidate_count": 0,
+  "failure_code": "missing_configuration",
+  "text": "현재 설정으로는 체험 후보를 확인할 수 없어요. 캐시를 새로고침하거나 공식 데이터 설정을 확인해 주세요. Nationwide cache has no matching records and no live source is configured. Rebuild the cache or configure a live source."
+}

@@ -1,0 +1,86 @@
+task-9 cleanup fix GREEN
+2026-07-02T15:22:44+09:00
+repo=/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY
+preflight listener check
+no LISTENING on :3345 before start
+
+> family-experience-mcp@0.0.0 verify
+> npm run typecheck && npm test -- --run
+
+
+> family-experience-mcp@0.0.0 typecheck
+> tsc --noEmit
+
+
+> family-experience-mcp@0.0.0 test
+> vitest --run
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+
+ Test Files  9 passed (9)
+      Tests  32 passed (32)
+   Start at  15:22:46
+   Duration  423ms (transform 318ms, setup 0ms, import 991ms, tests 136ms, environment 1ms)
+
+captured_SERVER_PID=1192
+health_attempt=1 status=000
+health_attempt=2 status=200
+
+> family-experience-mcp@0.0.0 smoke:golden
+> tsx scripts/smoke-golden.ts
+
+{
+  "artifact_dir": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence",
+  "scenarios": [
+    {
+      "id": "happy",
+      "passed": true,
+      "isError": false
+    },
+    {
+      "id": "missing-age",
+      "passed": true,
+      "isError": true
+    },
+    {
+      "id": "no-result",
+      "passed": true,
+      "isError": true
+    },
+    {
+      "id": "source-failure",
+      "passed": true,
+      "isError": true
+    }
+  ]
+}
+
+> family-experience-mcp@0.0.0 scan:secrets
+> tsx scripts/scan-secrets.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 77
+}
+
+> family-experience-mcp@0.0.0 scan:claims
+> tsx scripts/scan-claims.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 77
+}
+
+> family-experience-mcp@0.0.0 scan:sources
+> tsx scripts/scan-sources.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 44
+}
+stopping captured server pid
+post-kill listener check
+no LISTENING on :3345 after captured PID kill
+GREEN complete

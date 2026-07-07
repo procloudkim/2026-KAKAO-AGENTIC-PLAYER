@@ -1,0 +1,5 @@
+apps/family-experience-mcp/src/sources/types.ts	187
+apps/family-experience-mcp/src/sources/registry.ts	143
+apps/family-experience-mcp/scripts/scan-sources.ts	233
+apps/family-experience-mcp/test/sources.test.ts	194
+apps/family-experience-mcp/test/scanSources.test.ts	64

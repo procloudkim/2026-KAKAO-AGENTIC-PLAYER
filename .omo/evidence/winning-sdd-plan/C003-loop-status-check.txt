@@ -1,0 +1,10 @@
+status_ok=true
+goal_status=complete
+aggregate_completion=complete
+criteria_pass=3
+criteria_pending=0
+criteria_fail=0
+summary_complete=1
+summary_in_progress=0
+ledger=.omo/ulw-loop/family-experience-winning-sdd-20260703/ledger.jsonl
+cleanup=no runtime resources spawned

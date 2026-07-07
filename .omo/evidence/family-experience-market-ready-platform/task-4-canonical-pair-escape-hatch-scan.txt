@@ -1,0 +1,6 @@
+command: rg -n "as any|as unknown|@ts-ignore|@ts-expect-error|debugger" apps/family-experience-mcp/src/etl/cacheContract.ts apps/family-experience-mcp/test/etlNationwide.test.ts
+scenario: scan changed source/test files for forbidden TypeScript escape hatches after final code
+--- output ---
+PASS: no matches
+--- exit_code ---
+1

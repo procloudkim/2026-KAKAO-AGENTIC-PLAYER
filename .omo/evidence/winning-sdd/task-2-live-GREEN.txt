@@ -1,0 +1,54 @@
+
+> family-experience-mcp@0.1.0 smoke:live
+> tsx scripts/smoke-live.ts
+
+{
+  "ok": true,
+  "status": "complete",
+  "config": {
+    "port": 3349,
+    "allowFixture": false,
+    "toolMode": "live",
+    "seoulOpenDataBaseUrl": "http://openapi.seoul.go.kr:8088",
+    "seoulOpenDataKey": "redacted"
+  },
+  "probes": [
+    {
+      "name": "live_seoul_open_data",
+      "ok": true,
+      "mode": "live",
+      "source_id": "seoul-culture-events",
+      "record_count": 5,
+      "retrieved_at": "2026-07-03T15:44:42.256Z",
+      "latency_ms": 196
+    },
+    {
+      "name": "permission_failure_simulated",
+      "ok": false,
+      "mode": "live",
+      "source_id": "seoul-culture-events",
+      "code": "permission_failure",
+      "retryable": false,
+      "diagnostics": {
+        "redacted_url": "http://openapi.seoul.go.kr:8088/<redacted>/json/culturalEventInfo/1/100/",
+        "source_code": "ERROR-300",
+        "source_message": "Authentication failed for test key."
+      },
+      "latency_ms": 0
+    },
+    {
+      "name": "malformed_source_simulated",
+      "ok": false,
+      "mode": "live",
+      "source_id": "seoul-culture-events",
+      "code": "malformed_source",
+      "retryable": false,
+      "diagnostics": {
+        "redacted_url": "http://openapi.seoul.go.kr:8088/<redacted>/json/culturalEventInfo/1/100/",
+        "detail": "culturalEventInfo.list_total_count, culturalEventInfo.RESULT"
+      },
+      "latency_ms": 0
+    }
+  ]
+}
+cleanup=no runtime resources spawned

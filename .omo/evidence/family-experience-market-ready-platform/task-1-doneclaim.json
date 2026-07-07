@@ -1,0 +1,53 @@
+{
+  "DoneClaim": {
+    "task": "Todo 1 - Rewrite the product contract around bounded parent decision support",
+    "changed_files": [
+      "apps/family-experience-mcp/docs/DECISIONS.md",
+      "apps/family-experience-mcp/docs/SUBMISSION_COPY_DRAFT.md",
+      "apps/family-experience-mcp/docs/DEMO_PACK.md",
+      "apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md"
+    ],
+    "product_contract": "source-grounded family experience candidates for bounded parent decision support, not complete event search",
+    "commands": [
+      {
+        "scenario": "Baseline before edits",
+        "invocation": "npm --prefix apps/family-experience-mcp run scan:claims *> .omo/evidence/family-experience-market-ready-platform/task-1-baseline-scan-claims.txt",
+        "result": "PASS, exit_code=0, scanned_files=122",
+        "artifact": ".omo/evidence/family-experience-market-ready-platform/task-1-baseline-scan-claims.txt"
+      },
+      {
+        "scenario": "Happy claim scan after edits",
+        "invocation": "npm --prefix apps/family-experience-mcp run scan:claims | Tee-Object .omo/evidence/family-experience-market-ready-platform/task-1-scan-claims.txt",
+        "result": "PASS, exit_code=0, scanned_files=122",
+        "artifact": ".omo/evidence/family-experience-market-ready-platform/task-1-scan-claims.txt"
+      },
+      {
+        "scenario": "Negative included bad-claim scan",
+        "invocation": "New-Item -ItemType Directory -Force .omo/tmp/market-plan | Out-Null; Set-Content .omo/tmp/market-plan/bad-claim.md '전국 완전 커버리지 보장'; npm --prefix apps/family-experience-mcp run scan:claims -- --include .omo/tmp/market-plan/bad-claim.md *> .omo/evidence/family-experience-market-ready-platform/task-1-negative-claim-scan.txt; Remove-Item -Recurse -Force .omo/tmp/market-plan",
+        "result": "SCANNER_GAP_RECORDED, exit_code=0 because scan:claims ignored or did not implement --include; Todo 2 must close",
+        "artifact": ".omo/evidence/family-experience-market-ready-platform/task-1-negative-claim-scan.txt"
+      },
+      {
+        "scenario": "Explicit public caveat check",
+        "invocation": "PowerShell phrase check over the four scoped docs for source-grounded family experience candidates plus no nationwide completeness, no real-time freshness, no reservation/open-now guarantee, and no child safety certification",
+        "result": "PASS",
+        "artifact": ".omo/evidence/family-experience-market-ready-platform/task-1-copy-caveat-check.txt"
+      },
+      {
+        "scenario": "Scoped diff evidence",
+        "invocation": "git diff -- apps/family-experience-mcp/docs/DECISIONS.md apps/family-experience-mcp/docs/SUBMISSION_COPY_DRAFT.md apps/family-experience-mcp/docs/DEMO_PACK.md apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md > .omo/evidence/family-experience-market-ready-platform/task-1-diff.patch",
+        "result": "REQUESTED_COMMAND_EXIT_CODE=0; requested git diff was empty because target files are untracked, so scoped untracked patch was appended",
+        "artifact": ".omo/evidence/family-experience-market-ready-platform/task-1-diff.patch"
+      }
+    ],
+    "external_source_used": "https://b.kakao.com/views/PlayMCP/AGENTIC_PlAYER_10",
+    "cleanup": [
+      ".omo/tmp/market-plan removed; cleanup receipt says CLEANUP_TMP_EXISTS=False"
+    ],
+    "plan_checkbox": "left unchecked per user instruction",
+    "known_risks": [
+      "Todo 2 still needs claim scanner --include support; negative QA records the current scanner gap.",
+      "Target docs are untracked in this shared worktree, so normal git diff does not show tracked deltas."
+    ]
+  }
+}

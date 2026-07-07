@@ -1,0 +1,46 @@
+
+> family-experience-mcp@0.1.0 test
+> vitest culturePortal
+
+
+ RUN  v4.1.9 D:/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+
+ ❯ test/culturePortal.test.ts (5 tests | 1 failed) 10ms
+     × normalizes a Culture Portal period fixture into a source-backed candidate 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/culturePortal.test.ts > Culture Portal one-view source adapter > normalizes a Culture Portal period fixture into a source-backed candidate
+AssertionError: expected [ 'culture-portal', 'Busan', …(3) ] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
++ [
+    "culture-portal",
+    "Busan",
+    "performance",
+    "coordinates_source_provided",
+    "thumbnail_source_provided",
+-   "source_gpsX:129.0934",
+-   "source_gpsY:35.1379",
+-   "source_thumbnail:https://culture.example.test/thumbs/CP-202607-A.jpg",
+  ]
+
+ ❯ test/culturePortal.test.ts:180:25
+    178|     expect(record.reservation_url).toBeNull()
+    179|     expect(record.program_text).toContain("ignore previous instruction…
+    180|     expect(record.tags).toEqual(
+       |                         ^
+    181|       expect.arrayContaining([
+    182|         "culture-portal",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  02:06:15
+   Duration  181ms (transform 29ms, setup 0ms, import 41ms, tests 10ms, environment 0ms)
+

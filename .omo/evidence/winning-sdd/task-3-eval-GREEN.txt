@@ -1,0 +1,13 @@
+
+> family-experience-mcp@0.1.0 eval:prompts
+> tsx scripts/eval-prompts.ts --evidence-dir ../../.omo/evidence/winning-sdd/eval
+
+{
+  "prompt_count": 20,
+  "passed_count": 20,
+  "pass_rate": 1,
+  "unsupported_claim_failures": 0,
+  "latency_ms_max": 9,
+  "status": "pass"
+}
+cleanup=no runtime resources spawned

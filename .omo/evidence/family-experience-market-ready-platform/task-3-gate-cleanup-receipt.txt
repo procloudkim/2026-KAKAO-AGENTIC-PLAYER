@@ -1,0 +1,3 @@
+cleanup_target=/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/tmp/market-plan
+cleanup_command=rm -rf .omo/tmp/market-plan
+cleanup_status=PASS absent

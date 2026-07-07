@@ -1,0 +1,4 @@
+description: success=false
+description:unsupported availability or safety claim in public candidate copy
+age_fit_reason: success=false
+age_fit_reason:unsupported availability or safety claim in public candidate copy

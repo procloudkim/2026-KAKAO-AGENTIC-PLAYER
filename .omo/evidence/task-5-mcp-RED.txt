@@ -1,0 +1,9 @@
+# task-5 MCP RED
+## command
+cd apps/family-experience-mcp && npm run smoke:mcp -- --assert-tool-count=1
+## output
+
+> family-experience-mcp@0.0.0 smoke:mcp
+> tsx scripts/pending-smoke.ts mcp --assert-tool-count=1
+
+smoke:mcp is pending until a later todo.

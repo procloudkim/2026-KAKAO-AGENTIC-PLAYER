@@ -1,0 +1,20 @@
+Scenario: post-fix explicit --include mixed allowed placeholder plus real-looking API_KEY.
+Invocation: npm run scan:secrets -- --include ..\..\.omo\evidence\family-experience-market-ready-platform\task-7-red-mixed-placeholder-real-looking.env
+ExitCode: 1
+Expected-after-fix: FAIL / exit 1 with key-assignment finding for included file.
+--- output ---
+
+> family-experience-mcp@0.1.0 scan:secrets
+> tsx scripts/scan-secrets.ts --include ..\..\.omo\evidence\family-experience-market-ready-platform\task-7-red-mixed-placeholder-real-looking.env
+
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\task-7-red-mixed-placeholder-real-looking.env",
+      "line": 1,
+      "rule": "key-assignment"
+    }
+  ]
+}
+

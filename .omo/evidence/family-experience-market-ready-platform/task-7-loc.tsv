@@ -1,0 +1,4 @@
+path	pure_loc
+apps/family-experience-mcp/scripts/scan-secrets.ts	163
+apps/family-experience-mcp/test/scanSecrets.test.ts	111
+apps/family-experience-mcp/test/etlNationwide.test.ts	368

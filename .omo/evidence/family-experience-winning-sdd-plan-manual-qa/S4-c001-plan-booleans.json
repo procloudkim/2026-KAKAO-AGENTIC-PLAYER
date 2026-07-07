@@ -1,0 +1,26 @@
+{
+  "check": "c001",
+  "verdict": "PASS",
+  "checks": [
+    {
+      "id": "powershell_literal_script_blocks",
+      "pass": true
+    },
+    {
+      "id": "task1_green_writes_evidence",
+      "pass": true
+    },
+    {
+      "id": "browser_invocation_covered",
+      "pass": true
+    },
+    {
+      "id": "browser_cleanup_covered",
+      "pass": true
+    },
+    {
+      "id": "no_unresolved_placeholders",
+      "pass": true
+    }
+  ]
+}

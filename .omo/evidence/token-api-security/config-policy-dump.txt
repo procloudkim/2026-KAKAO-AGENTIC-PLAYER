@@ -1,0 +1,7 @@
+env_exists=True
+env_length=166
+git_check_ignore=.gitignore:1:.env	apps/family-experience-mcp/.env
+env_example=SEOUL_OPEN_DATA_KEY=;SEOUL_OPEN_DATA_BASE_URL=http://openapi.seoul.go.kr:8088;FAMILY_EXPERIENCE_ALLOW_FIXTURE=false;PORT=3349;
+gitignore_contains_env=True
+gitignore_contains_env_star=True
+no_secret_value_printed=true

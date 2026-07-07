@@ -1,0 +1,17 @@
+  % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+                                 Dload  Upload  Total   Spent   Left   Speed
+
+  0      0   0      0   0      0      0      0                              0
+100  20363   0    240 100  20123    864  72494                              0
+100  20363   0    240 100  20123    864  72467                              0
+100  20363   0    240 100  20123    864  72450                              0
+HTTP/1.1 200 OK
+cache-control: no-cache
+connection: keep-alive
+content-type: text/event-stream
+Date: Tue, 07 Jul 2026 08:14:47 GMT
+Transfer-Encoding: chunked
+
+event: message
+data: {"result":{"content":[{"type":"text","text":"Input validation error: Invalid arguments for tool find_family_experiences: prompt: prompt must be at most 4096 characters"}],"isError":true},"jsonrpc":"2.0","id":"long-1"}
+

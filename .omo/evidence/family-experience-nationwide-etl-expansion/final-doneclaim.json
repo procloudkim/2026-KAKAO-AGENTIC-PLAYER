@@ -1,0 +1,119 @@
+{
+  "status": "DONE",
+  "task": "Fix F2/F4 synthetic cache scope-fidelity blocker",
+  "changed_files": [
+    "apps/family-experience-mcp/src/etl/cacheQuery.ts",
+    "apps/family-experience-mcp/src/pipeline/render.ts",
+    "apps/family-experience-mcp/scripts/smoke-mcp.ts",
+    "apps/family-experience-mcp/test/mcpCache.test.ts",
+    "apps/family-experience-mcp/test/pipeline.test.ts"
+  ],
+  "behavior": {
+    "synthetic_cache_scope": "Fixture metadata or reserved fixture URLs are scoped to fixture before rendering.",
+    "seeded_smoke_cache": "Seeded smoke records now use fixture mode and example.invalid URLs, not live/example.test official proof.",
+    "fixture_render_wording": "Fixture candidates render fixture/cache wording for warnings, source_summary, parent_check, and next_action.",
+    "live_path": "Existing live Seoul/pipeline tests still pass separately."
+  },
+  "verification": [
+    {
+      "scenario": "regression_red_old_synthetic_live_output",
+      "invocation": "cd apps/family-experience-mcp && npm test -- mcpCache --run",
+      "observable": "failed with official-data banner, mode live, example.test before fix",
+      "artifact": ".omo/evidence/family-experience-nationwide-etl-expansion/final-scope-regression-red.txt"
+    },
+    {
+      "scenario": "mcp_tests",
+      "invocation": "cd apps/family-experience-mcp && npm test -- mcp --run",
+      "observable": "3 files passed, 10 tests passed",
+      "artifact": ".omo/evidence/family-experience-nationwide-etl-expansion/final-verify-npm-test-mcp-final2.txt"
+    },
+    {
+      "scenario": "smoke_mcp_synthetic_cache",
+      "invocation": "cd apps/family-experience-mcp && npm run smoke:mcp",
+      "observable": "result_ok true, mode fixture, fixture/demo banner, example.invalid URL, no official-data banner",
+      "artifact": ".omo/evidence/family-experience-nationwide-etl-expansion/final-verify-smoke-mcp-final2.txt"
+    },
+    {
+      "scenario": "typecheck",
+      "invocation": "cd apps/family-experience-mcp && npm run typecheck",
+      "observable": "tsc --noEmit exit 0",
+      "artifact": ".omo/evidence/family-experience-nationwide-etl-expansion/final-verify-typecheck-final2.txt"
+    },
+    {
+      "scenario": "pipeline_render_contract",
+      "invocation": "cd apps/family-experience-mcp && npm test -- pipeline --run",
+      "observable": "2 files passed, 12 tests passed",
+      "artifact": ".omo/evidence/family-experience-nationwide-etl-expansion/final-verify-npm-test-pipeline-final2.txt"
+    },
+    {
+      "scenario": "real_live_path_preserved",
+      "invocation": "cd apps/family-experience-mcp && npm test -- seoulCulture pipelineNationwide --run",
+      "observable": "2 files passed, 14 tests passed",
+      "artifact": ".omo/evidence/family-experience-nationwide-etl-expansion/final-verify-live-path-final.txt"
+    },
+    {
+      "scenario": "manual_qa_busan_real_cache",
+      "invocation": "cd apps/family-experience-mcp && npm run smoke:mcp -- --assert-tool-count=1 --cache-dir=../../.omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/cache --skip-seed --expect-error --prompt=\"부산 이번 주말 4살 실내\"",
+      "observable": "valid prompt reached cache and returned failure_code no_results, not invalid_input",
+      "artifact": ".omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/02-mcp-busan.log"
+    },
+    {
+      "scenario": "manual_qa_jeju_real_cache",
+      "invocation": "cd apps/family-experience-mcp && npm run smoke:mcp -- --assert-tool-count=1 --cache-dir=../../.omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/cache --skip-seed --expect-error --prompt=\"제주 이번 주말 초등학생 무료\"",
+      "observable": "valid prompt reached cache and returned failure_code no_results, not invalid_input",
+      "artifact": ".omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/03-mcp-jeju.log"
+    },
+    {
+      "scenario": "manual_qa_missing_cache",
+      "invocation": "cd apps/family-experience-mcp && npm run smoke:mcp -- --assert-tool-count=1 --cache-dir=../../.omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/missing-cache --skip-seed --expect-error --prompt=\"부산 이번 주말 4살 실내\"",
+      "observable": "missing_configuration failure for missing cache",
+      "artifact": ".omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/04-mcp-missing-cache.log"
+    },
+    {
+      "scenario": "seeded_busan_fixture_success",
+      "invocation": "cd apps/family-experience-mcp && npm run smoke:mcp -- --assert-tool-count=1 --prompt=\"부산 이번 주말 4살 실내\"",
+      "observable": "synthetic seeded cache succeeds as fixture/demo",
+      "artifact": ".omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/05-mcp-busan-seeded.log"
+    },
+    {
+      "scenario": "seeded_jeju_fixture_success",
+      "invocation": "cd apps/family-experience-mcp && npm run smoke:mcp -- --assert-tool-count=1 --prompt=\"제주 이번 주말 초등학생 무료\"",
+      "observable": "synthetic seeded cache succeeds as fixture/demo",
+      "artifact": ".omo/evidence/family-experience-nationwide-etl-expansion/F3-real-manual-qa-artifacts/06-mcp-jeju-seeded.log"
+    },
+    {
+      "scenario": "scope_fidelity_assertions",
+      "invocation": "PowerShell artifact assertion over final smoke and manual QA logs",
+      "observable": "mode fixture true, fixture notice true, no official-data banner true, no example.test true, Busan/Jeju no invalid_input true",
+      "artifact": ".omo/evidence/family-experience-nationwide-etl-expansion/final-proof-scope-fidelity.txt"
+    },
+    {
+      "scenario": "claims_sources_secrets_scans",
+      "invocation": "cd apps/family-experience-mcp && npm run scan:claims; npm run scan:sources; npm run scan:secrets",
+      "observable": "all scans PASS",
+      "artifact": ".omo/evidence/family-experience-nationwide-etl-expansion/final-scan-claims-final.txt; .omo/evidence/family-experience-nationwide-etl-expansion/final-scan-sources-final.txt; .omo/evidence/family-experience-nationwide-etl-expansion/final-scan-secrets-final.txt"
+    },
+    {
+      "scenario": "postwrite_loc",
+      "invocation": "PowerShell pure LOC count for changed files",
+      "observable": "all touched files <= 250 pure LOC",
+      "artifact": ".omo/evidence/family-experience-nationwide-etl-expansion/final-postwrite-loc.tsv"
+    },
+    {
+      "scenario": "lsp_diagnostics",
+      "invocation": "mcp__lsp.status",
+      "observable": "typescript LSP missing, install declined; fallback npm run typecheck PASS",
+      "artifact": ".omo/evidence/family-experience-nationwide-etl-expansion/final-lsp-diagnostics-fallback.txt"
+    },
+    {
+      "scenario": "dirty_worktree_preserved",
+      "invocation": "git status --short",
+      "observable": "shared dirty worktree captured, no commit/revert performed",
+      "artifact": ".omo/evidence/family-experience-nationwide-etl-expansion/final-dirty-worktree-status.txt"
+    }
+  ],
+  "residual_risks": [
+    "TypeScript LSP server is not installed in this environment; npm run typecheck was used as the diagnostics fallback."
+  ]
+}
+

@@ -1,0 +1,409 @@
+warning: in the working copy of 'apps/family-experience-mcp/scripts/scan-secrets.ts', LF will be replaced by CRLF the next time Git touches it
+diff --git a/apps/family-experience-mcp/scripts/scan-secrets.ts b/apps/family-experience-mcp/scripts/scan-secrets.ts
+new file mode 100644
+index 0000000..74c4872
+--- /dev/null
++++ b/apps/family-experience-mcp/scripts/scan-secrets.ts
+@@ -0,0 +1,207 @@
++import { readdir, readFile, stat } from "node:fs/promises"
++import { basename, join, resolve } from "node:path"
++import { pathToFileURL } from "node:url"
++
++export type Finding = { readonly file: string; readonly line: number; readonly rule: string }
++
++const appRoot = process.cwd()
++const repoRoot = resolve(appRoot, "../..")
++const invocationRoot = process.env["INIT_CWD"] ?? appRoot
++const appTargets = ["docs", "src", "test", "scripts", "package.json", ".env.example"] as const
++const evidenceNames = [/^golden-family-experience-.*\.json$/, /^task-9-.*\.(txt|md|log|json|tmp)$/] as const
++const secretRules: readonly (readonly [string, RegExp])[] = [
++  ["bearer-token", /Bearer\s+[A-Za-z0-9._~+/=-]{20,}/],
++  ["openai-style-key", /\bsk-[A-Za-z0-9_-]{20,}/],
++  ["seoul-open-data-key", /\bSEOUL_OPEN_DATA_KEY\s*[:=]\s*["']?[A-Za-z0-9][A-Za-z0-9_~+/=-]{19,}/],
++  ["provider-service-key", /\b(?:CULTURE_PORTAL_SERVICE_KEY|KTO_TOURAPI_SERVICE_KEY|PUBLIC_DATA_STANDARD_SERVICE_KEY)\s*[:=]\s*["']?[A-Za-z0-9][A-Za-z0-9_~+/=-]{19,}/],
++  ["key-assignment", /\b(?:api[_-]?key|apikey|service[_-]?key|secret|token|access[_-]?token)\s*[:=]\s*["']?[A-Za-z0-9][A-Za-z0-9_~+/=-]{19,}/i],
++  ["query-keyed-url", /[?&](?:KEY|key|serviceKey|apikey|apiKey|token)=[A-Za-z0-9][A-Za-z0-9._~-]{19,}/],
++  ["path-keyed-url", /https?:\/\/[^\s"'<>]+\/[A-Za-z0-9][A-Za-z0-9._~-]{19,}\/(?:json|xml|api|culturalEventInfo)\b/i],
++] as const
++const allowedPlaceholderValues = [
++  "optionalNonEmptyStringSchema",
++  "CLI_SYNTHETIC_SERVICE_KEY_12345",
++  "PUBLIC_DATA_STANDARD_SECRET",
++] as const
++
++async function listFiles(target: string): Promise<readonly string[]> {
++  const absolute = resolve(appRoot, target)
++  if (basename(target).includes(".")) {
++    return [absolute]
++  }
++  return walk(absolute)
++}
++
++async function walk(directory: string): Promise<readonly string[]> {
++  const entries = await readdir(directory, { withFileTypes: true })
++  const nested = await Promise.all(entries.map(async (entry) => {
++    const child = join(directory, entry.name)
++    if (entry.isDirectory()) {
++      return entry.name === "node_modules" ? [] : walk(child)
++    }
++    return entry.isFile() ? [child] : []
++  }))
++  return nested.flat()
++}
++
++async function evidenceFiles(): Promise<readonly string[]> {
++  const evidenceRoot = resolve(repoRoot, ".omo/evidence")
++  const entries = await readdir(evidenceRoot, { withFileTypes: true }).catch(() => [])
++  const directFiles = entries
++    .filter((entry) => entry.isFile() && isEvidenceName(entry.name))
++    .map((entry) => join(evidenceRoot, entry.name))
++  const tokenSecurityFiles = (
++    await Promise.all(
++      entries
++        .filter((entry) => entry.isDirectory() && entry.name === "token-api-security")
++        .map((entry) => walk(join(evidenceRoot, entry.name))),
++    )
++  ).flat()
++  return [...directFiles, ...tokenSecurityFiles]
++}
++
++function isEvidenceName(name: string): boolean {
++  return evidenceNames.some((pattern) => pattern.test(name)) || name.startsWith("token-api-security")
++}
++
++async function includeFiles(paths: readonly string[]): Promise<readonly string[]> {
++  return (await Promise.all(paths.map(listIncludedPath))).flat()
++}
++
++async function listIncludedPath(target: string): Promise<readonly string[]> {
++  const absolute = await resolveExistingPath(target)
++  const targetStats = await stat(absolute)
++  return targetStats.isDirectory() ? walk(absolute) : [absolute]
++}
++
++async function resolveExistingPath(target: string): Promise<string> {
++  const candidates = [resolve(invocationRoot, target), resolve(appRoot, target), resolve(repoRoot, target)]
++
++  for (const candidate of candidates) {
++    if (await pathExists(candidate)) {
++      return candidate
++    }
++  }
++
++  return resolve(invocationRoot, target)
++}
++
+warning: in the working copy of 'apps/family-experience-mcp/test/scanSecrets.test.ts', LF will be replaced by CRLF the next time Git touches it
++async function pathExists(path: string): Promise<boolean> {
++  return stat(path).then(
++    () => true,
++    () => false,
++  )
++}
++
++export function scanText(file: string, text: string): readonly Finding[] {
++  return text.split(/\r?\n/).flatMap((lineText, index) => {
++    return secretRules
++      .filter((rule) => hasRejectedSecretOccurrence(lineText, rule[1]))
++      .map((rule) => ({ file, line: index + 1, rule: rule[0] }))
++  })
++}
++
++function hasRejectedSecretOccurrence(lineText: string, pattern: RegExp): boolean {
++  for (const match of lineText.matchAll(globalPattern(pattern))) {
++    if (!isAllowedPlaceholderOccurrence(match[0])) {
++      return true
++    }
++  }
++  return false
++}
++
++function globalPattern(pattern: RegExp): RegExp {
++  const flags = pattern.flags.includes("g") ? pattern.flags : `${pattern.flags}g`
++  return new RegExp(pattern.source, flags)
++}
++
++function isAllowedPlaceholderOccurrence(text: string): boolean {
++  const value = matchedSecretValue(text)
++  return allowedPlaceholderValues.some((placeholder) => value === placeholder)
++}
++
++function matchedSecretValue(text: string): string {
++  const bearerValue = /^Bearer\s+([A-Za-z0-9._~+/=-]{20,})$/.exec(text)?.[1]
++  if (bearerValue !== undefined) {
++    return bearerValue
++  }
++
++  const queryValue = /[?&](?:KEY|key|serviceKey|apikey|apiKey|token)=([A-Za-z0-9][A-Za-z0-9._~-]{19,})$/.exec(text)?.[1]
++  if (queryValue !== undefined) {
++    return queryValue
++  }
++
++  const pathValue = /\/([A-Za-z0-9][A-Za-z0-9._~-]{19,})\/(?:json|xml|api|culturalEventInfo)\b/i.exec(text)?.[1]
++  if (pathValue !== undefined) {
++    return pathValue
++  }
++
++  return /[:=]\s*["']?([A-Za-z0-9][A-Za-z0-9_~+/=-]{19,})$/.exec(text)?.[1] ?? text
++}
++
++export function parseIncludeArgs(args: readonly string[]): readonly string[] {
++  const includes: string[] = []
++  for (let index = 0; index < args.length; index += 1) {
++    const arg = args[index]
++    if (arg === "--help" || arg === "-h") {
++      throw new SecretScanUsageError(usage())
++    }
++    if (arg !== "--include") {
++      throw new SecretScanUsageError(`Unknown option: ${arg}\n${usage()}`)
++    }
++
++    const includePath = args[index + 1]
++    if (includePath === undefined || includePath.startsWith("--")) {
++      throw new SecretScanUsageError(`Missing path for --include\n${usage()}`)
++    }
++    includes.push(includePath)
++    index += 1
++  }
++  return includes
++}
++
++class SecretScanUsageError extends Error {
++  constructor(message: string) {
++    super(message)
++    this.name = "SecretScanUsageError"
++  }
++}
++
++function usage(): string {
++  return [
++    "Usage: tsx scripts/scan-secrets.ts [--include <path> ...]",
++    "",
++    "Scans default app docs, source, tests, scripts, selected evidence, and any included files or directories.",
++    "Use --include for launch copy, env fixtures, temporary QA files, and generated evidence outside the default scan set.",
++  ].join("\n")
++}
++
++async function main(args: readonly string[] = process.argv.slice(2)): Promise<void> {
++  const includes = parseIncludeArgs(args)
++  const appFiles = (await Promise.all(appTargets.map(listFiles))).flat()
++  const files = [...appFiles, ...(await evidenceFiles()), ...(await includeFiles(includes))]
++  const findings = (await Promise.all(files.map(async (file) => scanText(file, await readFile(file, "utf8"))))).flat()
++
++  if (findings.length > 0) {
++    console.error(JSON.stringify({ status: "FAIL", findings }, null, 2))
++    process.exitCode = 1
++    return
++  }
++  console.log(JSON.stringify({ status: "PASS", scanned_files: files.length }, null, 2))
++}
++
++function isCliEntryPoint(entryPath: string | undefined): boolean {
++  return entryPath !== undefined && import.meta.url === pathToFileURL(entryPath).href
++}
++
++if (isCliEntryPoint(process.argv[1])) {
++  main().catch((error: unknown) => {
++    if (error instanceof SecretScanUsageError) {
++      console.error(error.message)
++      process.exitCode = 1
++      return
++    }
++    console.error(error instanceof Error ? error.message : "unknown secret scan failure")
++    process.exitCode = 1
++  })
++}
+diff --git a/apps/family-experience-mcp/test/scanSecrets.test.ts b/apps/family-experience-mcp/test/scanSecrets.test.ts
+new file mode 100644
+index 0000000..ff71b97
+--- /dev/null
++++ b/apps/family-experience-mcp/test/scanSecrets.test.ts
+@@ -0,0 +1,188 @@
++import { mkdir, rm, writeFile } from "node:fs/promises"
++import { resolve } from "node:path"
++import { spawnSync } from "node:child_process"
++
++import { describe, expect, it } from "vitest"
++
++import { scanText } from "../scripts/scan-secrets.js"
++
++function runSecretScan(args: readonly string[]) {
++  return spawnSync(process.execPath, ["--import", "tsx", "scripts/scan-secrets.ts", ...args], {
++    cwd: process.cwd(),
++    encoding: "utf8",
++  })
++}
++
++describe("secret scanner", () => {
++  it("flags real-looking key assignments when guardrail and redacted are on the same line", () => {
++    // Given: a synthetic long key is present on a line that also describes redaction guardrails.
++    const realLookingSecret = ["SYNTHETICKEYPART", "1234567890ABCDE"].join("")
++    const text = `redacted guardrail example API_KEY=${realLookingSecret}`
++
++    // When: the scanner evaluates the line.
++    const findings = scanText("synthetic-bypass.txt", text)
++
++    // Then: context words do not suppress a real-looking secret finding.
++    expect(findings).toEqual([{ file: "synthetic-bypass.txt", line: 1, rule: "key-assignment" }])
++  })
++
++  it("flags real-looking Seoul Open Data key assignments", () => {
++    // Given: a synthetic Seoul Open Data key is assigned directly.
++    const seoulOpenDataKey = ["SEOULKEYPART1234", "567890ABCDE"].join("")
++    const text = `SEOUL_OPEN_DATA_KEY="${seoulOpenDataKey}"`
++
++    // When: the scanner evaluates the assignment.
++    const findings = scanText("synthetic-env.txt", text)
++
++    // Then: the project-specific environment key is treated as secret material.
++    expect(findings).toEqual([{ file: "synthetic-env.txt", line: 1, rule: "seoul-open-data-key" }])
++  })
++
++  it("allows empty env examples and explicit redaction placeholders", () => {
++    // Given: documented placeholders contain no real-looking secret value.
++    const text = [
++      "SEOUL_OPEN_DATA_KEY=",
++      'SEOUL_OPEN_DATA_KEY=""',
++      "SEOUL_OPEN_DATA_KEY=<redacted>",
++      "SEOUL_OPEN_DATA_KEY=redacted",
++      "https://openapi.example.test/<redacted>/json/culturalEventInfo/1/5/",
++    ].join("\n")
++
++    // When: the scanner evaluates placeholder examples.
++    const findings = scanText(".env.example", text)
++
++    // Then: empty assignments and redaction examples remain allowed.
++    expect(findings).toEqual([])
++  })
++
++  it("allows pure synthetic service key placeholders", () => {
++    // Given: a fixture assignment uses the documented synthetic CLI placeholder.
++    const text = "SERVICE_KEY=<redacted-synthetic-secret>"
++
++    // When: the scanner evaluates only that placeholder-valued assignment.
++    const findings = scanText("synthetic-placeholder.env", text)
++
++    // Then: the intended synthetic fixture remains allowed.
++    expect(findings).toEqual([])
++  })
++
++  it("flags real-looking key assignments next to allowed placeholders", () => {
++    // Given: an allowed placeholder and a separate real-looking key assignment share one line.
++    const realLookingSecret = ["SYNTHETICKEYPART", "1234567890ABCDE"].join("")
++    const text = `CLI_SYNTHETIC_SERVICE_KEY_12345 API_KEY=${realLookingSecret}`
++
++    // When: the scanner evaluates the mixed-token line.
++    const findings = scanText("mixed-placeholder-secret.env", text)
++
++    // Then: the placeholder does not suppress the separate key occurrence.
++    expect(findings).toEqual([{ file: "mixed-placeholder-secret.env", line: 1, rule: "key-assignment" }])
++  })
++
++  it("flags placeholder-embedded longer key assignments", () => {
++    // Given: a key assignment embeds an allowed placeholder inside a longer real-looking token.
++    const text = ["API_KEY=<redacted-synthetic-secret>", "REALTOKEN123456"].join("")
++
++    // When: the scanner evaluates the assignment.
++    const findings = scanText("embedded-placeholder-secret.env", text)
++
++    // Then: only an exact full placeholder value is allowed.
++    expect(findings).toEqual([{ file: "embedded-placeholder-secret.env", line: 1, rule: "key-assignment" }])
++  })
++
++  it("flags real-looking secrets in nested token API security evidence", async () => {
++    // Given: a synthetic key is written to the nested evidence directory used by token/API reviews.
++    const evidenceDir = resolve(process.cwd(), "../../.omo/evidence/token-api-security")
++    const evidenceFile = resolve(evidenceDir, "scan-secrets-nested-bypass.tmp")
++    const syntheticKey = ["NESTEDTOKENPART", "1234567890ABCDE"].join("")
++
++    await mkdir(evidenceDir, { recursive: true })
++    await writeFile(evidenceFile, `SEOUL_OPEN_DATA_KEY=${syntheticKey}\n`, "utf8")
++
++    try {
++      // When: the scanner runs through its CLI surface.
++      const result = spawnSync(process.execPath, ["--import", "tsx", "scripts/scan-secrets.ts"], {
++        cwd: process.cwd(),
++        encoding: "utf8",
++      })
++
++      // Then: nested token/API evidence is part of the enforced scan set.
++      expect(result.status).toBe(1)
++      expect(result.stderr).toContain("scan-secrets-nested-bypass.tmp")
++      expect(result.stderr).toContain("seoul-open-data-key")
++    } finally {
++      await rm(evidenceFile, { force: true })
++    }
++  })
++
++  it("rejects real-looking secrets from explicit include paths", async () => {
++    // Given: a temp QA fixture outside the default scan set contains a synthetic provider key.
++    const includeDir = resolve(process.cwd(), "../../.omo/tmp/market-plan-secrets")
++    const includeFile = resolve(includeDir, "fake-secret.env")
++    const fakeSecretAssignment = [
++      "CULTURE_PORTAL",
++      "_SERVICE_KEY=<redacted-synthetic-secret>",
++      "123456",
++    ].join("")
++
++    await mkdir(includeDir, { recursive: true })
++    await writeFile(includeFile, `${fakeSecretAssignment}\n`, "utf8")
++
++    try {
++      // When: the scanner runs through its CLI include surface.
++      const result = runSecretScan(["--include", "../../.omo/tmp/market-plan-secrets/fake-secret.env"])
++
++      // Then: included temporary QA files are rejected when they contain key material.
++      expect(result.status).toBe(1)
++      expect(result.stderr).toContain("fake-secret.env")
++      expect(result.stderr).toContain("provider-service-key")
++    } finally {
++      await rm(includeDir, { recursive: true, force: true })
++    }
++  })
++
++  it("rejects mixed placeholders and real-looking secrets from explicit include paths", async () => {
++    // Given: a caller explicitly includes an untrusted QA file with an allowed placeholder and separate API key.
++    const includeDir = resolve(process.cwd(), "../../.omo/tmp/market-plan-mixed-secrets")
++    const includeFile = resolve(includeDir, "mixed-placeholder-secret.env")
++    const realLookingSecret = ["SYNTHETICKEYPART", "1234567890ABCDE"].join("")
++
++    await mkdir(includeDir, { recursive: true })
++    await writeFile(includeFile, `CLI_SYNTHETIC_SERVICE_KEY_12345 API_KEY=${realLookingSecret}\n`, "utf8")
++
++    try {
++      // When: the scanner runs through its CLI include surface.
++      const result = runSecretScan(["--include", "../../.omo/tmp/market-plan-mixed-secrets/mixed-placeholder-secret.env"])
++
++      // Then: explicit include remains untrusted and rejects the separate key.
++      expect(result.status).toBe(1)
++      expect(result.stderr).toContain("mixed-placeholder-secret.env")
++      expect(result.stderr).toContain("key-assignment")
++    } finally {
++      await rm(includeDir, { recursive: true, force: true })
++    }
++  })
++
++  it("fails closed when include option is malformed", () => {
++    // Given: a caller provides --include without a path.
++    const args = ["--include"] as const
++
++    // When: the scanner runs through its CLI surface.
++    const result = runSecretScan(args)
++
++    // Then: malformed input fails instead of falling back to a partial default scan.
++    expect(result.status).toBe(1)
++    expect(result.stderr).toContain("Missing path for --include")
++  })
++
++  it("fails closed when include path does not exist", () => {
++    // Given: a caller includes a path that is absent in the repo, app, and invocation roots.
++    const missingPath = "../../.omo/tmp/market-plan/no-such-secret-fixture.env"
++
++    // When: the scanner runs through its CLI surface.
++    const result = runSecretScan(["--include", missingPath])
++
++    // Then: nonexistent include targets fail closed.
++    expect(result.status).toBe(1)
++    expect(result.stderr).toContain("no-such-secret-fixture.env")
++  })
++})

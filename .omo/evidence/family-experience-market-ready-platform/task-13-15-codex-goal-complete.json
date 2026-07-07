@@ -1,0 +1,11 @@
+{
+  "goal": {
+    "threadId": "019f1d36-af17-7a20-a79b-60c2e6a00e96",
+    "objective": "Complete the durable ulw-loop plan in .omo/ulw-loop/family-market-ready-todo-13-15-20260708/goals.json, including later accepted/appended stories, under the original brief constraints; use .omo/ulw-loop/family-market-ready-todo-13-15-20260708/ledger.jsonl as the audit trail.",
+    "status": "complete",
+    "tokensUsed": 267992,
+    "timeUsedSeconds": 2183,
+    "createdAt": 1783449646,
+    "updatedAt": 1783451829
+  }
+}

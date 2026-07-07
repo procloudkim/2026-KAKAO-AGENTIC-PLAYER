@@ -1,0 +1,5 @@
+
+> family-experience-mcp@0.0.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts
+
+Request timed out

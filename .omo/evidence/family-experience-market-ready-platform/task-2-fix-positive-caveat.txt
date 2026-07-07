@@ -1,0 +1,10 @@
+
+> family-experience-mcp@0.1.0 scan:claims
+> tsx scripts/scan-claims.ts --include .omo/tmp/market-plan/positive-caveat.md
+
+{
+  "status": "PASS",
+  "scanned_files": 126
+}
+
+EXIT_CODE=0

@@ -1,0 +1,53 @@
+This runbook is the operator handoff for `아이랑 어디가`. It covers local verification, provider keys, cache-first ETL operation, temporary PlayMCP registration, and rollback. It is not proof of public release or contest submission.
+- MCP path: `/mcp`.
+Then check `http://127.0.0.1:3345/health` from the same environment. For `/mcp`, use the MCP smoke path rather than a plain browser GET:
+`npm run smoke:mcp` runs an in-memory MCP client/server smoke by default and does not require `npm run dev:http` to be running. To smoke a deployed HTTP endpoint instead, set `MCP_ENDPOINT` to the full HTTPS `/mcp` URL before running the command.
+Use `/health` as the non-sensitive diagnostics surface for public-beta launch checks. It includes:
+DEPLOY_BASE_URL=https://mcp-name.playmcp-endpoint.kakaocloud.io
+MCP_ENDPOINT="$DEPLOY_BASE_URL/mcp"
+| 5 | Docker build | From `apps/family-experience-mcp`: `docker build --platform linux/amd64 -t family-experience-mcp:public-beta .` | Image builds from compiled JavaScript, production dependencies, non-root runtime, and the Dockerfile `/health` healthcheck. | `$EVIDENCE_DIR/task-15-docker-build.txt` |
+| 6 | Docker daemon blocker fallback | If Docker returns a daemon or pipe error, capture `docker version`, the failed `docker build` output, then rerun `npm --prefix "$APP_DIR" run verify` and local MCP smoke. | The blocker text is exact. The fallback proves only Node/npm package behavior; it is not a Docker runtime pass. | `$EVIDENCE_DIR/task-15-docker-daemon-blocker.txt`, `$EVIDENCE_DIR/task-15-docker-fallback-verify.txt`, `$EVIDENCE_DIR/task-15-docker-fallback-smoke.txt` |
+| 8 | Remote `/health` smoke | `curl -fsS "$DEPLOY_BASE_URL/health" | tee "$EVIDENCE_DIR/task-15-remote-health.json"` | HTTP 200. JSON identifies the service, cache status is `fresh` before broad beta copy, source failures are understood, and no raw key appears. | `$EVIDENCE_DIR/task-15-remote-health.json` |
+| 9 | Remote `/mcp` smoke | `MCP_ENDPOINT="$MCP_ENDPOINT" npm --prefix "$APP_DIR" run smoke:mcp -- --cache-dir=data/family-experience-cache --skip-seed | tee "$EVIDENCE_DIR/task-15-remote-mcp.txt"` | Smoke exits 0 against the HTTPS `/mcp` endpoint and discovers or calls exactly `find_family_experiences`. | `$EVIDENCE_DIR/task-15-remote-mcp.txt` |
+| 10 | PlayMCP `정보 불러오기` flow | In the PlayMCP console: open the registered MCP, expand MCP information, click `수정`, set `MCP Endpoint` to `$MCP_ENDPOINT`, click `정보 불러오기`, and inspect the loaded tool list. | Console loads exactly one public tool, `find_family_experiences`. Keep visibility private/operator-only. Do not click `등록 및 심사 요청` in this step. | `$EVIDENCE_DIR/task-15-playmcp-info-load.md` |
+| 11 | Starter-message private smoke | Run the registered starter prompts in private/operator-only mode after `정보 불러오기`. | Responses stay source-grounded, do not expose secrets, do not promise nationwide completeness, and reflect cache/source limits. | `$EVIDENCE_DIR/task-15-playmcp-starter-smoke.md` |
+| 12 | Post-release monitoring | During beta smoke, follow `docs/SLO.md`: check `/health` every 15 minutes, MCP smoke after deploy/cache changes, P95 every 30 minutes, cache freshness hourly, source ETL proof once per launch day, no-result/provider alerts, and all scan gates before handoff. | SLO observables remain within beta targets or an incident drill below is opened. | `$EVIDENCE_DIR/task-15-post-release-monitoring.md` |
+$env:DEPLOY_BASE_URL='https://mcp-name.playmcp-endpoint.kakaocloud.io'
+$env:MCP_ENDPOINT="$env:DEPLOY_BASE_URL/mcp"
+Invoke-WebRequest -UseBasicParsing "$env:DEPLOY_BASE_URL/health" | Select-Object -ExpandProperty Content | Tee-Object ../../.omo/evidence/family-experience-market-ready-platform/task-15-remote-health.json
+Remove-Item Env:MCP_ENDPOINT
+The service fails closed when the configured cache is missing, stale, malformed, or mid-publish. It must not serve stale records as live output and must not fabricate candidates. `/health` reports the cache `status` as `fresh`, `stale`, `missing`, `refreshing`, or `invalid`, plus the exact `refreshCommand` for the current runtime mode. `find_family_experiences` returns a bounded error with zero candidates for stale or missing cache.
+curl -i http://127.0.0.1:3349/health
+docker build -t family-experience-mcp:local .
+For generic live deployment, set provider keys in the platform secret manager, keep `FAMILY_EXPERIENCE_ALLOW_FIXTURE=false`, configure a writable or pre-baked cache path, and expose `/health` plus `/mcp` through HTTPS. Do not bake `.env` or raw keys into the image.
+https://mcp-name.playmcp-endpoint.kakaocloud.io/mcp
+If the KakaoCloud console issues a different HTTPS `/mcp` endpoint, use the console-issued endpoint and record that proof privately. Current host-secret handling must be decided by the operator before deployment because the organizer notice says PlayMCP-in-KC env/Secret injection is not yet supported.
+   - Endpoint path: `/mcp`
+3. Deploy a temporary HTTPS server, then set the PlayMCP endpoint to that deployed URL ending in `/mcp`. For AGENTIC PLAYER 10, use the KakaoCloud PlayMCP-in-KC endpoint described in `docs/HOST_REQUIREMENTS_SOT.md`.
+- No review request, public visibility switch, representative image upload, or contest submission is performed by this step. When final-ready, the organizer flow is `정보 불러오기` followed by `등록 및 심사 요청`; that action must be recorded separately.
+## Rollback
+2. Confirm the endpoint ends in `/mcp`.
+### Bad Cache Rollback Drill
+Use this when `/health.cache.status` is `stale`, `missing`, `invalid`, or stuck at `refreshing`, or when MCP smoke reports a cache read failure.
+| 1 | `curl -fsS "$DEPLOY_BASE_URL/health" | tee "$EVIDENCE_DIR/task-15-bad-cache-health-before.json"` | Cache status shows the bad state without raw secrets. | `$EVIDENCE_DIR/task-15-bad-cache-health-before.json` |
+| 3 | `MCP_ENDPOINT="$MCP_ENDPOINT" npm run smoke:mcp -- --cache-dir=data/family-experience-cache --skip-seed | tee "../../$EVIDENCE_DIR/task-15-bad-cache-mcp-after.txt"` | MCP smoke exits 0 and calls `find_family_experiences`. | `$EVIDENCE_DIR/task-15-bad-cache-mcp-after.txt` |
+| 4 | `curl -fsS "$DEPLOY_BASE_URL/health" | tee "../../$EVIDENCE_DIR/task-15-bad-cache-health-after.json"` | Cache status returns to `fresh`; cache age is below the SLO threshold in `docs/SLO.md`. | `$EVIDENCE_DIR/task-15-bad-cache-health-after.json` |
+### Exposed Key Incident Drill
+| 1 | Stop sharing the affected artifact; keep PlayMCP private/operator-only. | Exposure is contained before retrying deployment or `정보 불러오기`. | `$EVIDENCE_DIR/task-15-exposed-key-containment.md` |
+| 5 | Rerun remote `/health`, remote `/mcp`, and PlayMCP `정보 불러오기` only after rotation and scans pass. | Endpoint works with rotated secret path; no public/review claim is made. | `$EVIDENCE_DIR/task-15-exposed-key-retry.txt` |
+### Provider Outage Response Drill
+Use this when ETL proof or `/health.cache.source_health.failure_codes` shows provider quota exhaustion, repeated source failure, or provider outage.
+| 1 | `curl -fsS "$DEPLOY_BASE_URL/health" | tee "$EVIDENCE_DIR/task-15-provider-outage-health.json"` | Failed source and failure code are visible without raw keyed URLs. | `$EVIDENCE_DIR/task-15-provider-outage-health.json` |
+### Public-Copy Rollback Drill
+| 1 | Remove or narrow the affected public copy; keep PlayMCP private if the copy is in the console. | Unsupported claim is no longer exposed. | `$EVIDENCE_DIR/task-15-public-copy-rollback.md` |
+| 2 | `npm run scan:claims -- --include <copy-path>` and `npm run scan:sources -- --include <copy-path>` | Both scans exit 0 for the corrected copy. | `$EVIDENCE_DIR/task-15-public-copy-rollback-scans.txt` |
+| 3 | Re-run the starter-message private smoke if the copy came from PlayMCP fields. | Responses and starter copy match current source/cache proof. | `$EVIDENCE_DIR/task-15-public-copy-rollback-starter-smoke.md` |
+### Key Rotation Drill
+| 3 | Regenerate source-specific cache and run remote `/health` plus remote `/mcp` smoke. | Cache is fresh and MCP smoke exits 0. | `$EVIDENCE_DIR/task-15-key-rotation-smoke.txt` |
+### Post-Release Monitoring Drill
+| Every 15 minutes during beta smoke | `curl -fsS "$DEPLOY_BASE_URL/health"` | HTTP 200; cache is `fresh` unless an incident is open. | `$EVIDENCE_DIR/task-15-post-release-health-<timestamp>.json` |
+| After deploy or cache changes | `MCP_ENDPOINT="$MCP_ENDPOINT" npm run smoke:mcp -- --cache-dir=data/family-experience-cache --skip-seed` | Tool call succeeds for `find_family_experiences`; no raw secrets. | `$EVIDENCE_DIR/task-15-post-release-mcp-<timestamp>.txt` |
+| Every 30 minutes during beta smoke | `grep '"event":"tool_call"' <log> | jq -s 'map(.latency_ms) | sort | .[(length*0.95|floor)]'` | P95 remains under the beta SLO target in `docs/SLO.md`. | `$EVIDENCE_DIR/task-15-post-release-p95-<timestamp>.txt` |
+| Once per launch day | `node --env-file-if-exists=.env --import tsx scripts/etl-nationwide.ts --dry-run --source <configured_source>` | Current source ETL proof exists for the launch day. | `$EVIDENCE_DIR/task-15-post-release-etl-<source>-<date>.txt` |
+| Before handoff or PlayMCP information load | `npm run scan:secrets && npm run scan:sources && npm run scan:claims` | All gates exit 0. | `$EVIDENCE_DIR/task-15-post-release-gates-<timestamp>.txt` |
+If any interval fails, classify severity with `docs/SLO.md`, open the matching drill above, and record the incident before retrying deployment, `정보 불러오기`, review request, public visibility, or contest submission.

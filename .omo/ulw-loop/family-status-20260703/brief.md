@@ -1,0 +1,1 @@
+Explain where Family-experience-MCP is in an A-to-Z milestone sequence, list remaining needs, and list what must be prepared for Kakao PlayMCP/AGENTIC PLAYER 10 submission. Use existing repo evidence and do not expose secrets.

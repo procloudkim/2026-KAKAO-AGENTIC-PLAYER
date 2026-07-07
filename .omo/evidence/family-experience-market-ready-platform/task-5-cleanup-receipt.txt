@@ -1,0 +1,8 @@
+cleanup_receipt=task-5
+CULTURE_PORTAL_SERVICE_KEY_env_present=
+False
+owned_retry_and_fixture_proofs_removed=true
+artifact_listing:
+etl-proof-2026-07-07T14-24-34-665Z.json length=2757
+etl-proof-2026-07-07T14-24-35-625Z.json length=2187
+etl-proof-latest.json length=2187

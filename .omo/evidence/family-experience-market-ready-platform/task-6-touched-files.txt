@@ -1,0 +1,17 @@
+Touched source/test files:
+- apps/family-experience-mcp/src/schemas.ts
+- apps/family-experience-mcp/src/mcpSourceRecords.ts
+- apps/family-experience-mcp/test/golden.test.ts
+- apps/family-experience-mcp/test/mcpCache.test.ts
+
+Generated/updated evidence via required smoke and receipts:
+- .omo/evidence/golden-family-experience-happy.json
+- .omo/evidence/golden-family-experience-missing-age.json
+- .omo/evidence/golden-family-experience-no-result.json
+- .omo/evidence/golden-family-experience-source-failure.json
+- .omo/evidence/family-experience-market-ready-platform/task-6-*
+
+Not touched intentionally:
+- apps/family-experience-mcp/src/types.ts
+- Todo 7 secret scanner implementation
+- Todo 4 ETL cache implementation files

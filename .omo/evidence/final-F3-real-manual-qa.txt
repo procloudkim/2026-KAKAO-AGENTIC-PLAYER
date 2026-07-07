@@ -1,0 +1,218 @@
+
+===== context =====
+cwd=/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY
+app=/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp
+date=2026-07-02T16:14:00+09:00
++ node --version
+v24.15.0
++ npm --version
+11.12.1
+
+===== preflight no :3345 listener =====
+no LISTENING on :3345 before start
+
+===== start fixture server =====
++ env -u SEOUL_OPEN_DATA_KEY -u SEOUL_OPEN_DATA_BASE_URL FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http
+SERVER_PID=1720
+health_wait[1]=000
+health_wait[2]=200
+
+===== health exact HTTP 200 =====
++ curl -i http://127.0.0.1:3345/health
+HTTP/1.1 200 OK
+content-type: application/json; charset=utf-8
+Date: Thu, 02 Jul 2026 07:14:06 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"ok":true,"name":"family-experience-mcp","version":"0.1.0","tools":["find_family_experiences"],"config":{"port":3345,"allowFixture":true,"toolMode":"fixture","seoulOpenDataBaseUrl":"http://openapi.seoul.go.kr:8088","seoulOpenDataKey":"missing"}}PASS: HTTP status line is 200
+PASS: health body names family-experience-mcp
+
+===== smoke:mcp exact tool and happy call =====
++ env -u SEOUL_OPEN_DATA_KEY -u SEOUL_OPEN_DATA_BASE_URL EVIDENCE_DIR=... FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:mcp -- --assert-tool-count=1
+
+> family-experience-mcp@0.0.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts --assert-tool-count=1
+
+{
+  "endpoint": "http://127.0.0.1:3345/mcp",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "result_ok": true,
+  "candidate_count": 3,
+  "text": "fixture/demo 기준으로 후보 3개를 찾았어요.\naction_card: 1\ntitle: Demo Seoul Kids Makers Studio\ndate_time: 2026-07-04\nvenue: DDP Design Lab Demo Room\naddress: DDP Design Lab Demo Room\nage_fit_label: source-stated\nage_fit_reason: Demo program text states ages 4-6 and guardian participation.\nindoor_outdoor: indoor\nfee_text: Demo field; confirm fees with an official source in live mode.\nsource_name: fixture/demo source\nsource_url: https://example.invalid/family-experience/fixture-v1\nretrieved_at: fixture/demo snapshot\nconfidence: age_fit=source-stated\nmode: fixture\nwarnings: fixture/demo data only; not live/current.\nsource_summary: fixture/demo source 근거로 제목, 날짜, 장소, 연령 단서를 확인했습니다.\nparent_check: Demo program text states ages 4-6 and guardian participation. 예약/요금은 출발 전 공식 출처에서 확인하세요.\nnext_action: https://example.invalid/family-experience/fixture-v1에서 날짜, 장소, 요금, 신청 절차를 확인하세요.\naction_card: 2\ntitle: Demo Rainy Day Story Theater\ndate_time: 2026-07-04\nvenue: Seoul Children's Library Demo Hall\naddress: Seoul Children's Library Demo Hall\nage_fit_label: source-stated\nage_fit_reason: Demo program text states preschool family story play for ages 3-7.\nindoor_outdoor: indoor\nfee_text: Demo field; confirm fees with an official source in live mode.\nsource_name: fixture/demo source\nsource_url: https://example.invalid/family-experience/fixture-v1\nretrieved_at: fixture/demo snapshot\nconfidence: age_fit=source-stated\nmode: fixture\nwarnings: fixture/demo data only; not live/current.\nsource_summary: fixture/demo source 근거로 제목, 날짜, 장소, 연령 단서를 확인했습니다.\nparent_check: Demo program text states preschool family story play for ages 3-7. 예약/요금은 출발 전 공식 출처에서 확인하세요.\nnext_action: https://example.invalid/family-experience/fixture-v1에서 날짜, 장소, 요금, 신청 절차를 확인하세요.\naction_card: 3\ntitle: Demo Family Science Light Lab\ndate_time: 2026-07-04\nvenue: Seoul Science Center Demo Classroom\naddress: Seoul Science Center Demo Classroom\nage_fit_label: source-stated\nage_fit_reason: Demo program text states a preschool-friendly guardian lab for ages 4-8.\nindoor_outdoor: indoor\nfee_text: Demo field; confirm fees with an official source in live mode.\nsource_name: fixture/demo source\nsource_url: https://example.invalid/family-experience/fixture-v1\nretrieved_at: fixture/demo snapshot\nconfidence: age_fit=source-stated\nmode: fixture\nwarnings: fixture/demo data only; not live/current.\nsource_summary: fixture/demo source 근거로 제목, 날짜, 장소, 연령 단서를 확인했습니다.\nparent_check: Demo program text states a preschool-friendly guardian lab for ages 4-8. 예약/요금은 출발 전 공식 출처에서 확인하세요.\nnext_action: https://example.invalid/family-experience/fixture-v1에서 날짜, 장소, 요금, 신청 절차를 확인하세요."
+}
+PASS: smoke:mcp exited 0
+PASS: smoke:mcp lists find_family_experiences
+find_family_experiences occurrences in smoke log=2
+tool-count evidence present in log
+happy-call success evidence present in log
+
+===== smoke:golden happy and safe cases =====
++ env -u SEOUL_OPEN_DATA_KEY -u SEOUL_OPEN_DATA_BASE_URL EVIDENCE_DIR=... FAMILY_EXPERIENCE_ALLOW_FIXTURE=true npm run smoke:golden
+
+> family-experience-mcp@0.0.0 smoke:golden
+> tsx scripts/smoke-golden.ts
+
+{
+  "artifact_dir": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence",
+  "scenarios": [
+    {
+      "id": "happy",
+      "passed": true,
+      "isError": false
+    },
+    {
+      "id": "missing-age",
+      "passed": true,
+      "isError": true
+    },
+    {
+      "id": "no-result",
+      "passed": true,
+      "isError": true
+    },
+    {
+      "id": "source-failure",
+      "passed": true,
+      "isError": true
+    }
+  ]
+}
+PASS: smoke:golden exited 0
+
+===== validate golden public outputs =====
+/usr/bin/bash: line 153: warning: here-document at line 111 delimited by end-of-file (wanted `NODE')
+/usr/bin/bash: line 111: f: unbound variable
+/usr/bin/bash: line 111: candidateLike: unbound variable
+/usr/bin/bash: line 111: name: unbound variable
+[stdin]:43
+
+
+Expression expected
+
+SyntaxError: Unexpected end of input
+    at makeContextifyScript (node:internal/vm:194:14)
+    at compileScript (node:internal/process/execution:388:10)
+    at evalTypeScript (node:internal/process/execution:260:22)
+    at node:internal/main/eval_stdin:51:5
+    at Socket.<anonymous> (node:internal/process/execution:205:5)
+    at Socket.emit (node:events:521:24)
+    at endReadableNT (node:internal/streams/readable:1729:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+
+Node.js v24.15.0
+
+===== cleanup =====
+captured SERVER_PID=1720
+no LISTENING on :3345
+
+===== corrected rerun: validate golden public outputs =====
++ EVIDENCE_DIR=... node ../../.omo/evidence/final-F3-validate-public-output.cjs
+golden-family-experience-happy.json	size=10304
+golden-family-experience-missing-age.json	size=1375
+golden-family-experience-no-result.json	size=1391
+golden-family-experience-source-failure.json	size=1286
+final-cleanup-family-experience-mcp-first-build.txt	size=22
+happy candidateCount=null actionCardJsonWords=5 actionCardLines=0
+golden-family-experience-missing-age.json	safeText=true
+golden-family-experience-no-result.json	safeText=true
+golden-family-experience-source-failure.json	safeText=true
+public_output_validation_failures=1
+FAIL: corrected golden public-output validation exited 1
+
+===== corrected rerun: repo public claim and secret scans =====
++ npm run scan:claims
+
+> family-experience-mcp@0.0.0 scan:claims
+> tsx scripts/scan-claims.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 73
+}
+scan:claims rc=0
++ npm run scan:secrets
+
+> family-experience-mcp@0.0.0 scan:secrets
+> tsx scripts/scan-secrets.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 73
+}
+scan:secrets rc=0
+
+===== corrected rerun: final cleanup listener proof =====
+no LISTENING on :3345 after corrected rerun
+
+===== corrected rerun final status =====
+failures=1
+
+===== corrected rerun 2: validate golden public outputs =====
++ EVIDENCE_DIR=... node .omo/evidence/final-F3-validate-public-output.cjs
+golden-family-experience-happy.json	size=10304
+golden-family-experience-missing-age.json	size=1375
+golden-family-experience-no-result.json	size=1391
+golden-family-experience-source-failure.json	size=1286
+final-cleanup-family-experience-mcp-first-build.txt	size=44
+happy candidateCount=null responseActionCards=3 structuredCandidates=3 actionCardJsonWords=5 actionCardLines=0
+golden-family-experience-missing-age.json	safeText=true
+golden-family-experience-no-result.json	safeText=true
+golden-family-experience-source-failure.json	safeText=true
+public_output_validation_failures=0
+PASS: corrected golden public-output validation passed
+
+===== corrected rerun 2: repo public claim and secret scans =====
++ npm run scan:claims
+
+> family-experience-mcp@0.0.0 scan:claims
+> tsx scripts/scan-claims.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 73
+}
+scan:claims rc=0
++ npm run scan:secrets
+
+> family-experience-mcp@0.0.0 scan:secrets
+> tsx scripts/scan-secrets.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 73
+}
+scan:secrets rc=0
+
+===== corrected rerun 2: final cleanup listener proof =====
+no LISTENING on :3345 after corrected rerun 2
+
+===== corrected rerun 2 final status =====
+failures=0
+
+===== final artifact audit =====
+ 9092 /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/final-F3-real-manual-qa.txt
+  424 /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/final-F3-health.http
+  171 /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/final-F3-health.headers
+  247 /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/final-F3-health.json
+ 3329 /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/final-F3-smoke-mcp.log
+  521 /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/final-F3-smoke-golden.log
+10304 /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/golden-family-experience-happy.json
+ 1375 /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/golden-family-experience-missing-age.json
+ 1391 /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/golden-family-experience-no-result.json
+ 1286 /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/golden-family-experience-source-failure.json
+   46 /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/final-cleanup-family-experience-mcp-first-build.txt
+  119 /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/final-F3-scan-claims.log
+  121 /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/final-F3-scan-secrets.log
+ 3447 /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/final-F3-validate-public-output.cjs
+31873 total
+
+health_status_line=HTTP/1.1 200 OK
+cleanup_receipt=no LISTENING on :3345 after corrected rerun 2
+
+smoke_mcp_summary=  "tools": [     "find_family_experiences"   "called": "find_family_experiences",   "result_ok": true,   "candidate_count": 3, 
+golden_summary=      "id": "happy",       "passed": true,       "isError": false       "id": "missing-age",       "passed": true,       "isError": true       "id": "no-result",       "passed": true,       "isError": true       "id": "source-failure",       "passed": true,       "isError": true 

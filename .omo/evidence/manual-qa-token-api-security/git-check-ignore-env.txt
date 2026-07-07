@@ -1,0 +1,1 @@
+.gitignore:1:.env	apps/family-experience-mcp/.env

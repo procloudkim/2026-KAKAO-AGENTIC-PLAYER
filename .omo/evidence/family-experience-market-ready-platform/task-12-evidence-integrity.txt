@@ -1,0 +1,15 @@
+scenario=Todo 12 required evidence non-empty check
+.omo/evidence/family-experience-market-ready-platform/task-12-code-quality-review.md bytes=3570
+.omo/evidence/family-experience-market-ready-platform/task-12-manual-qa-matrix.md bytes=2360
+.omo/evidence/family-experience-market-ready-platform/task-12-notepad.md bytes=2138
+.omo/evidence/family-experience-market-ready-platform/task-12-changed-files.txt bytes=39631
+.omo/evidence/family-experience-market-ready-platform/task-12-operational-log-redaction-proof.txt bytes=753
+.omo/evidence/family-experience-market-ready-platform/task-12-doneclaim.md bytes=6948
+.omo/evidence/family-experience-market-ready-platform/task-12-manual-health.http bytes=1815
+.omo/evidence/family-experience-market-ready-platform/task-12-manual-malformed-mcp.http bytes=771
+.omo/evidence/family-experience-market-ready-platform/task-12-manual-cleanup.txt bytes=74
+.omo/evidence/family-experience-market-ready-platform/task-12-verify.txt bytes=491
+.omo/evidence/family-experience-market-ready-platform/task-12-scan-secrets.txt bytes=143
+.omo/evidence/family-experience-market-ready-platform/task-12-scan-claims.txt bytes=141
+.omo/evidence/family-experience-market-ready-platform/task-12-scan-sources.txt bytes=143
+result=PASS

@@ -1,0 +1,12 @@
+# task-5 cleanup fix RED
+## preflight
+no LISTENING on :3345 before RED start
+## command
+FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3345 npm run dev:http & SERVER_PID=$!; kill captured npm PID; check listener
+captured_server_pid=8381
+health_status=200
+cleanup_result=LISTENER_LEFT_AFTER_KILL
+  TCP    127.0.0.1:3345         0.0.0.0:0              LISTENING       11756
+orphan_pid=11756
+SUCCESS: The process with PID 11756 has been terminated.
+force_cleanup_result=NO_LISTENING

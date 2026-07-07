@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "results": [
+    {
+      "name": "fake-seoul-key",
+      "findingRules": [
+        "seoul-open-data-key"
+      ]
+    },
+    {
+      "name": "fake-query-token",
+      "findingRules": [
+        "key-assignment",
+        "query-keyed-url"
+      ]
+    },
+    {
+      "name": "placeholder-empty",
+      "findingRules": []
+    },
+    {
+      "name": "placeholder-redacted-angle",
+      "findingRules": []
+    },
+    {
+      "name": "placeholder-redacted-word",
+      "findingRules": []
+    },
+    {
+      "name": "placeholder-redacted-url",
+      "findingRules": []
+    }
+  ]
+}

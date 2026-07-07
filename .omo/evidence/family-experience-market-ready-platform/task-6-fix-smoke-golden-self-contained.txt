@@ -1,0 +1,6 @@
+
+> family-experience-mcp@0.1.0 smoke:golden
+> tsx scripts/smoke-golden.ts
+
+
+EXIT_CODE=-1073740791

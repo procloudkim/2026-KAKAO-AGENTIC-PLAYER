@@ -1,0 +1,44 @@
+{
+  "check": "criteria",
+  "verdict": "PASS",
+  "checks": [
+    {
+      "id": "criteria_exist",
+      "pass": true,
+      "count": 3
+    },
+    {
+      "id": "all_goal_criteria_status_pass",
+      "pass": true,
+      "criteria": [
+        {
+          "goalId": "G001-family-experience-winning-sdd-to-sub",
+          "criterionId": "C001",
+          "status": "pass",
+          "title": ""
+        },
+        {
+          "goalId": "G001-family-experience-winning-sdd-to-sub",
+          "criterionId": "C002",
+          "status": "pass",
+          "title": ""
+        },
+        {
+          "goalId": "G001-family-experience-winning-sdd-to-sub",
+          "criterionId": "C003",
+          "status": "pass",
+          "title": ""
+        }
+      ]
+    },
+    {
+      "id": "ledger_has_pass_records",
+      "pass": true,
+      "passRecords": 16
+    },
+    {
+      "id": "cached_status_indicates_completion",
+      "pass": true
+    }
+  ]
+}

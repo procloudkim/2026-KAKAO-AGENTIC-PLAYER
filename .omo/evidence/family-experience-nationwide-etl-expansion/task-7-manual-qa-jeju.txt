@@ -1,0 +1,18 @@
+
+> family-experience-mcp@0.1.0 smoke:mcp
+> tsx scripts/smoke-mcp.ts --cache-dir=..\..\.omo\evidence\family-experience-nationwide-etl-expansion\cache-smoke --prompt=제주 초등학생 무료
+
+{
+  "endpoint": "in-memory",
+  "cache_dir": "..\\..\\.omo\\evidence\\family-experience-nationwide-etl-expansion\\cache-smoke",
+  "tools": [
+    "find_family_experiences"
+  ],
+  "called": "find_family_experiences",
+  "prompt": "제주 초등학생 무료",
+  "result_ok": true,
+  "mode": "live",
+  "candidate_count": 1,
+  "first_source": "kto_tourapi",
+  "text": "공식 데이터 기준으로 후보 1개를 찾았어요.\naction_card: 1\ntitle: Jeju Family Sea Festival\ndate_time: 2026-07-04~2026-07-05 09:00-17:00\nvenue: Jeju Family Sea Festival\naddress: Jeju Seogwipo-si family beach plaza\nage_fit_label: source-stated\nage_fit_reason: Cached official source states family child suitability.\nindoor_outdoor: outdoor\nfee_text: Free entry listed by source; confirm before visiting\nsource_name: KTO TourAPI\nsource_url: https://example.test/kto-tourapi-events/kto-tourapi-events:task-7-jeju-school-free\nretrieved_at: 2026-07-03T17:58:42.257Z\nconfidence: date=source-stated; venue=source-stated; age_fit=source-stated; reservation=unknown\nmode: live\nwarnings: 공식 출처 응답 기준입니다. 운영 여부, 요금, 예약은 출발 전 다시 확인하세요.\nsource_summary: KTO TourAPI 근거로 제목, 날짜, 장소, 연령 단서를 확인했습니다. source_refs=kto-tourapi-events:kto-tourapi-events:raw:kto-tourapi-events:task-7-jeju-school-free\nparent_check: Cached official source states family child suitability. 예약/요금은 출발 전 공식 출처에서 확인하세요.\nnext_action: https://example.test/kto-tourapi-events/kto-tourapi-events:task-7-jeju-school-free에서 날짜, 장소, 요금, 신청 절차를 확인하세요."
+}

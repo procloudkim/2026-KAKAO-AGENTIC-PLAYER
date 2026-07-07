@@ -1,0 +1,144 @@
+# Final F4 Scope Fidelity Raw Receipt
+2026-07-02T16:28:37+09:00
+repo=/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY
+
+## Plan final verification checkboxes before F4 marking
+222:- [x] F1. Plan compliance audit
+226:- [x] F2. Code quality review
+230:- [x] F3. Real manual QA
+234:- [ ] F4. Scope fidelity
+
+## Required status capture
+?? .codegraph/
+?? .omo/
+?? .prd-session/
+?? Agentic-Play.txt
+?? HTML.txt
+?? PLANS.md
+?? apps/
+?? concept/
+?? research/
+?? schema/
+
+## Required app file list capture
+29 /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/final-F4-app-files.txt
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/docs/DECISIONS.md
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/docs/GOLDEN_RESULTS.md
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/docs/QA_REPORT.md
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/docs/RUNBOOK.md
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/docs/SUBMISSION_COPY_DRAFT.md
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/node_modules/.package-lock.json
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/package-lock.json
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/package.json
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/scripts/scan-claims.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/scripts/scan-secrets.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/scripts/scan-sources.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/scripts/smoke-golden.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/scripts/smoke-mcp.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/config.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/health.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/mcp.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/schemas.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/server.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/types.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/config.test.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/golden.test.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/mcp.test.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/pipeline.test.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/playmcpMetadata.test.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/schemas.test.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/seoulCulture.test.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/sources.test.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/tsconfig.json
+
+## Supplemental full app file list without node_modules
+36 /d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/final-F4-app-files-full-no-node-modules.txt
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/docs/DECISIONS.md
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/docs/GOLDEN_RESULTS.md
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/docs/QA_REPORT.md
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/docs/RUNBOOK.md
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/docs/SUBMISSION_COPY_DRAFT.md
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/package-lock.json
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/package.json
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/scripts/scan-claims.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/scripts/scan-secrets.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/scripts/scan-sources.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/scripts/smoke-golden.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/scripts/smoke-mcp.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/config.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/health.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/mcp.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/pipeline/normalize.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/pipeline/rank.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/pipeline/render.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/schemas.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/server.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/sources/fixture.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/sources/registry.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/sources/seoulCulture.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/sources/types.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/src/types.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/config.test.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/fixtures/seoul-culture-sample.json
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/golden.test.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/mcp.test.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/pipeline.test.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/playmcpMetadata.test.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/schemas.test.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/seoulCulture.test.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/test/sources.test.ts
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/apps/family-experience-mcp/tsconfig.json
+
+## Out-of-scope app directory checks
+PASS apps/pharmacy-now-mcp absent
+PASS apps/parent-trust-mcp absent
+
+## Sibling status captures
+holiday-pharmacy status:
+harness status:
+
+## App scans
+
+> family-experience-mcp@0.0.0 scan:claims
+> tsx scripts/scan-claims.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 73
+}
+
+> family-experience-mcp@0.0.0 scan:secrets
+> tsx scripts/scan-secrets.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 73
+}
+
+> family-experience-mcp@0.0.0 scan:sources
+> tsx scripts/scan-sources.ts
+
+{
+  "status": "PASS",
+  "scanned_files": 40
+}
+
+## Golden public-output unsupported claim grep
+golden_count=4
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/golden-family-experience-happy.json
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/golden-family-experience-missing-age.json
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/golden-family-experience-no-result.json
+/d/KLab/2026-Hackathon/2026-07-KAKAO-AGENTIC-PLAY/.omo/evidence/golden-family-experience-source-failure.json
+PASS no unsupported claim strings found in generated golden JSON
+
+## Final cleanup receipt
+no LISTENING on :3345 after corrected rerun 2
+PASS final cleanup receipt asserts no LISTENING on :3345
+
+## Live listener spot check
+PASS no current LISTENING on :3345
+
+## Public-output/evidence raw secret grep
+PASS no high-confidence raw secret/keyed URL found in final public-output evidence scope
