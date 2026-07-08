@@ -1,105 +1,36 @@
-# 2026 KAKAO AGENTIC PLAYER
+# 아이랑 어디가 MCP
 
-Repository for the Kakao AGENTIC PLAYER 10 MCP entry `아이랑 어디가`.
+Kakao AGENTIC PLAYER 10 / PlayMCP in KC 배포용 MCP 서버입니다.
 
-`아이랑 어디가` is a Family Experience MCP that helps caregivers find a small, source-grounded set of family activity candidates by child age, date, region, and practical conditions such as indoor/outdoor preference. It is not a complete national event index, real-time open-now service, booking service, or child-safety certifier.
+아이 나이, 날짜, 지역, 실내외 조건을 바탕으로 공식 출처 또는 검증된 캐시에서 가족 체험 후보를 최대 3개까지 정리합니다. 예약 가능 여부, 현재 운영 중 여부, 모든 지역과 행사의 포함 여부, 아동 적합성 보장은 제공하지 않습니다.
 
-## Current Focus
-
-| Item | Status |
-| --- | --- |
-| Main app | `apps/family-experience-mcp` |
-| Public MCP tool | `find_family_experiences` |
-| Runtime stance | cache-first; live providers are for ETL proof, smoke, and cache generation |
-| Local verification | maintained in `apps/family-experience-mcp/docs/QA_REPORT.md` |
-| PlayMCP / KakaoCloud requirements | maintained in `apps/family-experience-mcp/docs/HOST_REQUIREMENTS_SOT.md` |
-| Public HTTPS deployment | NOT CLAIMED until a KakaoCloud endpoint is active and smoke-tested |
-| PlayMCP review/public/contest submission | NOT CLAIMED until the console actions are actually performed |
-| License | MIT, see `LICENSE` |
-
-## Repository Map
+## PlayMCP in KC Git 소스 빌드 입력값
 
 ```text
-apps/family-experience-mcp/          Family Experience MCP server
-apps/family-experience-mcp/docs/     Product, source, QA, PlayMCP, runbook docs
-concept/                             Early concept notes
-공공데이터-관련/                      Local public-data CSV fallback assets
-문화포털-관련/                        Culture Portal reference material
-참고문서-카카오/                      Kakao/PlayMCP reference notes
-roundtable/                          PRD roundtable artifacts
-research/                            Research briefs and planning notes
-schema/                              Shared schema/rule notes
-```
+MCP 서버 이름:
+airang-where
 
-## Quick Start
+설명:
+아이와 함께 갈 가족 체험 후보를 추천하는 MCP 서버 배포본입니다.
 
-```bash
-cd apps/family-experience-mcp
-npm install
-npm run verify
-npm run scan:secrets
-npm run scan:sources
-npm run scan:claims
-```
-
-Optional local HTTP run:
-
-```bash
-FAMILY_EXPERIENCE_ALLOW_FIXTURE=true PORT=3349 npm run dev:http
-```
-
-Then check:
-
-```bash
-curl -i http://127.0.0.1:3349/health
-npm run smoke:mcp
-```
-
-## Environment Variables
-
-Copy the local template only when you need live provider proof:
-
-```bash
-cd apps/family-experience-mcp
-cp .env.example .env
-```
-
-Do not commit `.env`.
-
-Provider secrets belong in `.env` locally or in the deployment platform's Secret mechanism:
-
-```text
-SEOUL_OPEN_DATA_KEY
-CULTURE_PORTAL_SERVICE_KEY
-KTO_TOURAPI_SERVICE_KEY
-PUBLIC_DATA_STANDARD_SERVICE_KEY
-```
-
-`PUBLIC_DATA_STANDARD_SERVICE_KEY` is optional while the national festival source uses the local CSV/cache fallback.
-
-## PlayMCP in KC Git Source Build
-
-Use this branch for the current deploy-fast path:
-
-```text
-Branch / ref:
-family-experience-deploy-fastpath
-```
-
-PlayMCP in KC form values:
-
-```text
 Git URL:
 https://github.com/procloudkim/2026-KAKAO-AGENTIC-PLAYER.git
 
-Dockerfile path:
+브랜치 / ref:
+family-experience-kc-submit-minimal
+
+Dockerfile 경로:
 apps/family-experience-mcp/Dockerfile
 
-container_port:
+컨테이너 포트:
 3349
 ```
 
-Recommended plain environment variables:
+비공개 GitHub 저장소이므로 PlayMCP in KC의 `PAT` 입력칸에 GitHub Personal Access Token을 넣어야 합니다. PAT는 저장소 clone에 필요한 읽기 권한만 부여하고, 코드나 문서에 커밋하지 않습니다.
+
+## 환경변수
+
+일반 환경변수:
 
 ```text
 HOST=0.0.0.0
@@ -113,7 +44,7 @@ CULTURE_PORTAL_BASE_URL=https://apis.data.go.kr/B553457/cultureinfo
 KTO_TOURAPI_BASE_URL=https://apis.data.go.kr/B551011/KorService2
 ```
 
-Recommended Secrets:
+시크릿:
 
 ```text
 SEOUL_OPEN_DATA_KEY
@@ -121,42 +52,62 @@ CULTURE_PORTAL_SERVICE_KEY
 KTO_TOURAPI_SERVICE_KEY
 ```
 
-After the server becomes `Active`, copy the issued endpoint URL and use it in PlayMCP as the MCP Endpoint. Add `/mcp` only if the issued endpoint does not already include it.
+`PUBLIC_DATA_STANDARD_SERVICE_KEY`는 현재 CSV/cache fallback 기준에서는 필수 입력값이 아닙니다.
 
-Do not click `등록 및 심사 요청` until remote `/health`, remote `/mcp`, PlayMCP `정보 불러오기`, and private starter-prompt smoke have passed.
+## PlayMCP 등록 입력값
 
-## Canonical Docs
+```text
+팀프로필:
+Clouder
 
-| Need | Read |
-| --- | --- |
-| Product promise, users, output contract | `apps/family-experience-mcp/docs/PRODUCT_PRD_SOT.md` |
-| Source inventory and coverage tiers | `apps/family-experience-mcp/docs/SOURCE_LEDGER.md` |
-| Current verification and blockers | `apps/family-experience-mcp/docs/QA_REPORT.md` |
-| KakaoCloud / PlayMCP / MCP host rules | `apps/family-experience-mcp/docs/HOST_REQUIREMENTS_SOT.md` |
-| Operator runbook | `apps/family-experience-mcp/docs/RUNBOOK.md` |
-| PlayMCP temporary registration fields | `apps/family-experience-mcp/docs/PLAYMCP_TEMP_REGISTRATION.md` |
-| PRD roundtable decision | `roundtable/family-experience-prd-20260709/final-synthesis.md` |
+대표 이미지:
+Main-image-KAKAO-MCP-10.png
 
-## Claim Boundaries
+MCP 이름:
+아이랑 어디가
 
-The project must not claim:
+MCP 식별자:
+family
 
-- complete nationwide coverage
-- real-time freshness
-- reservation availability
-- current open/operating status
-- child safety certification
-- guaranteed age suitability
-- PlayMCP review completion, public release, or contest submission before evidence exists
+인증 방식:
+인증 사용하지 않음
+```
 
-When a source does not support a field, return `unknown`, `inferred`, or a parent confirmation note.
+MCP 설명:
 
-## Git Hygiene
+```text
+언제 어디서든 아이와 함께 갈 곳 정보를 큐레이션합니다. 아이 나이, 날짜, 지역, 실내외 조건을 바탕으로 가족 체험 후보를 최대 3개까지 정리해 주는 MCP입니다. 공식 출처 또는 검증된 캐시를 기반으로 장소, 일정, 나이 적합 근거, 출처, 보호자 확인사항, 다음 행동을 함께 제공합니다. 출처가 뒷받침하지 않는 예약 가능 여부, 운영 상태, 전국 모든 행사 포함, 아동 적합성 보장은 제공하지 않습니다.
+```
 
-- Keep `.env`, provider keys, keyed URLs, cookies, and bearer tokens out of Git.
-- Keep deployment proof, raw console screenshots, and noisy generated evidence out of public commits unless explicitly reviewed.
-- Commit user-facing docs, source code, tests, and safe templates.
-- Run `npm --prefix apps/family-experience-mcp run verify` plus all three scans before pushing deploy-facing changes.
+대화 예시:
+
+```text
+이번 주말 서울에서 4살 아이와 갈 만한 실내 체험 장소를 추천해줘.
+내일 비가 오는데 24개월 아이와 갈 수 있는 키즈 체험이나 박물관을 찾아줘.
+초등학교 저학년 아이와 주말에 갈 수 있는 가족 행사 3개를 출처와 함께 정리해줘.
+```
+
+## 배포 후 확인 순서
+
+1. PlayMCP in KC에서 서버 상태가 `Active`인지 확인합니다.
+2. 서버 상세 화면에서 Endpoint URL을 복사합니다.
+3. PlayMCP 등록 콘솔의 MCP Endpoint에 발급된 `/mcp` URL을 입력합니다.
+4. `정보 불러오기`를 눌러 `find_family_experiences` tool이 로드되는지 확인합니다.
+5. 먼저 `임시 등록`으로 저장하고 private 상태에서 대화 예시 3개를 테스트합니다.
+6. remote `/health`, remote `/mcp`, PlayMCP 정보 불러오기, private smoke가 통과한 뒤에만 `등록 및 심사 요청`을 판단합니다.
+
+## 로컬 검증
+
+```bash
+npm --prefix apps/family-experience-mcp run verify
+npm --prefix apps/family-experience-mcp run scan:secrets
+npm --prefix apps/family-experience-mcp run scan:sources
+npm --prefix apps/family-experience-mcp run scan:claims
+```
+
+## 공개 범위 주의
+
+이 저장소를 public으로 전환하면 GitHub에 push된 브랜치와 커밋 이력도 공개 대상이 됩니다. 현재 권장 경로는 저장소를 private으로 유지하고 PlayMCP in KC Git 소스 빌드에 PAT를 입력하는 방식입니다.
 
 ## License
 
