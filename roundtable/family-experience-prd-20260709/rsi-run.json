@@ -1,0 +1,15 @@
+{
+  "kind": "rsi_run",
+  "status": "completed_without_promotion",
+  "round_count": 6,
+  "candidate_count": 1,
+  "candidates": [
+    {
+      "id": "rsi1",
+      "proposal": "Create an AI-DLC implementation map linking Inception, Construction, and Operations evidence.",
+      "promotion_status": "not_promoted",
+      "reason": "Useful only if it shortens deployment handoff. It should not block the higher-leverage deployment evidence path."
+    }
+  ]
+}
+

@@ -1,0 +1,8 @@
+{"kind":"decision","id":"d1","status":"accepted","text":"Keep the PRD framing as bounded parent decision support, not national event search.","supports":["c1","c2","c21"],"risks":["r1"]}
+{"kind":"decision","id":"d2","status":"accepted","text":"Keep one public MCP tool, `find_family_experiences`, through PlayMCP private smoke.","supports":["c4","c14","c27"],"risks":["r5"]}
+{"kind":"decision","id":"d3","status":"accepted","text":"Do not claim public-ready, market-ready, review-complete, public-release, or contest-submitted until endpoint and PlayMCP evidence exists.","supports":["c5","c6","c10","c26"],"risks":["r2","r3"]}
+{"kind":"decision","id":"d4","status":"accepted","text":"Treat source/cache transparency fields as core product requirements, not optional metadata.","supports":["c13","c18","c28"],"risks":["r1","r4"]}
+{"kind":"decision","id":"d5","status":"accepted","text":"Next PRD-linked execution should prioritize KakaoCloud deployment evidence and PlayMCP private smoke over new feature expansion.","supports":["c15","c25","c29"],"risks":["r3","r6"]}
+{"kind":"rsi_candidate","id":"rsi1","status":"proposed_only","text":"Create an AI-DLC implementation map that links Inception, Construction, and Operations evidence only if it shortens deploy handoff.","promotion_rule":"Promote only if it references existing SOT docs and adds no new product promises.","supports":["c30"],"risks":["r6"]}
+{"kind":"promotion_decision","id":"p1","candidate_id":"rsi1","status":"not_promoted","text":"Do not block deployment on the AI-DLC map unless the operator asks for an architecture handoff artifact."}
+

@@ -1,0 +1,13 @@
+{"kind":"interaction","round":2,"from_claim":"c8","to_claim":"c1","relation":"constrains","text":"Bounded parent decision support is acceptable only if it avoids broad coverage and real-time claims."}
+{"kind":"interaction","round":2,"from_claim":"c9","to_claim":"c2","relation":"supports","text":"Structured packaging is the mechanism that converts parent triage into reviewable MCP value."}
+{"kind":"interaction","round":2,"from_claim":"c10","to_claim":"c5","relation":"supports","text":"Missing endpoint and PlayMCP evidence justify separating local-ready from public-ready."}
+{"kind":"interaction","round":4,"from_claim":"c18","to_claim":"c3","relation":"qualifies","text":"Cache-first trust still requires retrieved_at, cache age, and source-specific proof boundaries."}
+{"kind":"interaction","round":4,"from_claim":"c20","to_claim":"c15","relation":"blocks","text":"Deployment cannot proceed automatically if the selected host path would require image-baked secrets."}
+{"kind":"interaction","round":4,"from_claim":"c19","to_claim":"c14","relation":"constrains","text":"PlayMCP metadata must not become marketing copy that implies all-event coverage."}
+{"kind":"interaction","round":5,"from_claim":"c23","to_claim":"c8","relation":"resolves","text":"Expansion is allowed only through evidence-tier promotion, not through copy changes."}
+{"kind":"interaction","round":5,"from_claim":"c25","to_claim":"c10","relation":"resolves","text":"The missing Operations evidence can be closed by the deployment evidence packet."}
+{"kind":"interaction","round":6,"from_claim":"c26","to_claim":"c6","relation":"derives","text":"The final readiness decision derives from local-ready plus blocked public/PlayMCP evidence."}
+{"kind":"interaction","round":6,"from_claim":"c28","to_claim":"c21","relation":"constrains","text":"Disciplined confidence requires visible source and cache truth, not stronger wording."}
+{"kind":"interaction","round":6,"from_claim":"c29","to_claim":"c25","relation":"supports","text":"PlayMCP discovery and starter smoke are the next observable acceptance tests."}
+{"kind":"interaction","round":6,"from_claim":"c30","to_claim":"c15","relation":"questions","text":"Architecture mapping should not delay deployment unless it reduces deployment risk."}
+

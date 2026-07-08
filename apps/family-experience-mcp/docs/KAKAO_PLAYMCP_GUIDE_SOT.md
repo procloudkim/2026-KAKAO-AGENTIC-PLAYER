@@ -1,8 +1,19 @@
 # Kakao PlayMCP Guide SOT
 
-Purpose: local source-of-truth index for organizer-provided PlayMCP / PlayMCP-in-KC Notion guidance extracted on 2026-07-08.
+Purpose: canonical index for the locally extracted Kakao / PlayMCP / PlayMCP-in-KC guide corpus.
 
-This document is not proof that deployment, PlayMCP review, public visibility, or contest submission has happened.
+This document owns only the guide-corpus map and extraction boundary. It does not own product requirements, deployment requirements, console field values, or current readiness status.
+
+## Canonical Responsibilities
+
+| Truth | Canonical home |
+| --- | --- |
+| Product PRD and user value | `docs/PRODUCT_PRD_SOT.md` |
+| Kakao / PlayMCP / MCP protocol / deployment requirements applied to this project | `docs/HOST_REQUIREMENTS_SOT.md` |
+| Current PASS/BLOCKED/NOT CLAIMED status | `docs/QA_REPORT.md` |
+| PlayMCP console field values | `docs/PLAYMCP_TEMP_REGISTRATION.md` |
+| Operator execution steps | `docs/RUNBOOK.md` |
+| Local extracted guide corpus map | This document |
 
 ## Local Extracts
 
@@ -15,108 +26,34 @@ This document is not proof that deployment, PlayMCP review, public visibility, o
 | PlayMCP server development requirements | `docs/external/kakao-playmcp-in-kc-notion/server_dev_guide.md` |
 | PlayMCP review policy | `docs/external/kakao-playmcp-in-kc-notion/review_policy.md` |
 | PlayMCP help hub | `docs/external/kakao-playmcp-in-kc-notion/hello_page.md` |
+| Extract manifest | `docs/external/kakao-playmcp-in-kc-notion/manifest.json` |
 
-Raw Notion HTML/JSON snapshots are local evidence under `.omo/ulw-research/20260708-235718-kakao-playmcp-notion-extraction/` and are not the public handoff surface.
+Raw Notion HTML/JSON snapshots are local evidence under `.omo/ulw-research/20260708-235718-kakao-playmcp-notion-extraction/`. They are not the operator handoff surface.
 
-## Contest Flow
+## Extraction Boundary
 
-Organizer Notion states the AGENTIC PLAYER 10 contest is entered by registering a self-developed MCP server in PlayMCP.
+Collected and indexed:
 
-Required sequence:
+- contest participation order
+- PlayMCP-in-KC Git source build flow
+- PlayMCP-in-KC container image registration flow
+- contest usage cautions
+- PlayMCP server development guide
+- PlayMCP review policy
+- PlayMCP help and registration notice pages linked from the extracted Notion graph
 
-1. Develop the MCP server according to the PlayMCP server development guide.
-2. Complete local development and tests.
-3. Deploy the MCP server through PlayMCP-in-KC for preliminary contest participation.
-4. Use the PlayMCP-in-KC Endpoint URL in PlayMCP.
-5. Click `정보 불러오기` and require it to succeed.
-6. Save with `임시 등록` first, not final review.
-7. Add the temporary MCP to the toolbox from the preview and test through PlayMCP AI chat.
-8. After private tests pass, request review.
-9. After approval, change visibility from `나에게만 공개` to `전체 공개`.
-10. Submit the contest entry from the AGENTIC PLAYER 10 page.
+Kept outside this guide corpus because they came from a separate organizer notice or live console state:
 
-Submission boundary:
+- exact endpoint hostname pattern
+- outbound egress IP allowlist
+- environment variable / Secret injection limitation
+- actual issued endpoint URL
+- identifier availability
+- `정보 불러오기` result
+- review, public switch, or contest-submission completion
 
-- The guide states preliminary entries are accepted from 2026-06-15 to 2026-07-14.
-- The guide states the contest form can include up to two MCP servers.
-- Do not claim contest entry until the form is actually submitted.
+For those items, use `docs/HOST_REQUIREMENTS_SOT.md` and `docs/QA_REPORT.md`.
 
-## PlayMCP-in-KC Deployment Choices
+## Use Rule
 
-PlayMCP-in-KC can create an MCP server from Git source or from a container image.
-
-Git source build:
-
-- Use when the MCP source code is already in a Git repository.
-- A Dockerfile must exist at the repository root or selected Dockerfile path.
-- Required fields include host-console server name, host-console description, Git URL, branch/ref, and Dockerfile path.
-- PAT is only for private repositories.
-
-Container image:
-
-- Use when the MCP server is already built and pushed as a Docker image.
-- Image must be built for `linux/amd64`.
-- Required fields include registry host, `image_name`, and `image_tag`.
-- Registry user/password are only for private registries or private images.
-
-Both modes:
-
-- Status starts as `Starting`.
-- Continue only after status becomes `Active`.
-- Copy the Endpoint URL from the server detail view.
-- The guide states up to two MCP servers can be registered per account.
-
-## PlayMCP Server Requirements
-
-Submission-facing requirements extracted from the server development guide:
-
-- Support MCP spec versions from `2025-03-26` through `2025-11-25`.
-- Use Streamable HTTP for the remote server path.
-- Use a public URL for the remote MCP server.
-- Prefer stateless operation.
-- Check standard compliance with MCP Inspector before registration.
-- Use or reference actively maintained MCP SDKs.
-- Do not include `kakao` in MCP Server Name or Tool Name.
-- Tool names are case-sensitive and must be 1 to 128 characters using only English letters, digits, underscore, or hyphen.
-- Keep tool count at or under 20; 3 to 10 tools are recommended.
-- Tool definitions must include `name`, `description`, `inputSchema`, and `annotations`.
-- `annotations` must include `title`, `readOnlyHint`, `destructiveHint`, `openWorldHint`, and `idempotentHint`.
-- Tool description should be clear, preferably English, include the service name, and stay within 1,024 characters.
-- PlayMCP prefixes tool names with the registered MCP identifier, so local tool names should not repeat the MCP name.
-- Keep tool results small and cleaned; do not pass raw upstream API payloads through as-is.
-- Response text over 24k can error and may be a rejection reason.
-- Operational target: average tool response within 100ms and p99 within 3,000ms.
-
-## Review Policy Risks
-
-Main rejection risks for this project:
-
-- Tool errors, frequent timeouts, excessive redirects, crawl delays, or unnecessary external calls.
-- Data source ambiguity or inability to prove source rights/composition.
-- A service that only duplicates generic LLM web search without a clear extension.
-- Vague MCP name or description.
-- Too many tools or unstable tool selection.
-- Raw or excessive commercial links, purchase inducement, reward language, harmful downloads, profanity, political/sexual content, or socially inappropriate output.
-- Representative image that is animated, low-quality, inappropriate, or not aligned with the service.
-- Spec violations or abnormal operation.
-
-## Family Experience Mapping
-
-| Requirement | Current design stance |
-| --- | --- |
-| Remote Streamable HTTP `/mcp` | Required before PlayMCP information load. Local-only proof is not enough. |
-| Tool count | Keep one public tool: `find_family_experiences`. |
-| Tool naming | Do not include `kakao`; rely on PlayMCP identifier prefixing. |
-| Data source proof | Use `SOURCE_LEDGER.md`, `QA_REPORT.md`, and redacted ETL evidence. |
-| Response size | Return at most three curated candidates, not raw provider records. |
-| Generic web-search risk | Emphasize structured age/date/region/indoor-outdoor filtering, source/caveat packaging, cache proof, and parent decision support. |
-| Review/private testing | Use temporary registration and PlayMCP AI chat smoke before review request. |
-| Unsupported claims | Keep the `DECISIONS.md` and `PLAYMCP_TEMP_REGISTRATION.md` guardrails: no nationwide completeness, real-time, reservation, open-now, or child-safety guarantee. |
-
-## Ownership
-
-- `HOST_REQUIREMENTS_SOT.md` owns host, contest, deployment, review, endpoint, and secret strategy requirements.
-- `RUNBOOK.md` owns operator execution steps.
-- `PLAYMCP_TEMP_REGISTRATION.md` owns console field values for temporary/private registration.
-- `QA_REPORT.md` owns current proof status and not-claimed gates.
-- `SOURCE_LEDGER.md` owns data source coverage tiers and source claim boundaries.
+When updating docs, do not copy operational steps or current status out of this extracted corpus. Link to the exact extract when proving source provenance, then apply the project rule through `docs/HOST_REQUIREMENTS_SOT.md`.

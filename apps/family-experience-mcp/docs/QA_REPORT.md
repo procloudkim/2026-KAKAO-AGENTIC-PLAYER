@@ -1,6 +1,6 @@
 # QA Report
 
-Date: 2026-07-08
+Date: 2026-07-09
 
 This is the canonical verification summary for the current local Family Experience MCP package. It separates local proof, source-specific ETL proof, deployment blockers, and actions that are not claimed.
 
@@ -8,10 +8,10 @@ This is the canonical verification summary for the current local Family Experien
 
 | Area | Status | Evidence |
 | --- | --- | --- |
-| Local package verification | PASS, last-known local proof: typecheck plus 21 Vitest files / 150 tests. | `.omo/evidence/family-experience-market-ready-platform/task-9-cache-verify.txt` |
-| Secret scan | PASS on 2026-07-08 local run; observed `scanned_files=163`. Exact count is not a release promise. | `npm --prefix apps/family-experience-mcp run scan:secrets` |
-| Source scan | PASS on 2026-07-08 local run; observed `scanned_files=111`. Exact count is not a release promise. | `npm --prefix apps/family-experience-mcp run scan:sources` |
-| Claim scan | PASS on 2026-07-08 local run; observed `scanned_files=144`. Exact count is not a release promise. | `npm --prefix apps/family-experience-mcp run scan:claims` |
+| Local package verification | PASS on 2026-07-09 local run: typecheck plus 21 Vitest files / 151 tests. | `npm --prefix apps/family-experience-mcp run verify` |
+| Secret scan | PASS on 2026-07-09 local run; observed `scanned_files=177`. Exact count is not a release promise. | `npm --prefix apps/family-experience-mcp run scan:secrets` |
+| Source scan | PASS on 2026-07-09 local run; observed `scanned_files=125`. Exact count is not a release promise. | `npm --prefix apps/family-experience-mcp run scan:sources` |
+| Claim scan | PASS on 2026-07-09 local run; observed `scanned_files=158`. Exact count is not a release promise. | `npm --prefix apps/family-experience-mcp run scan:claims` |
 | Golden MCP evidence | PASS for the local golden scenarios. | `.omo/evidence/golden-family-experience-*.json`; see `docs/GOLDEN_RESULTS.md` |
 | Culture Portal ETL dry-run | PASS: `ok=true`, `normalized_records=10`, `raw_snapshots=1`, redaction verified. | `.omo/evidence/family-experience-market-ready-platform/etl/etl-proof-2026-07-08T06-51-07-435Z.json` |
 | KTO TourAPI ETL dry-run | PASS: `ok=true`, `normalized_records=41`, `raw_snapshots=1`, redaction verified. | `.omo/evidence/family-experience-market-ready-platform/etl/etl-proof-2026-07-08T06-51-14-174Z.json` |

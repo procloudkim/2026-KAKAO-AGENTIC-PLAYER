@@ -1,0 +1,12 @@
+[
+  {"id":"prd","type":"artifact","label":"PRODUCT_PRD_SOT.md"},
+  {"id":"host","type":"artifact","label":"HOST_REQUIREMENTS_SOT.md"},
+  {"id":"qa","type":"artifact","label":"QA_REPORT.md"},
+  {"id":"source","type":"artifact","label":"SOURCE_LEDGER.md"},
+  {"id":"tool","type":"concept","label":"find_family_experiences"},
+  {"id":"decision_support","type":"concept","label":"bounded parent decision support"},
+  {"id":"deploy_evidence","type":"gate","label":"remote health, remote mcp, PlayMCP load, starter smoke"},
+  {"id":"blocked_claims","type":"guardrail","label":"no unsupported public claims"},
+  {"id":"ai_dlc_map","type":"rsi_candidate","label":"optional AI-DLC implementation map"}
+]
+

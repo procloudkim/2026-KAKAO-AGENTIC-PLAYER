@@ -12,7 +12,7 @@ const appTargets = ["docs", "src", "test", "scripts", "package.json"] as const
 const evidenceNames = [/^golden-family-experience-.*\.json$/, /^task-9-(plain-verify|final-verify)-GREEN\.txt$/] as const
 const scraperPackages = ["cheerio", "puppeteer", "playwright", "jsdom", "got-scraping"] as const
 const allowedHosts = ["example.invalid", "127.0.0.1", "localhost", "openapi.example.test", "data.example.test"] as const
-const officialSourceHosts = ["apis.data.go.kr", "culture.go.kr", "data.go.kr", "b.kakao.com", "docs.kakaocloud.com", "kko.to", "modelcontextprotocol.io", "playmcp.kakao.com", "playmcp.kakaocloud.io", "tech.kakao.com", "www.sejongpac.or.kr", "www.culture.go.kr", "www.kakaocorp.com", "www.data.go.kr"] as const
+const officialSourceHosts = ["apis.data.go.kr", "culture.go.kr", "data.go.kr", "b.kakao.com", "developers.notion.com", "docs.kakaocloud.com", "kko.to", "modelcontextprotocol.io", "playmcp.kakao.com", "playmcp.kakaocloud.io", "tech.kakao.com", "www.notion.com", "www.sejongpac.or.kr", "www.culture.go.kr", "www.kakaocorp.com", "www.data.go.kr"] as const
 const urlPattern = /https?:\/\/[^\s"'`<>),]+/g
 
 async function listFiles(target: string): Promise<readonly string[]> {

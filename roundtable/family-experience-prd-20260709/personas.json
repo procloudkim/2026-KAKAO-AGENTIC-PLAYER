@@ -1,0 +1,43 @@
+[
+  {
+    "persona_id": "moderator",
+    "expertise_source": "OML roundtable governance and source-traceable synthesis",
+    "role_fitness_reason": "Keeps rounds bounded, separates evidence from inference, and prevents majority vote from hiding blockers.",
+    "allowed_claims": ["ledgered discussion state", "decision consistency", "risk closure"],
+    "blind_spots": ["does not validate runtime behavior directly"],
+    "removal_criteria": "Remove only if the roundtable stops needing synthesis governance."
+  },
+  {
+    "persona_id": "parent_jtbd",
+    "expertise_source": "PRODUCT_PRD_SOT target users and user experience requirements",
+    "role_fitness_reason": "Represents the parent/caregiver decision problem and keeps output useful in chat.",
+    "allowed_claims": ["user value", "chat ergonomics", "parent confirmation needs"],
+    "blind_spots": ["may underweight host and protocol constraints"],
+    "removal_criteria": "Remove if the agenda shifts away from product value."
+  },
+  {
+    "persona_id": "data_trust",
+    "expertise_source": "SOURCE_LEDGER, DECISIONS, and QA_REPORT source-proof boundaries",
+    "role_fitness_reason": "Guards official-source policy, cache-first runtime, and unsupported claim boundaries.",
+    "allowed_claims": ["source coverage tier", "ETL proof boundary", "unsupported claim risk"],
+    "blind_spots": ["may prefer caution over market appeal"],
+    "removal_criteria": "Remove if no data or claim decision remains contested."
+  },
+  {
+    "persona_id": "mcp_reviewer",
+    "expertise_source": "HOST_REQUIREMENTS_SOT and PlayMCP registration requirements",
+    "role_fitness_reason": "Evaluates reviewability, protocol fit, tool shape, and PlayMCP console readiness.",
+    "allowed_claims": ["tool surface fit", "review rejection risks", "registration gate needs"],
+    "blind_spots": ["does not prove actual console behavior without operator evidence"],
+    "removal_criteria": "Remove after PlayMCP private smoke evidence exists."
+  },
+  {
+    "persona_id": "ops_owner",
+    "expertise_source": "RUNBOOK, SLO, HOST_REQUIREMENTS_SOT, and QA_REPORT",
+    "role_fitness_reason": "Separates local-ready from deploy-ready and forces observable gates.",
+    "allowed_claims": ["deployment blockers", "manual QA gate", "incident and rollback readiness"],
+    "blind_spots": ["may defer user-facing polish until evidence is strong"],
+    "removal_criteria": "Remove if the roundtable becomes a pure copywriting review."
+  }
+]
+

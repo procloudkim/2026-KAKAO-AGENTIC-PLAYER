@@ -6,6 +6,7 @@ This runbook is the operator handoff for `아이랑 어디가`. It covers local 
 
 | Truth | Canonical home |
 | --- | --- |
+| Product PRD, users, output contract, and launch criteria | `docs/PRODUCT_PRD_SOT.md` |
 | Environment variable names and safe defaults | `.env.example` |
 | Source, claim, cache, and release policy | `docs/DECISIONS.md` |
 | Host/organizer deployment and PlayMCP-in-KC requirements | `docs/HOST_REQUIREMENTS_SOT.md` |
@@ -205,12 +206,12 @@ Deployment secret mapping:
 
 This is an operator sequence from local validation to temporary PlayMCP information load. It does not claim deployment, PlayMCP review, public visibility, or contest submission until the operator performs and records those actions.
 
-Set these shell variables before starting. Use the real deployment URL only in private evidence if it is not meant for public docs.
+Set these shell variables before starting. Use the endpoint rule in `docs/HOST_REQUIREMENTS_SOT.md`; the value below is only a placeholder shape.
 
 ```bash
 APP_DIR=apps/family-experience-mcp
 EVIDENCE_DIR=.omo/evidence/family-experience-market-ready-platform
-DEPLOY_BASE_URL=https://mcp-name.playmcp-endpoint.kakaocloud.io
+DEPLOY_BASE_URL=https://<deployed-host>
 MCP_ENDPOINT="$DEPLOY_BASE_URL/mcp"
 ```
 
@@ -232,7 +233,7 @@ MCP_ENDPOINT="$DEPLOY_BASE_URL/mcp"
 PowerShell remote smoke equivalents:
 
 ```powershell
-$env:DEPLOY_BASE_URL='https://mcp-name.playmcp-endpoint.kakaocloud.io'
+$env:DEPLOY_BASE_URL='https://<deployed-host>'
 $env:MCP_ENDPOINT="$env:DEPLOY_BASE_URL/mcp"
 Invoke-WebRequest -UseBasicParsing "$env:DEPLOY_BASE_URL/health" | Select-Object -ExpandProperty Content | Tee-Object ../../.omo/evidence/family-experience-market-ready-platform/task-15-remote-health.json
 npm --prefix apps/family-experience-mcp run smoke:mcp -- --cache-dir=data/family-experience-cache --skip-seed *> .omo/evidence/family-experience-market-ready-platform/task-15-remote-mcp.txt
@@ -335,13 +336,7 @@ docker run --rm -p 3349:3349 -e HOST=0.0.0.0 -e PORT=3349 -e FAMILY_EXPERIENCE_A
 
 For generic live deployment, set provider keys in the platform secret manager, keep `FAMILY_EXPERIENCE_ALLOW_FIXTURE=false`, configure a writable or pre-baked cache path, and expose `/health` plus `/mcp` through HTTPS. Do not bake `.env` or raw keys into the image.
 
-For AGENTIC PLAYER 10 PlayMCP-in-KC deployment, `docs/HOST_REQUIREMENTS_SOT.md` is the canonical host SOT. The required endpoint pattern from the organizer notice is:
-
-```text
-https://mcp-name.playmcp-endpoint.kakaocloud.io/mcp
-```
-
-If the KakaoCloud console issues a different HTTPS `/mcp` endpoint, use the console-issued endpoint and record that proof privately. Current host-secret handling must be decided by the operator before deployment because the organizer notice says PlayMCP-in-KC env/Secret injection is not yet supported.
+For AGENTIC PLAYER 10 PlayMCP-in-KC deployment, `docs/HOST_REQUIREMENTS_SOT.md` is the canonical host SOT for the endpoint pattern, console-issued endpoint precedence, and current host-secret boundary.
 
 PlayMCP-in-KC entry:
 

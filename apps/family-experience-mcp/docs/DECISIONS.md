@@ -4,24 +4,18 @@ Date: 2026-07-08
 
 ## Current Policy
 
-- Product contract: this service presents source-grounded family experience candidates for bounded parent decision support. It is not a complete event search engine.
+- Product contract, target users, output contract, and launch criteria are canonical in `docs/PRODUCT_PRD_SOT.md`.
 - Keep chat/runtime operation cache-first. Live provider calls belong in ETL proof, smoke, or cache generation, not in every user chat request.
 - Keep fixture rows deterministic and visibly labeled as fixture/demo. Fixture rows prove response shape and safety, not live event freshness.
 - Keep official-source boundaries only: Seoul Open Data, Culture Portal, KTO TourAPI, and national culture festival standard data. Do not add unofficial scraping pipelines or browser parsers.
 - Keep source diagnostics redacted. Raw keys and keyed URLs must not appear in docs, logs, evidence, or user-visible responses.
-- Do not make unsupported public claims: nationwide completeness, live freshness, reservation availability, current operation, or child suitability require an exact supporting source field.
-- Public copy must carry these unsupported-claim caveats: no nationwide completeness, no real-time freshness, no reservation/open-now guarantee, and no child safety certification.
+- Do not make unsupported public claims. The canonical list is in `docs/PRODUCT_PRD_SOT.md`; source-specific boundaries are in `docs/SOURCE_LEDGER.md`.
 
 ## Nationwide ETL Source Matrix
 
-Canonical source inventory and launch coverage tiers are maintained in `docs/SOURCE_LEDGER.md`. The summary below is non-authoritative if the files conflict.
+Canonical source inventory and launch coverage tiers are maintained in `docs/SOURCE_LEDGER.md`.
 
-| Source id | Official source | Role | Key/env | Current proof status | Coverage note |
-| --- | --- | --- | --- | --- | --- |
-| `seoul-culture-events` | Seoul Open Data Plaza culture event API, `https://data.seoul.go.kr/` | City authority source for Seoul events | `SEOUL_OPEN_DATA_KEY`, optional `SEOUL_OPEN_DATA_BASE_URL` | Source-specific ETL dry-run passed on 2026-07-08. See `docs/QA_REPORT.md`. | Seoul only. |
-| `culture-portal-oneview` | KCISA/Culture Portal culture information API, `https://www.culture.go.kr/portal/main/contents.do?menuNo=200155`; live route `https://apis.data.go.kr/B553457/cultureinfo/period2` | National culture-event source | `CULTURE_PORTAL_SERVICE_KEY`, `CULTURE_PORTAL_BASE_URL` | Source-specific ETL dry-run passed on 2026-07-08. See `docs/QA_REPORT.md`. | National candidate source; not proof of complete coverage. |
-| `kto-tourapi-events` | Korea Tourism Organization TourAPI, `https://www.data.go.kr/data/15101578/openapi.do` | National tourism/event breadth source | `KTO_TOURAPI_SERVICE_KEY`, `KTO_TOURAPI_BASE_URL` | Source-specific ETL dry-run passed on 2026-07-08. See `docs/QA_REPORT.md`. | Broader tourism/event source; source-returned fields only. |
-| `national-culture-festival-standard` | National culture festival standard data, `https://www.data.go.kr/data/15013104/standard.do` | Lower-freshness fallback source | `NATIONAL_CULTURE_FESTIVAL_CSV_PATH`; `PUBLIC_DATA_STANDARD_SERVICE_KEY` only for confirmed live endpoint mode | Local CSV fallback ETL dry-run passed on 2026-07-08. See `docs/QA_REPORT.md`. | Useful fallback; dataset lag must remain visible. |
+Current ETL proof status is maintained in `docs/QA_REPORT.md`.
 
 ## Cache And Coverage Decisions
 

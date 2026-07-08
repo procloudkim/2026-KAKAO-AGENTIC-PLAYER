@@ -1,0 +1,11 @@
+[
+  {"from":"prd","to":"decision_support","type":"defines"},
+  {"from":"prd","to":"tool","type":"defines"},
+  {"from":"source","to":"blocked_claims","type":"constrains"},
+  {"from":"qa","to":"deploy_evidence","type":"blocks_until"},
+  {"from":"host","to":"deploy_evidence","type":"defines_gate"},
+  {"from":"tool","to":"deploy_evidence","type":"must_be_discovered_by"},
+  {"from":"blocked_claims","to":"decision_support","type":"protects"},
+  {"from":"ai_dlc_map","to":"deploy_evidence","type":"supports_if_needed"}
+]
+

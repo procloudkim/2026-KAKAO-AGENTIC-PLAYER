@@ -2,6 +2,13 @@
 
 Purpose: prepare the PlayMCP console fields for local/private testing only. This document is for `임시 등록`; it is not a public switch or final release action.
 
+Canonical scope:
+
+- This document owns only PlayMCP console field values.
+- Product promise, users, output contract, and claim boundaries live in `docs/PRODUCT_PRD_SOT.md`.
+- KakaoCloud / PlayMCP-in-KC / MCP protocol / endpoint / secret rules live in `docs/HOST_REQUIREMENTS_SOT.md`.
+- Current readiness status lives in `docs/QA_REPORT.md`.
+
 ## Metadata
 
 | Field | Value |
@@ -21,31 +28,22 @@ Purpose: prepare the PlayMCP console fields for local/private testing only. This
 
 ## Endpoint Note
 
-Register the deployed server endpoint with the MCP path ending in `/mcp`. The local development server exposes `http://127.0.0.1:3345/mcp`; the PlayMCP console should use the actual temporary server URL plus `/mcp`.
+Use the deployed HTTPS MCP endpoint ending in `/mcp`. The complete endpoint rule, KakaoCloud/PlayMCP-in-KC boundary, `정보 불러오기` flow, and stop lines are canonical in `docs/HOST_REQUIREMENTS_SOT.md`.
 
-For AGENTIC PLAYER 10, use the host SOT in `HOST_REQUIREMENTS_SOT.md`. The official Kakao contest page supports only the registration flow boundary: create a KakaoCloud MCP endpoint, register it in PlayMCP, use temporary registration for testing, request review only when final, switch to public after approval, and submit once. The organizer-provided PlayMCP-in-KC endpoint pattern is:
-
-```text
-https://mcp-name.playmcp-endpoint.kakaocloud.io/mcp
-```
-
-After changing the endpoint in the developer console, click `정보 불러오기` and verify that tool discovery returns exactly `find_family_experiences`. Do not click `등록 및 심사 요청` while this document is being used only for temporary/private testing.
+Do not click `등록 및 심사 요청` while this document is being used only for temporary/private testing.
 
 ## Deployment Notes
 
 - Keep one public MCP tool: `find_family_experiences`.
-- Set provider keys only through the hosting secret mechanism supported by the target platform. For PlayMCP-in-KC, see `HOST_REQUIREMENTS_SOT.md`: the organizer notice quoted on 2026-07-07 says env/Secret injection is not yet supported, so any private image-baked key workaround is a temporary host-specific exception requiring human approval and key rotation.
+- Set provider keys only through the hosting secret mechanism selected under `docs/HOST_REQUIREMENTS_SOT.md`.
 - Configure `FAMILY_EXPERIENCE_ETL_CACHE_DIR` so the runtime can read the cache produced by `npm run etl:nationwide -- --fixture --write-cache` or a later live proof run.
-- See `DECISIONS.md` for source claim boundaries and live-proof policy.
+- See `docs/PRODUCT_PRD_SOT.md`, `docs/SOURCE_LEDGER.md`, and `docs/DECISIONS.md` for source claim boundaries and live-proof policy.
 
 ## Copy Guardrails
 
-- Market promise: source-grounded family experience candidates for bounded parent decision support, not complete event search.
-- Label fixture output as `fixture/demo`; do not present fixture rows as live records.
-- Do not claim nationwide coverage, live freshness, reservation status, current opening status, or child suitability unless a cited source field supports that exact claim.
-- Explicit public caveats: no nationwide completeness, no real-time freshness, no reservation/open-now guarantee, and no child safety certification.
-- Do not describe cache-backed candidate coverage as live nationwide completeness.
-- Mention missing or inferred fields plainly with `unknown`, `inferred`, or `stale` where applicable.
+- Use the product promise and caveats in `docs/PRODUCT_PRD_SOT.md`.
+- Use source and coverage boundaries in `docs/SOURCE_LEDGER.md`.
+- Use current proof status in `docs/QA_REPORT.md`.
 - Do not include raw keys, bearer tokens, keyed URLs, cookies, or private operator logs.
 - Representative image status is canonical in `DEMO_PACK.md`. Do not upload it until the operator confirms the rights/provenance note there.
 

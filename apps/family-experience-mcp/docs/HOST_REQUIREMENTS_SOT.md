@@ -2,7 +2,17 @@
 
 Purpose: single source of truth for host, organizer, and PlayMCP-in-KC requirements before submitting `아이랑 어디가`. This document records only deployment and submission constraints. It is not proof that deployment, review, public release, or contest submission has happened.
 
-Last checked: 2026-07-08.
+Last checked: 2026-07-09.
+
+## Canonical Responsibilities
+
+| Truth | Canonical home |
+| --- | --- |
+| Product PRD, users, output contract, and product launch criteria | `docs/PRODUCT_PRD_SOT.md` |
+| Kakao / PlayMCP / MCP protocol / deployment requirements applied to this project | This document |
+| Local extracted Kakao / PlayMCP guide corpus map | `docs/KAKAO_PLAYMCP_GUIDE_SOT.md` |
+| Current PASS/BLOCKED/NOT CLAIMED status | `docs/QA_REPORT.md` |
+| PlayMCP console field values | `docs/PLAYMCP_TEMP_REGISTRATION.md` |
 
 ## Evidence Boundary
 
@@ -15,6 +25,19 @@ Last checked: 2026-07-08.
 | Official public | `https://playmcp.kakao.com/` and Kakao Corp/Tech pages | PlayMCP is Kakao's public MCP platform surface. | Public pages do not replace the contest console workflow. |
 | Organizer Notion extract | `docs/external/kakao-playmcp-in-kc-notion/` | PlayMCP-in-KC Git source build, container image build, contest participation order, PlayMCP review policy, and server development requirements. | Extracted from public Notion `loadPageChunk` on 2026-07-08; raw snapshots remain local evidence under `.omo/ulw-research/20260708-235718-kakao-playmcp-notion-extraction/`. |
 | Organizer notice excerpt | User-provided PlayMCP-in-KC notice in this workspace on 2026-07-07 | Exact endpoint pattern, console update path, outbound egress IP allowlist, and current secret/env-var limitation. | The short links redirected through a page this environment could not fetch; treat the quoted notice as organizer-supplied contest guidance. |
+
+## Current Gaps To Confirm
+
+The contest/deployment text corpus is now locally collected, but these items cannot be finalized from static text:
+
+1. Current PlayMCP-in-KC support for environment variables or Secrets after the 2026-07-07 organizer notice.
+2. Actual endpoint URL issued by the PlayMCP-in-KC console after deployment.
+3. PlayMCP identifier availability at registration time.
+4. Whether `정보 불러오기` succeeds against the deployed endpoint.
+5. Whether starter prompts work from PlayMCP temporary/private AI chat.
+6. Whether review, all-public switch, and AGENTIC PLAYER 10 preliminary submission have actually been performed.
+
+Do not request more planning text before these checks; request only the missing console/runtime evidence when the operator reaches each step.
 
 ## Endpoint Requirement
 

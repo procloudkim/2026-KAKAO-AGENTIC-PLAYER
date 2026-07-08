@@ -79,6 +79,20 @@ describe("source scanner", () => {
     expect(findings).toEqual([])
   })
 
+  it("allows official Notion methodology URLs", () => {
+    // Given: the Notion extraction method cites official Notion help and API documentation.
+    const text = [
+      "Export help: https://www.notion.com/help/export-your-content",
+      "Page markdown API: https://developers.notion.com/reference/retrieve-page-markdown",
+    ].join("\n")
+
+    // When: the scanner evaluates the methodology document.
+    const findings = scanText("docs/NOTION_EXTRACTION_METHOD.md", text)
+
+    // Then: official Notion documentation is accepted as a source.
+    expect(findings).toEqual([])
+  })
+
   it("rejects malformed included temporary source docs through the CLI", async () => {
     // Given: a repo-root temporary QA source document has a missing source URL.
     const includeDir = resolve(process.cwd(), "../../.omo/tmp/market-plan-sources")
