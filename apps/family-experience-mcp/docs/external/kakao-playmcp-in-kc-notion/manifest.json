@@ -1,0 +1,79 @@
+[
+  {
+    "name": "url1_git_source",
+    "pid": "3749b97b-4888-809d-8f07-eb0f008a252c",
+    "out": ".omo\\ulw-research\\20260708-235718-kakao-playmcp-notion-extraction\\extracted-clean\\url1_git_source.md",
+    "chars": 5190,
+    "lines": 73
+  },
+  {
+    "name": "url2_container_image",
+    "pid": "3749b97b-4888-80a1-8f73-f5871a314a98",
+    "out": ".omo\\ulw-research\\20260708-235718-kakao-playmcp-notion-extraction\\extracted-clean\\url2_container_image.md",
+    "chars": 5543,
+    "lines": 77
+  },
+  {
+    "name": "url3_detail_page",
+    "pid": "3749b97b-4888-806b-8564-ee264e2fafde",
+    "out": ".omo\\ulw-research\\20260708-235718-kakao-playmcp-notion-extraction\\extracted-clean\\url3_detail_page.md",
+    "chars": 8044,
+    "lines": 111
+  },
+  {
+    "name": "url4_collection",
+    "pid": "3749b97b-4888-803b-b90b-ef3ddbcfbcfb",
+    "out": ".omo\\ulw-research\\20260708-235718-kakao-playmcp-notion-extraction\\extracted-clean\\url4_collection.md",
+    "chars": 339,
+    "lines": 15
+  },
+  {
+    "name": "required_notice",
+    "pid": "3749b97b-4888-80a5-8d90-ff614ea361d4",
+    "out": ".omo\\ulw-research\\20260708-235718-kakao-playmcp-notion-extraction\\extracted-clean\\required_notice.md",
+    "chars": 3912,
+    "lines": 61
+  },
+  {
+    "name": "hello_page",
+    "pid": "21b9b97b-4888-8093-a57c-c2d24e53dc60",
+    "out": ".omo\\ulw-research\\20260708-235718-kakao-playmcp-notion-extraction\\extracted-clean\\hello_page.md",
+    "chars": 1331,
+    "lines": 41
+  },
+  {
+    "name": "notices",
+    "pid": "2189b97b-4888-8096-80ca-c0ed5fcb5ea7",
+    "out": ".omo\\ulw-research\\20260708-235718-kakao-playmcp-notion-extraction\\extracted-clean\\notices.md",
+    "chars": 514,
+    "lines": 20
+  },
+  {
+    "name": "service_help",
+    "pid": "2189b97b-4888-803d-bbdc-ef264e7eff58",
+    "out": ".omo\\ulw-research\\20260708-235718-kakao-playmcp-notion-extraction\\extracted-clean\\service_help.md",
+    "chars": 749,
+    "lines": 22
+  },
+  {
+    "name": "review_policy",
+    "pid": "21b9b97b-4888-8024-922e-c3dfcacf97e5",
+    "out": ".omo\\ulw-research\\20260708-235718-kakao-playmcp-notion-extraction\\extracted-clean\\review_policy.md",
+    "chars": 9378,
+    "lines": 140
+  },
+  {
+    "name": "server_dev_guide",
+    "pid": "2d89b97b-4888-808a-9e1d-c17a13e70187",
+    "out": ".omo\\ulw-research\\20260708-235718-kakao-playmcp-notion-extraction\\extracted-clean\\server_dev_guide.md",
+    "chars": 10258,
+    "lines": 162
+  },
+  {
+    "name": "registration_notice",
+    "pid": "2a89b97b-4888-8096-a7ee-c06a80a7466c",
+    "out": ".omo\\ulw-research\\20260708-235718-kakao-playmcp-notion-extraction\\extracted-clean\\registration_notice.md",
+    "chars": 619,
+    "lines": 21
+  }
+]

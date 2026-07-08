@@ -12,7 +12,7 @@ const appTargets = ["docs", "src", "test", "scripts", "package.json"] as const
 const evidenceNames = [/^golden-family-experience-.*\.json$/, /^task-9-(plain-verify|final-verify)-GREEN\.txt$/] as const
 const scraperPackages = ["cheerio", "puppeteer", "playwright", "jsdom", "got-scraping"] as const
 const allowedHosts = ["example.invalid", "127.0.0.1", "localhost", "openapi.example.test", "data.example.test"] as const
-const officialSourceHosts = ["apis.data.go.kr", "culture.go.kr", "data.go.kr", "b.kakao.com", "docs.kakaocloud.com", "kko.to", "modelcontextprotocol.io", "playmcp.kakao.com", "tech.kakao.com", "www.sejongpac.or.kr", "www.culture.go.kr", "www.kakaocorp.com", "www.data.go.kr"] as const
+const officialSourceHosts = ["apis.data.go.kr", "culture.go.kr", "data.go.kr", "b.kakao.com", "docs.kakaocloud.com", "kko.to", "modelcontextprotocol.io", "playmcp.kakao.com", "playmcp.kakaocloud.io", "tech.kakao.com", "www.sejongpac.or.kr", "www.culture.go.kr", "www.kakaocorp.com", "www.data.go.kr"] as const
 const urlPattern = /https?:\/\/[^\s"'`<>),]+/g
 
 async function listFiles(target: string): Promise<readonly string[]> {
@@ -131,6 +131,9 @@ function isAllowedUrl(file: string, url: string): boolean {
   if (officialSourceHosts.some((host) => host === parsed.hostname)) {
     return true
   }
+  if (isOrganizerGuideExtract(file)) {
+    return true
+  }
   if (parsed.hostname.endsWith(".playmcp-endpoint.kakaocloud.io")) {
     return true
   }
@@ -141,6 +144,10 @@ function isAllowedUrl(file: string, url: string): boolean {
     return true
   }
   return file.replaceAll("\\", "/").endsWith("test/fixtures/seoul-culture-sample.json")
+}
+
+function isOrganizerGuideExtract(file: string): boolean {
+  return file.replaceAll("\\", "/").includes("docs/external/kakao-playmcp-in-kc-notion/")
 }
 
 function isSyntheticFixtureHost(file: string, hostname: string): boolean {

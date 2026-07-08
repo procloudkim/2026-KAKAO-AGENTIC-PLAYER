@@ -343,6 +343,42 @@ https://mcp-name.playmcp-endpoint.kakaocloud.io/mcp
 
 If the KakaoCloud console issues a different HTTPS `/mcp` endpoint, use the console-issued endpoint and record that proof privately. Current host-secret handling must be decided by the operator before deployment because the organizer notice says PlayMCP-in-KC env/Secret injection is not yet supported.
 
+PlayMCP-in-KC entry:
+
+1. Open `https://playmcp.kakaocloud.io`.
+2. Sign in with the Kakao account registered in PlayMCP.
+3. Click `+ 새 MCP 서버 등록`.
+4. Choose one deployment mode:
+
+Git source build:
+
+- Select `Git 소스 빌드`.
+- Enter a PlayMCP-in-KC server name and description. These are host-console fields and are separate from the PlayMCP public MCP name/description in `docs/PLAYMCP_TEMP_REGISTRATION.md`.
+- Enter the Git repository URL.
+- Enter branch/ref. Use the deployed branch intentionally; do not assume `main` if the submission package lives on another branch.
+- Enter Dockerfile path, usually `Dockerfile`.
+- Enter PAT only for a private repository. Do not paste PATs into docs, screenshots, or evidence.
+- Confirm the repository path contains a Dockerfile at the selected path.
+
+Container image registration:
+
+- Select `이미지 등록`.
+- Build/push a `linux/amd64` image. The Notion guide warns that `arm64` images can fail activation.
+- Enter registry host, for example `docker.io` or `ghcr.io`.
+- Enter registry user/password only for a private registry or private image. Do not paste registry credentials into docs, screenshots, or evidence.
+- Enter `image_name` and `image_tag`.
+
+For both modes:
+
+- Click `등록하기`.
+- Wait while status is `Starting`; the Notion guide says this can take from tens of seconds to minutes.
+- Continue only when status becomes `Active`.
+- Open the server detail view and copy the issued Endpoint URL.
+- PlayMCP-in-KC allows up to two MCP servers per account in this guide. Delete old temporary servers only after confirming they are not needed; deletion cannot be reversed.
+- If the MCP is updated after contest entry, the Notion guide says to delete the existing PlayMCP-in-KC server, create a new server with the same MCP server name, then return to PlayMCP, run `정보 불러오기`, and request review again.
+
+Before proceeding to PlayMCP `정보 불러오기`, confirm the deployed server still matches `docs/HOST_REQUIREMENTS_SOT.md`: Streamable HTTP remote `/mcp`, no `kakao` in MCP/tool names, one narrow public tool, required tool metadata/annotations, response size under review limits, and p99 within the beta SLO.
+
 ## PlayMCP Temporary Entry
 
 1. Open the PlayMCP web console, sign in with a Kakao account that has developer console access, and create or open the form for a new MCP server. Use the official AGENTIC PLAYER / PlayMCP guide as the source for the console URL if the bookmark is unavailable.

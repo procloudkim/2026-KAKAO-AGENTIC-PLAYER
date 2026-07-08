@@ -13,6 +13,7 @@ Last checked: 2026-07-08.
 | Official public | `https://modelcontextprotocol.io/docs/tools/inspector` | MCP Inspector is an interactive tool for testing/debugging MCP servers and inspecting tools, schemas, and execution results. | Inspector proof still requires running it against the deployed endpoint. |
 | Official public | `https://docs.kakaocloud.com/en/tutorial/container/k8s-engine-mcp` | KakaoCloud remote MCP deployment is HTTPS/load-balancer oriented; `stdio` is local-process transport and not suitable for remote Kubernetes. | General KakaoCloud MCP tutorial, not the PlayMCP-in-KC managed contest service. |
 | Official public | `https://playmcp.kakao.com/` and Kakao Corp/Tech pages | PlayMCP is Kakao's public MCP platform surface. | Public pages do not replace the contest console workflow. |
+| Organizer Notion extract | `docs/external/kakao-playmcp-in-kc-notion/` | PlayMCP-in-KC Git source build, container image build, contest participation order, PlayMCP review policy, and server development requirements. | Extracted from public Notion `loadPageChunk` on 2026-07-08; raw snapshots remain local evidence under `.omo/ulw-research/20260708-235718-kakao-playmcp-notion-extraction/`. |
 | Organizer notice excerpt | User-provided PlayMCP-in-KC notice in this workspace on 2026-07-07 | Exact endpoint pattern, console update path, outbound egress IP allowlist, and current secret/env-var limitation. | The short links redirected through a page this environment could not fetch; treat the quoted notice as organizer-supplied contest guidance. |
 
 ## Endpoint Requirement
@@ -32,7 +33,7 @@ Rules:
 
 ## PlayMCP Update Flow
 
-Use this exact operator flow from the organizer notice:
+Use this operator flow from the organizer notice and Notion contest guide:
 
 1. Open developer console.
 2. Open the registered MCP.
@@ -41,7 +42,8 @@ Use this exact operator flow from the organizer notice:
 5. Change `MCP Endpoint` to the KakaoCloud PlayMCP-in-KC HTTPS `/mcp` endpoint.
 6. Click `정보 불러오기`.
 7. Verify tool discovery returns exactly one public tool: `find_family_experiences`.
-8. Click `등록 및 심사 요청` only after endpoint smoke and copy/claim scans pass.
+8. Use `임시 등록` first and test from the PlayMCP preview/toolbox/AI chat flow.
+9. Click `등록 및 심사 요청` only after endpoint smoke, PlayMCP private smoke, and copy/claim scans pass.
 
 Stop lines:
 
@@ -65,6 +67,92 @@ If only one value can be registered, use:
 ```
 
 Apply these only in provider consoles that support IP allowlists. Do not put API keys or provider allowlist screenshots into public docs.
+
+## PlayMCP-in-KC Deployment Modes
+
+The organizer Notion guide confirms that PlayMCP-in-KC can create an MCP server from either Git source or a container image.
+
+Git source build requires:
+
+- `https://playmcp.kakaocloud.io` login with the Kakao account registered in PlayMCP.
+- `+ 새 MCP 서버 등록` then `Git 소스 빌드`.
+- MCP server name and description for the PlayMCP-in-KC console. These are separate from the PlayMCP public registration copy.
+- Git URL.
+- Branch/ref, usually `main` unless another branch is intentionally selected.
+- Dockerfile path, usually `Dockerfile`.
+- PAT only when the repository is private.
+- A Dockerfile present at the repository root or configured Dockerfile path.
+- Wait for `Status: Starting` to become `Active`, then copy the issued Endpoint URL from the server detail page.
+
+Container image registration requires:
+
+- `+ 새 MCP 서버 등록` then `이미지 등록`.
+- Image built for `linux/amd64`; `arm64` images can fail activation.
+- Registry host such as `docker.io` or `ghcr.io`.
+- Registry user/password only when the registry or image is private.
+- `image_name` and `image_tag`.
+- Wait for `Status: Starting` to become `Active`, then copy the issued Endpoint URL from the server detail page.
+
+PlayMCP-in-KC server count limit from the Notion guide:
+
+- Up to 2 MCP servers can be registered per account for this environment.
+
+Update handling after contest entry:
+
+1. Delete the existing MCP server in PlayMCP-in-KC.
+2. Create a new MCP server.
+3. Reuse the same MCP server name.
+4. In PlayMCP, edit the registered MCP, run `정보 불러오기` again, and request review again.
+
+## PlayMCP Server Development Requirements
+
+The PlayMCP server development guide extracted on 2026-07-08 adds these submission gates:
+
+- MCP protocol version support must include minimum `2025-03-26` and maximum `2025-11-25`.
+- PlayMCP supports Streamable HTTP only for this remote server path.
+- Remote MCP servers must be reachable through a public URL.
+- Stateless MCP servers are recommended.
+- MCP Inspector should be used before registration.
+- Use or reference actively maintained MCP SDKs.
+- MCP Server Name or Tool Name must not contain `kakao` as prefix, suffix, or middle text, case-insensitively, unless separately agreed.
+- Tool names must be 1 to 128 characters and use only English letters, digits, underscore, or hyphen.
+- Tool names must be unique and case-sensitive.
+- Tool count should not exceed 20; 3 to 10 tools are recommended.
+- Tool definitions must include `name`, `description`, `inputSchema`, and `annotations`.
+- `annotations` must explicitly set `title`, `readOnlyHint`, `destructiveHint`, `openWorldHint`, and `idempotentHint`.
+- Tool description should be English where possible, include the MCP/service name, include Korean and English for proper nouns, and stay within 1,024 characters.
+- Kakao Tools automatically prefixes tool names with the PlayMCP identifier, so the local tool name should not repeat the MCP name.
+- Tool call result size should be minimal; error and non-widget responses should use cleaned text/Markdown rather than raw upstream API payloads.
+- Tool response text over 24k can be treated as an error and become a review rejection reason.
+- Operational performance target from the guide: average tool response within 100ms and p99 within 3,000ms.
+
+Family Experience implication:
+
+- Keep the public tool surface narrow: `find_family_experiences` remains a good fit.
+- Do not add `kakao` to server/tool names.
+- Keep responses capped to the curated top candidates and source/caveat fields, not raw provider records.
+- Re-run MCP Inspector or an equivalent initialize/tools/list/tools/call smoke before PlayMCP `정보 불러오기`.
+
+## PlayMCP Review Policy Requirements
+
+The extracted review policy adds these rejection risks:
+
+- MCP Server must include at least one tool.
+- Excessive tool count can make tool selection difficult; 3 to 20 tools are recommended by review policy.
+- Standard-spec violations or abnormal behavior can cause rejection.
+- Third-party auto-generated MCP servers can be rejected if ownership or policy compliance is unclear.
+- Repeatedly submitting the same functional MCP with only name/copy/output changes can be limited.
+- MCPs that only duplicate what an LLM can already do through ordinary web search can be rejected or restricted unless the MCP clearly extends the LLM.
+- Low stability, low creativity, or inconsistent responses can trigger non-public status or improvement requests.
+- Names and descriptions must clearly communicate function; abstract or vague copy can trigger revision requests.
+- Data source must be clear; operators may ask for data source and composition proof.
+- Unauthorized data reports can lead to non-public status until usage rights are proven.
+- Tools must be pre-tested and return without errors.
+- Slow or timeout-prone tools, excessive redirects, crawling delays, or unnecessary external calls can be rejection reasons.
+- Commercial links, purchase inducements, reward offers, harmful file downloads, profanity, political/sexual content, or socially inappropriate content can be rejection reasons.
+- If authentication is required and credentials are absent or expired, return HTTP `401`.
+- Representative image must not be animated and must match the service; low-quality or inappropriate images can be rejected.
+- PlayMCP currently does not handle MCP Resource or Prompt information.
 
 ## Secrets And Environment Variables
 

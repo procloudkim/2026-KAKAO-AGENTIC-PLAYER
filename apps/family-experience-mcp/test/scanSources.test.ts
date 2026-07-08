@@ -61,6 +61,24 @@ describe("source scanner", () => {
     ])
   })
 
+  it("allows organizer guide extract URLs outside event source ledgers", () => {
+    // Given: PlayMCP organizer guide extracts contain platform, Discord, registry, and example links.
+    const file = "docs/external/kakao-playmcp-in-kc-notion/url2_container_image.md"
+    const registryUrl = "https://" + "ghcr.io/"
+    const discordUrl = "https://" + "kko.kakao.com/playmcp_discord"
+    const text = [
+      "Open https://playmcp.kakaocloud.io before registration.",
+      `Registry examples include docker.io and ${registryUrl}.`,
+      `The guide also links to ${discordUrl}.`,
+    ].join("\n")
+
+    // When: the source scanner evaluates the extracted guide text.
+    const findings = scanText(file, text)
+
+    // Then: organizer guide links are not treated as event source URLs.
+    expect(findings).toEqual([])
+  })
+
   it("rejects malformed included temporary source docs through the CLI", async () => {
     // Given: a repo-root temporary QA source document has a missing source URL.
     const includeDir = resolve(process.cwd(), "../../.omo/tmp/market-plan-sources")
