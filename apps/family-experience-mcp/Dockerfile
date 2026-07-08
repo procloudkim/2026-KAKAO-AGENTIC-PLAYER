@@ -7,7 +7,7 @@ RUN npm ci
 
 COPY apps/family-experience-mcp/tsconfig.json ./
 COPY apps/family-experience-mcp/src ./src
-RUN npx tsc --noEmit false --outDir dist
+RUN npx tsc --noEmit false --rootDir . --outDir dist
 
 FROM node:22-slim AS runtime
 
