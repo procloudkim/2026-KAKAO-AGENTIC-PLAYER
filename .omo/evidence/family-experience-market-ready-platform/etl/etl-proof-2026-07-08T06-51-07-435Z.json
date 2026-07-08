@@ -1,31 +1,31 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-08T06:51:15.419Z",
+  "generated_at": "2026-07-08T06:51:07.435Z",
   "command": {
     "argv": [
       "--dry-run",
       "--source",
-      "seoul"
+      "culture_portal"
     ],
     "cwd": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\apps\\family-experience-mcp",
     "node": "v24.15.0"
   },
   "ok": true,
   "report": {
-    "generated_at": "2026-07-08T06:51:15.211Z",
+    "generated_at": "2026-07-08T06:51:07.154Z",
     "mode": "dry-run",
     "fixture": false,
     "source_set": [
-      "seoul"
+      "culture_portal"
     ],
     "source_ids": [
-      "seoul-culture-events"
+      "culture-portal-oneview"
     ],
     "ttl_hours": 24,
     "max_pages": 1,
     "counts": {
       "failures": 0,
-      "normalized_records": 20,
+      "normalized_records": 10,
       "raw_snapshots": 1
     },
     "raw_snapshots_present": true,
@@ -35,13 +35,13 @@
     },
     "source_provenance": [
       {
-        "source": "seoul",
-        "source_id": "seoul-culture-events",
-        "generated_at": "2026-07-08T06:51:15.211Z",
+        "source": "culture_portal",
+        "source_id": "culture-portal-oneview",
+        "generated_at": "2026-07-08T06:51:07.154Z",
         "ttl_hours": 24,
         "mode": "live",
         "ok": true,
-        "records": 20,
+        "records": 10,
         "raw_snapshots": 1,
         "raw_snapshot_present": true
       }
@@ -55,9 +55,9 @@
     "sources": [
       {
         "ok": true,
-        "source": "seoul",
-        "source_id": "seoul-culture-events",
-        "records": 20,
+        "source": "culture_portal",
+        "source_id": "culture-portal-oneview",
+        "records": 10,
         "raw_snapshots": 1
       }
     ]
@@ -65,7 +65,7 @@
   "proof": {
     "evidence_dir": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl",
     "latest_path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-latest.json",
-    "timestamped_path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-08T06-51-15-419Z.json",
+    "timestamped_path": "D:\\KLab\\2026-Hackathon\\2026-07-KAKAO-AGENTIC-PLAY\\.omo\\evidence\\family-experience-market-ready-platform\\etl\\etl-proof-2026-07-08T06-51-07-435Z.json",
     "redaction_verified": true
   }
 }
