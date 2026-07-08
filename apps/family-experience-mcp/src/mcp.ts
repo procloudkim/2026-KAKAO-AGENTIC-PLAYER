@@ -8,7 +8,13 @@ import {
   silentOperationalLogger,
   type OperationalLogger,
 } from "./observability.js"
-import { FindFamilyExperiencesInputSchema, FindFamilyExperiencesMcpInputSchema, FindFamilyExperiencesStructuredContentSchema, type FindFamilyExperiencesInput } from "./schemas.js"
+import {
+  FindFamilyExperiencesHandlerInputSchema,
+  FindFamilyExperiencesInputSchema,
+  FindFamilyExperiencesMcpInputSchema,
+  FindFamilyExperiencesStructuredContentSchema,
+  type FindFamilyExperiencesInput,
+} from "./schemas.js"
 import { renderFamilyExperienceResponse, type RenderedFamilyExperienceCandidate } from "./pipeline/render.js"
 import { parseLooseFamilyPrompt } from "./promptParser.js"
 import type { FamilyExperienceSourceAdapter } from "./sources/types.js"
@@ -44,7 +50,7 @@ export async function callFindFamilyExperiences(input: unknown, options: McpServ
   const startedAt = Date.now()
   const logger = options.logger ?? silentOperationalLogger
   const config = options.config ?? loadFamilyExperienceConfig()
-  const parsedMcpInput = FindFamilyExperiencesMcpInputSchema.safeParse(input)
+  const parsedMcpInput = FindFamilyExperiencesHandlerInputSchema.safeParse(input)
 
   if (!parsedMcpInput.success) {
     const failure: ToolFailure = { code: "invalid_input", message: parsedMcpInput.error.issues.map((issue) => issue.message).join("; "), retryable: false }
@@ -178,7 +184,7 @@ type NormalizeMcpInputResult =
   | { readonly ok: true; readonly input: FindFamilyExperiencesInput }
   | { readonly ok: false; readonly reason: string }
 
-function normalizeMcpInput(input: ReturnType<typeof FindFamilyExperiencesMcpInputSchema.parse>): NormalizeMcpInputResult {
+function normalizeMcpInput(input: ReturnType<typeof FindFamilyExperiencesHandlerInputSchema.parse>): NormalizeMcpInputResult {
   if ("prompt" in input) {
     const parsedPrompt = parseLooseFamilyPrompt(input.prompt)
     return parsedPrompt.ok

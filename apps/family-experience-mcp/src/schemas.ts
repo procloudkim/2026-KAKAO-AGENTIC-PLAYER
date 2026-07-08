@@ -66,14 +66,16 @@ export const FindFamilyExperiencesTransportInputSchema = z
   })
   .strict()
 
-export const FindFamilyExperiencesMcpInputSchema = z
+export const FindFamilyExperiencesHandlerInputSchema = z
   .union([FindFamilyExperiencesTransportInputSchema, FindFamilyExperiencesLoosePromptInputSchema])
   .transform((input) => input)
+export const FindFamilyExperiencesMcpInputSchema = FindFamilyExperiencesLoosePromptInputSchema
 
 export const FindFamilyExperiencesInputSchema = FindFamilyExperiencesStructuredInputSchema
 
 export type FindFamilyExperiencesInput = z.infer<typeof FindFamilyExperiencesStructuredInputSchema>
 export type FindFamilyExperiencesLoosePromptInput = z.infer<typeof FindFamilyExperiencesLoosePromptInputSchema>
+export type FamilyExperienceHandlerInput = z.infer<typeof FindFamilyExperiencesHandlerInputSchema>
 export type FamilyExperienceMcpInput = z.infer<typeof FindFamilyExperiencesMcpInputSchema>
 
 const unsupportedPublicClaimPattern =

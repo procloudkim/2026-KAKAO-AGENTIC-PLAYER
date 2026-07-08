@@ -49,7 +49,9 @@ describe("Todo 5 MCP server", () => {
       const tools = await client.listTools()
       const result = await client.callTool({
         name: "find_family_experiences",
-        arguments: happyInput,
+        arguments: {
+          prompt: "오늘 비오는데 4살이랑 갈 곳",
+        },
       })
       const structuredContent = FindFamilyExperiencesStructuredContentSchema.parse(
         result.structuredContent,
@@ -57,6 +59,11 @@ describe("Todo 5 MCP server", () => {
 
       // Then: no extra public tool is exposed and the call returns Korean text plus structured data.
       expect(tools.tools.map((tool) => tool.name)).toEqual([...FAMILY_EXPERIENCE_PUBLIC_TOOLS])
+      expect(tools.tools[0]?.inputSchema).toMatchObject({
+        type: "object",
+        required: ["prompt"],
+      })
+      expect(tools.tools[0]?.inputSchema).not.toHaveProperty("anyOf")
       expect(result.isError).toBeUndefined()
       expect(result.content).toHaveLength(1)
       expect(result.content[0]).toMatchObject({
@@ -103,8 +110,8 @@ describe("Todo 5 MCP server", () => {
     expect("candidates" in structuredContent).toBe(false)
   })
 
-  it("returns Korean clarification through the MCP surface when child age is missing", async () => {
-    // Given: an MCP client sends transport-valid input without a child suitability selector.
+  it("returns Korean clarification through the MCP surface when prompt child age is missing", async () => {
+    // Given: an MCP client sends a prompt without a child suitability selector.
     const server = createFamilyExperienceMcpServer({ config: fixtureConfig })
     const client = new Client({ name: "mcp-missing-age-test-client", version: "0.1.0" })
     const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair()
@@ -113,12 +120,11 @@ describe("Todo 5 MCP server", () => {
       await server.connect(serverTransport)
       await client.connect(clientTransport)
 
-      // When: the public tool is called without child_age or child_stage.
+      // When: the public tool is called without child_age or child_stage in the prompt.
       const result = await client.callTool({
         name: "find_family_experiences",
         arguments: {
-          location: "Seoul",
-          date_range: { start: "2026-07-04", end: "2026-07-05" },
+          prompt: "이번 주말 아이랑 갈 곳",
         },
       })
       const structuredContent = FindFamilyExperiencesStructuredContentSchema.parse(
