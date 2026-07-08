@@ -20,13 +20,15 @@ https://github.com/procloudkim/2026-KAKAO-AGENTIC-PLAYER.git
 family-experience-kc-submit-minimal
 
 Dockerfile 경로:
-apps/family-experience-mcp/Dockerfile
+Dockerfile
 
 컨테이너 포트:
 3349
 ```
 
 비공개 GitHub 저장소이므로 PlayMCP in KC의 `PAT` 입력칸에 GitHub Personal Access Token을 넣어야 합니다. PAT는 저장소 clone에 필요한 읽기 권한만 부여하고, 코드나 문서에 커밋하지 않습니다.
+
+루트 `Dockerfile`은 PlayMCP in KC의 Git 소스 빌드처럼 저장소 루트를 빌드 컨텍스트로 사용하는 경로에 맞춰져 있습니다. 로컬에서 같은 조건을 재현할 때는 저장소 루트에서 `docker build -f Dockerfile .` 형식으로 실행합니다.
 
 ## 환경변수
 

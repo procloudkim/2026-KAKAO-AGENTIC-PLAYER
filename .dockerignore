@@ -1,0 +1,13 @@
+.git
+.omo
+.codex
+.agents
+.codegraph
+**/.env
+**/.env.*
+**/.npmrc
+**/node_modules
+**/coverage
+**/dist
+**/*.log
+**/npm-debug.log*

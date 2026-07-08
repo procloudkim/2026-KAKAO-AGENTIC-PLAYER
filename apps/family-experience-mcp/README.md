@@ -60,16 +60,22 @@ The national culture festival source currently supports local CSV/cache fallback
 
 ## Docker / PlayMCP in KC
 
-The Dockerfile is in this directory.
+Use the repository-root `Dockerfile` for PlayMCP in KC Git source builds.
 
-When registering from the repository root in PlayMCP in KC:
+When registering in PlayMCP in KC:
 
 ```text
-Dockerfile path: apps/family-experience-mcp/Dockerfile
+Dockerfile path: Dockerfile
 container_port: 3349
 ```
 
 The container listens on `PORT`, defaulting to `3349`, and sets `HOST=0.0.0.0`.
+
+Local root-context build:
+
+```bash
+docker build -f Dockerfile .
+```
 
 ## Canonical Docs
 
