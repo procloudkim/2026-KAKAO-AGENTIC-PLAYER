@@ -1,6 +1,6 @@
 # Source Ledger
 
-Date: 2026-07-07
+Date: 2026-07-08
 
 This is the canonical launch source inventory for `find_family_experiences`.
 The ledger records source-level proof boundaries only. It does not make any
@@ -29,9 +29,7 @@ system, open-now oracle, or child-safety certifier.
 ## Current Coverage Decision
 
 - Fixture rows remain `tier0-fixture-only`.
-- Each official source is currently at most `tier1-source-proven-single-source`
-  until a current ETL proof demonstrates multi-source cross-region cache
-  coverage.
+- Each official source is currently at most `tier1-source-proven-single-source`; source-specific ETL proof status is canonical in `docs/QA_REPORT.md`.
 - `tier2-multi-source-cross-region` is a future cache/proof state, not a
   per-source completeness claim.
 - `tier3-market-claim-eligible` is not assigned. Broad public copy must not use

@@ -12,6 +12,7 @@ This runbook is the operator handoff for `아이랑 어디가`. It covers local 
 | Verification status and residual risks | `docs/QA_REPORT.md` |
 | Golden MCP response scenarios | `docs/GOLDEN_RESULTS.md` |
 | Temporary PlayMCP field copy | `docs/PLAYMCP_TEMP_REGISTRATION.md` |
+| Representative image candidate and rights boundary | `docs/DEMO_PACK.md` |
 
 ## Preconditions
 
@@ -345,17 +346,12 @@ If the KakaoCloud console issues a different HTTPS `/mcp` endpoint, use the cons
 ## PlayMCP Temporary Entry
 
 1. Open the PlayMCP web console, sign in with a Kakao account that has developer console access, and create or open the form for a new MCP server. Use the official AGENTIC PLAYER / PlayMCP guide as the source for the console URL if the bookmark is unavailable.
-2. Use `docs/PLAYMCP_TEMP_REGISTRATION.md` as the canonical copy source. Minimum fields:
-   - Service name: `아이랑 어디가`
-   - Identifier: `familyexp`
-   - Endpoint path: `/mcp`
-   - Public tool: `find_family_experiences`
-   - Starter messages: `이번 주말 4살 실내 체험 찾아줘`, `오늘 아이랑 갈 곳 3개만 골라줘`, `비 오는 날 가족 체험 추천해줘`
+2. Use `docs/PLAYMCP_TEMP_REGISTRATION.md` as the canonical copy source for the service name, identifier, description, auth choice, response visibility, starter messages, and endpoint rule. Do not duplicate those field values in this runbook.
 3. Deploy a temporary HTTPS server, then set the PlayMCP endpoint to that deployed URL ending in `/mcp`. For AGENTIC PLAYER 10, use the KakaoCloud PlayMCP-in-KC endpoint described in `docs/HOST_REQUIREMENTS_SOT.md`.
 4. Choose no-auth for fixture/private validation. For live provider-backed deployment, provider keys must never be pasted into PlayMCP. If PlayMCP-in-KC still lacks env/Secret injection, stop for the human-approved temporary secret strategy in `docs/HOST_REQUIREMENTS_SOT.md`.
 5. Ensure the deployed runtime can read the ETL cache or has a pre-deployment cache generation step.
 6. Keep response visibility private/operator-only for this handoff.
-7. If the console requires a representative image before saving, stop and prepare a rights-cleared image separately. Do not upload third-party event posters, logos, child faces, screenshots with private data, or generated images that imply official endorsement.
+7. If the console requires a representative image before saving, use the candidate and rights/provenance boundary in `docs/DEMO_PACK.md`. Do not upload third-party event posters, logos, real child faces, screenshots with private data, or generated images that imply official endorsement.
 8. Save for temporary testing and stop.
 
 Post-save check:
@@ -376,7 +372,7 @@ The current package is not a public-release package. Temporary/private visibilit
 - Distinguish official-source candidate/cache coverage from current key-backed live proof.
 - Do not write that a release, public switch, contest entry, or final review action has happened.
 - Do not include raw secrets or keyed URLs in docs, console notes, screenshots, or evidence.
-- TODO: 대표 이미지 is still required by the console workflow. Do not generate or upload one here.
+- Representative image candidate and rights/provenance boundary are maintained in `docs/DEMO_PACK.md`. Do not treat candidate selection as upload or rights approval.
 
 ## Rollback
 

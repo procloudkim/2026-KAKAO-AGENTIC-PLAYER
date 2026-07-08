@@ -256,6 +256,7 @@ Your next move: start work only after accepting this plan. Full execution detail
   Commit: Y | `docs(runbook): add public-beta deployment path`
 
 - [ ] 16. Create launch-readiness dashboard/report artifact
+  Status note: BLOCKED_PENDING_REPORT. `docs/QA_REPORT.md` now carries the canonical launch-readiness snapshot, but the dedicated Todo 16 launch report artifact has not been created and the final status is not `PUBLIC_BETA_READY`.
   What to do / Must NOT do: Add a generated or maintained launch report summarizing current status for product, data, runtime, security, ops, UX, PlayMCP, representative image rights/acceptance, and public copy. Must not hide blockers behind green summaries.
   Parallelization: Wave 4 | Blocked by: 15 | Blocks: 20
   References: `apps/family-experience-mcp/docs/QA_REPORT.md`; `apps/family-experience-mcp/docs/GOLDEN_RESULTS.md`; `.omo/evidence/family-experience-market-ready-platform/`

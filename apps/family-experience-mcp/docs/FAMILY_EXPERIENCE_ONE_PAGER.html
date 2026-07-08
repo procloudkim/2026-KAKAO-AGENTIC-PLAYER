@@ -376,7 +376,7 @@
               <tr><th>Temporary/private ready</th><td>local tests, scans, golden fixtures, one public tool metadata, and operator copy are prepared for private PlayMCP smoke.</td></tr>
               <tr><th>Not yet public-ready</th><td>KakaoCloud PlayMCP-in-KC HTTPS deployment, PlayMCP endpoint update, final review request, public switch, contest submission, and representative image remain human decisions.</td></tr>
               <tr><th>Endpoint evidence</th><td>Path contract is `/mcp`; organizer endpoint pattern is `https://mcp-name.playmcp-endpoint.kakaocloud.io/mcp`; actual deployed endpoint is not assigned in this artifact.</td></tr>
-              <tr><th>Host secret boundary</th><td>HOST_REQUIREMENTS_SOT.md records the PlayMCP-in-KC notice: env/Secret injection was not yet supported as quoted on 2026-07-07, so the final secret strategy is a human decision.</td></tr>
+              <tr><th>Host secret boundary</th><td>HOST_REQUIREMENTS_SOT.md records the PlayMCP-in-KC secret strategy boundary. The final host secret strategy is a human decision before deployment.</td></tr>
               <tr><th>Cache freshness</th><td>ETL cache uses TTL metadata. Current safe default is 24 hours; stale or missing cache must be regenerated before relying on cache-first responses.</td></tr>
               <tr><th>Age-fit basis</th><td>age_fit_label must say source-stated, inferred, or unknown. It is evidence labeling, not a child-safety certificate.</td></tr>
             </tbody>
@@ -414,7 +414,7 @@
           <text x="360" y="116" font-size="13" fill="#5a6573">normalize records</text>
           <text x="360" y="146" font-size="13" fill="#5a6573">write raw snapshot refs</text>
           <text x="360" y="176" font-size="13" fill="#5a6573">redact diagnostics</text>
-          <text x="360" y="220" font-size="12" fill="#247447">Culture Portal: ok=true, records=10</text>
+          <text x="360" y="220" font-size="12" fill="#247447">Source proof status: see QA_REPORT.md</text>
 
           <line x1="570" y1="145" x2="662" y2="145" stroke="#285a84" stroke-width="2" marker-end="url(#arrow)"></line>
 
@@ -445,12 +445,10 @@
           <h2>검증 상태</h2>
           <table class="table" aria-label="verification">
             <tbody>
-              <tr><th>npm run verify</th><td><span class="ok">PASS</span>: typecheck + 17 files / 90 tests</td></tr>
-              <tr><th>scan:secrets</th><td><span class="ok">PASS</span>: 141 files scanned</td></tr>
-              <tr><th>scan:sources</th><td><span class="ok">PASS</span>: 89 files scanned</td></tr>
-              <tr><th>scan:claims</th><td><span class="ok">PASS</span>: 122 files scanned</td></tr>
-              <tr><th>Culture Portal ETL</th><td><span class="ok">PASS</span>: ok=true, normalized_records=10, raw_snapshots=1</td></tr>
-              <tr><th>Run date</th><td>2026-07-07 local workspace proof. Git commit/hash provenance is not claimed from this one-pager.</td></tr>
+              <tr><th>Local verification</th><td><span class="ok">PASS</span>: see QA_REPORT.md for the current canonical verification state and evidence paths.</td></tr>
+              <tr><th>Source ETL proofs</th><td><span class="ok">PASS</span>: source-specific dry-runs are recorded in QA_REPORT.md; they are not national-completeness proof.</td></tr>
+              <tr><th>Scans</th><td><span class="ok">PASS</span>: see QA_REPORT.md for the current scan gates. This one-pager does not own scanned-file counts.</td></tr>
+              <tr><th>Run date</th><td>See QA_REPORT.md. Git commit/hash provenance is not claimed from this one-pager.</td></tr>
             </tbody>
           </table>
         </div>
@@ -459,16 +457,16 @@
           <table class="table" aria-label="source coverage">
             <tbody>
               <tr><th>Seoul</th><td>registered official source. Current proof must be rerun with key before live claim.</td></tr>
-              <tr><th>Culture Portal</th><td><span class="ok">live ETL proof passed</span>: records=10, raw_snapshots=1.</td></tr>
-              <tr><th>KTO TourAPI</th><td>registered candidate source. Cache-backed until current live proof exists.</td></tr>
-              <tr><th>National festival</th><td>local CSV fallback path is canonical. Live endpoint key is optional until endpoint mode is confirmed.</td></tr>
+              <tr><th>Culture Portal</th><td>Source-specific ETL proof status is canonical in QA_REPORT.md.</td></tr>
+              <tr><th>KTO TourAPI</th><td>Source-specific ETL proof status is canonical in QA_REPORT.md.</td></tr>
+              <tr><th>National festival</th><td>Local CSV fallback path is canonical; proof status is canonical in QA_REPORT.md.</td></tr>
             </tbody>
           </table>
           <ul>
             <li><span class="warn">임시/private 준비</span> 상태이며 public release 완료로 쓰지 않습니다.</li>
             <li><span class="warn">KC host gate</span>: endpoint update, 정보 불러오기, and 등록 및 심사 요청 are not complete in this artifact.</li>
-            <li><span class="no">금지</span>: 전국 전체 포함, 실시간 최신성, 예약 가능, 현재 운영 중, 아이 적합성 보장.</li>
-            <li>대표 이미지는 별도 권리 검토가 필요합니다.</li>
+            <li><span class="no">금지</span>: 전국 모든 행사 포함, 현재성, 예약 가능, 현재 운영 중, 아이 적합성 보장.</li>
+            <li>대표 이미지 후보와 권리 확인 경계는 DEMO_PACK.md를 봅니다.</li>
             <li>공개 HTTPS 배포, PlayMCP 실제 등록, 최종 심사 요청, contest submission은 별도 human decision입니다.</li>
           </ul>
         </div>

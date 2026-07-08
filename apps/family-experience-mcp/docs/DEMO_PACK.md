@@ -20,7 +20,9 @@ After: 카카오톡 채팅에서 아이 나이, 날짜, 지역, 조건을 말하
 
 ## Representative Image Prompt
 
-Rights plan: generate an original image, do not use third-party logos, event posters, child faces, or Seoul Open Data screenshots.
+Candidate image: `../../../Main-image-KAKAO-MCP-10.png`.
+
+Rights/provenance status: candidate selected for PlayMCP representative-image upload, but public upload remains a human decision until the operator confirms the image was generated or otherwise licensed for this submission. Do not use third-party logos, event posters, real child faces, private screenshots, or Seoul Open Data screenshots.
 
 Prompt: "A warm but practical mobile chat interface showing a parent receiving three concise family activity cards for a rainy weekend in Seoul, with date, venue, address, source, parent checklist, and next action. No brand logos, no real child faces, no copyrighted posters, clean Korean app-style layout."
 

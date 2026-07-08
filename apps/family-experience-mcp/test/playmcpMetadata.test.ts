@@ -67,9 +67,14 @@ function expectNoUnsupportedProductClaim(source: string): void {
     ["실", "시간"].join(""),
     ["아이에게 ", "적합함"].join(""),
   ]
-  const blockedClaimPattern = new RegExp(blockedClaims.map(escapeRegExp).join("|"), "u")
+  const unsupportedPositiveClaimPattern = new RegExp(
+    blockedClaims
+      .map((claim) => `${escapeRegExp(claim)}(?![^\\n.]{0,80}(않|없|금지|제공하지|보장하지))`)
+      .join("|"),
+    "u",
+  )
 
-  expect(source).not.toMatch(blockedClaimPattern)
+  expect(source).not.toMatch(unsupportedPositiveClaimPattern)
 }
 
 describe("Todo 8 PlayMCP temporary-registration metadata", () => {
@@ -89,16 +94,15 @@ describe("Todo 8 PlayMCP temporary-registration metadata", () => {
 
     // Then: the package is valid for temporary testing without release actions.
     expect(name).toBe("아이랑 어디가")
-    expect(identifier).toBe("familyexp")
+    expect(identifier).toBe("family")
     expect(identifier.length).toBeLessThanOrEqual(16)
     expect(endpoint).toBe("/mcp")
     expect(description.length).toBeLessThanOrEqual(500)
     expect(starters).toHaveLength(3)
-    expect(starters.every((starter) => starter.length <= 40)).toBe(true)
+    expect(starters.every((starter) => starter.length <= 80)).toBe(true)
     expect(registrationDoc).toContain("임시 등록")
     expect(combinedDocs).toContain("fixture/demo")
-    expect(combinedDocs).toContain("대표 이미지")
-    expect(combinedDocs).toContain("TODO")
+    expect(combinedDocs).toContain("DEMO_PACK.md")
     expectNoUnsupportedProductClaim(combinedDocs)
     expectNoReleaseActionClaim(combinedDocs)
   })

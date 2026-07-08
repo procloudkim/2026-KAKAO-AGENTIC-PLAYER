@@ -1,6 +1,6 @@
 # Decisions
 
-Date: 2026-07-07
+Date: 2026-07-08
 
 ## Current Policy
 
@@ -14,16 +14,14 @@ Date: 2026-07-07
 
 ## Nationwide ETL Source Matrix
 
-Canonical source inventory and launch coverage tiers are maintained in
-`docs/SOURCE_LEDGER.md`. The summary below is non-authoritative if the files
-conflict.
+Canonical source inventory and launch coverage tiers are maintained in `docs/SOURCE_LEDGER.md`. The summary below is non-authoritative if the files conflict.
 
 | Source id | Official source | Role | Key/env | Current proof status | Coverage note |
 | --- | --- | --- | --- | --- | --- |
-| `seoul-culture-events` | Seoul Open Data Plaza culture event API, `https://data.seoul.go.kr/` | City authority source for Seoul events | `SEOUL_OPEN_DATA_KEY`, optional `SEOUL_OPEN_DATA_BASE_URL` | Proven only when the key-backed live smoke or ETL proof is rerun in the current environment | Seoul only. |
-| `culture-portal-oneview` | KCISA/Culture Portal culture information API, `https://www.culture.go.kr/portal/main/contents.do?menuNo=200155`; live route `https://apis.data.go.kr/B553457/cultureinfo/period2` | National culture-event source | `CULTURE_PORTAL_SERVICE_KEY`, `CULTURE_PORTAL_BASE_URL` | Key-backed live proof passed on 2026-07-07. See `docs/QA_REPORT.md`. | National candidate source; not proof of complete coverage. |
-| `kto-tourapi-events` | Korea Tourism Organization TourAPI, `https://www.data.go.kr/data/15101578/openapi.do` | National tourism/event breadth source | `KTO_TOURAPI_SERVICE_KEY`, `KTO_TOURAPI_BASE_URL` | Candidate/cache-backed until current live proof exists | Broader tourism/event source; source-returned fields only. |
-| `national-culture-festival-standard` | National culture festival standard data, `https://www.data.go.kr/data/15013104/standard.do` | Lower-freshness fallback source | `NATIONAL_CULTURE_FESTIVAL_CSV_PATH`; `PUBLIC_DATA_STANDARD_SERVICE_KEY` only for confirmed live endpoint mode | Local CSV fallback is the current canonical data path. | Useful fallback; dataset lag must remain visible. |
+| `seoul-culture-events` | Seoul Open Data Plaza culture event API, `https://data.seoul.go.kr/` | City authority source for Seoul events | `SEOUL_OPEN_DATA_KEY`, optional `SEOUL_OPEN_DATA_BASE_URL` | Source-specific ETL dry-run passed on 2026-07-08. See `docs/QA_REPORT.md`. | Seoul only. |
+| `culture-portal-oneview` | KCISA/Culture Portal culture information API, `https://www.culture.go.kr/portal/main/contents.do?menuNo=200155`; live route `https://apis.data.go.kr/B553457/cultureinfo/period2` | National culture-event source | `CULTURE_PORTAL_SERVICE_KEY`, `CULTURE_PORTAL_BASE_URL` | Source-specific ETL dry-run passed on 2026-07-08. See `docs/QA_REPORT.md`. | National candidate source; not proof of complete coverage. |
+| `kto-tourapi-events` | Korea Tourism Organization TourAPI, `https://www.data.go.kr/data/15101578/openapi.do` | National tourism/event breadth source | `KTO_TOURAPI_SERVICE_KEY`, `KTO_TOURAPI_BASE_URL` | Source-specific ETL dry-run passed on 2026-07-08. See `docs/QA_REPORT.md`. | Broader tourism/event source; source-returned fields only. |
+| `national-culture-festival-standard` | National culture festival standard data, `https://www.data.go.kr/data/15013104/standard.do` | Lower-freshness fallback source | `NATIONAL_CULTURE_FESTIVAL_CSV_PATH`; `PUBLIC_DATA_STANDARD_SERVICE_KEY` only for confirmed live endpoint mode | Local CSV fallback ETL dry-run passed on 2026-07-08. See `docs/QA_REPORT.md`. | Useful fallback; dataset lag must remain visible. |
 
 ## Cache And Coverage Decisions
 

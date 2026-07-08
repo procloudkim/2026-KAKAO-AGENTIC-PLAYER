@@ -2,7 +2,7 @@
 
 Purpose: single source of truth for host, organizer, and PlayMCP-in-KC requirements before submitting `아이랑 어디가`. This document records only deployment and submission constraints. It is not proof that deployment, review, public release, or contest submission has happened.
 
-Last checked: 2026-07-07.
+Last checked: 2026-07-08.
 
 ## Evidence Boundary
 
@@ -116,7 +116,7 @@ Default selectable by agent/runbook: no.
 | PlayMCP information load | Console `정보 불러오기` succeeds and discovers `find_family_experiences`. | PlayMCP private/temporary smoke ready. |
 | Review request | Console `등록 및 심사 요청` has actually been clicked. | Review requested. |
 | Public switch | After approval, visibility changed from `나에게만 공개` to `전체 공개`. | Public after approval. |
-| Contest entry | AGENTIC PLAYER 10 `Player 예선 참여` submitted once. | Contest submitted. |
+| Contest entry | AGENTIC PLAYER 10 `Player 예선 참여` submitted once. | Contest entry recorded. |
 
 ## Unsupported Claims
 
