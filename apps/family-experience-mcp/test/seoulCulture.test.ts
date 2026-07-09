@@ -267,6 +267,38 @@ describe("Seoul culture event source adapter", () => {
     expect(failure.failure.code).toBe("no_match")
   })
 
+  it("does not treat Korean school grade numbers as preschool ages", () => {
+    // Given: Seoul describes elementary grade levels, not literal child ages.
+    const sampleRow = seoulCultureSamplePayload.culturalEventInfo.row[0]
+    const samplePayload = {
+      culturalEventInfo: {
+        ...seoulCultureSamplePayload.culturalEventInfo,
+        row: [
+          {
+            ...sampleRow,
+            USE_TRGT: "초등학교 4~6학년 어린이 15명",
+          },
+        ],
+      },
+    }
+    const preschoolRequest: SourceAdapterRequest = {
+      location: "Seoul",
+      date_range: sampleRequest.date_range,
+      child_age: 4,
+    }
+
+    // When: the source boundary matches it against a preschool-age request.
+    const result = normalizeSeoulCulturePayload(samplePayload, {
+      request: preschoolRequest,
+      retrievedAt: "2026-07-02T00:00:00.000Z",
+      redactedUrl: sampleRedactedUrl,
+    })
+    const failure = expectFailure(result)
+
+    // Then: grade numerals are not promoted as source-stated preschool fit.
+    expect(failure.failure.code).toBe("no_match")
+  })
+
   it("skips generic citizen target text without child-age evidence", () => {
     // Given: Seoul provides a generic audience label without child-age evidence.
     const sampleRow = seoulCultureSamplePayload.culturalEventInfo.row[0]

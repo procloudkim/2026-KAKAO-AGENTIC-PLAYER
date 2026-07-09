@@ -1,5 +1,6 @@
 import * as z from "zod/v4"
 
+import { INDOOR_OUTDOOR_VALUES } from "./sources/types.js"
 import { CHILD_STAGES, FAMILY_EXPERIENCE_SOURCES, TOOL_MODES } from "./types.js"
 
 const dateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/
@@ -57,6 +58,49 @@ export const FindFamilyExperiencesLoosePromptInputSchema = z
   })
   .strict()
 
+export const FindFamilyExperiencesMcpInputSchema = z
+  .object({
+    prompt: z
+      .string()
+      .trim()
+      .min(1, "prompt is required when structured fields are omitted")
+      .max(
+        MAX_FAMILY_EXPERIENCE_PROMPT_LENGTH,
+        `prompt must be at most ${MAX_FAMILY_EXPERIENCE_PROMPT_LENGTH} characters`,
+      )
+      .optional(),
+    location: z.string().trim().min(1).optional(),
+    date_range: DateRangeSchema.optional(),
+    child_age: z.number().int().min(0).max(17).optional(),
+    child_stage: z.enum(CHILD_STAGES).optional(),
+    indoor_outdoor_preference: z.enum(INDOOR_OUTDOOR_VALUES).optional(),
+    keywords: z.array(z.string().trim().min(1)).max(8).optional(),
+  })
+  .strict()
+  .superRefine((input, context) => {
+    const hasPrompt = input.prompt !== undefined
+    const hasStructuredCore = input.location !== undefined && input.date_range !== undefined
+    if (!hasPrompt && !hasStructuredCore) {
+      context.addIssue({
+        code: "custom",
+        message: "Provide prompt or structured location/date_range fields.",
+        path: ["prompt"],
+      })
+    }
+
+    if (hasStructuredCore) {
+      const selectorCount =
+        Number(input.child_age !== undefined) + Number(input.child_stage !== undefined)
+      if (selectorCount !== 1) {
+        context.addIssue({
+          code: "custom",
+          message: "Provide exactly one of child_age or child_stage.",
+          path: ["child_age"],
+        })
+      }
+    }
+  })
+
 export const FindFamilyExperiencesTransportInputSchema = z
   .object({
     location: z.string().trim().min(1, "location is required"),
@@ -67,9 +111,12 @@ export const FindFamilyExperiencesTransportInputSchema = z
   .strict()
 
 export const FindFamilyExperiencesHandlerInputSchema = z
-  .union([FindFamilyExperiencesTransportInputSchema, FindFamilyExperiencesLoosePromptInputSchema])
+  .union([
+    FindFamilyExperiencesTransportInputSchema,
+    FindFamilyExperiencesLoosePromptInputSchema,
+    FindFamilyExperiencesMcpInputSchema,
+  ])
   .transform((input) => input)
-export const FindFamilyExperiencesMcpInputSchema = FindFamilyExperiencesLoosePromptInputSchema
 
 export const FindFamilyExperiencesInputSchema = FindFamilyExperiencesStructuredInputSchema
 

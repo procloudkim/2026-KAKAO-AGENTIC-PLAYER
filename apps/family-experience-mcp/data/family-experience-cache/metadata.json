@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-07T18:54:09.793Z",
+  "generated_at": "2026-07-09T13:55:11.636Z",
   "mode": "write-cache",
   "fixture": true,
   "source_set": [
@@ -14,7 +14,7 @@
   "max_pages": 1,
   "counts": {
     "failures": 0,
-    "normalized_records": 2,
+    "normalized_records": 5,
     "raw_snapshots": 0
   },
   "raw_snapshots_present": false,
@@ -26,30 +26,30 @@
     {
       "source": "culture_portal",
       "source_id": "culture-portal-oneview",
-      "generated_at": "2026-07-07T18:54:09.793Z",
+      "generated_at": "2026-07-09T13:55:11.636Z",
       "ttl_hours": 24,
       "mode": "fixture",
       "ok": true,
-      "records": 1,
+      "records": 3,
       "raw_snapshots": 0,
       "raw_snapshot_present": false
     },
     {
       "source": "kto_tourapi",
       "source_id": "kto-tourapi-events",
-      "generated_at": "2026-07-07T18:54:09.793Z",
+      "generated_at": "2026-07-09T13:55:11.636Z",
       "ttl_hours": 24,
       "mode": "fixture",
       "ok": true,
-      "records": 1,
+      "records": 2,
       "raw_snapshots": 0,
       "raw_snapshot_present": false
     }
   ],
   "schema_version": 2,
-  "publish_id": "cache-33140-1783450449793-ec6a8a02-261d-4f5e-87cd-4be573edf05d",
+  "publish_id": "cache-17396-1783605311637-226a1099-b28f-4803-9c54-18cd3f5bf740",
   "file_digests": {
-    "normalized_records_sha256": "c703cc22e8d55645c28105e71d23eee6fefed15df0162379e1867ccd60e39b34",
+    "normalized_records_sha256": "b9f5c4a15bf03dc8496e396a3ca2a76377f26725379704b4cf3b349dd3be1be2",
     "raw_snapshots_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
   }
 }

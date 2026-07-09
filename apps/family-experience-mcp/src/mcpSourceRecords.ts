@@ -51,9 +51,9 @@ export async function loadSourceRecords(request: LoadSourceRecordsRequest): Prom
         ok: false,
         mode: "live",
         failure: {
-          code: "missing_configuration",
+          code: "no_results",
           message:
-            "Nationwide cache has no matching records and no live source is configured. Rebuild the cache or configure a live source.",
+            "Nationwide cache is available, but no records matched the requested date, region, and child selector.",
           retryable: false,
         },
       }

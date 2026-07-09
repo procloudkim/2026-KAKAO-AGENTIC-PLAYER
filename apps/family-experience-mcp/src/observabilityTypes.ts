@@ -6,6 +6,13 @@ export const serviceVersion = "0.1.0"
 export type OperationalOutcome = "success" | "failure"
 export type OperationalLogLevel = "info" | "warn" | "error"
 export type OperationalLogEvent = "server_start" | "http_request" | "tool_call"
+export type OperationalToolName =
+  | "recommend_family_experiences"
+  | "parse_family_experience_request"
+  | "search_family_experience_candidates"
+  | "list_family_experience_sources"
+  | "evaluate_family_recommendation_quality"
+  | "find_family_experiences"
 
 export type OperationalFailureDiagnostics = {
   readonly failure_code: string
@@ -22,7 +29,7 @@ export type OperationalHttpLog = {
 }
 
 export type OperationalToolLog = {
-  readonly name: "find_family_experiences"
+  readonly name: OperationalToolName
   readonly outcome: OperationalOutcome
   readonly mode: ToolMode
   readonly latency_ms: number

@@ -14,6 +14,12 @@ const stages = [
   ["teen", 13, 17],
 ] as const satisfies readonly (readonly [ChildStage, number, number])[]
 
+const koreanGradeRangeHints: readonly KoreanAgeRangeHint[] = [
+  { pattern: /(?:\ucd08\ub4f1\ud559\uad50|\ucd08\ub4f1)\s*\d+\s*(?:[~-]\s*\d+\s*)?\ud559\ub144/, range: { min: 7, max: 12 } },
+  { pattern: /(?:\uc911\ud559\uad50|\uc911)\s*\d+\s*(?:[~-]\s*\d+\s*)?\ud559\ub144/, range: { min: 13, max: 15 } },
+  { pattern: /(?:\uace0\ub4f1\ud559\uad50|\uace0\ub4f1|\uace0)\s*\d+\s*(?:[~-]\s*\d+\s*)?\ud559\ub144/, range: { min: 16, max: childAgeMax } },
+] as const
+
 const koreanAgeRangeHints: readonly KoreanAgeRangeHint[] = [
   { pattern: /\ucd08\ub4f1\ud559\uc0dd|\ucd08\ub4f1\uc0dd/, range: { min: 7, max: childAgeMax } },
   { pattern: /\uc911\ud559\uc0dd|\uccad\uc18c\ub144/, range: { min: 13, max: childAgeMax } },
@@ -23,6 +29,10 @@ const koreanAgeRangeHints: readonly KoreanAgeRangeHint[] = [
 export function parseSeoulAgeTarget(text: string): AgeRange | undefined {
   if (text.includes("\uc804\uccb4")) {
     return { min: childAgeMin, max: childAgeMax }
+  }
+  const gradeRange = koreanGradeRangeHints.find((hint) => hint.pattern.test(text))?.range
+  if (gradeRange !== undefined) {
+    return gradeRange
   }
   const hintedRange = koreanAgeRangeHints.find((hint) => hint.pattern.test(text))?.range
   if (hintedRange !== undefined) {

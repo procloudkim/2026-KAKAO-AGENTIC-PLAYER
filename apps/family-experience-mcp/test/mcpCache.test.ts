@@ -339,7 +339,7 @@ describe("Todo 7 MCP nationwide cache routing", () => {
     }
   })
 
-  it("returns configuration guidance when cache has no matches and no live source is configured", async () => {
+  it("returns no-results guidance when cache has no matches and no live source is configured", async () => {
     // Given: the cache is valid but has no records for the request, and no live key is configured.
     const cacheDir = await tempCacheDir()
     await writeTestCache({ cacheDir, generatedAt: new Date().toISOString(), records: [] })
@@ -353,17 +353,17 @@ describe("Todo 7 MCP nationwide cache routing", () => {
         result.structuredContent,
       )
 
-      // Then: it reports a source/configuration problem, not a fabricated no-results decision.
+      // Then: it reports no matching cache records, not a missing deployment configuration.
       expect(result.isError).toBe(true)
       expect(result.content[0]).toMatchObject({
         type: "text",
-        text: expect.stringMatching(/현재 설정|fixture 모드|cache/i),
+        text: expect.stringContaining("조건에 맞는 근거 있는 후보"),
       })
       expect(structuredContent).toMatchObject({
         ok: false,
         mode: "live",
         failure: {
-          code: "missing_configuration",
+          code: "no_results",
           retryable: false,
         },
       })

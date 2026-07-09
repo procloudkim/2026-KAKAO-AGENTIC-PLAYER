@@ -1,10 +1,15 @@
-import type { FindFamilyExperiencesInput } from "./schemas.js"
+import {
+  currentDateRange,
+  lateMonthRange,
+  monthDayRange,
+  nextMonthRange,
+  nextWeekendRange,
+  thisWeekRange,
+  tomorrowDateRange,
+} from "./dateRange.js"
+import { FindFamilyExperiencesInputSchema, type FindFamilyExperiencesInput } from "./schemas.js"
+import type { IndoorOutdoor } from "./sources/types.js"
 
-const defaultWeekendRange = { start: "2026-07-04", end: "2026-07-05" } as const
-const defaultTodayRange = { start: "2026-07-04", end: "2026-07-04" } as const
-const defaultThisWeekRange = { start: "2026-07-04", end: "2026-07-10" } as const
-const defaultNextMonthRange = { start: "2026-08-01", end: "2026-08-02" } as const
-const defaultLateJulyRange = { start: "2026-07-30", end: "2026-07-31" } as const
 const locationMatchers = [
   { pattern: /서울/u, location: "Seoul" },
   { pattern: /부산/u, location: "Busan" },
@@ -25,13 +30,46 @@ export type ParseLooseFamilyPromptResult =
   | { readonly ok: true; readonly input: FindFamilyExperiencesInput }
   | { readonly ok: false; readonly reason: "missing_child_selector" }
 
+export type ParseLooseFamilyPromptDetailsResult =
+  | {
+      readonly ok: true
+      readonly input: FindFamilyExperiencesInput & {
+        readonly indoor_outdoor_preference?: IndoorOutdoor
+        readonly keywords?: string[]
+      }
+      readonly assumptions: string[]
+      readonly missing_fields: string[]
+      readonly keywords: string[]
+    }
+  | { readonly ok: false; readonly reason: "missing_child_selector" }
+
 export function parseLooseFamilyPrompt(prompt: string): ParseLooseFamilyPromptResult {
+  const parsed = parseLooseFamilyPromptDetails(prompt)
+
+  if (!parsed.ok) {
+    return parsed
+  }
+
+  const input = {
+    location: parsed.input.location,
+    date_range: parsed.input.date_range,
+    ...(parsed.input.child_age === undefined ? {} : { child_age: parsed.input.child_age }),
+    ...(parsed.input.child_stage === undefined ? {} : { child_stage: parsed.input.child_stage }),
+  }
+
+  return { ok: true, input: FindFamilyExperiencesInputSchema.parse(input) }
+}
+
+export function parseLooseFamilyPromptDetails(prompt: string): ParseLooseFamilyPromptDetailsResult {
   const childAge = parseChildAge(prompt)
   const childStage = childAge === undefined ? parseChildStage(prompt) : undefined
 
   if (childAge === undefined && childStage === undefined) {
     return { ok: false, reason: "missing_child_selector" }
   }
+
+  const keywords = parseKeywords(prompt)
+  const indoorOutdoorPreference = parseIndoorOutdoorPreference(prompt)
 
   return {
     ok: true,
@@ -40,17 +78,31 @@ export function parseLooseFamilyPrompt(prompt: string): ParseLooseFamilyPromptRe
       date_range: parseDateRange(prompt),
       ...(childAge === undefined ? {} : { child_age: childAge }),
       ...(childStage === undefined ? {} : { child_stage: childStage }),
+      ...(indoorOutdoorPreference === undefined ? {} : { indoor_outdoor_preference: indoorOutdoorPreference }),
+      ...(keywords.length === 0 ? {} : { keywords }),
     },
+    assumptions: parseAssumptions(prompt),
+    missing_fields: [],
+    keywords,
   }
 }
 
 function parseChildAge(prompt: string): number | undefined {
+  const monthMatch = /(\d{1,2})\s*개월/u.exec(prompt)
+  if (monthMatch !== null) {
+    const months = Number.parseInt(monthMatch[1] ?? "", 10)
+    if (Number.isInteger(months) && months >= 0 && months <= 216) {
+      return Math.floor(months / 12)
+    }
+  }
+
   const ageMatch = /(\d{1,2})\s*살/u.exec(prompt)
-  if (ageMatch === null) {
+  const yearAgeMatch = ageMatch ?? /(\d{1,2})\s*세/u.exec(prompt)
+  if (yearAgeMatch === null) {
     return undefined
   }
 
-  const age = Number.parseInt(ageMatch[1] ?? "", 10)
+  const age = Number.parseInt(yearAgeMatch[1] ?? "", 10)
   return Number.isInteger(age) && age >= 0 && age <= 17 ? age : undefined
 }
 
@@ -100,29 +152,77 @@ function parseLocation(prompt: string): string {
 
 function parseDateRange(prompt: string): FindFamilyExperiencesInput["date_range"] {
   if (/오늘/u.test(prompt)) {
-    return defaultTodayRange
+    return currentDateRange()
+  }
+
+  if (/내일/u.test(prompt)) {
+    return tomorrowDateRange()
+  }
+
+  if (/주말/u.test(prompt)) {
+    return nextWeekendRange()
   }
 
   if (/이번 주/u.test(prompt)) {
-    return defaultThisWeekRange
+    return thisWeekRange()
   }
 
   if (/다음 달/u.test(prompt)) {
-    return defaultNextMonthRange
+    return nextMonthRange()
   }
 
   if (/7월\s*말/u.test(prompt)) {
-    return defaultLateJulyRange
+    return lateMonthRange(6)
   }
 
   const julyDate = /7월\s*(\d{1,2})\s*일?/u.exec(prompt)?.[1]
   if (julyDate !== undefined) {
     const day = Number.parseInt(julyDate, 10)
     if (Number.isInteger(day) && day >= 1 && day <= 31) {
-      const date = `2026-07-${day.toString().padStart(2, "0")}`
-      return { start: date, end: date }
+      return monthDayRange(6, day)
     }
   }
 
-  return defaultWeekendRange
+  return nextWeekendRange()
+}
+
+function parseIndoorOutdoorPreference(prompt: string): IndoorOutdoor | undefined {
+  if (/실내|비|우천|미술관|박물관|공연장/u.test(prompt)) {
+    return "indoor"
+  }
+
+  if (/실외|야외|공원|숲|축제|운동장/u.test(prompt)) {
+    return "outdoor"
+  }
+
+  return undefined
+}
+
+function parseKeywords(prompt: string): string[] {
+  const keywordMatchers = [
+    ["museum", /박물관|미술관|전시/u],
+    ["performance", /공연|연극|뮤지컬/u],
+    ["festival", /축제|행사/u],
+    ["craft", /공예|만들기|체험/u],
+    ["free", /무료/u],
+    ["rainy_day", /비|우천/u],
+  ] as const
+
+  return keywordMatchers
+    .filter(([, pattern]) => pattern.test(prompt))
+    .map(([keyword]) => keyword)
+}
+
+function parseAssumptions(prompt: string): string[] {
+  const assumptions: string[] = []
+
+  if (!/(서울|부산|대구|대전|광주|인천|경기|강원|충청|전라|경상|제주|울산|중구|종로구|노원구)/u.test(prompt)) {
+    assumptions.push("지역이 없으면 서울 기준으로 시작합니다.")
+  }
+
+  if (!/(오늘|내일|주말|이번 주|다음 달|7월)/u.test(prompt)) {
+    assumptions.push("날짜가 없으면 가까운 주말 기준으로 시작합니다.")
+  }
+
+  return assumptions
 }

@@ -16,6 +16,8 @@ import { createFamilyExperienceMcpServer } from "../src/mcp.js"
 import { FindFamilyExperiencesStructuredContentSchema } from "../src/schemas.js"
 import { smokeRecords } from "./smoke-mcp-fixtures.js"
 
+const primaryToolName = "recommend_family_experiences"
+
 const ArgumentsSchema = z.object({
   assertToolCount: z.coerce.number().int().positive().optional(),
   cacheDir: z.string().trim().min(1).optional(),
@@ -139,12 +141,12 @@ async function callAndReport(input: {
     throw new Error(`Expected ${input.args.assertToolCount} tools, received ${toolNames.length}: ${toolNames.join(", ")}`)
   }
 
-  if (toolNames.length !== 1 || toolNames[0] !== "find_family_experiences") {
+  if (!toolNames.includes(primaryToolName)) {
     throw new Error(`Unexpected MCP tool list: ${toolNames.join(", ")}`)
   }
 
   const result = await input.client.callTool({
-    name: "find_family_experiences",
+    name: primaryToolName,
     arguments: {
       prompt: input.args.prompt ?? "부산 이번 주말 4살 실내",
     },
@@ -167,7 +169,7 @@ async function callAndReport(input: {
         endpoint: input.endpoint,
         cache_dir: input.cacheDir,
         tools: toolNames,
-        called: "find_family_experiences",
+        called: primaryToolName,
         prompt: input.args.prompt ?? "부산 이번 주말 4살 실내",
         result_ok: structuredContent.ok,
         mode: structuredContent.mode,

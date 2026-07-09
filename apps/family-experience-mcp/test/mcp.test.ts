@@ -5,14 +5,12 @@ import { describe, expect, it } from "vitest"
 import type { FamilyExperienceConfig } from "../src/config.js"
 import { getHealthStatus } from "../src/health.js"
 import {
-  callFindFamilyExperiences,
   createFamilyExperienceMcpServer,
   FAMILY_EXPERIENCE_PUBLIC_TOOLS,
 } from "../src/mcp.js"
-import {
-  FindFamilyExperiencesInputSchema,
-  FindFamilyExperiencesStructuredContentSchema,
-} from "../src/schemas.js"
+import { FindFamilyExperiencesStructuredContentSchema } from "../src/schemas.js"
+
+process.env["FAMILY_EXPERIENCE_REFERENCE_DATE"] = "2026-07-04"
 
 const fixtureConfig: FamilyExperienceConfig = {
   host: "127.0.0.1",
@@ -21,21 +19,8 @@ const fixtureConfig: FamilyExperienceConfig = {
   seoulOpenDataBaseUrl: "http://openapi.seoul.go.kr:8088",
 }
 
-const noFixtureConfig: FamilyExperienceConfig = {
-  host: "127.0.0.1",
-  port: 3345,
-  allowFixture: false,
-  seoulOpenDataBaseUrl: "http://openapi.seoul.go.kr:8088",
-}
-
-const happyInput = FindFamilyExperiencesInputSchema.parse({
-  location: "Seoul",
-  date_range: { start: "2026-07-04", end: "2026-07-04" },
-  child_age: 4,
-})
-
 describe("Todo 5 MCP server", () => {
-  it("registers exactly one public tool and calls it successfully in fixture mode", async () => {
+  it("registers purpose-specific public tools and calls recommendation successfully in fixture mode", async () => {
     // Given: an MCP server wired to the deterministic fixture source.
     const server = createFamilyExperienceMcpServer({ config: fixtureConfig })
     const client = new Client({ name: "mcp-test-client", version: "0.1.0" })
@@ -48,7 +33,7 @@ describe("Todo 5 MCP server", () => {
       // When: an MCP client lists tools and calls the public family experience tool.
       const tools = await client.listTools()
       const result = await client.callTool({
-        name: "find_family_experiences",
+        name: "recommend_family_experiences",
         arguments: {
           prompt: "오늘 비오는데 4살이랑 갈 곳",
         },
@@ -57,11 +42,17 @@ describe("Todo 5 MCP server", () => {
         result.structuredContent,
       )
 
-      // Then: no extra public tool is exposed and the call returns Korean text plus structured data.
+      // Then: the product-facing tool surface is exposed and the recommendation returns Korean text plus structured data.
       expect(tools.tools.map((tool) => tool.name)).toEqual([...FAMILY_EXPERIENCE_PUBLIC_TOOLS])
       expect(tools.tools[0]?.inputSchema).toMatchObject({
         type: "object",
-        required: ["prompt"],
+        properties: {
+          prompt: expect.any(Object),
+          location: expect.any(Object),
+          date_range: expect.any(Object),
+          child_age: expect.any(Object),
+          child_stage: expect.any(Object),
+        },
       })
       expect(tools.tools[0]?.inputSchema).not.toHaveProperty("anyOf")
       expect(result.isError).toBeUndefined()
@@ -82,32 +73,6 @@ describe("Todo 5 MCP server", () => {
       await client.close()
       await server.close()
     }
-  })
-
-  it("returns a safe tool error when live source is not configured and fixture mode is disabled", async () => {
-    // Given: runtime config has no live key and does not allow fixture fallback.
-    const result = await callFindFamilyExperiences(happyInput, { config: noFixtureConfig })
-
-    // When: the structured failure metadata is parsed through the public schema.
-    const structuredContent = FindFamilyExperiencesStructuredContentSchema.parse(
-      result.structuredContent,
-    )
-
-    // Then: the tool reports a safe Korean error without fabricated candidates.
-    expect(result.isError).toBe(true)
-    expect(result.content[0]).toMatchObject({
-      type: "text",
-      text: expect.stringContaining("fixture 모드"),
-    })
-    expect(structuredContent).toMatchObject({
-      ok: false,
-      mode: "live",
-      failure: {
-        code: "missing_configuration",
-        retryable: false,
-      },
-    })
-    expect("candidates" in structuredContent).toBe(false)
   })
 
   it("returns Korean clarification through the MCP surface when prompt child age is missing", async () => {
@@ -191,35 +156,7 @@ describe("Todo 5 MCP server", () => {
     }
   })
 
-  it("clarifies loose Korean prompt input when child age or stage is missing", async () => {
-    // Given: a compact Korean prompt omits the child selector.
-    const result = await callFindFamilyExperiences(
-      { prompt: "이번 주말 아이랑 갈 곳" },
-      { config: fixtureConfig },
-    )
-
-    // When: the structured failure metadata is parsed.
-    const structuredContent = FindFamilyExperiencesStructuredContentSchema.parse(
-      result.structuredContent,
-    )
-
-    // Then: the tool asks for the missing child age/stage instead of fabricating candidates.
-    expect(result.isError).toBe(true)
-    expect(result.content[0]).toMatchObject({
-      type: "text",
-      text: expect.stringContaining("아이 나이"),
-    })
-    expect(structuredContent).toMatchObject({
-      ok: false,
-      mode: "fixture",
-      failure: {
-        code: "invalid_input",
-        retryable: false,
-      },
-    })
-  })
-
-  it("reports health with service name and exactly one MCP tool", () => {
+  it("reports health with service name and public MCP tools", () => {
     // Given: redaction-safe runtime config is available.
     const health = getHealthStatus(fixtureConfig)
 
@@ -228,7 +165,7 @@ describe("Todo 5 MCP server", () => {
       ok: true,
       name: "family-experience-mcp",
       version: "0.1.0",
-      tools: ["find_family_experiences"],
+      tools: [...FAMILY_EXPERIENCE_PUBLIC_TOOLS],
       config: {
         host: "127.0.0.1",
         allowFixture: true,

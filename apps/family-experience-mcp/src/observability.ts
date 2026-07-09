@@ -8,6 +8,7 @@ import {
   type OperationalLogger,
   type OperationalOutcome,
   type OperationalToolLog,
+  type OperationalToolName,
 } from "./observabilityTypes.js"
 
 export {
@@ -27,6 +28,7 @@ export type {
   OperationalLogLevel,
   OperationalOutcome,
   OperationalToolLog,
+  OperationalToolName,
 } from "./observabilityTypes.js"
 
 const maxLatencySamples = 200
@@ -151,6 +153,7 @@ export function recordHttpRequest(input: {
 
 export function recordToolCall(input: {
   readonly logger: OperationalLogger
+  readonly name?: OperationalToolName
   readonly mode: ToolMode
   readonly latencyMs: number
   readonly candidateCount: number
@@ -173,6 +176,7 @@ export function recordToolCall(input: {
 function toolLogEntry(
   input: {
     readonly mode: ToolMode
+    readonly name?: OperationalToolName
     readonly latencyMs: number
     readonly candidateCount: number
     readonly failure?: ToolFailure
@@ -180,7 +184,7 @@ function toolLogEntry(
   outcome: OperationalOutcome,
 ): OperationalLogEntry {
   const tool: OperationalToolLog = {
-    name: "find_family_experiences",
+    name: input.name ?? "find_family_experiences",
     outcome,
     mode: input.mode,
     latency_ms: Math.max(0, Math.round(input.latencyMs)),

@@ -19,7 +19,7 @@ const HealthStatusSchema = z
     ok: z.literal(true),
     name: z.literal("family-experience-mcp"),
     version: z.literal("0.1.0"),
-    tools: z.array(z.literal("find_family_experiences")).length(1),
+    tools: z.array(z.enum(FAMILY_EXPERIENCE_PUBLIC_TOOLS)).length(FAMILY_EXPERIENCE_PUBLIC_TOOLS.length),
     config: z.object({
       host: z.string().min(1),
       port: z.number().int().min(1).max(65_535),
