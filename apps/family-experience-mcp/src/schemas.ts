@@ -16,6 +16,15 @@ export const FAMILY_EXPERIENCE_CANONICAL_KEYWORDS = [
   "rainy_day",
 ] as const
 
+export const FAMILY_EXPERIENCE_TIME_OF_DAY_VALUES = [
+  "morning",
+  "afternoon",
+  "evening",
+] as const
+
+export type FamilyExperienceTimeOfDay =
+  (typeof FAMILY_EXPERIENCE_TIME_OF_DAY_VALUES)[number]
+
 export type FamilyExperienceCanonicalKeyword =
   (typeof FAMILY_EXPERIENCE_CANONICAL_KEYWORDS)[number]
 
@@ -107,6 +116,7 @@ export const FindFamilyExperiencesStructuredInputSchema = z
     date_range: DateRangeSchema,
     child_age: z.number().int().min(0).max(17).optional(),
     child_stage: z.enum(CHILD_STAGES).optional(),
+    time_of_day: z.enum(FAMILY_EXPERIENCE_TIME_OF_DAY_VALUES).optional(),
     indoor_outdoor_preference: z.enum(INDOOR_OUTDOOR_VALUES).optional(),
     keywords: FamilyExperienceKeywordsInputSchema.optional(),
   })
@@ -152,6 +162,7 @@ export const FindFamilyExperiencesMcpInputSchema = z
     date_range: DateRangeSchema.optional(),
     child_age: z.number().int().min(0).max(17).optional(),
     child_stage: z.enum(CHILD_STAGES).optional(),
+    time_of_day: z.enum(FAMILY_EXPERIENCE_TIME_OF_DAY_VALUES).optional(),
     indoor_outdoor_preference: z.enum(INDOOR_OUTDOOR_VALUES).optional(),
     keywords: FamilyExperienceKeywordsInputSchema.optional(),
   })
@@ -163,6 +174,7 @@ export const FindFamilyExperiencesMcpInputSchema = z
       input.date_range !== undefined ||
       input.child_age !== undefined ||
       input.child_stage !== undefined ||
+      input.time_of_day !== undefined ||
       input.indoor_outdoor_preference !== undefined ||
       input.keywords !== undefined
     if (hasPrompt && hasAnyStructuredField) {
@@ -180,6 +192,7 @@ export const FindFamilyExperiencesTransportInputSchema = z
     date_range: DateRangeSchema,
     child_age: z.number().int().min(0).max(17).optional(),
     child_stage: z.enum(CHILD_STAGES).optional(),
+    time_of_day: z.enum(FAMILY_EXPERIENCE_TIME_OF_DAY_VALUES).optional(),
   })
   .strict()
 
@@ -207,6 +220,35 @@ const PublicSourceUrlSchema = HttpUrlSchema.refine((value) => {
   return hostname !== "apis.data.go.kr" && !/\/(?:detailCommon2|detailIntro2)\/?$/iu.test(url.pathname)
 }, "Authenticated provider API URLs are not public detail pages")
 
+const KakaoMapLinkBaseSchema = HttpUrlSchema.refine((value) => {
+  const url = new URL(value)
+  return (
+    url.protocol === "https:" &&
+    url.hostname.toLowerCase() === "map.kakao.com" &&
+    url.username.length === 0 &&
+    url.password.length === 0 &&
+    url.search.length === 0 &&
+    url.hash.length === 0
+  )
+}, "Expected an official Kakao Map link")
+
+const KakaoMapLinkSchema = KakaoMapLinkBaseSchema.refine((value) => {
+  const pathname = new URL(value).pathname
+  return /^\/link\/map\/(?:[^/,]+,)?-?\d+(?:\.\d+)?,-?\d+(?:\.\d+)?\/?$/u.test(pathname)
+}, "Expected an official Kakao map link")
+
+const KakaoDirectionsLinkSchema = KakaoMapLinkBaseSchema.refine((value) => {
+  const pathname = new URL(value).pathname
+  return /^\/link\/to\/[^/,]+,-?\d+(?:\.\d+)?,-?\d+(?:\.\d+)?\/?$/u.test(pathname)
+}, "Expected an official Kakao directions link")
+
+export const FamilyExperienceNavigationSchema = z
+  .object({
+    map_url: KakaoMapLinkSchema,
+    directions_url: KakaoDirectionsLinkSchema,
+  })
+  .strict()
+
 export const FamilyExperienceParentActionCardSchema = z
   .object({
     date_time: z.string().trim().min(1),
@@ -230,19 +272,20 @@ export const FamilyExperienceParentActionCardSchema = z
 
 export const FamilyExperienceCandidateSchema = z
   .object({
-    id: z.string().trim().min(1),
+    id: z.string().trim().min(1).optional(),
     title: z.string().trim().min(1),
     location: z.string().trim().min(1),
     starts_at: DateOnlySchema,
     source: z.enum(FAMILY_EXPERIENCE_SOURCES),
     ends_at: DateOnlySchema,
-    tags: z.array(z.string().trim().min(1)).default([]),
+    tags: z.array(z.string().trim().min(1)).optional(),
     child_stages: z.array(z.enum(CHILD_STAGES)).optional(),
     description: z.string().trim().min(1).optional(),
     max_child_age: z.number().int().min(0).max(17).optional(),
     min_child_age: z.number().int().min(0).max(17).optional(),
     reservation_url: HttpUrlSchema.optional(),
     contact: z.string().trim().min(1).optional(),
+    navigation: FamilyExperienceNavigationSchema.optional(),
     ...FamilyExperienceParentActionCardSchema.shape,
   })
   .strict()
@@ -322,7 +365,17 @@ export const FindFamilyExperiencesResultSchema = z.discriminatedUnion("ok", [
     .object({
       ok: z.literal(true),
       mode: z.enum(TOOL_MODES),
-      candidates: z.array(FamilyExperienceCandidateSchema),
+      candidates: z.array(FamilyExperienceCandidateSchema).min(1).max(3),
+      result_summary: z
+        .object({
+          target_count: z.literal(3),
+          eligible_count: z.number().int().min(1),
+          returned_count: z.number().int().min(1).max(3),
+          reason: z.enum(["complete", "insufficient_eligible_candidates", "response_budget"]),
+          message: z.string().trim().min(1),
+          data_notice: z.string().trim().min(1).optional(),
+        })
+        .strict(),
     })
     .strict(),
   z
@@ -332,6 +385,39 @@ export const FindFamilyExperiencesResultSchema = z.discriminatedUnion("ok", [
       failure: ToolFailureSchema,
     })
     .strict(),
-])
+]).superRefine((result, context) => {
+  if (!result.ok) return
+
+  const { result_summary: summary } = result
+  if (summary.returned_count !== result.candidates.length) {
+    context.addIssue({
+      code: "custom",
+      message: "returned_count must equal candidates.length",
+      path: ["result_summary", "returned_count"],
+    })
+  }
+  if (summary.eligible_count < summary.returned_count) {
+    context.addIssue({
+      code: "custom",
+      message: "eligible_count must be at least returned_count",
+      path: ["result_summary", "eligible_count"],
+    })
+  }
+
+  const validReason =
+    (summary.reason === "complete" && summary.returned_count === 3 && summary.eligible_count >= 3) ||
+    (summary.reason === "insufficient_eligible_candidates" &&
+      summary.eligible_count < 3 &&
+      summary.returned_count === summary.eligible_count) ||
+    (summary.reason === "response_budget" &&
+      summary.returned_count < Math.min(3, summary.eligible_count))
+  if (!validReason) {
+    context.addIssue({
+      code: "custom",
+      message: "result_summary reason does not match eligible and returned counts",
+      path: ["result_summary", "reason"],
+    })
+  }
+})
 
 export const FindFamilyExperiencesStructuredContentSchema = FindFamilyExperiencesResultSchema

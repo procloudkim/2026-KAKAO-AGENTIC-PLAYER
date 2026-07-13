@@ -152,6 +152,123 @@ describe("Todo 4 family experience pipeline", () => {
     // Then: neither unknown nor contradictory evidence is eligible.
     expect(response).toMatchObject({ ok: false, failure: { code: "no_results" } })
   })
+
+  it("PIN:SCHEDULE_ELIGIBILITY excludes a source-stated Monday closure", async () => {
+    const mondayClosed = officialRecord({
+      id: "kto-tourapi-events:monday-closed",
+      city: "Seoul",
+      date: {
+        start: "2026-01-01",
+        end: "2026-12-31",
+        time_text: "11:00 / 14:00※ 매주 월요일 휴무",
+      },
+    })
+    const { renderFamilyExperienceResponse } = await loadPipeline()
+
+    const response = renderFamilyExperienceResponse({
+      input: {
+        location: "Seoul",
+        date_range: { start: "2026-08-03", end: "2026-08-03" },
+        child_age: 4,
+      },
+      mode: "live",
+      source_records: [mondayClosed],
+    })
+
+    expect(response).toMatchObject({ ok: false, failure: { code: "no_results" } })
+  })
+
+  it("PIN:EXPLICIT_TIME_UNKNOWN fails closed without weakening the no-time fallback", async () => {
+    const ambiguousSchedule = officialRecord({
+      id: "kto-tourapi-events:ambiguous-schedule",
+      date: {
+        start: "2026-08-01",
+        end: "2026-08-01",
+        time_text: "프로그램 별 상이함",
+      },
+    })
+    const { renderFamilyExperienceResponse } = await loadPipeline()
+
+    const explicitMorning = renderFamilyExperienceResponse({
+      input: {
+        location: "Busan",
+        date_range: { start: "2026-08-01", end: "2026-08-01" },
+        child_age: 4,
+        time_of_day: "morning",
+      },
+      mode: "live",
+      source_records: [ambiguousSchedule],
+    })
+    const noTimeConstraint = renderFamilyExperienceResponse({
+      input: {
+        location: "Busan",
+        date_range: { start: "2026-08-01", end: "2026-08-01" },
+        child_age: 4,
+      },
+      mode: "live",
+      source_records: [ambiguousSchedule],
+    })
+
+    expect(explicitMorning).toMatchObject({ ok: false, failure: { code: "no_results" } })
+    expect(noTimeConstraint).toMatchObject({ ok: true })
+  })
+
+  it("PIN:DIVERSITY_PRESERVES_TOP1 keeps the ranked winner while diversifying later slots", async () => {
+    const records = [
+      officialRecord({
+        id: "culture-portal-oneview:ranked-winner",
+        title: "Top Traditional Performance",
+        venue: { name: "Top Hall", address: "Busan A-ro" },
+        tags: ["traditional", "performance"],
+      }),
+      officialRecord({
+        id: "culture-portal-oneview:second-traditional",
+        title: "Second Traditional Performance",
+        venue: { name: "Second Hall", address: "Busan B-ro" },
+        tags: ["traditional", "performance"],
+      }),
+      officialRecord({
+        id: "culture-portal-oneview:science",
+        title: "Family Science Lab",
+        venue: { name: "Science Hall", address: "Busan C-ro" },
+        tags: ["science"],
+      }),
+      officialRecord({
+        id: "culture-portal-oneview:museum",
+        title: "Family Museum Day",
+        venue: { name: "Museum Hall", address: "Busan D-ro" },
+        tags: ["museum"],
+      }),
+    ]
+    const {
+      normalizeFamilyExperienceRecords,
+      selectDiverseFamilyExperienceCandidates,
+    } = await loadPipeline()
+    const normalized = normalizeFamilyExperienceRecords({
+      input: {
+        location: "Busan",
+        date_range: { start: "2026-08-01", end: "2026-08-01" },
+        child_age: 4,
+      },
+      source_records: records,
+    })
+    if (!normalized.ok) {
+      throw new Error(normalized.failure.message)
+    }
+
+    const selected = selectDiverseFamilyExperienceCandidates(normalized.candidates, 3)
+    const topOne = selectDiverseFamilyExperienceCandidates(normalized.candidates, 1)
+
+    expect(selected.map((candidate) => candidate.id)).toEqual([
+      "culture-portal-oneview:ranked-winner",
+      "culture-portal-oneview:science",
+      "culture-portal-oneview:museum",
+    ])
+    expect(topOne.map((candidate) => candidate.id)).toEqual([
+      "culture-portal-oneview:ranked-winner",
+    ])
+  })
+
   it("returns exactly three ranked candidates when the happy prompt has three matches", async () => {
     // Given: the deterministic Todo 3 fixture has three Seoul indoor preschool matches.
     const { renderFamilyExperienceResponse } = await loadPipeline()

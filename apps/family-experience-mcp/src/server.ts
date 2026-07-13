@@ -32,11 +32,20 @@ import {
   recordServerStart,
   type OperationalLogger,
 } from "./observability.js"
-import { installLifecycleHandlers } from "./serverLifecycle.js"
+import {
+  buildFamilyExperiencePrivacyNotice,
+  renderFamilyExperiencePrivacyNoticeHtml,
+} from "./privacyNotice.js"
+import {
+  installLifecycleHandlers,
+  lifecycleModeForRun,
+  type LifecycleMode,
+} from "./serverLifecycle.js"
 import type { HttpLimitation } from "./observabilityTypes.js"
 
 const mcpPath = "/mcp"
 const healthPath = "/health"
+const privacyPath = "/privacy"
 const responseLimitations = new WeakMap<ServerResponse, HttpLimitation>()
 const requestDrainWaiters = new WeakMap<Server, () => Promise<void>>()
 
@@ -60,6 +69,16 @@ function writeJson(
   response.end(JSON.stringify(body))
 }
 
+function writeHtml(response: ServerResponse, statusCode: number, body: string, headOnly: boolean): void {
+  response.writeHead(statusCode, {
+    "cache-control": "no-store",
+    "content-security-policy": "default-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+    "content-type": "text/html; charset=utf-8",
+    "x-content-type-options": "nosniff",
+  })
+  response.end(headOnly ? undefined : body)
+}
+
 async function routeRequest(
   request: IncomingMessage,
   response: ServerResponse,
@@ -70,6 +89,22 @@ async function routeRequest(
   if (url.pathname === healthPath) {
     const health = getHealthStatus(config)
     writeJson(response, health.ok ? 200 : 503, health)
+    return
+  }
+
+  if (url.pathname === privacyPath) {
+    if (request.method !== "GET" && request.method !== "HEAD") {
+      writeJson(response, 405, { ok: false, error: "method_not_allowed" }, { allow: "GET, HEAD" })
+      return
+    }
+
+    const notice = buildFamilyExperiencePrivacyNotice(config)
+    writeHtml(
+      response,
+      notice.publication_ready ? 200 : 503,
+      renderFamilyExperiencePrivacyNoticeHtml(notice),
+      request.method === "HEAD",
+    )
     return
   }
 
@@ -130,6 +165,9 @@ export function createFamilyExperienceHttpServer(
         allowFixture: config.allowFixture,
         cacheDir: config.etlCacheDir,
         ...(config.etlTtlHours === undefined ? {} : { expectedTtlHours: config.etlTtlHours }),
+        ...(config.etlStaleGraceHours === undefined
+          ? {}
+          : { staleGraceHours: config.etlStaleGraceHours }),
         request: {
           location: "Seoul",
           date_range: { start: warmupDate, end: warmupDate },
@@ -206,7 +244,7 @@ export function createFamilyExperienceHttpServer(
   const server = createServer((request, response) => {
     const startedAt = Date.now()
     let logged = false
-    const path = new URL(request.url ?? "/", "http://127.0.0.1").pathname
+    const path = normalizeOperationalPath(request.url)
     const logRequest = (statusCode: number): void => {
       if (logged) {
         return
@@ -257,6 +295,7 @@ export function createFamilyExperienceHttpServer(
     await closeMcpHandler()
   })
   server.once("close", () => {
+    rateLimiter.close()
     void closeMcpHandler()
   })
 
@@ -266,7 +305,22 @@ export function createFamilyExperienceHttpServer(
   return server
 }
 
-export function startFamilyExperienceHttpServer(): Server {
+function normalizeOperationalPath(rawUrl: string | undefined): string {
+  try {
+    const pathname = new URL(rawUrl ?? "/", "http://127.0.0.1").pathname
+    if (pathname === mcpPath || pathname === healthPath || pathname === privacyPath) {
+      return pathname
+    }
+  } catch (error: unknown) {
+    if (!(error instanceof TypeError)) throw error
+  }
+
+  return "other"
+}
+
+export function startFamilyExperienceHttpServer(options: {
+  readonly lifecycleMode?: LifecycleMode
+} = {}): Server {
   const config = loadFamilyExperienceConfig()
   const logger = consoleOperationalLogger
   const server = createFamilyExperienceHttpServer({ config, logger })
@@ -279,6 +333,7 @@ export function startFamilyExperienceHttpServer(): Server {
     server,
     config.shutdownGraceMs ?? DEFAULT_SHUTDOWN_GRACE_MS,
     () => waitForActiveRequests(server),
+    options.lifecycleMode ?? lifecycleModeForRun(process.platform, process.argv.slice(2)),
   )
   return server
 }

@@ -5,7 +5,10 @@ import type { FamilyExperienceSourceSetEntry } from "../config.js"
 import { ETL_CACHE_FILES } from "./cache.js"
 import type { CacheMetadata } from "./cacheContract.js"
 import { cacheRecordSchema, parseCacheMetadata, validateCacheContract } from "./cacheContract.js"
-import { assessCacheFreshness } from "./cacheFreshness.js"
+import {
+  assessCacheServingFreshness,
+  defaultCacheStaleGraceHours,
+} from "./cacheFreshness.js"
 
 type CacheStatusInput = {
   readonly allowFixture: boolean
@@ -13,6 +16,7 @@ type CacheStatusInput = {
   readonly expectedTtlHours?: number
   readonly now?: Date
   readonly sourceSet?: readonly FamilyExperienceSourceSetEntry[]
+  readonly staleGraceHours?: number
 }
 
 type CacheStatusBase = {
@@ -38,7 +42,8 @@ export type CacheOperationalStatus =
       readonly expiresAt: string
       readonly generated_at: string
       readonly mode: "fixture" | "live"
-      readonly status: "fresh" | "stale"
+      readonly staleGraceExpiresAt: string
+      readonly status: "fresh" | "stale_servable" | "expired"
       readonly ttl_hours: number
     })
 
@@ -99,9 +104,11 @@ export function getCacheOperationalStatus(input: CacheStatusInput): CacheOperati
       return emptyCacheStatus({ ...baseStatus, status: "invalid" })
     }
 
-    const freshness = assessCacheFreshness({
+    const freshness = assessCacheServingFreshness({
       generatedAt: metadata.generated_at,
       now: input.now ?? new Date(),
+      staleGraceHours:
+        input.staleGraceHours ?? defaultCacheStaleGraceHours(metadata.ttl_hours),
       ttlHours: metadata.ttl_hours,
     })
 
@@ -116,6 +123,7 @@ export function getCacheOperationalStatus(input: CacheStatusInput): CacheOperati
       expiresAt: new Date(freshness.expiresAtMs).toISOString(),
       generated_at: metadata.generated_at,
       mode,
+      staleGraceExpiresAt: new Date(freshness.staleGraceExpiresAtMs).toISOString(),
       source_health: sourceHealthFromMetadata(metadata),
       ttl_hours: metadata.ttl_hours,
     }

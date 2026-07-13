@@ -12,22 +12,10 @@ import {
 const ActionCardSchema = z
   .object({
     title: z.string().trim().min(1),
-    date_time: z.string().trim().min(1),
-    venue: z.string().trim().min(1),
-    address: z.string().trim().min(1),
-    age_fit_label: z.string().trim().min(1),
-    age_fit_reason: z.string().trim().min(1),
-    indoor_outdoor: z.string().trim().min(1),
-    fee_text: z.string().trim().min(1),
-    source_name: z.string().trim().min(1),
-    source_url: z.string().url(),
-    retrieved_at: z.string().trim().min(1),
-    confidence: z.string().trim().min(1),
-    mode: z.string().trim().min(1),
-    warnings: z.string().trim().min(1),
-    source_summary: z.string().trim().min(1),
-    parent_check: z.string().trim().min(1),
-    next_action: z.string().trim().min(1),
+    date_time_venue: z.string().trim().min(1),
+    fee_age: z.string().trim().min(1),
+    source_warning: z.string().trim().min(1),
+    actions: z.string().trim().min(1),
   })
   .strict()
 
@@ -74,6 +62,11 @@ describe("Todo 7 golden evidence semantics", () => {
     }
     expect(structuredContent.mode).toBe("fixture")
     expect(structuredContent.candidates).toHaveLength(3)
+    expect(structuredContent.result_summary).toMatchObject({
+      target_count: 3,
+      returned_count: 3,
+      reason: "complete",
+    })
     expect(artifact.response.action_cards).toHaveLength(3)
     expect(artifact.response.action_cards.map((card) => card.title)).toEqual(
       structuredContent.candidates.map((candidate) => candidate.title),

@@ -29,13 +29,21 @@ const HealthStatusSchema = z
       expiresAt: z.string().optional(),
       generated_at: z.string().nullable(),
       mode: z.enum(["fixture", "live"]).optional(),
+      staleGraceExpiresAt: z.string().optional(),
       source_health: z.object({
         total_sources: z.number().int().min(0),
         ok_sources: z.number().int().min(0),
         failed_sources: z.number().int().min(0),
         failure_codes: z.array(z.string()),
       }),
-      status: z.enum(["fresh", "invalid", "missing", "refreshing", "stale"]),
+      status: z.enum([
+        "fresh",
+        "stale_servable",
+        "expired",
+        "invalid",
+        "missing",
+        "refreshing",
+      ]),
       ttl_hours: z.number().int().min(1).nullable(),
     }).strict(),
     cache_metrics: z.object({
@@ -87,10 +95,13 @@ export function getHealthStatus(config: FamilyExperienceConfig = loadFamilyExper
     allowFixture: config.allowFixture,
     cacheDir: config.etlCacheDir ?? DEFAULT_FAMILY_EXPERIENCE_ETL_CACHE_DIR,
     ...(config.etlTtlHours === undefined ? {} : { expectedTtlHours: config.etlTtlHours }),
+    ...(config.etlStaleGraceHours === undefined
+      ? {}
+      : { staleGraceHours: config.etlStaleGraceHours }),
     ...(config.sourceSet === undefined ? {} : { sourceSet: config.sourceSet }),
   })
   const ok =
-    cache.status === "fresh" &&
+    (cache.status === "fresh" || cache.status === "stale_servable") &&
     (config.allowFixture || cache.mode === "live") &&
     cache.source_health.ok_sources > 0
 

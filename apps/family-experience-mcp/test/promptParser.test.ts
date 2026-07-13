@@ -108,6 +108,21 @@ describe("loose family prompt constraints", () => {
     }
   })
 
+  it.each([
+    ["오전", "morning"],
+    ["오후", "afternoon"],
+    ["저녁", "evening"],
+  ] as const)("preserves an explicit %s time-of-day constraint", (timeText, expected) => {
+    const parsed = parseLooseFamilyPromptDetails(
+      `서울 2026년 8월 3일 ${timeText}에 4살 아이 체험`,
+    )
+
+    expect(parsed.ok).toBe(true)
+    if (parsed.ok) {
+      expect(parsed.input.time_of_day).toBe(expected)
+    }
+  })
+
   it("normalizes festival without silently inferring an outdoor preference", () => {
     const parsed = parseLooseFamilyPromptDetails("서울 2026년 8월 1일 4살 아이 가족 축제")
 

@@ -5,6 +5,7 @@ import {
 } from "../schemas.js"
 import type { SourceId } from "../sources/types.js"
 import type { NormalizedFamilyExperienceCandidate } from "./normalize.js"
+import { evaluateScheduleEligibility } from "./scheduleEligibility.js"
 
 export type IndoorOutdoorPreference = NormalizedFamilyExperienceCandidate["indoor_outdoor"]
 
@@ -20,6 +21,17 @@ export type CandidateRequestMatchRequest = {
 }
 
 export function candidateMatchesFamilyRequest(request: CandidateRequestMatchRequest): boolean {
+  const schedule = evaluateScheduleEligibility({
+    requestRange: request.input.date_range,
+    candidateRange: {
+      start: request.candidate.starts_at,
+      end: request.candidate.ends_at,
+    },
+    ...(request.input.time_of_day === undefined
+      ? {}
+      : { timeOfDay: request.input.time_of_day }),
+    timeText: request.candidate.time_text,
+  })
   return (
     dateRangesOverlap(request.input.date_range, {
       start: request.candidate.starts_at,
@@ -28,7 +40,9 @@ export function candidateMatchesFamilyRequest(request: CandidateRequestMatchRequ
     getLocationRelevanceScore(request.input.location, request.candidate) > 0 &&
     matchesChildSelector(request.input, request.candidate) &&
     matchesPreference(request.input, request.candidate) &&
-    matchesKeywords(request.input, request.candidate)
+    matchesKeywords(request.input, request.candidate) &&
+    (schedule.status === "eligible" ||
+      (request.input.time_of_day === undefined && schedule.status === "unknown"))
   )
 }
 
@@ -43,6 +57,66 @@ export function rankFamilyExperienceCandidates(
       indoor_outdoor_preference: request.indoor_outdoor_preference,
     }),
   )
+}
+
+export function selectDiverseFamilyExperienceCandidates(
+  rankedCandidates: readonly NormalizedFamilyExperienceCandidate[],
+  limit: number,
+): readonly NormalizedFamilyExperienceCandidate[] {
+  if (limit <= 0 || rankedCandidates.length === 0) return []
+
+  const selected: NormalizedFamilyExperienceCandidate[] = [rankedCandidates[0]!]
+  const selectedIds = new Set([rankedCandidates[0]!.id])
+  const usedThemes = new Set([diversityTheme(rankedCandidates[0]!)])
+  const usedVenues = new Set([canonicalVenue(rankedCandidates[0]!)])
+
+  const take = (candidate: NormalizedFamilyExperienceCandidate): void => {
+    if (selected.length >= limit || selectedIds.has(candidate.id)) return
+    selected.push(candidate)
+    selectedIds.add(candidate.id)
+    usedThemes.add(diversityTheme(candidate))
+    usedVenues.add(canonicalVenue(candidate))
+  }
+
+  for (const candidate of rankedCandidates) {
+    if (
+      !usedThemes.has(diversityTheme(candidate)) &&
+      !usedVenues.has(canonicalVenue(candidate))
+    ) {
+      take(candidate)
+    }
+  }
+  for (const candidate of rankedCandidates) {
+    if (!usedThemes.has(diversityTheme(candidate))) take(candidate)
+  }
+  for (const candidate of rankedCandidates) {
+    if (!usedVenues.has(canonicalVenue(candidate))) take(candidate)
+  }
+  for (const candidate of rankedCandidates) take(candidate)
+
+  return selected
+}
+
+function diversityTheme(candidate: NormalizedFamilyExperienceCandidate): string {
+  const text = [candidate.title, candidate.program_text, ...candidate.tags]
+    .join("\n")
+    .normalize("NFKC")
+    .toLowerCase()
+  if (/국악|전통|한복|사물놀이|탈춤|판소리|heritage|traditional/iu.test(text)) return "traditional"
+  if (/과학|로봇|우주|천문|science|robot|space/iu.test(text)) return "science"
+  if (/박물관|미술관|전시|museum|gallery|exhibition/iu.test(text)) return "museum"
+  if (/공예|만들기|워크숍|체험|craft|maker|workshop|hands-on/iu.test(text)) return "hands_on"
+  if (/숲|공원|생태|자연|해양|forest|park|nature|ecology|marine/iu.test(text)) return "nature"
+  if (/공연|연극|뮤지컬|콘서트|극장|performance|theater|theatre|musical|concert/iu.test(text)) return "performance"
+  if (/축제|페스타|행사|festival|festa/iu.test(text)) return "festival"
+  return "unknown"
+}
+
+function canonicalVenue(candidate: NormalizedFamilyExperienceCandidate): string {
+  return `${candidate.venue_name}\n${candidate.venue_address}`
+    .normalize("NFKC")
+    .trim()
+    .toLowerCase()
 }
 
 type CompareCandidatesRequest = {

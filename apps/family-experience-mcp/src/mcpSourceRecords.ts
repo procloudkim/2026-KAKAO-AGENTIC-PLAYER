@@ -14,7 +14,12 @@ import type {
 import type { ToolFailure } from "./types.js"
 
 export type SourceRecordsResult =
-  | { readonly ok: true; readonly mode: "fixture" | "live"; readonly records: readonly unknown[] }
+  | {
+      readonly ok: true
+      readonly mode: "fixture" | "live"
+      readonly records: readonly unknown[]
+      readonly data_notice?: string
+    }
   | { readonly ok: false; readonly mode: "fixture" | "live"; readonly failure: ToolFailure }
 
 export type LoadSourceRecordsRequest = {
@@ -41,6 +46,9 @@ export async function loadSourceRecords(request: LoadSourceRecordsRequest): Prom
       ...(request.config.etlTtlHours === undefined
         ? {}
         : { expectedTtlHours: request.config.etlTtlHours }),
+      ...(request.config.etlStaleGraceHours === undefined
+        ? {}
+        : { staleGraceHours: request.config.etlStaleGraceHours }),
       request: request.input,
       ...(request.cacheSnapshotStore === undefined
         ? {}
@@ -53,6 +61,12 @@ export async function loadSourceRecords(request: LoadSourceRecordsRequest): Prom
         ok: true,
         mode: cacheResult.mode,
         records: cacheResult.records,
+        ...(cacheResult.freshness === "stale_servable"
+          ? {
+              data_notice:
+                `캐시 생성 ${cacheResult.generated_at}; 최신성 TTL을 지났지만 제한된 LKG 유예 내 데이터입니다. 운영 여부는 공식 출처에서 다시 확인하세요.`,
+            }
+          : {}),
       }
     }
 

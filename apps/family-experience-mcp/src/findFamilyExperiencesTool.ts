@@ -134,7 +134,7 @@ export async function callFindFamilyExperiences(
     })
   }
 
-  const toolResponse = toBoundedToolSuccess(rendered)
+  const toolResponse = toBoundedToolSuccess(rendered, sourceResult.data_notice)
 
   if (!toolResponse.ok) {
     recordToolCall({
@@ -201,6 +201,7 @@ function normalizeMcpInput(input: ReturnType<typeof FindFamilyExperiencesHandler
     date_range: dateRange,
     child_age: childAge,
     child_stage: childStage,
+    time_of_day: "time_of_day" in input ? input.time_of_day : undefined,
     indoor_outdoor_preference:
       "indoor_outdoor_preference" in input ? input.indoor_outdoor_preference : undefined,
     keywords: "keywords" in input ? input.keywords : undefined,

@@ -73,12 +73,19 @@ export function lifecycleModeForPlatform(platform: NodeJS.Platform): LifecycleMo
   return platform === "win32" ? "windows_ancestors" : "signals_only"
 }
 
+export function lifecycleModeForRun(
+  platform: NodeJS.Platform,
+  argv: readonly string[],
+): LifecycleMode {
+  return argv.includes("--signals-only") ? "signals_only" : lifecycleModeForPlatform(platform)
+}
+
 export function installLifecycleHandlers(
   server: Server,
   graceMs: number,
   drain?: () => Promise<void>,
+  lifecycleMode = lifecycleModeForPlatform(process.platform),
 ): void {
-  const lifecycleMode = lifecycleModeForPlatform(process.platform)
   const windowsPids =
     lifecycleMode === "windows_ancestors" ? getWindowsAncestorPids(process.ppid) : []
   const msysPids =

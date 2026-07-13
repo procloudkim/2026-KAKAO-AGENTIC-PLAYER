@@ -177,6 +177,10 @@ describe("KTO TourAPI event source adapter", () => {
       name: "Jeju Family Sea Festival",
       address: "123 Jungmun Beach Road, Seogwipo-si, Jeju-do Outdoor plaza",
     })
+    expect(record.coordinates).toEqual({
+      latitude: 33.245678,
+      longitude: 126.412345,
+    })
     expect(record.reservation_url).toBe("https://festival.example.test/jeju-family")
     expect(record.contact).toBe("064-000-0000")
     expect(record.confidence.age_fit).toBe("unknown")
@@ -194,6 +198,27 @@ describe("KTO TourAPI event source adapter", () => {
       ]),
     )
     expect(record.fixture_notice).toContain("Image URLs are source-returned but not proof")
+  })
+
+  it.each([
+    ["181", "33.245678"],
+    ["126.412345", "91"],
+    ["not-a-number", "33.245678"],
+    ["126.412345", "not-a-number"],
+  ])("omits invalid provider coordinates mapx=%s mapy=%s", (mapx, mapy) => {
+    const result = normalizeKtoTourApiPayload(
+      ktoSearchPayload([sampleSearchItem({ mapx, mapy })]),
+      {
+        request: sampleRequest,
+        retrievedAt: "2026-07-04T00:00:00.000Z",
+        redactedUrl: sampleRedactedUrl,
+        sourceUrl: "https://apis.example.test/detailCommon2",
+      },
+    )
+    const record = expectSuccess(result).records.at(0)
+
+    expect(record).toBeDefined()
+    expect(record).not.toHaveProperty("coordinates")
   })
 
   it.each([

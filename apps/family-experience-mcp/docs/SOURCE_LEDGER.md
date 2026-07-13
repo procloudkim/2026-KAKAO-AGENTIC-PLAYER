@@ -4,7 +4,7 @@ Date: 2026-07-08
 
 This is the canonical launch source inventory for `find_family_experiences`.
 
-Runtime freshness defaults to `FAMILY_EXPERIENCE_ETL_TTL_HOURS=24` and fails closed on stale or incomplete cache. The source-specific refresh values below describe the intended provider ingestion cadence; they do not silently change the runtime TTL or justify a freshness claim without current proof.
+Runtime freshness defaults to `FAMILY_EXPERIENCE_ETL_TTL_HOURS=24`, followed by a bounded `FAMILY_EXPERIENCE_ETL_STALE_GRACE_HOURS=24` for integrity-validated live last-known-good data. Grace is hard-capped at seven days and is disclosed in every served response. Missing, corrupt, fixture, source-mismatched, or grace-expired caches fail closed. The source-specific refresh values below do not silently change these runtime bounds or justify a freshness claim without current proof.
 The production source set is `kto_tourapi`. The runtime serves a static bundled
 cache; refresh is an external ETL, production-cache gate, image rebuild, and
 redeploy operation. Provider credentials are ingestion credentials only; the

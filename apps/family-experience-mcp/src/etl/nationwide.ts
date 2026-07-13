@@ -23,6 +23,7 @@ export type NationwideEtlOptions = {
 
 export type NationwideEtlReport = NationwideCacheMetadata & {
   readonly ok: boolean
+  readonly published: boolean
   readonly cache_dir: string
   readonly diagnostics: {
     readonly redacted_sample_url: string
@@ -65,14 +66,18 @@ export async function runNationwideEtl(options: NationwideEtlOptions): Promise<N
     sourceSummaries,
     ttlHours: options.ttlHours,
   })
+  const allSourcesOk = sourceSummaries.length > 0 && sourceSummaries.every((source) => source.ok)
+  const hasSuccessfulSource = sourceSummaries.some((source) => source.ok)
+  const published = options.mode === "write-cache" && hasSuccessfulSource
 
-  if (options.mode === "write-cache") {
+  if (published) {
     await writeCache({ cacheDir: options.cacheDir, metadata, rawSnapshots, records })
   }
 
   return {
     ...metadata,
-    ok: sourceSummaries.every((source) => source.ok),
+    ok: allSourcesOk,
+    published,
     cache_dir: resolve(options.cacheDir),
     diagnostics: {
       redacted_sample_url: "https://fixture.example.test/etl?serviceKey=<redacted>",

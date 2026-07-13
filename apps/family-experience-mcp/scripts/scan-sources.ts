@@ -13,6 +13,13 @@ const evidenceNames = [/^golden-family-experience-.*\.json$/, /^task-9-(plain-ve
 const scraperPackages = ["cheerio", "puppeteer", "playwright", "jsdom", "got-scraping"] as const
 const allowedHosts = ["example.invalid", "127.0.0.1", "localhost", "openapi.example.test", "data.example.test"] as const
 const officialSourceHosts = ["apis.data.go.kr", "culture.go.kr", "data.go.kr", "b.kakao.com", "developers.notion.com", "docs.kakaocloud.com", "kko.to", "modelcontextprotocol.io", "playmcp.kakao.com", "playmcp.kakaocloud.io", "tech.kakao.com", "www.notion.com", "www.sejongpac.or.kr", "www.culture.go.kr", "www.kakaocorp.com", "www.data.go.kr"] as const
+const trustedNetworkReferenceHosts = [
+  "apis.map.kakao.com",
+  "developers.kakao.com",
+  "law.go.kr",
+  "m.pipc.go.kr",
+  "www.law.go.kr",
+] as const
 const urlPattern = /https?:\/\/[^\s"'`<>),]+/g
 
 async function listFiles(target: string): Promise<readonly string[]> {
@@ -131,6 +138,12 @@ function isAllowedUrl(file: string, url: string): boolean {
   if (officialSourceHosts.some((host) => host === parsed.hostname)) {
     return true
   }
+  if (isTrustedNetworkReference(file, parsed)) {
+    return true
+  }
+  if (isKakaoNavigationLink(file, parsed)) {
+    return true
+  }
   if (isOrganizerGuideExtract(file)) {
     return true
   }
@@ -144,6 +157,29 @@ function isAllowedUrl(file: string, url: string): boolean {
     return true
   }
   return file.replaceAll("\\", "/").endsWith("test/fixtures/seoul-culture-sample.json")
+}
+
+function isTrustedNetworkReference(file: string, url: URL): boolean {
+  const normalizedFile = file.replaceAll("\\", "/")
+  return normalizedFile.endsWith("docs/TRUSTED_FAMILY_NETWORK_PRD_VNEXT.md") &&
+    url.protocol === "https:" &&
+    url.username.length === 0 &&
+    url.password.length === 0 &&
+    trustedNetworkReferenceHosts.some((host) => host === url.hostname)
+}
+
+function isKakaoNavigationLink(file: string, url: URL): boolean {
+  const normalizedFile = file.replaceAll("\\", "/")
+  const isNavigationSurface = normalizedFile.endsWith("src/pipeline/navigation.ts") ||
+    normalizedFile.endsWith("test/navigation.test.ts")
+  return isNavigationSurface &&
+    url.protocol === "https:" &&
+    url.username.length === 0 &&
+    url.password.length === 0 &&
+    url.hostname === "map.kakao.com" &&
+    url.search.length === 0 &&
+    url.hash.length === 0 &&
+    (url.pathname.startsWith("/link/map/") || url.pathname.startsWith("/link/to/"))
 }
 
 function isOrganizerGuideExtract(file: string): boolean {

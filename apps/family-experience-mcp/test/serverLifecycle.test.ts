@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest"
 
-import { createGracefulShutdown, lifecycleModeForPlatform } from "../src/serverLifecycle.js"
+import {
+  createGracefulShutdown,
+  lifecycleModeForPlatform,
+  lifecycleModeForRun,
+} from "../src/serverLifecycle.js"
 
 describe("server lifecycle platform mode", () => {
   it("uses signal-only shutdown outside Windows", () => {
@@ -19,6 +23,8 @@ describe("server lifecycle platform mode", () => {
 
     // Then: the Windows-specific watcher remains enabled.
     expect(mode).toBe("windows_ancestors")
+    expect(lifecycleModeForRun("win32", [])).toBe("windows_ancestors")
+    expect(lifecycleModeForRun("win32", ["--signals-only"])).toBe("signals_only")
   })
 
   it("PIN:GRACEFUL_DRAIN waits for listener close before a successful exit", () => {

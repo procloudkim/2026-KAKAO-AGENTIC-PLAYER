@@ -105,6 +105,11 @@ export type ExperienceVenue = {
   readonly address: string
 }
 
+export type ExperienceCoordinates = {
+  readonly latitude: number
+  readonly longitude: number
+}
+
 export type SourceReference = {
   readonly id: SourceId
   readonly mode: ToolMode
@@ -134,6 +139,7 @@ export type FamilyExperienceSourceRecord = {
   readonly city: string
   readonly date: ExperienceDate
   readonly venue: ExperienceVenue
+  readonly coordinates?: ExperienceCoordinates
   readonly source: SourceReference
   readonly retrieved_at: string
   readonly confidence: SourceConfidence

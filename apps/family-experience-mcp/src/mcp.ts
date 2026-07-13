@@ -6,7 +6,6 @@ import {
 } from "./findFamilyExperiencesTool.js"
 import {
   FindFamilyExperiencesMcpInputSchema,
-  FindFamilyExperiencesStructuredContentSchema,
 } from "./schemas.js"
 
 export const FAMILY_EXPERIENCE_TOOL_NAME = "find_family_experiences"
@@ -24,7 +23,6 @@ export function createFamilyExperienceMcpServer(options: McpServerOptions = {}):
       description:
         "Airang Where / 아이랑 어디가: Find up to three source-grounded family experiences by child age or stage, date, location, venue preference, and keywords. Returns evidence, caveats, and parent verification steps; it does not guarantee availability, safety, or suitability.",
       inputSchema: FindFamilyExperiencesMcpInputSchema,
-      outputSchema: FindFamilyExperiencesStructuredContentSchema,
       annotations: {
         title: "Find family experiences / 가족 체험 찾기",
         readOnlyHint: true,

@@ -58,10 +58,11 @@ The tool accepts a natural-language request or structured constraints. Every req
 
 It may also contain:
 
+- explicit time of day (`morning`, `afternoon`, or `evening`)
 - indoor/outdoor preference
 - optional interest, fee, or travel constraints when present
 
-The tool returns at most three candidates. It should prefer fewer high-confidence candidates over many weak candidates.
+The tool targets three candidates after hard eligibility and diversity selection. It returns fewer only when fewer candidates are eligible or the 4,000-character transport budget cannot safely carry three. Every success includes `result_summary` with target, eligible, returned, and one of `complete`, `insufficient_eligible_candidates`, or `response_budget`.
 
 The tool does not silently default a missing location/date, expand a requested date range, or infer a second child selector. A request missing required information returns typed `invalid_input`, exact `missing_fields` drawn from `location`, `date_range`, and `child_selector`, and zero source access. Supplying both child selectors is also `invalid_input`.
 
@@ -86,6 +87,7 @@ Each candidate should expose these fields when known:
 | `warnings` | Caveats about missing fields, stale cache, fixture/demo mode, or confirmation needs. |
 | `parent_check` | What the caregiver must confirm before visiting. |
 | `next_action` | Open a consumer-safe source when available; otherwise use the event title and contact or official operator to confirm date/place/fee/application steps. |
+| `navigation` | Optional exact-host Kakao Map and directions URLs derived from validated source coordinates. Navigation is not event schedule or booking evidence. |
 
 ## Data Policy
 
@@ -111,7 +113,7 @@ cache. Live provider calls belong in external ETL proof and cache generation,
 not chat requests. Refresh means external KTO ETL, production-cache gate, image
 rebuild, and redeploy; the serving container does not update cache files.
 
-The runtime cache TTL defaults to 24 hours and fails closed when cache content is missing, stale, malformed, or incomplete. Source-specific publication/refresh intervals in `docs/SOURCE_LEDGER.md` describe provider operations; they do not silently override the runtime TTL.
+The runtime cache TTL defaults to 24 hours. After TTL, an integrity-validated live cache may be served only within a bounded last-known-good grace (24 hours by default, seven-day hard cap) with an explicit stale-data notice. Missing, malformed, incomplete, fixture, source-mismatched, or grace-expired caches fail closed. A failed all-source ETL run must not overwrite the previous valid publish. Source-specific publication/refresh intervals in `docs/SOURCE_LEDGER.md` do not silently override these runtime bounds.
 
 ## Claim Boundaries
 
@@ -132,6 +134,8 @@ When a source does not directly support a field, return `unknown`, `inferred`, o
 - Start with the best candidates, not a long explanation.
 - Keep response size small enough for chat and PlayMCP tool-result review.
 - Show the source and caveats with each candidate.
+- Show exact candidate shortage/transport-budget reasons instead of silently returning one item.
+- Exclude source-stated closed weekdays and time-window mismatches before ranking; an explicit time request with unknown schedule evidence fails closed.
 - Make the parent checklist concrete.
 - Prefer practical next action over promotional copy.
 - Never hide uncertainty behind confident wording.
@@ -156,5 +160,6 @@ Product launch readiness requires all of the following:
 4. PlayMCP `정보 불러오기` discovers the expected public tool.
 5. Temporary/private PlayMCP starter-message smoke works or safe-fails with no unsupported claims.
 6. Public copy and demo material use this PRD's claim boundaries.
+7. `/privacy` is HTTP 200 with the real operator name and contact; placeholder or missing values keep public release blocked.
 
 Until those gates pass, the product state is not public-ready.

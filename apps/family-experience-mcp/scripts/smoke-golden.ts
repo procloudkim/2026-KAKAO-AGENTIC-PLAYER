@@ -13,7 +13,13 @@ const toolName = "find_family_experiences"
 const waitDelayMs = 250
 const fixtureServerPort = DEFAULT_FAMILY_EXPERIENCE_PORT
 const sourceFailurePort = 3346
-const cardFields: readonly string[] = ["title", "date_time", "venue", "address", "age_fit_label", "age_fit_reason", "indoor_outdoor", "fee_text", "source_name", "source_url", "retrieved_at", "confidence", "mode", "warnings", "source_summary", "parent_check", "next_action"]
+const cardFields: readonly string[] = [
+  "title",
+  "date_time_venue",
+  "fee_age",
+  "source_warning",
+  "actions",
+]
 const forbiddenClaims = ["전국 모든 행사", "전국 전체", "예약 가능", "예약가능", "운영 중", "실시간", "live now", "currently open", "suitable for all", "아이에게 적합함"] as const
 
 type GoldenArguments = {
@@ -136,15 +142,33 @@ function parseActionCards(text: string): readonly ActionCard[] {
   const cards: ActionCard[] = []
   let draft: Record<string, string> = {}
   for (const line of text.split("\n")) {
-    if (line.startsWith("action_card: ")) {
+    const title = /^\d+\.\s+(.+)$/u.exec(line)?.[1]
+    if (title !== undefined) {
       pushComplete(cards, draft)
-      draft = {}
+      draft = { title }
       continue
     }
-    const separator = line.indexOf(": ")
-    const key = separator > 0 ? line.slice(0, separator) : ""
-    if (separator > 0 && cardFields.includes(key)) {
-      draft[key] = line.slice(separator + 2)
+
+    const field = /^\s+(날짜·장소|비용·연령|출처|지도|길찾기|공식 확인|확인):\s+(.+)$/u.exec(line)
+    if (field === null || field[1] === undefined || field[2] === undefined) continue
+    switch (field[1]) {
+      case "날짜·장소":
+        draft["date_time_venue"] = field[2]
+        break
+      case "비용·연령":
+        draft["fee_age"] = field[2]
+        break
+      case "출처":
+        draft["source_warning"] = field[2]
+        break
+      case "지도":
+      case "길찾기":
+      case "공식 확인":
+      case "확인":
+        draft["actions"] = [draft["actions"], `${field[1]}: ${field[2]}`]
+          .filter(isFilled)
+          .join(" | ")
+        break
     }
   }
   pushComplete(cards, draft)
@@ -206,6 +230,7 @@ async function withServer<T>(
     ...process.env,
     PORT: String(options.port),
     FAMILY_EXPERIENCE_ALLOW_FIXTURE: options.allowFixture ? "true" : "false",
+    FAMILY_EXPERIENCE_ETL_CACHE_DIR: resolve(process.cwd(), ".golden-smoke-missing-cache"),
   }
   delete childEnv["SEOUL_OPEN_DATA_KEY"]
   const child = spawn(process.execPath, ["--import", "tsx", "src/server.ts"], { cwd: process.cwd(), env: childEnv, stdio: "pipe", windowsHide: true })
@@ -223,7 +248,7 @@ async function waitForHealth(child: ChildProcessWithoutNullStreams, port: number
       throw new Error(`smoke server on port ${port} exited early with code ${child.exitCode}`)
     }
     const response = await fetch(`http://127.0.0.1:${port}/health`).catch(() => undefined)
-    if (response?.status === 200) {
+    if (response !== undefined) {
       return
     }
     await delay(waitDelayMs)

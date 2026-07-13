@@ -48,6 +48,7 @@ export type ParseLooseFamilyPromptDetailsResult =
       readonly ok: true
       readonly input: FindFamilyExperiencesInput & {
         readonly indoor_outdoor_preference?: IndoorOutdoor
+        readonly time_of_day?: FindFamilyExperiencesInput["time_of_day"]
         readonly keywords?: string[]
       }
       readonly assumptions: string[]
@@ -72,6 +73,7 @@ export function parseLooseFamilyPrompt(prompt: string): ParseLooseFamilyPromptRe
     date_range: parsed.input.date_range,
     ...(parsed.input.child_age === undefined ? {} : { child_age: parsed.input.child_age }),
     ...(parsed.input.child_stage === undefined ? {} : { child_stage: parsed.input.child_stage }),
+    ...(parsed.input.time_of_day === undefined ? {} : { time_of_day: parsed.input.time_of_day }),
     ...(parsed.input.indoor_outdoor_preference === undefined
       ? {}
       : { indoor_outdoor_preference: parsed.input.indoor_outdoor_preference }),
@@ -105,6 +107,7 @@ export function parseLooseFamilyPromptDetails(prompt: string): ParseLooseFamilyP
 
   const keywords = parseKeywords(prompt)
   const indoorOutdoorPreference = parseIndoorOutdoorPreference(prompt)
+  const timeOfDay = parseTimeOfDay(prompt)
 
   return {
     ok: true,
@@ -113,6 +116,7 @@ export function parseLooseFamilyPromptDetails(prompt: string): ParseLooseFamilyP
       date_range: dateRange,
       ...(childAge.status === "valid" ? { child_age: childAge.age } : {}),
       ...(childStage === undefined ? {} : { child_stage: childStage }),
+      ...(timeOfDay === undefined ? {} : { time_of_day: timeOfDay }),
       ...(indoorOutdoorPreference === undefined ? {} : { indoor_outdoor_preference: indoorOutdoorPreference }),
       ...(keywords.length === 0 ? {} : { keywords }),
     },
@@ -120,6 +124,22 @@ export function parseLooseFamilyPromptDetails(prompt: string): ParseLooseFamilyP
     missing_fields: [],
     keywords,
   }
+}
+
+function parseTimeOfDay(prompt: string): FindFamilyExperiencesInput["time_of_day"] | undefined {
+  if (/오전|아침|morning/iu.test(prompt)) {
+    return "morning"
+  }
+
+  if (/오후|낮|afternoon/iu.test(prompt)) {
+    return "afternoon"
+  }
+
+  if (/저녁|밤|야간|evening|night/iu.test(prompt)) {
+    return "evening"
+  }
+
+  return undefined
 }
 
 function parseChildAge(prompt: string): ParseChildAgeResult {

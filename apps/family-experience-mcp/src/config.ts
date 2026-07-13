@@ -17,6 +17,7 @@ export const DEFAULT_FAMILY_EXPERIENCE_SOURCE_SET = [
 export const DEFAULT_FAMILY_EXPERIENCE_ETL_CACHE_DIR = "data/family-experience-cache"
 export const DEFAULT_FAMILY_EXPERIENCE_ETL_MAX_PAGES = 1
 export const DEFAULT_FAMILY_EXPERIENCE_ETL_TTL_HOURS = 24
+export const DEFAULT_FAMILY_EXPERIENCE_ETL_STALE_GRACE_HOURS = 24
 export const DEFAULT_MCP_RATE_LIMIT = 60
 export const DEFAULT_MCP_RATE_WINDOW_MS = 60_000
 export const DEFAULT_MCP_MAX_CONCURRENCY = 32
@@ -54,6 +55,17 @@ const booleanEnvSchema = z.union([
 const optionalNonEmptyStringSchema = z.preprocess(
   (value) => (typeof value === "string" && value.trim().length === 0 ? undefined : value),
   z.string().trim().min(1).optional(),
+)
+
+const optionalPublicTextSchema = z.preprocess(
+  (value) => (typeof value === "string" && value.trim().length === 0 ? undefined : value),
+  z
+    .string()
+    .trim()
+    .min(1)
+    .max(200)
+    .refine((value) => !/[\u0000-\u001f\u007f]/u.test(value), "Expected single-line public text")
+    .optional(),
 )
 
 const optionalHttpsUrlSchema = z.preprocess(
@@ -130,11 +142,14 @@ const rawConfigSchema = z.object({
   FAMILY_EXPERIENCE_ETL_CACHE_DIR: optionalNonEmptyStringSchema,
   FAMILY_EXPERIENCE_ETL_MAX_PAGES: z.coerce.number().int().min(1).optional(),
   FAMILY_EXPERIENCE_ETL_TTL_HOURS: z.coerce.number().int().min(1).optional(),
+  FAMILY_EXPERIENCE_ETL_STALE_GRACE_HOURS: z.coerce.number().int().min(0).max(7 * 24).optional(),
   FAMILY_EXPERIENCE_ALLOWED_ORIGINS: allowedOriginsEnvSchema,
   FAMILY_EXPERIENCE_MCP_RATE_LIMIT: z.coerce.number().int().min(1).max(10_000).optional(),
   FAMILY_EXPERIENCE_MCP_RATE_WINDOW_MS: z.coerce.number().int().min(1_000).max(3_600_000).optional(),
   FAMILY_EXPERIENCE_MCP_MAX_CONCURRENCY: z.coerce.number().int().min(1).max(1_000).optional(),
   FAMILY_EXPERIENCE_SHUTDOWN_GRACE_MS: z.coerce.number().int().min(1_000).max(300_000).optional(),
+  FAMILY_EXPERIENCE_OPERATOR_NAME: optionalPublicTextSchema,
+  FAMILY_EXPERIENCE_PRIVACY_CONTACT: optionalPublicTextSchema,
 })
 
 export type FamilyExperienceConfig = {
@@ -148,6 +163,7 @@ export type FamilyExperienceConfig = {
   readonly etlCacheDir?: string
   readonly etlMaxPages?: number
   readonly etlTtlHours?: number
+  readonly etlStaleGraceHours?: number
   readonly seoulOpenDataKey?: string
   readonly culturePortalServiceKey?: string
   readonly ktoTourApiServiceKey?: string
@@ -159,6 +175,8 @@ export type FamilyExperienceConfig = {
   readonly mcpRateWindowMs?: number
   readonly mcpMaxConcurrency?: number
   readonly shutdownGraceMs?: number
+  readonly operatorName?: string
+  readonly privacyContact?: string
 }
 
 export type ConfigSecretDiagnostic = "missing" | "redacted"
@@ -176,6 +194,7 @@ export type FamilyExperienceConfigDiagnostics = {
   readonly etlCacheDir: string
   readonly etlMaxPages: number
   readonly etlTtlHours: number
+  readonly etlStaleGraceHours: number
   readonly seoulOpenDataKey: ConfigSecretDiagnostic
   readonly culturePortalServiceKey: ConfigSecretDiagnostic
   readonly ktoTourApiServiceKey: ConfigSecretDiagnostic
@@ -187,6 +206,7 @@ export type FamilyExperienceConfigDiagnostics = {
   readonly mcpRateWindowMs: number
   readonly mcpMaxConcurrency: number
   readonly shutdownGraceMs: number
+  readonly privacyNoticeConfigured: boolean
 }
 
 export const loadFamilyExperienceConfig = (
@@ -207,6 +227,9 @@ export const loadFamilyExperienceConfig = (
       rawConfig.FAMILY_EXPERIENCE_ETL_MAX_PAGES ?? DEFAULT_FAMILY_EXPERIENCE_ETL_MAX_PAGES,
     etlTtlHours:
       rawConfig.FAMILY_EXPERIENCE_ETL_TTL_HOURS ?? DEFAULT_FAMILY_EXPERIENCE_ETL_TTL_HOURS,
+    etlStaleGraceHours:
+      rawConfig.FAMILY_EXPERIENCE_ETL_STALE_GRACE_HOURS ??
+      DEFAULT_FAMILY_EXPERIENCE_ETL_STALE_GRACE_HOURS,
     allowedOrigins: rawConfig.FAMILY_EXPERIENCE_ALLOWED_ORIGINS ?? [],
     mcpRateLimit: rawConfig.FAMILY_EXPERIENCE_MCP_RATE_LIMIT ?? DEFAULT_MCP_RATE_LIMIT,
     mcpRateWindowMs:
@@ -237,6 +260,12 @@ export const loadFamilyExperienceConfig = (
     ...(rawConfig.NATIONAL_CULTURE_FESTIVAL_BASE_URL === undefined
       ? {}
       : { nationalCultureFestivalBaseUrl: rawConfig.NATIONAL_CULTURE_FESTIVAL_BASE_URL }),
+    ...(rawConfig.FAMILY_EXPERIENCE_OPERATOR_NAME === undefined
+      ? {}
+      : { operatorName: rawConfig.FAMILY_EXPERIENCE_OPERATOR_NAME }),
+    ...(rawConfig.FAMILY_EXPERIENCE_PRIVACY_CONTACT === undefined
+      ? {}
+      : { privacyContact: rawConfig.FAMILY_EXPERIENCE_PRIVACY_CONTACT }),
   }
 }
 
@@ -255,6 +284,8 @@ export const getFamilyExperienceConfigDiagnostics = (
   etlCacheDir: config.etlCacheDir ?? DEFAULT_FAMILY_EXPERIENCE_ETL_CACHE_DIR,
   etlMaxPages: config.etlMaxPages ?? DEFAULT_FAMILY_EXPERIENCE_ETL_MAX_PAGES,
   etlTtlHours: config.etlTtlHours ?? DEFAULT_FAMILY_EXPERIENCE_ETL_TTL_HOURS,
+  etlStaleGraceHours:
+    config.etlStaleGraceHours ?? DEFAULT_FAMILY_EXPERIENCE_ETL_STALE_GRACE_HOURS,
   seoulOpenDataKey: config.seoulOpenDataKey === undefined ? "missing" : "redacted",
   culturePortalServiceKey:
     config.culturePortalServiceKey === undefined ? "missing" : "redacted",
@@ -268,4 +299,6 @@ export const getFamilyExperienceConfigDiagnostics = (
   mcpRateWindowMs: config.mcpRateWindowMs ?? DEFAULT_MCP_RATE_WINDOW_MS,
   mcpMaxConcurrency: config.mcpMaxConcurrency ?? DEFAULT_MCP_MAX_CONCURRENCY,
   shutdownGraceMs: config.shutdownGraceMs ?? DEFAULT_SHUTDOWN_GRACE_MS,
+  privacyNoticeConfigured:
+    config.operatorName !== undefined && config.privacyContact !== undefined,
 })

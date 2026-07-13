@@ -8,7 +8,7 @@
 find_family_experiences
 ```
 
-Every request must provide a location, a date or date range, and exactly one child selector (`child_age` or `child_stage`). Indoor/outdoor preference, interests, and other constraints are optional. The server never invents a location/date default and never widens the requested date range. Missing or conflicting required fields return typed `invalid_input` with exact `missing_fields` and zero source access. Valid requests return compact candidates with source, age-fit basis, warnings, parent confirmation, and next action.
+Every request must provide a location, a date or date range, and exactly one child selector (`child_age` or `child_stage`). Time of day (`morning`, `afternoon`, or `evening`), indoor/outdoor preference, interests, and other constraints are optional. Source-stated closed weekdays and operating times are hard eligibility gates. The server never invents a location/date default and never widens the requested date range. Missing or conflicting required fields return typed `invalid_input` with exact `missing_fields` and zero source access. Valid requests target three diverse candidates and return a structured completion/shortage reason, age and freshness evidence, warnings, and safe source or Kakao Map actions.
 
 ## Local Setup
 
@@ -96,9 +96,11 @@ container_port: 3349
 ```
 
 The container listens on `PORT`, defaulting to `3349`, and sets `HOST=0.0.0.0`.
-It exposes readiness at `/health` and Streamable HTTP MCP at `/mcp`.
+It exposes readiness at `/health`, Streamable HTTP MCP at `/mcp`, and the operator-configured privacy notice at `/privacy`.
 
-The default cache TTL is 24 hours. Provider-specific refresh cadence can be shorter or longer according to `docs/SOURCE_LEDGER.md`, but it does not change the runtime's fail-closed 24-hour default unless an operator explicitly configures the matching refresh schedule.
+The default cache TTL is 24 hours, followed by a bounded 24-hour last-known-good grace for integrity-validated live data. Grace is configurable with `FAMILY_EXPERIENCE_ETL_STALE_GRACE_HOURS` and capped at seven days. Grace responses and health expose `stale_servable`; corrupt, missing, fixture, source-mismatched, or grace-expired caches still fail closed. External ETL, cache gating, image rebuild, and redeploy remain the freshness path.
+
+`/privacy` returns publication-ready HTTP 200 only when both `FAMILY_EXPERIENCE_OPERATOR_NAME` and `FAMILY_EXPERIENCE_PRIVACY_CONTACT` are set. Otherwise it returns 503 and explicitly reports that the public notice is incomplete; do not invent these values.
 
 Public `/health`, MCP errors, and logs expose only bounded status/codes. They do not expose filesystem paths, provider URLs, commands, keys, stack traces, or deployment topology.
 

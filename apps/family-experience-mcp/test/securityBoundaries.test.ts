@@ -116,6 +116,15 @@ describe("MCP provider and request boundaries", () => {
       type: "text",
       text: expect.stringContaining("후보가 1개뿐입니다"),
     })
+    expect(result.structuredContent).toMatchObject({
+      ok: true,
+      result_summary: {
+        target_count: 3,
+        eligible_count: 1,
+        returned_count: 1,
+        reason: "insufficient_eligible_candidates",
+      },
+    })
   })
 
   it("PIN:4500_4000_BUDGET returns a bounded typed error for oversized provider fields", async () => {
@@ -182,8 +191,8 @@ describe("MCP provider and request boundaries", () => {
     expect(JSON.stringify(result).length).toBeLessThanOrEqual(4_000)
   })
 
-  it("records the candidate count that remains after the 4000-character response bound", async () => {
-    // Given: three valid candidates require the response boundary to return a smaller prefix.
+  it("keeps three ordinary candidates within the 4000-character response bound", async () => {
+    // Given: three ordinary candidates satisfy the evidence constraints.
     const records = ["one", "two", "three"].map((suffix) =>
       officialRecord({
         id: `culture-portal-oneview:bounded-${suffix}`,
@@ -212,13 +221,75 @@ describe("MCP provider and request boundaries", () => {
       .reverse()
       .find((entry: OperationalLogEntry) => entry.event === "tool_call")?.tool
 
-    // Then: the log describes the actual public response, not the pre-bound render list.
+    // Then: the normal path keeps all three, reports completion, and exposes decision evidence.
     expect(structured.ok).toBe(true)
     if (!structured.ok) {
       throw new Error(structured.failure.message)
     }
-    expect(structured.candidates.length).toBeLessThan(records.length)
+    expect(structured.candidates).toHaveLength(records.length)
+    expect(structured).toMatchObject({
+      result_summary: {
+        target_count: 3,
+        eligible_count: 3,
+        returned_count: 3,
+        reason: "complete",
+      },
+    })
+    const text = result.content[0]
+    expect(text).toMatchObject({ type: "text" })
+    if (text?.type !== "text") throw new Error("expected TextContent")
+    expect(text.text).toContain("날짜·장소:")
+    expect(text.text).toContain("비용·연령:")
+    expect(text.text).toContain("Official source states preschool family program.")
+    expect(text.text).toContain("출처:")
+    expect(text.text).toContain("주의:")
+    expect(text.text).toContain("공식 확인:")
+    expect(JSON.stringify(result).length).toBeLessThanOrEqual(4_000)
     expect(toolLog?.candidate_count).toBe(structured.candidates.length)
+  })
+
+  it("reports response_budget in structured content and TextContent when the prefix is reduced", async () => {
+    const padded = "x".repeat(110)
+    const records = ["one", "two", "three"].map((suffix) =>
+      officialRecord({
+        id: `culture-portal-oneview:budget-${suffix}-${padded}`,
+        raw_snapshot_id: `culture-portal-oneview:raw:budget-${suffix}`,
+        title: `Budget family program ${suffix} ${padded}`,
+        venue: {
+          name: `Budget venue ${suffix} ${padded}`,
+          address: `Busan budget address ${suffix} ${padded}`,
+        },
+        fee_text: `Confirm fee ${suffix} ${padded}`,
+      }),
+    )
+
+    const result = await callFindFamilyExperiences(
+      {
+        location: "Busan",
+        date_range: { start: "2026-08-01", end: "2026-08-01" },
+        child_stage: "preschool",
+      },
+      { config: liveConfig, sourceAdapter: adapterWithRecords(records) },
+    )
+    const structured = FindFamilyExperiencesStructuredContentSchema.parse(result.structuredContent)
+
+    expect(structured.ok).toBe(true)
+    if (!structured.ok) throw new Error(structured.failure.message)
+    expect(structured.candidates.length).toBeGreaterThan(0)
+    expect(structured.candidates.length).toBeLessThan(3)
+    expect(structured).toMatchObject({
+      result_summary: {
+        target_count: 3,
+        eligible_count: 3,
+        returned_count: structured.candidates.length,
+        reason: "response_budget",
+      },
+    })
+    expect(result.content[0]).toMatchObject({
+      type: "text",
+      text: expect.stringContaining("4,000자 한도로"),
+    })
+    expect(JSON.stringify(result).length).toBeLessThanOrEqual(4_000)
   })
 
   it("reports structured schema rejection separately from response-size overflow", async () => {

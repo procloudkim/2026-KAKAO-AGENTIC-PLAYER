@@ -11,15 +11,18 @@
   },
   "response": {
     "isError": true,
-    "text": "요청 조건을 더 구체화해야 해요. 아이 나이 또는 발달 단계를 하나만 알려 주세요.",
+    "text": "요청 조건을 더 구체화해야 해요. 다음 정보를 알려 주세요: 아이 나이 또는 발달 단계.",
     "action_cards": [],
     "structuredContent": {
       "ok": false,
       "mode": "fixture",
       "failure": {
         "code": "invalid_input",
-        "message": "Provide exactly one of child_age or child_stage.",
-        "retryable": false
+        "message": "Provide location, date_range, and exactly one child selector.",
+        "retryable": false,
+        "missing_fields": [
+          "child_selector"
+        ]
       }
     }
   },

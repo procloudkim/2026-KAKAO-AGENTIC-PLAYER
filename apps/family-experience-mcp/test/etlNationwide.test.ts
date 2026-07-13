@@ -20,7 +20,10 @@ import {
   cacheRecordSchema,
   sha256Hex,
 } from "../src/etl/cacheContract.js"
-import { queryNationwideCache } from "../src/etl/cacheQuery.js"
+import {
+  createNationwideCacheSnapshotStore,
+  queryNationwideCache,
+} from "../src/etl/cacheQuery.js"
 import type { FamilyExperienceSourceRecord, SourceAdapterRequest } from "../src/sources/types.js"
 
 async function tempCacheDir(): Promise<string> {
@@ -84,6 +87,7 @@ function queryCacheRecord(): FamilyExperienceSourceRecord {
 
 async function writeQueryableCache(input: {
   readonly cacheDir: string
+  readonly fixture?: boolean
   readonly generatedAt?: string
   readonly records?: readonly FamilyExperienceSourceRecord[]
   readonly ttlHours?: number
@@ -91,7 +95,7 @@ async function writeQueryableCache(input: {
   const records = input.records ?? [queryCacheRecord()]
   const metadata = buildMetadata({
     generatedAt: input.generatedAt ?? "2026-07-07T00:00:00.000Z",
-    fixture: false,
+    fixture: input.fixture ?? false,
     maxPages: 1,
     mode: "write-cache",
     rawSnapshots: [],
@@ -126,6 +130,7 @@ describe("nationwide ETL cache runner", () => {
       expect(report.counts.normalized_records).toBe(3)
       expect(report.counts.raw_snapshots).toBe(3)
       expect(report.mode).toBe("dry-run")
+      expect(report.published).toBe(false)
       expect(existsSync(resolve(cacheDir, "cache"))).toBe(false)
     } finally {
       await rm(cacheDir, { recursive: true, force: true })
@@ -153,6 +158,7 @@ describe("nationwide ETL cache runner", () => {
 
       // Then: the on-disk cache has generated_at, TTL, source set, and real record counts.
       expect(report.ok).toBe(true)
+      expect(report.published).toBe(true)
       expect(metadata).toMatchObject({
         schema_version: 2,
         generated_at: "2026-07-04T00:00:00.000Z",
@@ -192,6 +198,99 @@ describe("nationwide ETL cache runner", () => {
     } finally {
       await rm(cacheDir, { recursive: true, force: true })
     }
+  })
+
+  it("preserves the last-known-good publish when every ETL source fails", async () => {
+    const cacheDir = await tempCacheDir()
+
+    try {
+      await writeQueryableCache({
+        cacheDir,
+        generatedAt: "2026-07-07T00:00:00.000Z",
+      })
+      const metadataPath = resolve(cacheDir, ETL_CACHE_FILES.metadata)
+      const normalizedPath = resolve(cacheDir, ETL_CACHE_FILES.normalized)
+      const rawSnapshotsPath = resolve(cacheDir, ETL_CACHE_FILES.rawSnapshots)
+      const before = {
+        metadata: readFileSync(metadataPath, "utf8"),
+        normalized: readFileSync(normalizedPath, "utf8"),
+        rawSnapshots: readFileSync(rawSnapshotsPath, "utf8"),
+      }
+
+      const report = await runNationwideEtl({
+        cacheDir,
+        env: {},
+        fixture: false,
+        maxPages: 1,
+        mode: "write-cache",
+        nowIso: () => "2026-07-08T00:00:00.000Z",
+        sourceSet: ["kto_tourapi"],
+        ttlHours: 24,
+      })
+
+      expect(report).toMatchObject({
+        ok: false,
+        published: false,
+        sources: [{ ok: false, failure_code: "missing_key" }],
+      })
+      expect(readFileSync(metadataPath, "utf8")).toBe(before.metadata)
+      expect(readFileSync(normalizedPath, "utf8")).toBe(before.normalized)
+      expect(readFileSync(rawSnapshotsPath, "utf8")).toBe(before.rawSnapshots)
+    } finally {
+      await rm(cacheDir, { recursive: true, force: true })
+    }
+  })
+
+  it("re-reads a completed snapshot and fails closed when the cache later becomes corrupt", async () => {
+    const cacheDir = await tempCacheDir()
+    const snapshotStore = createNationwideCacheSnapshotStore({ validationIntervalMs: 0 })
+
+    try {
+      await writeQueryableCache({ cacheDir })
+      const first = await queryNationwideCache({
+        cacheDir,
+        now: new Date("2026-07-07T01:00:00.000Z"),
+        request: busanCacheRequest,
+        snapshotStore,
+      })
+      expect(first).toMatchObject({ ok: true, freshness: "fresh" })
+
+      writeFileSync(resolve(cacheDir, ETL_CACHE_FILES.normalized), "{}\n", "utf8")
+      const second = await queryNationwideCache({
+        cacheDir,
+        now: new Date("2026-07-07T01:00:01.000Z"),
+        request: busanCacheRequest,
+        snapshotStore,
+      })
+
+      expect(second).toMatchObject({
+        ok: false,
+        failure: { code: "upstream_invalid_response" },
+      })
+    } finally {
+      await rm(cacheDir, { recursive: true, force: true })
+    }
+  })
+
+  it("memoizes validated snapshots only within the bounded validation interval", async () => {
+    let currentTime = 1_000
+    let loads = 0
+    const snapshotStore = createNationwideCacheSnapshotStore({
+      now: () => currentTime,
+      validationIntervalMs: 1_000,
+    })
+    const load = async (): Promise<string> => {
+      loads += 1
+      return `snapshot-${loads}`
+    }
+
+    await expect(snapshotStore.getOrLoad("cache", load)).resolves.toBe("snapshot-1")
+    await expect(snapshotStore.getOrLoad("cache", load)).resolves.toBe("snapshot-1")
+    expect(loads).toBe(1)
+
+    currentTime += 1_000
+    await expect(snapshotStore.getOrLoad("cache", load)).resolves.toBe("snapshot-2")
+    expect(loads).toBe(2)
   })
 
   it("rejects invalid generated timestamps in cache metadata", async () => {
@@ -536,7 +635,73 @@ describe("nationwide ETL cache runner", () => {
     }
   })
 
-  it("rejects stale cache metadata before reading candidates", async () => {
+  it("serves a validated live cache only inside the bounded stale grace", async () => {
+    const cacheDir = await tempCacheDir()
+
+    try {
+      await writeQueryableCache({
+        cacheDir,
+        generatedAt: "2026-07-07T00:00:00.000Z",
+        ttlHours: 24,
+      })
+
+      const withinGrace = await queryNationwideCache({
+        cacheDir,
+        request: busanCacheRequest,
+        now: new Date("2026-07-08T12:00:00.000Z"),
+      })
+      const beyondGrace = await queryNationwideCache({
+        cacheDir,
+        request: busanCacheRequest,
+        now: new Date("2026-07-09T00:00:00.001Z"),
+      })
+
+      expect(withinGrace).toMatchObject({
+        ok: true,
+        freshness: "stale_servable",
+        generated_at: "2026-07-07T00:00:00.000Z",
+      })
+      expect(beyondGrace).toMatchObject({
+        ok: false,
+        failure: {
+          code: "missing_configuration",
+          message: expect.stringContaining("bounded grace"),
+        },
+      })
+    } finally {
+      await rm(cacheDir, { recursive: true, force: true })
+    }
+  })
+
+  it("does not apply stale-cache grace to fixture cache", async () => {
+    const cacheDir = await tempCacheDir()
+
+    try {
+      await writeQueryableCache({
+        cacheDir,
+        fixture: true,
+        generatedAt: "2026-07-07T00:00:00.000Z",
+        ttlHours: 24,
+      })
+
+      const result = await queryNationwideCache({
+        allowFixture: true,
+        cacheDir,
+        request: busanCacheRequest,
+        now: new Date("2026-07-08T12:00:00.000Z"),
+      })
+
+      expect(result).toMatchObject({
+        ok: false,
+        reason: "fixture_not_allowed",
+        failure: { code: "missing_configuration" },
+      })
+    } finally {
+      await rm(cacheDir, { recursive: true, force: true })
+    }
+  })
+
+  it("rejects cache metadata after the bounded stale grace", async () => {
     // Given: a published cache is older than its metadata TTL.
     const cacheDir = await tempCacheDir()
 

@@ -1,6 +1,14 @@
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
-import { createMcpConcurrencyGate, createMcpRateLimiter } from "../src/mcpRequestLimits.js"
+import {
+  createMcpConcurrencyGate,
+  createMcpRateLimiter,
+  hashMcpRateLimitKey,
+} from "../src/mcpRequestLimits.js"
+
+afterEach(() => {
+  vi.useRealTimers()
+})
 
 describe("MCP concurrency gate", () => {
   it("PIN:RATE_AND_CONCURRENCY limits only simultaneous work and releases capacity", () => {
@@ -40,5 +48,46 @@ describe("MCP concurrency gate", () => {
     expect(third).toEqual({ allowed: false, retryAfterSeconds: 10 })
     nowMs += 10_000
     expect(limiter.consume("127.0.0.1")).toEqual({ allowed: true })
+    limiter.close()
+  })
+
+  it("hashes the raw socket address with a process-scoped secret", () => {
+    // Given: one raw socket address and two independent process secrets.
+    const rawAddress = "203.0.113.42"
+    const firstSecret = new Uint8Array(32).fill(1)
+    const secondSecret = new Uint8Array(32).fill(2)
+
+    // When: the rate-limit storage key is derived.
+    const first = hashMcpRateLimitKey(rawAddress, firstSecret)
+    const second = hashMcpRateLimitKey(rawAddress, secondSecret)
+
+    // Then: the key is bounded, pseudonymous, and cannot be linked across process secrets.
+    expect(first).toMatch(/^[a-f0-9]{64}$/u)
+    expect(first).not.toContain(rawAddress)
+    expect(first).not.toBe(second)
+  })
+
+  it("expires a retained rate-limit key without requiring another cleanup scan", () => {
+    // Given: a full one-request bucket and a frozen injected application clock.
+    vi.useFakeTimers()
+    const limiter = createMcpRateLimiter({
+      limit: 1,
+      windowMs: 10_000,
+      now: () => 1_000,
+      secret: new Uint8Array(32).fill(3),
+    })
+    expect(limiter.consume("198.51.100.7")).toEqual({ allowed: true })
+    expect(limiter.consume("198.51.100.7")).toEqual({
+      allowed: false,
+      retryAfterSeconds: 10,
+    })
+
+    // When: wall-clock timers reach the bounded retention window.
+    vi.advanceTimersByTime(10_000)
+
+    // Then: the old bucket is gone even though the injected cleanup clock did not move.
+    expect(limiter.consume("198.51.100.7")).toEqual({ allowed: true })
+    limiter.close()
+    expect(vi.getTimerCount()).toBe(0)
   })
 })

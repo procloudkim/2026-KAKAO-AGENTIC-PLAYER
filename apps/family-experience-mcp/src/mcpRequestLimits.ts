@@ -1,3 +1,4 @@
+import { createHmac, randomBytes } from "node:crypto"
 import type { IncomingMessage } from "node:http"
 
 export const MCP_REQUEST_TIMEOUT_MS = 10_000
@@ -27,18 +28,21 @@ export type McpRateLimitResult =
   | { readonly allowed: false; readonly retryAfterSeconds: number }
 
 export type McpRateLimiter = {
-  readonly consume: (key: string) => McpRateLimitResult
+  readonly consume: (rawKey: string) => McpRateLimitResult
+  readonly close: () => void
 }
 
 type RateLimitBucket = {
   readonly windowStartedAtMs: number
-  readonly count: number
+  count: number
+  expirationTimer?: NodeJS.Timeout
 }
 
 type McpRateLimiterOptions = {
   readonly limit: number
   readonly windowMs: number
   readonly now?: () => number
+  readonly secret?: Uint8Array
 }
 
 export class HttpResponseError extends Error {
@@ -96,21 +100,51 @@ export function createMcpConcurrencyGate(
 export function createMcpRateLimiter(options: McpRateLimiterOptions): McpRateLimiter {
   const buckets = new Map<string, RateLimitBucket>()
   const now = options.now ?? Date.now
+  const secret = options.secret ?? randomBytes(32)
+  let closed = false
+
+  const deleteBucket = (key: string, expected?: RateLimitBucket): void => {
+    const bucket = buckets.get(key)
+    if (bucket === undefined || (expected !== undefined && bucket !== expected)) {
+      return
+    }
+
+    if (bucket.expirationTimer !== undefined) {
+      clearTimeout(bucket.expirationTimer)
+    }
+    buckets.delete(key)
+  }
+
+  const createBucket = (key: string, nowMs: number): RateLimitBucket => {
+    const bucket: RateLimitBucket = { windowStartedAtMs: nowMs, count: 1 }
+    const expirationTimer = setTimeout(() => deleteBucket(key, bucket), options.windowMs)
+    expirationTimer.unref()
+    bucket.expirationTimer = expirationTimer
+    buckets.set(key, bucket)
+    return bucket
+  }
 
   return {
-    consume: (key) => {
+    consume: (rawKey) => {
+      if (closed) {
+        throw new Error("MCP rate limiter is closed")
+      }
+
+      const key = hashMcpRateLimitKey(rawKey, secret)
       const nowMs = now()
       for (const [candidateKey, bucket] of buckets) {
-        if (nowMs - bucket.windowStartedAtMs >= options.windowMs) buckets.delete(candidateKey)
+        if (nowMs - bucket.windowStartedAtMs >= options.windowMs) {
+          deleteBucket(candidateKey, bucket)
+        }
       }
 
       const current = buckets.get(key)
       if (current === undefined) {
         if (buckets.size >= maxRateLimitBuckets) {
           const oldestKey = buckets.keys().next().value
-          if (typeof oldestKey === "string") buckets.delete(oldestKey)
+          if (typeof oldestKey === "string") deleteBucket(oldestKey)
         }
-        buckets.set(key, { windowStartedAtMs: nowMs, count: 1 })
+        createBucket(key, nowMs)
         return { allowed: true }
       }
 
@@ -119,10 +153,19 @@ export function createMcpRateLimiter(options: McpRateLimiterOptions): McpRateLim
         return { allowed: false, retryAfterSeconds: Math.max(1, Math.ceil(remainingMs / 1_000)) }
       }
 
-      buckets.set(key, { windowStartedAtMs: current.windowStartedAtMs, count: current.count + 1 })
+      current.count += 1
       return { allowed: true }
     },
+    close: () => {
+      if (closed) return
+      closed = true
+      for (const key of buckets.keys()) deleteBucket(key)
+    },
   }
+}
+
+export function hashMcpRateLimitKey(rawKey: string, secret: Uint8Array): string {
+  return createHmac("sha256", secret).update(rawKey, "utf8").digest("hex")
 }
 
 export function readLimitedJsonBody(request: IncomingMessage): Promise<unknown> {

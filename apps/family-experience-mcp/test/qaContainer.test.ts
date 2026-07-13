@@ -36,6 +36,13 @@ const liveResult = {
     parent_check: "Confirm age fit with the official source.",
     next_action: "Confirm the schedule with the official source.",
   }],
+  result_summary: {
+    target_count: 3,
+    eligible_count: 1,
+    returned_count: 1,
+    reason: "insufficient_eligible_candidates",
+    message: "Only one eligible candidate was found.",
+  },
 }
 
 describe("container release QA pure validators", () => {

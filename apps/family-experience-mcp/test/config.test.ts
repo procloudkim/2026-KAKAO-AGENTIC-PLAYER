@@ -30,6 +30,7 @@ describe("family experience config", () => {
 
     // Then: bundled cache freshness defaults to 24 hours.
     expect(config.etlTtlHours).toBe(24)
+    expect(config.etlStaleGraceHours).toBe(24)
   })
 
   it("redacts SEOUL_OPEN_DATA_KEY from diagnostics", () => {
@@ -85,6 +86,7 @@ describe("family experience config", () => {
       FAMILY_EXPERIENCE_ETL_CACHE_DIR: "tmp/family-cache",
       FAMILY_EXPERIENCE_ETL_MAX_PAGES: "3",
       FAMILY_EXPERIENCE_ETL_TTL_HOURS: "12",
+      FAMILY_EXPERIENCE_ETL_STALE_GRACE_HOURS: "6",
     }
 
     // When: config is loaded and diagnostics are emitted.
@@ -97,6 +99,7 @@ describe("family experience config", () => {
     expect(config.etlCacheDir).toBe("tmp/family-cache")
     expect(config.etlMaxPages).toBe(3)
     expect(config.etlTtlHours).toBe(12)
+    expect(config.etlStaleGraceHours).toBe(6)
     expect(diagnostics.culturePortalServiceKey).toBe("redacted")
     expect(diagnostics.ktoTourApiServiceKey).toBe("redacted")
     expect(diagnostics.publicDataStandardServiceKey).toBe("redacted")
@@ -113,6 +116,7 @@ describe("family experience config", () => {
       { FAMILY_EXPERIENCE_SOURCE_SET: "seoul,unofficial_scraper" },
       { FAMILY_EXPERIENCE_ETL_MAX_PAGES: "0" },
       { FAMILY_EXPERIENCE_ETL_TTL_HOURS: "-1" },
+      { FAMILY_EXPERIENCE_ETL_STALE_GRACE_HOURS: "169" },
       { NATIONAL_CULTURE_FESTIVAL_BASE_URL: "ftp://standard.example.test/festivals" },
     ]
 
@@ -134,6 +138,8 @@ describe("family experience config", () => {
       FAMILY_EXPERIENCE_MCP_RATE_WINDOW_MS: "2000",
       FAMILY_EXPERIENCE_MCP_MAX_CONCURRENCY: "3",
       FAMILY_EXPERIENCE_SHUTDOWN_GRACE_MS: "15000",
+      FAMILY_EXPERIENCE_OPERATOR_NAME: "Family Experience Lab",
+      FAMILY_EXPERIENCE_PRIVACY_CONTACT: "privacy@example.test",
     })
     const diagnostics = getFamilyExperienceConfigDiagnostics(config)
 
@@ -143,7 +149,24 @@ describe("family experience config", () => {
     expect(config.mcpRateWindowMs).toBe(2_000)
     expect(config.mcpMaxConcurrency).toBe(3)
     expect(config.shutdownGraceMs).toBe(15_000)
-    expect(diagnostics).toMatchObject({ originsConfigured: true, allowedOriginCount: 2 })
+    expect(config.operatorName).toBe("Family Experience Lab")
+    expect(config.privacyContact).toBe("privacy@example.test")
+    expect(diagnostics).toMatchObject({
+      originsConfigured: true,
+      allowedOriginCount: 2,
+      privacyNoticeConfigured: true,
+    })
     expect(JSON.stringify(diagnostics)).not.toContain("example.test")
+  })
+
+  it("keeps the public privacy notice unconfigured until both operator fields are valid", () => {
+    const partial = loadFamilyExperienceConfig({
+      FAMILY_EXPERIENCE_OPERATOR_NAME: "Family Experience Lab",
+    })
+
+    expect(getFamilyExperienceConfigDiagnostics(partial).privacyNoticeConfigured).toBe(false)
+    expect(() => loadFamilyExperienceConfig({
+      FAMILY_EXPERIENCE_PRIVACY_CONTACT: "privacy@example.test\nforged",
+    })).toThrow()
   })
 })

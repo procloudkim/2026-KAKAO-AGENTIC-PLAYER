@@ -13,7 +13,10 @@ import {
   parseCacheMetadata,
   validateCacheContract,
 } from "./cacheContract.js"
-import { assessCacheFreshness } from "./cacheFreshness.js"
+import {
+  assessCacheServingFreshness,
+  defaultCacheStaleGraceHours,
+} from "./cacheFreshness.js"
 
 type CacheQueryFailure = {
   readonly ok: false
@@ -25,41 +28,66 @@ type CacheQueryContext = {
   readonly allowFixture: boolean
   readonly cacheDir: string
   readonly expectedTtlHours?: number
+  readonly staleGraceHours?: number
   readonly sourceSet?: readonly FamilyExperienceSourceSetEntry[]
 }
 
 export type CacheQueryResult =
-  | { readonly ok: true; readonly mode: ToolMode; readonly records: readonly unknown[] }
+  | {
+      readonly ok: true
+      readonly freshness: "fresh" | "stale_servable"
+      readonly generated_at: string
+      readonly mode: ToolMode
+      readonly records: readonly unknown[]
+    }
   | CacheQueryFailure
 
 export type NationwideCacheSnapshotStore = {
-  readonly getOrLoad: <T>(
-    key: string,
-    load: () => Promise<T>,
-    shouldCache: (value: T) => boolean,
-  ) => Promise<T>
+  readonly getOrLoad: <T>(key: string, load: () => Promise<T>) => Promise<T>
 }
 
-export function createNationwideCacheSnapshotStore(): NationwideCacheSnapshotStore {
-  const entries = new Map<string, Promise<unknown>>()
+type SnapshotStoreEntry = {
+  readonly pending?: Promise<unknown>
+  readonly validatedAt?: number
+  readonly value?: unknown
+}
+
+export function createNationwideCacheSnapshotStore(options: {
+  readonly now?: () => number
+  readonly validationIntervalMs?: number
+} = {}): NationwideCacheSnapshotStore {
+  const entries = new Map<string, SnapshotStoreEntry>()
+  const now = options.now ?? Date.now
+  const validationIntervalMs = options.validationIntervalMs ?? 1_000
+  if (!Number.isFinite(validationIntervalMs) || validationIntervalMs < 0) {
+    throw new RangeError("validationIntervalMs must be a finite non-negative number")
+  }
 
   return {
-    getOrLoad: async <T>(key: string, load: () => Promise<T>, shouldCache: (value: T) => boolean) => {
-      const existing = entries.get(key) as Promise<T> | undefined
-      if (existing !== undefined) {
-        return existing
+    getOrLoad: async <T>(key: string, load: () => Promise<T>) => {
+      const existing = entries.get(key)
+      if (existing?.pending !== undefined) {
+        return existing.pending as Promise<T>
+      }
+      if (
+        existing?.validatedAt !== undefined &&
+        now() - existing.validatedAt < validationIntervalMs
+      ) {
+        return existing.value as T
       }
 
-      const pending = load()
-      entries.set(key, pending)
+      const pending = Promise.resolve().then(load)
+      entries.set(key, { pending })
       try {
         const value = await pending
-        if (!shouldCache(value)) {
-          entries.delete(key)
+        if (entries.get(key)?.pending === pending) {
+          entries.set(key, { validatedAt: now(), value })
         }
         return value
       } catch (error: unknown) {
-        entries.delete(key)
+        if (entries.get(key)?.pending === pending) {
+          entries.delete(key)
+        }
         throw error
       }
     },
@@ -73,12 +101,14 @@ export async function queryNationwideCache(input: {
   readonly request: SourceAdapterRequest
   readonly now?: Date
   readonly snapshotStore?: NationwideCacheSnapshotStore
+  readonly staleGraceHours?: number
   readonly sourceSet?: readonly FamilyExperienceSourceSetEntry[]
 }): Promise<CacheQueryResult> {
   const context: CacheQueryContext = {
     allowFixture: input.allowFixture ?? false,
     cacheDir: input.cacheDir,
     ...(input.expectedTtlHours === undefined ? {} : { expectedTtlHours: input.expectedTtlHours }),
+    ...(input.staleGraceHours === undefined ? {} : { staleGraceHours: input.staleGraceHours }),
     ...(input.sourceSet === undefined ? {} : { sourceSet: input.sourceSet }),
   }
   const metadataPath = resolve(input.cacheDir, ETL_CACHE_FILES.metadata)
@@ -140,7 +170,7 @@ export async function queryNationwideCache(input: {
   ])
   const bundle = input.snapshotStore === undefined
     ? await loadBundle()
-    : await input.snapshotStore.getOrLoad(cacheKey, loadBundle, (value) => value.ok)
+    : await input.snapshotStore.getOrLoad(cacheKey, loadBundle)
 
   if (!bundle.ok) {
     return bundle
@@ -170,10 +200,20 @@ export async function queryNationwideCache(input: {
     return freshness
   }
 
+  if (freshness.status === "stale_servable" && bundle.metadata.fixture) {
+    return staleFixtureCacheFailure()
+  }
+
   const matchedRecords = filterCacheRecordsForRequest({ records: bundle.records, request: input.request })
   const scopedRecords = scopeCacheRecords({ metadataFixture: bundle.metadata.fixture, records: matchedRecords })
 
-  return { ok: true, mode: modeFor(scopedRecords), records: scopedRecords }
+  return {
+    ok: true,
+    freshness: freshness.status,
+    generated_at: bundle.metadata.generated_at,
+    mode: modeFor(scopedRecords),
+    records: scopedRecords,
+  }
 }
 
 type CacheBundleResult =
@@ -304,10 +344,14 @@ function getCacheFreshness(input: {
   readonly ttlHours: number
   readonly now: Date
   readonly context: CacheQueryContext
-}): { readonly ok: true } | { readonly ok: false; readonly mode: "live"; readonly failure: ToolFailure } {
-  const freshness = assessCacheFreshness({
+}):
+  | { readonly ok: true; readonly status: "fresh" | "stale_servable" }
+  | { readonly ok: false; readonly mode: "live"; readonly failure: ToolFailure } {
+  const freshness = assessCacheServingFreshness({
     generatedAt: input.generatedAt,
     now: input.now,
+    staleGraceHours:
+      input.context.staleGraceHours ?? defaultCacheStaleGraceHours(input.ttlHours),
     ttlHours: input.ttlHours,
   })
 
@@ -315,19 +359,20 @@ function getCacheFreshness(input: {
     return invalidCacheFailure()
   }
 
-  if (freshness.status === "stale") {
+  if (freshness.status === "expired") {
     return {
       ok: false,
       mode: "live",
       failure: {
         code: "missing_configuration",
-        message: "Nationwide cache is stale. Retry after the service cache is refreshed.",
+        message:
+          "Nationwide cache is stale beyond its bounded grace. Retry after the service cache is refreshed.",
         retryable: false,
       },
     }
   }
 
-  return { ok: true }
+  return { ok: true, status: freshness.status }
 }
 
 function missingCacheFailure(_context: CacheQueryContext): CacheQueryFailure {
@@ -349,6 +394,19 @@ function invalidCacheFailure(): CacheQueryFailure {
     failure: {
       code: "upstream_invalid_response",
       message: "Nationwide cache failed integrity validation. Contact the service operator.",
+      retryable: false,
+    },
+  }
+}
+
+function staleFixtureCacheFailure(): CacheQueryFailure {
+  return {
+    ok: false,
+    mode: "live",
+    reason: "fixture_not_allowed",
+    failure: {
+      code: "missing_configuration",
+      message: "Nationwide fixture cache cannot be served through stale-cache grace.",
       retryable: false,
     },
   }

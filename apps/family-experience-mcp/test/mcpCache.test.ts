@@ -195,8 +195,9 @@ describe("Todo 7 MCP nationwide cache routing", () => {
       expect(structuredContent.candidates[0]).toMatchObject({
         parent_check: expect.stringMatching(/확인|confirm/i),
         next_action: expect.stringMatching(/확인|confirm/i),
+        reservation_url: "https://example.test/culture-portal-oneview/reservation",
       })
-      expect(JSON.stringify(result)).not.toContain("/reservation")
+      expect(JSON.stringify(result)).toContain("/reservation")
       expect(JSON.stringify({ result, structuredContent })).not.toMatch(
         /예약 가능|예약가능|available to book|book now|currently open|운영 중/i,
       )
@@ -335,6 +336,38 @@ describe("Todo 7 MCP nationwide cache routing", () => {
       })
       expect(JSON.stringify(result)).not.toContain(cacheDir)
       expect(JSON.stringify(result)).not.toMatch(/[A-Za-z]:[\\/]|--write-cache|refresh command/i)
+    } finally {
+      await rm(cacheDir, { recursive: true, force: true })
+    }
+  })
+
+  it("serves a bounded last-known-good cache with an explicit stale notice", async () => {
+    const cacheDir = await tempCacheDir()
+    const generatedAt = new Date(Date.now() - 90 * 60 * 1_000).toISOString()
+    await writeTestCache({ cacheDir, generatedAt, ttlHours: 1 })
+
+    try {
+      const result = await callFindFamilyExperiences(busanCacheInput, {
+        config: {
+          ...noFixtureConfig,
+          etlCacheDir: cacheDir,
+          etlStaleGraceHours: 2,
+          etlTtlHours: 1,
+        },
+      })
+      const structuredContent = FindFamilyExperiencesStructuredContentSchema.parse(
+        result.structuredContent,
+      )
+
+      expect(result.isError).toBeUndefined()
+      expect(structuredContent.ok).toBe(true)
+      if (!structuredContent.ok) throw new Error(structuredContent.failure.message)
+      expect(structuredContent.result_summary.data_notice).toContain("LKG")
+      expect(structuredContent.result_summary.data_notice).toContain(generatedAt)
+      expect(result.content[0]).toMatchObject({
+        type: "text",
+        text: expect.stringMatching(/LKG|최신성 TTL/u),
+      })
     } finally {
       await rm(cacheDir, { recursive: true, force: true })
     }

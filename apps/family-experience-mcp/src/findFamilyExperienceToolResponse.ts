@@ -19,8 +19,14 @@ export function toBoundedToolSuccess(
 ): BoundedToolSuccessResult {
   const maximumCandidateCount = Math.min(3, rendered.candidates.length)
   const allCandidates = rendered.candidates.slice(0, maximumCandidateCount)
+  const initialSummary = resultSummary({
+    eligibleCount: rendered.eligible_count,
+    returnedCount: maximumCandidateCount,
+    responseBudgetReduced: false,
+    ...(searchNotice === undefined ? {} : { searchNotice }),
+  })
   const parsedAllCandidates = FindFamilyExperiencesStructuredContentSchema.safeParse(
-    structuredSuccess(rendered.mode, allCandidates),
+    structuredSuccess(rendered.mode, allCandidates, initialSummary, false),
   )
 
   if (!parsedAllCandidates.success) {
@@ -37,36 +43,39 @@ export function toBoundedToolSuccess(
 
   for (const candidateCount of candidateCounts) {
     const candidates = allCandidates.slice(0, candidateCount)
-    const parsedStructuredContent =
-      candidateCount === maximumCandidateCount
-        ? parsedAllCandidates
-        : FindFamilyExperiencesStructuredContentSchema.safeParse(
-            structuredSuccess(rendered.mode, candidates),
-          )
+    const summary = resultSummary({
+      eligibleCount: rendered.eligible_count,
+      returnedCount: candidateCount,
+      responseBudgetReduced: candidateCount < maximumCandidateCount,
+      ...(searchNotice === undefined ? {} : { searchNotice }),
+    })
+    const variants = [
+      { candidates, compact: false },
+      { candidates: candidates.map(compactCandidateForTransport), compact: true },
+    ] as const
 
-    if (!parsedStructuredContent.success) {
-      return structuredSchemaFailure(rendered.mode, parsedStructuredContent.error.issues)
-    }
+    for (const variant of variants) {
+      const parsedStructuredContent = FindFamilyExperiencesStructuredContentSchema.safeParse(
+        structuredSuccess(rendered.mode, variant.candidates, summary, variant.compact),
+      )
 
-    const resultNotice =
-      searchNotice ??
-      (candidateCount < 3
-        ? candidateCount < maximumCandidateCount
-          ? `응답 크기 제한으로 상위 ${candidateCount}개만 제공했습니다.`
-          : `요청 조건과 출처·연령 근거를 모두 충족한 후보가 ${candidateCount}개뿐입니다. 조건을 임의로 넓히거나 후보를 만들지 않았습니다.`
-        : undefined)
-    const result: CallToolResult = {
-      content: [
-        {
-          type: "text",
-          text: summarizeSuccess({ mode: rendered.mode, candidates }, resultNotice),
-        },
-      ],
-      structuredContent: parsedStructuredContent.data,
-    }
+      if (!parsedStructuredContent.success) {
+        return structuredSchemaFailure(rendered.mode, parsedStructuredContent.error.issues)
+      }
 
-    if (JSON.stringify(result).length <= MAX_MCP_RESULT_CHARACTERS) {
-      return { ok: true, candidateCount, result }
+      const result: CallToolResult = {
+        content: [
+          {
+            type: "text",
+            text: summarizeSuccess({ mode: rendered.mode, candidates: variant.candidates, summary }),
+          },
+        ],
+        structuredContent: parsedStructuredContent.data,
+      }
+
+      if (JSON.stringify(result).length <= MAX_MCP_RESULT_CHARACTERS) {
+        return { ok: true, candidateCount, result }
+      }
     }
   }
 
@@ -89,18 +98,20 @@ export function toBoundedToolSuccess(
 function structuredSuccess(
   mode: "fixture" | "live",
   candidates: readonly RenderedFamilyExperienceCandidate[],
+  summary: ResultSummary,
+  compact: boolean,
 ) {
   return {
     ok: true as const,
     mode,
     candidates: candidates.map((candidate) => ({
-      id: candidate.id,
+      ...(compact ? {} : { id: candidate.id }),
       title: candidate.title,
       location: candidate.location,
       starts_at: candidate.starts_at,
       source: candidate.source,
       ends_at: candidate.ends_at,
-      tags: [...candidate.tags],
+      ...(compact ? {} : { tags: [...candidate.tags] }),
       date_time: candidate.date_time,
       venue: candidate.venue,
       address: candidate.address,
@@ -117,8 +128,99 @@ function structuredSuccess(
       source_summary: candidate.source_summary,
       parent_check: candidate.parent_check,
       next_action: candidate.next_action,
+      ...(candidate.reservation_url === undefined ? {} : { reservation_url: candidate.reservation_url }),
+      ...(candidate.contact === undefined ||
+      candidate.source_url !== undefined ||
+      candidate.reservation_url !== undefined ||
+      candidate.navigation !== undefined
+        ? {}
+        : { contact: candidate.contact }),
+      ...(candidate.navigation === undefined ? {} : { navigation: candidate.navigation }),
     })),
+    result_summary: summary,
   }
+}
+
+type ResultSummary = {
+  readonly target_count: 3
+  readonly eligible_count: number
+  readonly returned_count: number
+  readonly reason: "complete" | "insufficient_eligible_candidates" | "response_budget"
+  readonly message: string
+  readonly data_notice?: string
+}
+
+function resultSummary(input: {
+  readonly eligibleCount: number
+  readonly returnedCount: number
+  readonly responseBudgetReduced: boolean
+  readonly searchNotice?: string
+}): ResultSummary {
+  const reason = input.responseBudgetReduced
+    ? "response_budget" as const
+    : input.eligibleCount < 3
+      ? "insufficient_eligible_candidates" as const
+      : "complete" as const
+  const message = reason === "response_budget"
+    ? `4,000자 한도로 ${input.returnedCount}개만 제공했습니다.`
+    : reason === "insufficient_eligible_candidates"
+      ? `요청 조건과 근거를 충족한 후보가 ${input.returnedCount}개뿐입니다.`
+      : "요청 조건과 근거를 충족한 후보 3개를 제공했습니다."
+  return {
+    target_count: 3,
+    eligible_count: input.eligibleCount,
+    returned_count: input.returnedCount,
+    reason,
+    message,
+    ...(input.searchNotice === undefined ? {} : { data_notice: input.searchNotice }),
+  }
+}
+
+function compactCandidateForTransport(
+  candidate: RenderedFamilyExperienceCandidate,
+): RenderedFamilyExperienceCandidate {
+  return {
+    ...candidate,
+    tags: [],
+    age_fit_reason: compactAgeEvidence(candidate.age_fit_reason),
+    confidence: compactConfidence(candidate.confidence),
+    warnings: candidate.mode === "fixture"
+      ? "fixture/demo · 운영 아님."
+      : "방문 전 재확인.",
+    source_summary: "출처·수집일 참조.",
+    parent_check: "공식 확인 필요.",
+    next_action: candidate.navigation !== undefined
+      ? "지도·길찾기 확인."
+      : candidate.source_url === undefined && candidate.contact !== undefined
+        ? `운영처 ${compactText(candidate.contact, 24)} 확인.`
+        : "공식 링크 확인.",
+  }
+}
+
+function compactText(value: string, maximumLength: number): string {
+  return value.length <= maximumLength
+    ? value
+    : `${value.slice(0, Math.max(1, maximumLength - 1)).trimEnd()}…`
+}
+
+function compactAgeEvidence(value: string): string {
+  const ktoAgeLimit = /KTO TourAPI detailIntro2 source-stated age limit:\s*(.+)$/u.exec(value)?.[1]
+  return ktoAgeLimit === undefined
+    ? compactText(value, 48)
+    : `KTO 연령표기: ${compactText(ktoAgeLimit, 32)}`
+}
+
+function compactConfidence(value: string): string {
+  return value
+    .replace(/date=/u, "d:")
+    .replace(/venue=/u, "v:")
+    .replace(/age_fit=/u, "a:")
+    .replace(/reservation=/u, "r:")
+    .replaceAll("source-stated", "source")
+    .replaceAll("api-returned", "api")
+    .replaceAll("computed", "calc")
+    .replaceAll("inferred", "infer")
+    .replaceAll("unknown", "?")
 }
 
 function structuredSchemaFailure(
@@ -166,15 +268,36 @@ export function toToolError(input: {
 }
 
 function summarizeSuccess(
-  result: { readonly mode: "fixture" | "live"; readonly candidates: readonly RenderedFamilyExperienceCandidate[] },
-  searchNotice?: string,
+  result: {
+    readonly mode: "fixture" | "live"
+    readonly candidates: readonly RenderedFamilyExperienceCandidate[]
+    readonly summary: ResultSummary
+  },
 ): string {
   const modeNotice = result.mode === "fixture" ? "fixture/demo 기준" : "공식 데이터 기준"
-  const notices = searchNotice === undefined ? [] : [`- result_note: ${searchNotice}`]
-  const cards = result.candidates.map(
-    (candidate, index) =>
-      `${index + 1}. ${candidate.title} | ${candidate.date_time} | ${candidate.venue}`,
-  )
+  const notices = [
+    `- 결과: ${result.summary.message}`,
+    ...(result.summary.data_notice === undefined ? [] : [`- 데이터: ${result.summary.data_notice}`]),
+  ]
+  const cards = result.candidates.flatMap((candidate, index) => {
+    const navigation = candidate.navigation === undefined
+      ? candidate.reservation_url !== undefined
+        ? [`   공식 확인: ${candidate.reservation_url}`]
+        : candidate.source_url === undefined
+          ? [`   확인: ${candidate.next_action}`]
+          : [`   공식 확인: ${candidate.source_url}`]
+      : [
+          `   지도: ${candidate.navigation.map_url}`,
+          `   길찾기: ${candidate.navigation.directions_url}`,
+        ]
+    return [
+      `${index + 1}. ${candidate.title}`,
+      `   날짜·장소: ${compactText(candidate.date_time, 56)} | ${compactText(candidate.venue, 56)}`,
+      `   비용·연령: ${compactText(candidate.fee_text, 48)} | ${candidate.age_fit_label} · ${compactAgeEvidence(candidate.age_fit_reason)}`,
+      `   출처: ${candidate.source_name}·${candidate.retrieved_at.slice(0, 10)} | 주의: ${compactText(candidate.warnings, 32)}`,
+      ...navigation,
+    ]
+  })
 
   return [`${modeNotice}으로 후보 ${result.candidates.length}개를 찾았어요.`, ...notices, ...cards].join("\n")
 }

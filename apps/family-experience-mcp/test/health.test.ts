@@ -96,11 +96,37 @@ describe("family experience health cache status", () => {
 
       // Then: the public status is useful without revealing paths, topology, URLs, or commands.
       expect(health.ok).toBe(false)
-      expect(health.cache).toMatchObject({ status: "stale" })
+      expect(health.cache).toMatchObject({ status: "expired" })
       const publicHealth = JSON.stringify(health)
       expect(publicHealth).not.toContain(cacheDir)
       expect(publicHealth).not.toContain(liveConfig.seoulOpenDataBaseUrl)
       expect(publicHealth).not.toMatch(/[A-Za-z]:[\\/]|--write-cache|refreshCommand|cacheDir/i)
+    } finally {
+      await rm(cacheDir, { recursive: true, force: true })
+    }
+  })
+
+  it("reports a validated cache inside stale grace as degraded but usable", async () => {
+    const cacheDir = await tempCacheDir()
+
+    try {
+      await writeHealthCache({
+        cacheDir,
+        generatedAt: new Date(Date.now() - 90 * 60 * 1_000).toISOString(),
+        ttlHours: 1,
+      })
+
+      const health = getHealthStatus({
+        ...liveConfig,
+        etlCacheDir: cacheDir,
+        etlStaleGraceHours: 2,
+      })
+
+      expect(health).toMatchObject({
+        ok: true,
+        cache: { status: "stale_servable", mode: "live" },
+        cache_metrics: { status: "stale_servable" },
+      })
     } finally {
       await rm(cacheDir, { recursive: true, force: true })
     }

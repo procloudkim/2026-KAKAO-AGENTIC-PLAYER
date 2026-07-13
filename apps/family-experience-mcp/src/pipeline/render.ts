@@ -15,8 +15,10 @@ import { dedupeFamilyExperienceCandidates } from "./dedupe.js"
 import {
   candidateMatchesFamilyRequest,
   rankFamilyExperienceCandidates,
+  selectDiverseFamilyExperienceCandidates,
   type IndoorOutdoorPreference,
 } from "./rank.js"
+import { renderKakaoNavigation, type KakaoNavigation } from "./navigation.js"
 
 export type RenderedFamilyExperienceCandidate = {
   readonly id: string
@@ -48,12 +50,14 @@ export type RenderedFamilyExperienceCandidate = {
   readonly source_url?: string
   readonly reservation_url?: string
   readonly contact?: string
+  readonly navigation?: KakaoNavigation
 }
 
 export type RenderFamilyExperienceSuccess = {
   readonly ok: true
   readonly mode: ToolMode
   readonly candidates: readonly RenderedFamilyExperienceCandidate[]
+  readonly eligible_count: number
 }
 
 export type RenderFamilyExperienceFailure = {
@@ -121,15 +125,17 @@ export function renderFamilyExperienceResponse(
     }
   }
 
+  const rankedCandidates = rankFamilyExperienceCandidates({
+    input: parsedInput.data,
+    candidates: eligibleCandidates,
+    indoor_outdoor_preference: request.indoor_outdoor_preference,
+  })
+
   return {
     ok: true,
     mode: request.mode,
-    candidates: rankFamilyExperienceCandidates({
-      input: parsedInput.data,
-      candidates: eligibleCandidates,
-      indoor_outdoor_preference: request.indoor_outdoor_preference,
-    })
-      .slice(0, 3)
+    eligible_count: eligibleCandidates.length,
+    candidates: selectDiverseFamilyExperienceCandidates(rankedCandidates, 3)
       .map(renderCandidate),
   }
 }
@@ -171,7 +177,14 @@ function renderCandidate(
       ? {}
       : { reservation_url: candidate.reservation_url }),
     ...(candidate.contact === undefined ? {} : { contact: candidate.contact }),
+    ...optionalNavigation(renderKakaoNavigation(candidate)),
   }
+}
+
+function optionalNavigation(
+  navigation: KakaoNavigation | undefined,
+): { readonly navigation?: KakaoNavigation } {
+  return navigation === undefined ? {} : { navigation }
 }
 
 function formatDateTime(candidate: NormalizedFamilyExperienceCandidate): string {

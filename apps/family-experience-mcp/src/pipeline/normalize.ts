@@ -1,6 +1,7 @@
 import type { FindFamilyExperiencesInput } from "../schemas.js"
 import {
   INDOOR_OUTDOOR_VALUES,
+  type ExperienceCoordinates,
   type SourceId,
   type SourceReference,
 } from "../sources/types.js"
@@ -28,6 +29,7 @@ export type NormalizedFamilyExperienceCandidate = {
   readonly retrieved_at: string
   readonly venue_name: string
   readonly venue_address: string
+  readonly coordinates?: ExperienceCoordinates
   readonly source_id: SourceId
   readonly source_url: string
   readonly raw_snapshot_id: string
@@ -128,6 +130,7 @@ function normalizeRecord(request: NormalizeRecordRequest): NormalizedFamilyExper
     retrieved_at: request.record.retrieved_at,
     venue_name: request.record.venue.name,
     venue_address: request.record.venue.address,
+    ...optionalCoordinates(request.record.coordinates ?? coordinatesFromTags(request.record.tags)),
     source_id: request.record.source.id,
     source_url: request.record.source.url,
     raw_snapshot_id: request.record.raw_snapshot_id,
@@ -150,6 +153,36 @@ function normalizeRecord(request: NormalizeRecordRequest): NormalizedFamilyExper
     age_fit_reason: ageFit.reason,
     source_order: request.source_order,
   }
+}
+
+function coordinatesFromTags(tags: readonly string[]): ExperienceCoordinates | undefined {
+  const longitude = numericTag(tags, "mapx")
+  const latitude = numericTag(tags, "mapy")
+  if (
+    latitude === undefined ||
+    longitude === undefined ||
+    latitude < -90 ||
+    latitude > 90 ||
+    longitude < -180 ||
+    longitude > 180
+  ) {
+    return undefined
+  }
+  return { latitude, longitude }
+}
+
+function numericTag(tags: readonly string[], name: string): number | undefined {
+  const prefix = `${name}:`
+  const value = tags.find((tag) => tag.startsWith(prefix))?.slice(prefix.length)
+  if (value === undefined || value.trim().length === 0) return undefined
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : undefined
+}
+
+function optionalCoordinates(
+  coordinates: ExperienceCoordinates | undefined,
+): { readonly coordinates?: ExperienceCoordinates } {
+  return coordinates === undefined ? {} : { coordinates }
 }
 
 type AgeFitAssessment = {

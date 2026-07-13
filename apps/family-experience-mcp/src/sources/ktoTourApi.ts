@@ -53,8 +53,8 @@ type KtoTourApiDetailIntroItem = z.infer<typeof detailIntroItemSchema>
 type KtoTourApiNormalizeContext = { readonly request: SourceAdapterRequest; readonly retrievedAt: string; readonly redactedUrl: string; readonly sourceUrl: string }
 type ParsedExternalPayload = { readonly ok: true; readonly payload: unknown } | { readonly ok: false; readonly detail: string }
 type KtoDetailIntroEvidence = {
-  readonly ageRange: AgeRange
-  readonly ageText: string
+  readonly ageRange?: AgeRange
+  readonly ageText?: string
   readonly eventPlace?: string
   readonly feeText?: string
   readonly playTime?: string
@@ -337,7 +337,7 @@ async function enrichKtoTourApiRecord(input: {
       response_sha256: responseSha256(payload),
       evidence: {
         content_id: identity.contentId,
-        age_limit: evidence.ageText,
+        ...(evidence.ageText === undefined ? {} : { age_limit: evidence.ageText }),
       },
     }
     return {
@@ -368,21 +368,22 @@ function parseKtoTourApiDetailIntroPayload(
   }
   const items = detailIntroItemsFrom(parsed.data.response.body.items)
   const item = items.find(
-    (candidate) =>
-      clean(candidate["contentid"]) === expectedContentId &&
-      clean(candidate["agelimit"]) !== undefined,
+    (candidate) => clean(candidate["contentid"]) === expectedContentId,
   )
   const ageText = item === undefined ? undefined : clean(item["agelimit"])
   const ageRange = ageText === undefined ? undefined : parseSeoulAgeTarget(ageText)
-  if (item === undefined || ageText === undefined || ageText.length > 512 || ageRange === undefined) {
+  if (item === undefined) {
     return undefined
   }
   const eventPlace = clean(item["eventplace"])
   const feeText = clean(item["usetimefestival"])
   const playTime = clean(item["playtime"])
+  const hasAgeEvidence = ageText !== undefined && ageText.length <= 512 && ageRange !== undefined
+  if (!hasAgeEvidence && eventPlace === undefined && feeText === undefined && playTime === undefined) {
+    return undefined
+  }
   return {
-    ageRange,
-    ageText,
+    ...(hasAgeEvidence ? { ageRange, ageText } : {}),
     ...(eventPlace === undefined ? {} : { eventPlace }),
     ...(feeText === undefined ? {} : { feeText }),
     ...(playTime === undefined ? {} : { playTime }),
@@ -395,23 +396,28 @@ function mergeKtoDetailIntroEvidence(
   request: SourceAdapterRequest,
   ageEvidenceSnapshotId: string,
 ): FamilyExperienceSourceRecord {
-  const recordStages = stagesForAgeRange(evidence.ageRange)
-  const ageMatches =
-    ageRangeMatchesChildAge(evidence.ageRange, request.child_age) &&
-    stagesMatchChildStage(recordStages, request.child_stage)
+  const recordStages = evidence.ageRange === undefined ? undefined : stagesForAgeRange(evidence.ageRange)
+  const ageMatches = evidence.ageRange === undefined || recordStages === undefined
+    ? undefined
+    : ageRangeMatchesChildAge(evidence.ageRange, request.child_age) &&
+      stagesMatchChildStage(recordStages, request.child_stage)
   return {
     ...record,
-    age_evidence_snapshot_id: ageEvidenceSnapshotId,
-    confidence: { ...record.confidence, age_fit: "source-stated" },
-    parent_check: {
-      ...record.parent_check,
-      age_fit: `KTO TourAPI detailIntro2 source-stated age limit: ${evidence.ageText}`,
-    },
-    child_stages: recordStages,
-    min_child_age: evidence.ageRange.min,
-    max_child_age: evidence.ageRange.max,
-    target_age_text: evidence.ageText,
-    suitability: ageMatches ? "happy_prompt_match" : "edge_unsuitable",
+    ...(evidence.ageRange === undefined || evidence.ageText === undefined || recordStages === undefined
+      ? {}
+      : {
+          age_evidence_snapshot_id: ageEvidenceSnapshotId,
+          confidence: { ...record.confidence, age_fit: "source-stated" as const },
+          parent_check: {
+            ...record.parent_check,
+            age_fit: `KTO TourAPI detailIntro2 source-stated age limit: ${evidence.ageText}`,
+          },
+          child_stages: recordStages,
+          min_child_age: evidence.ageRange.min,
+          max_child_age: evidence.ageRange.max,
+          target_age_text: evidence.ageText,
+          suitability: ageMatches === true ? "happy_prompt_match" as const : "edge_unsuitable" as const,
+        }),
     ...(evidence.eventPlace === undefined
       ? {}
       : { venue: { ...record.venue, name: evidence.eventPlace } }),
@@ -475,6 +481,7 @@ function normalizeItem(item: KtoTourApiItem, context: KtoTourApiNormalizeContext
     city: cityFrom(clean(item["areacode"]), address),
     date: { start, end, time_text: `${start} - ${end}` },
     venue: { name: title, address: address.length > 0 ? address : cityFrom(clean(item["areacode"]), "") },
+    ...optionalCoordinates(item),
     source: { id: sourceId, mode, url: sourceUrlFor(context.sourceUrl, contentId, clean(item["contenttypeid"])), raw_snapshot_id: rawSnapshotId },
     retrieved_at: context.retrievedAt,
     confidence: { date: "api-returned", venue: "api-returned", age_fit: "unknown", reservation: "unknown" },
@@ -551,6 +558,24 @@ function matchesRequest(record: FamilyExperienceSourceRecord, request: SourceAda
 function tagsFor(item: KtoTourApiItem, contentId: string): readonly string[] {
   const imageTag = clean(item["firstimage"]) === undefined && clean(item["firstimage2"]) === undefined ? undefined : "image:source-returned-license-unverified"
   return ["kto-tourapi", `contentid:${contentId}`, prefix("contenttypeid", clean(item["contenttypeid"])), prefix("areacode", clean(item["areacode"])), prefix("sigungucode", clean(item["sigungucode"])), prefix("mapx", clean(item["mapx"])), prefix("mapy", clean(item["mapy"])), imageTag].filter(isString)
+}
+
+function optionalCoordinates(
+  item: KtoTourApiItem,
+): { readonly coordinates?: { readonly latitude: number; readonly longitude: number } } {
+  const longitude = Number(clean(item["mapx"]))
+  const latitude = Number(clean(item["mapy"]))
+  if (
+    !Number.isFinite(latitude) ||
+    !Number.isFinite(longitude) ||
+    latitude < -90 ||
+    latitude > 90 ||
+    longitude < -180 ||
+    longitude > 180
+  ) {
+    return {}
+  }
+  return { coordinates: { latitude, longitude } }
 }
 
 function sourceUrlFor(sourceUrl: string, contentId: string, contentTypeId: string | undefined): string {

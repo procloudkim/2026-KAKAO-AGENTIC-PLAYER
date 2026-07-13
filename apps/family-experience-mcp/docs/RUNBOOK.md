@@ -70,7 +70,7 @@ Use `/health` as the non-sensitive diagnostics surface for public-beta launch ch
 
 | Field | Meaning | Launch check |
 | --- | --- | --- |
-| `cache.status` | Current cache readiness: `fresh`, `stale`, `missing`, `refreshing`, or `invalid` | `fresh` for cache-backed public-beta smoke; detailed recovery commands remain operator-only. |
+| `cache.status` | Current cache state: `fresh`, `stale_servable`, `expired`, `missing`, `refreshing`, or `invalid` | `fresh` for broad-beta smoke; `stale_servable` is private degraded continuity only. |
 | `cache.age_seconds` and `cache.ttl_hours` | Cache freshness age and configured TTL | Age must remain within the launch freshness threshold. |
 | `cache.source_health` | Source count, successful sources, failed sources, and failure codes from cache provenance | Failed sources require ETL proof review before launch copy broadens. |
 | `operations.requests` | In-process HTTP request count, success/failure count, rate-limit count, and latency snapshot | Watch for rising 4xx/5xx and rate-limit spikes. |
@@ -156,7 +156,10 @@ FAMILY_EXPERIENCE_SOURCE_SET=kto_tourapi
 FAMILY_EXPERIENCE_ETL_CACHE_DIR=data/family-experience-cache
 FAMILY_EXPERIENCE_ETL_MAX_PAGES=1
 FAMILY_EXPERIENCE_ETL_TTL_HOURS=24
+FAMILY_EXPERIENCE_ETL_STALE_GRACE_HOURS=24
 FAMILY_EXPERIENCE_ALLOW_FIXTURE=false
+FAMILY_EXPERIENCE_OPERATOR_NAME=<real public operator name>
+FAMILY_EXPERIENCE_PRIVACY_CONTACT=<real public contact>
 HOST=127.0.0.1
 PORT=3349
 ```
@@ -208,8 +211,11 @@ Configuration placement matrix:
 | `FAMILY_EXPERIENCE_SOURCE_SET` | `.env` or default | Build and serving runtime | Current production value is exactly `kto_tourapi`; the bundled cache must declare the same source set. |
 | `FAMILY_EXPERIENCE_ETL_CACHE_DIR` | `.env` or default | External ETL write; serving runtime read-only | Current bundled path is `data/family-experience-cache`. |
 | `FAMILY_EXPERIENCE_ETL_MAX_PAGES` | `.env` or default | External ETL/proof only | Keep low for proof runs. |
-| `FAMILY_EXPERIENCE_ETL_TTL_HOURS` | `.env` or default | External ETL metadata and runtime validation | Current release uses 24 hours and fails closed. |
+| `FAMILY_EXPERIENCE_ETL_TTL_HOURS` | `.env` or default | External ETL metadata and runtime validation | Freshness window; current default is 24 hours. |
+| `FAMILY_EXPERIENCE_ETL_STALE_GRACE_HOURS` | `.env` or default | Serving runtime | Validated live LKG may serve with a visible degraded notice for 24 additional hours by default; hard maximum 168. |
 | `FAMILY_EXPERIENCE_ALLOW_FIXTURE` | `.env` | Local test only; serving runtime `false` | Fixture data must never seed the production image. |
+| `FAMILY_EXPERIENCE_OPERATOR_NAME` | deployment env | Serving runtime and public notice | Real public operator name. `/privacy` remains 503 until this and the contact are both set. |
+| `FAMILY_EXPERIENCE_PRIVACY_CONTACT` | deployment env | Serving runtime and public notice | Real public privacy/contact channel; do not use a placeholder. |
 | `HOST` | `.env` or default | Serving runtime | Use `127.0.0.1` locally and `0.0.0.0` in containers. |
 | `PORT` | `.env` or platform default | Serving runtime | Defaults to `3349`; use the platform-provided value when required. |
 
@@ -254,9 +260,9 @@ Remove-Item Env:MCP_ENDPOINT
 
 ## Production Cache Build And Redeploy
 
-Production runtime is cache-first with a static KTO bundle. Generate and gate a new cache before the 24-hour TTL expires and before a private PlayMCP smoke. Then rebuild and redeploy the image. The serving container has no cache refresh loop and needs no provider key. Source-specific refresh/publication intervals in `docs/SOURCE_LEDGER.md` are operational evidence and do not silently override the runtime default.
+Production runtime is cache-first with a static KTO bundle. Generate and gate a new cache before the 24-hour TTL expires and before a private PlayMCP smoke. Then rebuild and redeploy the image. The serving container has no cache refresh loop and needs no provider key. If refresh fails, only an integrity-validated live LKG can serve during the configured bounded grace, and every result discloses that degraded state. Source-specific refresh/publication intervals in `docs/SOURCE_LEDGER.md` do not silently override the runtime bounds.
 
-The service fails closed when the configured cache is missing, stale, malformed, incomplete, or mid-publish. It must not serve stale records as live output and must not fabricate candidates. Public `/health` reports only bounded readiness status and counts; exact recovery commands and paths remain in this operator runbook. `find_family_experiences` returns a bounded redacted error with zero candidates for unusable cache.
+The service fails closed when the configured cache is missing, malformed, incomplete, fixture-only in production, source-mismatched, mid-publish, or beyond stale grace. Within grace, `/health` returns HTTP 200 with `cache.status=stale_servable`, and `find_family_experiences` adds the cache generation time and LKG warning to structured and textual output. Fresh status remains required for broad-beta copy. Public `/health` exposes only bounded status and counts; exact recovery commands and paths remain in this operator runbook.
 
 Fixture dry-run, no cache write:
 
@@ -442,7 +448,7 @@ If tool discovery or starter-message smoke fails:
 
 ### Bad Cache Rollback Drill
 
-Use this when `/health.cache.status` is `stale`, `missing`, `invalid`, or stuck at `refreshing`, or when MCP smoke reports a cache read failure.
+Use this when `/health.cache.status` is `stale_servable`, `expired`, `missing`, `invalid`, or stuck at `refreshing`, or when MCP smoke reports a cache read failure. `stale_servable` buys bounded continuity but does not cancel the refresh incident.
 
 | Step | Invocation | Expected output | Evidence path |
 | --- | --- | --- | --- |

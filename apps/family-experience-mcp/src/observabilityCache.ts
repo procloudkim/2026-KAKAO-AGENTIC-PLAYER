@@ -1,16 +1,21 @@
 import { existsSync, readFileSync } from "node:fs"
 import { resolve } from "node:path"
 
-import type { FamilyExperienceConfig } from "./config.js"
+import {
+  DEFAULT_FAMILY_EXPERIENCE_ETL_STALE_GRACE_HOURS,
+  type FamilyExperienceConfig,
+} from "./config.js"
 import { ETL_CACHE_FILES } from "./etl/cache.js"
 import { parseCacheMetadata, type CacheMetadata } from "./etl/cacheContract.js"
+import { assessCacheServingFreshness } from "./etl/cacheFreshness.js"
 import { redactOperationalText } from "./observabilityRedaction.js"
 
 export const CACHE_OPERATIONAL_STATUSES = [
   "not_configured",
   "missing",
   "fresh",
-  "stale",
+  "stale_servable",
+  "expired",
   "invalid",
   "unknown",
 ] as const
@@ -48,7 +53,13 @@ export function getCacheOperationalSummary(
   try {
     const parsedJson: unknown = JSON.parse(readFileSync(metadataPath, "utf8"))
     const metadata = parseCacheMetadata(parsedJson)
-    return metadata === undefined ? emptyCacheSummary("invalid") : cacheSummaryFromMetadata(metadata, now)
+    return metadata === undefined
+      ? emptyCacheSummary("invalid")
+      : cacheSummaryFromMetadata(
+          metadata,
+          now,
+          config.etlStaleGraceHours ?? DEFAULT_FAMILY_EXPERIENCE_ETL_STALE_GRACE_HOURS,
+        )
   } catch (error: unknown) {
     if (error instanceof Error) {
       return emptyCacheSummary("invalid")
@@ -57,18 +68,25 @@ export function getCacheOperationalSummary(
   }
 }
 
-function cacheSummaryFromMetadata(metadata: CacheMetadata, now: Date): CacheOperationalSummary {
-  const generatedAtMs = Date.parse(metadata.generated_at)
-  if (!Number.isFinite(generatedAtMs)) {
+function cacheSummaryFromMetadata(
+  metadata: CacheMetadata,
+  now: Date,
+  staleGraceHours: number,
+): CacheOperationalSummary {
+  const freshness = assessCacheServingFreshness({
+    generatedAt: metadata.generated_at,
+    now,
+    staleGraceHours,
+    ttlHours: metadata.ttl_hours,
+  })
+  if (freshness.status === "invalid") {
     return emptyCacheSummary("invalid")
   }
 
-  const ageSeconds = Math.max(0, Math.floor((now.getTime() - generatedAtMs) / 1_000))
-  const expiresAtMs = generatedAtMs + metadata.ttl_hours * 60 * 60 * 1_000
   return {
-    status: expiresAtMs < now.getTime() ? "stale" : "fresh",
+    status: freshness.status,
     generated_at: metadata.generated_at,
-    age_seconds: ageSeconds,
+    age_seconds: freshness.ageSeconds,
     ttl_hours: metadata.ttl_hours,
     source_health: sourceHealthFromMetadata(metadata),
   }

@@ -93,6 +93,55 @@ describe("source scanner", () => {
     expect(findings).toEqual([])
   })
 
+  it("allows official policy references only in the trusted-network PRD", () => {
+    // Given: the future-product PRD cites official Kakao, privacy, and statute references.
+    const text = [
+      "Kakao Login: https://" + "developers.kakao.com/docs/ko/kakaologin/common",
+      "Map samples: https://" + "apis.map.kakao.com/web/sample/",
+      "Privacy authority: https://" + "m.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217",
+      "Statute: https://" + "www.law.go.kr/LSW/lsInfoP.do?lsiSeq=277359",
+    ].join("\n")
+
+    // When: the same references appear in the scoped PRD and in a generic event-source document.
+    const scoped = scanText("docs/TRUSTED_FAMILY_NETWORK_PRD_VNEXT.md", text)
+    const unscoped = scanText("docs/unregistered-event-source.md", text)
+    const insecure = scanText(
+      "docs/TRUSTED_FAMILY_NETWORK_PRD_VNEXT.md",
+      "http://" + "developers.kakao.com/docs/ko/kakaologin/common",
+    )
+
+    // Then: only HTTPS policy references in their non-runtime documentation surface are accepted.
+    expect(scoped).toEqual([])
+    expect(unscoped).toHaveLength(4)
+    expect(unscoped.every((finding) => finding.rule === "unregistered-event-source-url")).toBe(true)
+    expect(insecure).toHaveLength(1)
+  })
+
+  it("allows only exact Kakao navigation links on navigation implementation surfaces", () => {
+    // Given: runtime navigation code emits Kakao map and directions links.
+    const links = [
+      "https://" + "map.kakao.com/link/map/행사장",
+      "https://" + "map.kakao.com/link/to/행사장",
+    ].join("\n")
+
+    // When: links are scanned in the navigation implementation, a generic source doc, and with a wrong path.
+    const implementation = scanText("src/pipeline/navigation.ts", links)
+    const unscoped = scanText("docs/unregistered-event-source.md", links)
+    const wrongPath = scanText("src/pipeline/navigation.ts", "https://" + "map.kakao.com/search/행사장")
+    const unsafeVariants = scanText("src/pipeline/navigation.ts", [
+      "http://" + "map.kakao.com/link/map/행사장",
+      "https://" + "user:pass@map.kakao.com/link/to/행사장",
+      "https://" + "map.kakao.com/link/map/행사장?token=secret",
+      "https://" + "map.kakao.com/link/to/행사장#fragment",
+    ].join("\n"))
+
+    // Then: only credential-free HTTPS links in the two exact path families are exempted.
+    expect(implementation).toEqual([])
+    expect(unscoped).toHaveLength(2)
+    expect(wrongPath).toHaveLength(1)
+    expect(unsafeVariants).toHaveLength(4)
+  })
+
   it("rejects malformed included temporary source docs through the CLI", async () => {
     // Given: a repo-root temporary QA source document has a missing source URL.
     const includeDir = resolve(process.cwd(), "../../.omo/tmp/market-plan-sources")
