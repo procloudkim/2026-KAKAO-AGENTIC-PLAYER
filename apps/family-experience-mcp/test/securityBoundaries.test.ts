@@ -102,6 +102,22 @@ describe("MCP provider and request boundaries", () => {
     expect(structured.candidates[0]?.id).toBe("culture-portal-oneview:festival-second")
   })
 
+  it("explains when fewer than three evidence-backed candidates exist", async () => {
+    const result = await callFindFamilyExperiences(
+      {
+        location: "Busan",
+        date_range: { start: "2026-08-01", end: "2026-08-01" },
+        child_stage: "preschool",
+      },
+      { config: liveConfig, sourceAdapter: adapterWithRecords([officialRecord()]) },
+    )
+
+    expect(result.content[0]).toMatchObject({
+      type: "text",
+      text: expect.stringContaining("후보가 1개뿐입니다"),
+    })
+  })
+
   it("PIN:4500_4000_BUDGET returns a bounded typed error for oversized provider fields", async () => {
     // Given: a provider record contains a field large enough to exceed the PlayMCP result ceiling.
     const oversized = officialRecord({ title: "x".repeat(15_000) })

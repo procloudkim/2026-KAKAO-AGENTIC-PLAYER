@@ -28,7 +28,6 @@ const liveResult = {
     indoor_outdoor: "indoor",
     fee_text: "Confirm fees with the official source.",
     source_name: "KTO TourAPI",
-    source_url: "https://apis.data.go.kr/B551011/KorService2/detailIntro2?contentId=1",
     retrieved_at: "2026-07-13T00:00:00.000Z",
     confidence: "date and venue are API-returned; age fit is source-stated",
     mode: "live",

@@ -58,7 +58,7 @@ export type FamilyExperienceCandidate = {
   readonly ends_at: string
   readonly max_child_age?: number
   readonly min_child_age?: number
-  readonly source_url: string
+  readonly source_url?: string
   readonly reservation_url?: string
   readonly contact?: string
 }

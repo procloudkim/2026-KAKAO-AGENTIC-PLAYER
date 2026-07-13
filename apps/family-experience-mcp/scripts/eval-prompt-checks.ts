@@ -185,7 +185,6 @@ function successChecks(input: {
       candidates.every(
         (candidate) =>
           isFilled(candidate.source_name) &&
-          isFilled(candidate.source_url) &&
           isFilled(candidate.retrieved_at) &&
           isFilled(candidate.confidence) &&
           isFilled(candidate.warnings) &&
@@ -193,7 +192,7 @@ function successChecks(input: {
       ),
       "source, freshness, confidence, warnings, and source summary present",
     ),
-    ck("source_shown", candidates.every((candidate) => isFilled(candidate.source_name) && isFilled(candidate.source_url)), "source_name and source_url present"),
+    ck("source_shown", candidates.every((candidate) => isFilled(candidate.source_name)), "source_name present; public source_url is included only when consumer-safe"),
     ck("freshness_shown", candidates.every((candidate) => isFilled(candidate.retrieved_at)), "retrieved_at present"),
     ck("age_fit_basis_shown", candidates.every((candidate) => isFilled(candidate.age_fit_reason)), "age fit reason present"),
     ck("date_place_shown", candidates.every((candidate) => isFilled(candidate.date_time) && isFilled(candidate.venue) && isFilled(candidate.address)), "date, venue, address present"),

@@ -28,11 +28,11 @@ const sampleRequest: SourceAdapterRequest = {
 const sampleRedactedUrl =
   "https://apis.example.test/searchFestival2?MobileOS=ETC&MobileApp=family-experience-mcp&_type=json&numOfRows=100&pageNo=1&eventStartDate=20260801&serviceKey=%3Credacted%3E"
 
-function ktoSearchPayload(items: readonly Record<string, unknown>[]): unknown {
+function ktoSearchPayload(items: readonly Record<string, unknown>[], totalCount = items.length): unknown {
   return {
     response: {
       header: { resultCode: "0000", resultMsg: "OK" },
-      body: { items: { item: items }, totalCount: items.length },
+      body: { items: { item: items }, totalCount },
     },
   }
 }
@@ -274,6 +274,38 @@ describe("KTO TourAPI event source adapter", () => {
     })
     expect(record.age_evidence_snapshot_id).toBe(detailSnapshot?.snapshot_id)
     expect(JSON.stringify(success)).not.toContain(rawKey)
+  })
+
+  it("loads and merges the configured number of searchFestival2 pages", async () => {
+    const searchPages: number[] = []
+    const syntheticCredential = ["bounded", "pagination", "credential"].join("-")
+    const adapter = createKtoTourApiSourceAdapter({
+      baseUrl: "https://apis.example.test/KorService2",
+      serviceKey: syntheticCredential,
+      maxPages: 2,
+      nowIso: () => "2026-07-04T00:00:00.000Z",
+      requestText: async (request) => {
+        if (request.url.includes("/searchFestival2?")) {
+          const pageNo = Number(new URL(request.url).searchParams.get("pageNo"))
+          searchPages.push(pageNo)
+          return ktoSearchPayload([
+            sampleSearchItem({ contentid: `page-${pageNo}`, title: `Page ${pageNo} event` }),
+          ], 200)
+        }
+        const contentId = new URL(request.url).searchParams.get("contentId") ?? ""
+        return ktoDetailIntroPayload({ contentid: contentId, agelimit: "전 연령" })
+      },
+    })
+
+    const success = expectSuccess(await adapter.list(sampleRequest))
+
+    expect(searchPages).toEqual([1, 2])
+    expect(success.records.map((record) => record.id)).toEqual([
+      "kto-tourapi-events:page-1",
+      "kto-tourapi-events:page-2",
+    ])
+    expect(success.raw_snapshots.filter((snapshot) => snapshot.payload_ref === "searchFestival2")).toHaveLength(2)
+    expect(success.raw_snapshots.filter((snapshot) => snapshot.payload_ref === "detailIntro2")).toHaveLength(2)
   })
 
   it("keeps blank and failed detailIntro2 records age-unknown without leaking the key", async () => {

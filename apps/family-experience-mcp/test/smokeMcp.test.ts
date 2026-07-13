@@ -39,10 +39,7 @@ describe("smoke MCP CLI", () => {
     expect(report).toMatchObject({ prompt, result_ok: true })
     expect(report.candidate_count).toBeGreaterThanOrEqual(1)
     expect(report.failure_code).toBeUndefined()
-    expect(report.text).toContain("source_name:")
-    expect(report.text).toContain("source_url:")
-    expect(report.text).toContain("parent_check:")
-    expect(report.text).toContain("next_action:")
+    expect(report.text).toContain("후보")
   })
 
   it("handles complete and incomplete starter prompts without configuration failures", () => {

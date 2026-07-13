@@ -104,7 +104,15 @@ export function buildKtoTourApiDetailIntroRequest(options: {
   }
 }
 
-export function createKtoTourApiSourceAdapter(options: { readonly baseUrl: string; readonly serviceKey?: string; readonly requestText?: (request: BuiltKtoTourApiRequest) => Promise<unknown>; readonly nowIso?: () => string }): FamilyExperienceSourceAdapter {
+export const KTO_TOUR_API_MAX_PAGES = 10
+
+export function createKtoTourApiSourceAdapter(options: {
+  readonly baseUrl: string
+  readonly serviceKey?: string
+  readonly requestText?: (request: BuiltKtoTourApiRequest) => Promise<unknown>
+  readonly nowIso?: () => string
+  readonly maxPages?: number
+}): FamilyExperienceSourceAdapter {
   return {
     source_id: sourceId,
     mode,
@@ -112,46 +120,120 @@ export function createKtoTourApiSourceAdapter(options: { readonly baseUrl: strin
       if (options.serviceKey === undefined || options.serviceKey.trim().length === 0) {
         return failure({ code: "missing_key", message: "KTO_TOURAPI_SERVICE_KEY is required.", retryable: false })
       }
-      const built = buildKtoTourApiRequest({ baseUrl: options.baseUrl, serviceKey: options.serviceKey, eventStartDate: request.date_range.start.replaceAll("-", ""), pageNo: 1, numOfRows: 100 })
       if (options.requestText === undefined) {
-        return failure({ code: "source_unavailable", message: "KTO TourAPI request loader is not wired in this adapter task.", retryable: false, diagnostics: built.diagnostics })
+        return failure({ code: "source_unavailable", message: "KTO TourAPI request loader is not wired in this adapter task.", retryable: false })
       }
-      try {
-        const payload = await options.requestText(built)
-        const retrievedAt = options.nowIso?.() ?? new Date().toISOString()
-        const searchResult = normalizeKtoTourApiPayload(payload, {
-          request,
-          retrievedAt,
-          redactedUrl: built.diagnostics.redacted_url,
-          sourceUrl: `${options.baseUrl.replace(/\/+$/, "")}/detailCommon2`,
-        })
-        if (!searchResult.ok) {
-          return searchResult
-        }
-        return enrichKtoTourApiRecords({
-          baseUrl: options.baseUrl,
-          request,
-          requestText: options.requestText,
-          result: searchResult,
-          retrievedAt,
-          serviceKey: options.serviceKey,
-        })
-      } catch (error) {
-        return failure({
-          code: "source_failure",
-          message: "KTO TourAPI source request failed.",
-          retryable: true,
-          diagnostics: {
-            ...built.diagnostics,
-            detail:
-              error instanceof Error
-                ? redact(error.message, built, options.serviceKey)
-                : "request loader threw a non-Error value",
-          },
-        })
+      const maxPages = options.maxPages ?? 1
+      if (!Number.isInteger(maxPages) || maxPages < 1 || maxPages > KTO_TOUR_API_MAX_PAGES) {
+        return failure({ code: "source_failure", message: `KTO TourAPI maxPages must be between 1 and ${KTO_TOUR_API_MAX_PAGES}.`, retryable: false })
       }
+      return loadKtoTourApiPages({
+        baseUrl: options.baseUrl,
+        maxPages,
+        nowIso: options.nowIso,
+        request,
+        requestText: options.requestText,
+        serviceKey: options.serviceKey,
+      })
     },
   }
+}
+
+async function loadKtoTourApiPages(input: {
+  readonly baseUrl: string
+  readonly maxPages: number
+  readonly nowIso: (() => string) | undefined
+  readonly request: SourceAdapterRequest
+  readonly requestText: (request: BuiltKtoTourApiRequest) => Promise<unknown>
+  readonly serviceKey: string
+}): Promise<SourceAdapterResult> {
+  const retrievedAt = input.nowIso?.() ?? new Date().toISOString()
+  const pageResults: Extract<SourceAdapterResult, { readonly ok: true }>[] = []
+
+  for (let pageNo = 1; pageNo <= input.maxPages; pageNo += 1) {
+    const built = buildKtoTourApiRequest({
+      baseUrl: input.baseUrl,
+      serviceKey: input.serviceKey,
+      eventStartDate: input.request.date_range.start.replaceAll("-", ""),
+      pageNo,
+      numOfRows: 100,
+    })
+    try {
+      const payload = await input.requestText(built)
+      const totalCount = ktoTourApiTotalCount(payload)
+      const searchResult = normalizeKtoTourApiPayload(payload, {
+        request: input.request,
+        retrievedAt,
+        redactedUrl: built.diagnostics.redacted_url,
+        sourceUrl: `${input.baseUrl.replace(/\/+$/, "")}/detailCommon2`,
+      })
+      if (!searchResult.ok) {
+        if (searchResult.failure.code === "no_match") {
+          if (totalCount !== undefined && pageNo * 100 >= totalCount) {
+            break
+          }
+          continue
+        }
+        return searchResult
+      }
+      pageResults.push(
+        await enrichKtoTourApiRecords({
+          baseUrl: input.baseUrl,
+          request: input.request,
+          requestText: input.requestText,
+          result: searchResult,
+          retrievedAt,
+          serviceKey: input.serviceKey,
+        }),
+      )
+      if (totalCount !== undefined && pageNo * 100 >= totalCount) {
+        break
+      }
+    } catch (error) {
+      return failure({
+        code: "source_failure",
+        message: "KTO TourAPI source request failed.",
+        retryable: true,
+        diagnostics: {
+          ...built.diagnostics,
+          detail:
+            error instanceof Error
+              ? redact(error.message, built, input.serviceKey)
+              : "request loader threw a non-Error value",
+        },
+      })
+    }
+  }
+
+  if (pageResults.length === 0) {
+    return failure({
+      code: "no_match",
+      message: "KTO TourAPI returned no events matching the request.",
+      retryable: false,
+    })
+  }
+
+  const recordsById = new Map<string, FamilyExperienceSourceRecord>()
+  for (const record of pageResults.flatMap((result) => result.records)) {
+    recordsById.set(record.id, record)
+  }
+  return {
+    ok: true,
+    source_id: sourceId,
+    mode,
+    retrieved_at: retrievedAt,
+    records: [...recordsById.values()],
+    raw_snapshots: pageResults.flatMap((result) => result.raw_snapshots),
+  }
+}
+
+function ktoTourApiTotalCount(payload: unknown): number | undefined {
+  const externalPayload = parseExternalPayload(payload)
+  if (!externalPayload.ok) {
+    return undefined
+  }
+  const parsed = payloadSchema.safeParse(externalPayload.payload)
+  return parsed.success ? parsed.data.response.body.totalCount : undefined
 }
 
 export function normalizeKtoTourApiPayload(payload: unknown, context: KtoTourApiNormalizeContext): SourceAdapterResult {
@@ -197,7 +279,7 @@ async function enrichKtoTourApiRecords(input: {
   readonly result: Extract<SourceAdapterResult, { readonly ok: true }>
   readonly retrievedAt: string
   readonly serviceKey: string
-}): Promise<SourceAdapterResult> {
+}): Promise<Extract<SourceAdapterResult, { readonly ok: true }>> {
   const enrichments = await mapWithConcurrency(
     input.result.records,
     KTO_DETAIL_INTRO_MAX_CONCURRENCY,

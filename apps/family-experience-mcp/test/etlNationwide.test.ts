@@ -753,18 +753,18 @@ describe("nationwide ETL cache runner", () => {
     // Given: CLI input contains malformed operator-controlled values.
     const invalidSource = () => parseNationwideEtlArgs({ args: ["--fixture", "--source", "scraper"] })
     const invalidMaxPages = () => parseNationwideEtlArgs({ args: ["--fixture", "--max-pages", "0"] })
-    const unsupportedMaxPages = () => parseNationwideEtlArgs({ args: ["--fixture", "--max-pages", "2"] })
+    const unsupportedMaxPages = () => parseNationwideEtlArgs({ args: ["--fixture", "--max-pages", "11"] })
     const unsupportedConfiguredMaxPages = () => parseNationwideEtlArgs({
       args: ["--fixture"],
-      env: { FAMILY_EXPERIENCE_ETL_MAX_PAGES: "2" },
+      env: { FAMILY_EXPERIENCE_ETL_MAX_PAGES: "11" },
     })
     const invalidCacheDir = () => parseNationwideEtlArgs({ args: ["--fixture", "--cache-dir", ""] })
 
     // When/Then: every malformed value is rejected before any extraction or cache write.
     expect(invalidSource).toThrow(NationwideEtlInputError)
     expect(invalidMaxPages).toThrow(NationwideEtlInputError)
-    expect(unsupportedMaxPages).toThrow("until source pagination is implemented")
-    expect(unsupportedConfiguredMaxPages).toThrow("until source pagination is implemented")
+    expect(unsupportedMaxPages).toThrow("at most 10")
+    expect(unsupportedConfiguredMaxPages).toThrow("at most 10")
     expect(invalidCacheDir).toThrow(NationwideEtlInputError)
   })
 

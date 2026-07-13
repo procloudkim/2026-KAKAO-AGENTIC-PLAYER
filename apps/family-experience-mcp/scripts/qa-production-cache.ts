@@ -382,6 +382,9 @@ async function runStarter(input: {
       },
     )
     const resultCharacters = JSON.stringify(result).length
+    if (/https?:\/\/apis\.data\.go\.kr\b|\/(?:detailCommon2|detailIntro2)(?:\?|\b)/iu.test(JSON.stringify(result))) {
+      return failedStarter(input, "authenticated_provider_api_url_exposed", resultCharacters)
+    }
     const structured = FindFamilyExperiencesStructuredContentSchema.safeParse(result.structuredContent)
 
     if (!structured.success) {

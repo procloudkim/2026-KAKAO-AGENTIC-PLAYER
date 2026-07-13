@@ -28,8 +28,8 @@ export function parseNationwideEtlArgs(input: CliParseInput): NationwideEtlOptio
   const state = parseFlags(input.args)
   const sourceSet = state.sourceSet ?? config.sourceSet ?? ["kto_tourapi"]
   const maxPages = state.maxPages ?? config.etlMaxPages ?? DEFAULT_FAMILY_EXPERIENCE_ETL_MAX_PAGES
-  if (maxPages !== 1) {
-    throw new NationwideEtlInputError("--max-pages must be 1 until source pagination is implemented")
+  if (maxPages > 10) {
+    throw new NationwideEtlInputError("--max-pages must be at most 10")
   }
 
   return {

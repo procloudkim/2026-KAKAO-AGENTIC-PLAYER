@@ -36,18 +36,20 @@ export const sourceMap = {
 
 export async function loadSource(input: {
   readonly fixture: boolean
+  readonly maxPages?: number
   readonly source: FamilyExperienceSourceSetEntry
   readonly env?: NodeJS.ProcessEnv
 }): Promise<SourceAdapterResult> {
   if (input.fixture) {
     return fixtureSourceResult(input.source)
   }
-  return liveSourceResult(input.source, loadFamilyExperienceConfig(input.env))
+  return liveSourceResult(input.source, loadFamilyExperienceConfig(input.env), input.maxPages)
 }
 
 function liveSourceResult(
   source: FamilyExperienceSourceSetEntry,
   config: FamilyExperienceConfig,
+  maxPages: number | undefined,
 ): Promise<SourceAdapterResult> {
   const request: SourceAdapterRequest = {
     location: "",
@@ -77,6 +79,7 @@ function liveSourceResult(
     const adapter = createKtoTourApiSourceAdapter({
       baseUrl: config.ktoTourApiBaseUrl ?? "https://apis.data.go.kr/B551011/KorService2",
       ...(config.ktoTourApiServiceKey === undefined ? {} : { serviceKey: config.ktoTourApiServiceKey }),
+      ...(maxPages === undefined ? {} : { maxPages }),
       requestText: (request) => requestText(request.url),
     })
     return adapter.list({ ...request, child_stage: "school_age" })

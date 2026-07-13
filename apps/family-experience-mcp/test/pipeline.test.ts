@@ -10,6 +10,42 @@ import {
 } from "./pipelineTestHelpers.js"
 
 describe("Todo 4 family experience pipeline", () => {
+  it("keeps authenticated KTO API provenance out of the public candidate", async () => {
+    const { renderFamilyExperienceResponse } = await loadPipeline()
+    const apiUrl = "https://apis.data.go.kr/B551011/KorService2/detailCommon2?contentId=4060434"
+    const record = officialRecord({
+      id: "kto-tourapi-events:4060434",
+      raw_snapshot_id: "kto-tourapi-events:raw:4060434",
+      title: "국악공연 진연",
+      source: {
+        id: "kto-tourapi-events",
+        mode: "live",
+        url: apiUrl,
+        raw_snapshot_id: "kto-tourapi-events:raw:4060434",
+      },
+      contact: "02-000-0000",
+    })
+
+    const response = renderFamilyExperienceResponse({
+      input: {
+        location: "Busan",
+        date_range: { start: "2026-08-01", end: "2026-08-01" },
+        child_age: 4,
+      },
+      mode: "live",
+      source_records: [record],
+    })
+
+    expect(response.ok).toBe(true)
+    if (!response.ok) {
+      throw new Error(response.failure.message)
+    }
+    expect(response.candidates[0]).not.toHaveProperty("source_url")
+    expect(response.candidates[0]?.next_action).toContain("공개 상세/예약 링크가 제공되지 않았습니다")
+    expect(response.candidates[0]?.next_action).toContain("02-000-0000")
+    expect(JSON.stringify(response)).not.toContain(apiUrl)
+  })
+
   it("keeps generic or unsupported keyword text from eliminating eligible candidates", async () => {
     const { renderFamilyExperienceResponse } = await loadPipeline()
 

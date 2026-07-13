@@ -39,7 +39,6 @@ export type EvalResultForMarket = {
 const maxParentDecisionCandidates = 3
 const trustFieldNames = [
   "source_name",
-  "source_url",
   "retrieved_at",
   "confidence",
   "warnings",

@@ -48,11 +48,18 @@ export function toBoundedToolSuccess(
       return structuredSchemaFailure(rendered.mode, parsedStructuredContent.error.issues)
     }
 
+    const resultNotice =
+      searchNotice ??
+      (candidateCount < 3
+        ? candidateCount < maximumCandidateCount
+          ? `응답 크기 제한으로 상위 ${candidateCount}개만 제공했습니다.`
+          : `요청 조건과 출처·연령 근거를 모두 충족한 후보가 ${candidateCount}개뿐입니다. 조건을 임의로 넓히거나 후보를 만들지 않았습니다.`
+        : undefined)
     const result: CallToolResult = {
       content: [
         {
           type: "text",
-          text: summarizeSuccess({ mode: rendered.mode, candidates }, searchNotice),
+          text: summarizeSuccess({ mode: rendered.mode, candidates }, resultNotice),
         },
       ],
       structuredContent: parsedStructuredContent.data,
@@ -102,7 +109,7 @@ function structuredSuccess(
       indoor_outdoor: candidate.indoor_outdoor,
       fee_text: candidate.fee_text,
       source_name: candidate.source_name,
-      source_url: candidate.source_url,
+      ...(candidate.source_url === undefined ? {} : { source_url: candidate.source_url }),
       retrieved_at: candidate.retrieved_at,
       confidence: candidate.confidence,
       mode: candidate.mode,
@@ -163,15 +170,11 @@ function summarizeSuccess(
   searchNotice?: string,
 ): string {
   const modeNotice = result.mode === "fixture" ? "fixture/demo 기준" : "공식 데이터 기준"
-  const notices = searchNotice === undefined ? [] : [`search_note: ${searchNotice}`]
-  const cards = result.candidates.flatMap((candidate, index) => [
-    `## ${index + 1}. ${candidate.title}`,
-    `- when_where: ${candidate.date_time}; ${candidate.venue}`,
-    `- source_name: ${candidate.source_name}`,
-    `- source_url: ${candidate.source_url}`,
-    `- parent_check: ${candidate.parent_check}`,
-    `- next_action: ${candidate.next_action}`,
-  ])
+  const notices = searchNotice === undefined ? [] : [`- result_note: ${searchNotice}`]
+  const cards = result.candidates.map(
+    (candidate, index) =>
+      `${index + 1}. ${candidate.title} | ${candidate.date_time} | ${candidate.venue}`,
+  )
 
   return [`${modeNotice}으로 후보 ${result.candidates.length}개를 찾았어요.`, ...notices, ...cards].join("\n")
 }

@@ -80,12 +80,12 @@ Each candidate should expose these fields when known:
 | `indoor_outdoor` | Source or deterministic normalized value when available. |
 | `fee_text` | Source fee text; never infer price. |
 | `source_name` | Registered source display name. |
-| `source_url` | Official or registered source URL when available. |
+| `source_url` | Consumer-safe official or registered detail URL when available. Authenticated provider API endpoints remain internal provenance and must not be exposed as user links. |
 | `retrieved_at` | Adapter retrieval timestamp or fixture snapshot timestamp. |
 | `confidence` | Source confidence label, not a safety score. |
 | `warnings` | Caveats about missing fields, stale cache, fixture/demo mode, or confirmation needs. |
 | `parent_check` | What the caregiver must confirm before visiting. |
-| `next_action` | Open source, confirm date/place/fee/application steps, or choose another candidate. |
+| `next_action` | Open a consumer-safe source when available; otherwise use the event title and contact or official operator to confirm date/place/fee/application steps. |
 
 ## Data Policy
 

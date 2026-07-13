@@ -47,7 +47,7 @@ export type { NationwideCacheMetadata }
 export async function runNationwideEtl(options: NationwideEtlOptions): Promise<NationwideEtlReport> {
   const generatedAt = options.nowIso?.() ?? new Date().toISOString()
   const results = await Promise.all(
-    options.sourceSet.map((source) => loadSource({ source, fixture: options.fixture, ...(options.env === undefined ? {} : { env: options.env }) })),
+    options.sourceSet.map((source) => loadSource({ source, fixture: options.fixture, maxPages: options.maxPages, ...(options.env === undefined ? {} : { env: options.env }) })),
   )
   const rawSnapshots = results.flatMap((result) => (result.ok ? [...result.raw_snapshots] : []))
   const records = results.flatMap((result) => (result.ok ? [...result.records] : []))

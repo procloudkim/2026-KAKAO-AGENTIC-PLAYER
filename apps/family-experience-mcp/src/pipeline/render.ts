@@ -45,7 +45,7 @@ export type RenderedFamilyExperienceCandidate = {
   readonly next_action: string
   readonly max_child_age: number
   readonly min_child_age: number
-  readonly source_url: string
+  readonly source_url?: string
   readonly reservation_url?: string
   readonly contact?: string
 }
@@ -137,6 +137,8 @@ export function renderFamilyExperienceResponse(
 function renderCandidate(
   candidate: NormalizedFamilyExperienceCandidate,
 ): RenderedFamilyExperienceCandidate {
+  const publicSourceUrl = renderPublicSourceUrl(candidate)
+
   return {
     id: candidate.id,
     title: candidate.title,
@@ -161,10 +163,10 @@ function renderCandidate(
     warnings: renderWarnings(candidate),
     source_summary: renderSourceSummary(candidate),
     parent_check: renderParentCheck(candidate),
-    next_action: renderNextAction(candidate),
+    next_action: renderNextAction(candidate, publicSourceUrl),
     max_child_age: candidate.max_child_age,
     min_child_age: candidate.min_child_age,
-    source_url: candidate.source_url,
+    ...(publicSourceUrl === undefined ? {} : { source_url: publicSourceUrl }),
     ...(candidate.reservation_url === undefined
       ? {}
       : { reservation_url: candidate.reservation_url }),
@@ -217,12 +219,34 @@ function renderParentCheck(candidate: NormalizedFamilyExperienceCandidate): stri
   return `${candidate.parent_check} 예약/요금은 출발 전 공식 출처에서 확인하세요.`
 }
 
-function renderNextAction(candidate: NormalizedFamilyExperienceCandidate): string {
+function renderNextAction(
+  candidate: NormalizedFamilyExperienceCandidate,
+  publicSourceUrl: string | undefined,
+): string {
   if (candidate.mode === "fixture") {
-    return `fixture/cache source_url=${candidate.source_url}; 방문 전 실제 공식 출처에서 날짜, 장소, 요금, 신청 절차를 확인하세요.`
+    return publicSourceUrl === undefined
+      ? `fixture/cache 후보이며 공개 상세/예약 링크가 제공되지 않았습니다. 방문 전 실제 공식 운영처에서 날짜, 장소, 요금, 신청 절차를 확인하세요.`
+      : `fixture/cache source_url=${publicSourceUrl}; 방문 전 실제 공식 출처에서 날짜, 장소, 요금, 신청 절차를 확인하세요.`
   }
 
-  return `${candidate.source_url}에서 날짜, 장소, 요금, 신청 절차를 확인하세요.`
+  if (candidate.reservation_url !== undefined) {
+    return `${candidate.reservation_url}에서 날짜, 장소, 요금, 신청 절차를 공식 운영처에 다시 확인하세요.`
+  }
+
+  if (publicSourceUrl !== undefined) {
+    return `${publicSourceUrl}에서 날짜, 장소, 요금, 신청 절차를 공식 운영처에 다시 확인하세요.`
+  }
+
+  const operator = candidate.contact === undefined ? "공식 운영처" : `운영처(${candidate.contact})`
+  return `공개 상세/예약 링크가 제공되지 않았습니다. "${candidate.title}"의 날짜, 장소, 요금, 신청 절차는 ${operator}에 확인하세요.`
+}
+
+function renderPublicSourceUrl(
+  candidate: NormalizedFamilyExperienceCandidate,
+): string | undefined {
+  // KTO source URLs are authenticated API provenance endpoints, not consumer pages.
+  // Keep them inside the audited cache record and fail closed at the public response boundary.
+  return candidate.source_id === "kto-tourapi-events" ? undefined : candidate.source_url
 }
 
 function renderSource(sourceId: SourceId): FamilyExperienceSource {

@@ -259,4 +259,14 @@ describe("FamilyExperienceCandidateSchema", () => {
       expect(FamilyExperienceCandidateSchema.safeParse(candidate).success).toBe(false)
     }
   })
+
+  it("rejects authenticated provider API endpoints as public detail pages", () => {
+    const candidate = {
+      ...baseCandidate,
+      source: "kto_tourapi",
+      source_url: "https://apis.data.go.kr/B551011/KorService2/detailCommon2?contentId=1",
+    }
+
+    expect(FamilyExperienceCandidateSchema.safeParse(candidate)).toMatchObject({ success: false })
+  })
 })

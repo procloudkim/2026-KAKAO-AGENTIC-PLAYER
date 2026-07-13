@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-13T13:44:26.517Z",
+  "generated_at": "2026-07-13T14:46:02.053Z",
   "mode": "write-cache",
   "fixture": false,
   "source_set": [
@@ -9,11 +9,11 @@
     "kto-tourapi-events"
   ],
   "ttl_hours": 24,
-  "max_pages": 1,
+  "max_pages": 3,
   "counts": {
     "failures": 0,
-    "normalized_records": 100,
-    "raw_snapshots": 12
+    "normalized_records": 299,
+    "raw_snapshots": 35
   },
   "raw_snapshots_present": true,
   "files": {
@@ -24,19 +24,19 @@
     {
       "source": "kto_tourapi",
       "source_id": "kto-tourapi-events",
-      "generated_at": "2026-07-13T13:44:26.517Z",
+      "generated_at": "2026-07-13T14:46:02.053Z",
       "ttl_hours": 24,
       "mode": "live",
       "ok": true,
-      "records": 100,
-      "raw_snapshots": 12,
+      "records": 299,
+      "raw_snapshots": 35,
       "raw_snapshot_present": true
     }
   ],
   "schema_version": 2,
-  "publish_id": "cache-57136-1783950278063-2e8dda54-57df-4cc6-90a4-b19d1a9f20a6",
+  "publish_id": "cache-91672-1783954140367-ac45430f-1ed7-40fb-a3e3-5bb230894a6a",
   "file_digests": {
-    "normalized_records_sha256": "b104a962e1555dd0f556567b94260bc1ad773b07c5162ecef112176806fba880",
-    "raw_snapshots_sha256": "19fcf80b656d323456f1d38394aceeb9a7c9bf66383a77e48c0d397cd764bed6"
+    "normalized_records_sha256": "9415981445f2b5b211bb5384b51b4e966420c826deca6eda4177e95e8c315f50",
+    "raw_snapshots_sha256": "0bb63e1fc7d64608dae5683699c0f038d6e9e1bd32f97247a185e5011c383406"
   }
 }

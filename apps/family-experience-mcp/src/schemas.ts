@@ -201,6 +201,11 @@ export type FamilyExperienceMcpInput = z.infer<typeof FindFamilyExperiencesMcpIn
 const unsupportedPublicClaimPattern =
   /전국 모든 행사|전국 전체|예약 가능|예약가능|운영 중|실시간|아이에게 적합함|안전 인증|safety certified|safe for children|available to book|book now|currently open|live now/i
 const sourceConfirmationPattern = /confirm (at|with) (the )?source|공식 출처.*확인|출처에서.*확인|확인하세요|확인하세요\./i
+const PublicSourceUrlSchema = HttpUrlSchema.refine((value) => {
+  const url = new URL(value)
+  const hostname = url.hostname.toLowerCase()
+  return hostname !== "apis.data.go.kr" && !/\/(?:detailCommon2|detailIntro2)\/?$/iu.test(url.pathname)
+}, "Authenticated provider API URLs are not public detail pages")
 
 export const FamilyExperienceParentActionCardSchema = z
   .object({
@@ -212,7 +217,7 @@ export const FamilyExperienceParentActionCardSchema = z
     indoor_outdoor: z.enum(["indoor", "outdoor", "mixed", "unknown"]),
     fee_text: z.string().trim().min(1),
     source_name: z.string().trim().min(1),
-    source_url: HttpUrlSchema,
+    source_url: PublicSourceUrlSchema.optional(),
     retrieved_at: z.string().trim().min(1),
     confidence: z.string().trim().min(1),
     mode: z.enum(TOOL_MODES),
