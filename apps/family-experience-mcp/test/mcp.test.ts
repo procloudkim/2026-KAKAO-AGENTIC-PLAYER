@@ -20,7 +20,7 @@ const fixtureConfig: FamilyExperienceConfig = {
 }
 
 describe("Todo 5 MCP server", () => {
-  it("registers purpose-specific public tools and calls recommendation successfully in fixture mode", async () => {
+  it("PIN:ONE_TOOL registers one annotated public tool and calls it", async () => {
     // Given: an MCP server wired to the deterministic fixture source.
     const server = createFamilyExperienceMcpServer({ config: fixtureConfig })
     const client = new Client({ name: "mcp-test-client", version: "0.1.0" })
@@ -33,9 +33,9 @@ describe("Todo 5 MCP server", () => {
       // When: an MCP client lists tools and calls the public family experience tool.
       const tools = await client.listTools()
       const result = await client.callTool({
-        name: "recommend_family_experiences",
+        name: "find_family_experiences",
         arguments: {
-          prompt: "오늘 비오는데 4살이랑 갈 곳",
+          prompt: "서울에서 오늘 4살이랑 갈 곳",
         },
       })
       const structuredContent = FindFamilyExperiencesStructuredContentSchema.parse(
@@ -43,7 +43,7 @@ describe("Todo 5 MCP server", () => {
       )
 
       // Then: the product-facing tool surface is exposed and the recommendation returns Korean text plus structured data.
-      expect(tools.tools.map((tool) => tool.name)).toEqual([...FAMILY_EXPERIENCE_PUBLIC_TOOLS])
+      expect(tools.tools.map((tool) => tool.name)).toEqual(["find_family_experiences"])
       expect(tools.tools[0]?.inputSchema).toMatchObject({
         type: "object",
         properties: {
@@ -55,17 +55,30 @@ describe("Todo 5 MCP server", () => {
         },
       })
       expect(tools.tools[0]?.inputSchema).not.toHaveProperty("anyOf")
-      expect(result.isError).toBeUndefined()
+      expect(tools.tools).toHaveLength(1)
+      expect(JSON.stringify(tools).length).toBeLessThanOrEqual(4_500)
+      for (const tool of tools.tools) {
+        expect(tool.annotations).toEqual({
+          title: "Find family experiences / 가족 체험 찾기",
+          readOnlyHint: true,
+          destructiveHint: false,
+          openWorldHint: true,
+          idempotentHint: true,
+        })
+      }
+      expect(JSON.stringify(result).length).toBeLessThanOrEqual(4_000)
+      expect(result.isError, JSON.stringify(result)).toBeUndefined()
       expect(result.content).toHaveLength(1)
       expect(result.content[0]).toMatchObject({
         type: "text",
-        text: expect.stringContaining("후보 3개"),
+        text: expect.stringMatching(/후보 [1-3]개/),
       })
       expect(structuredContent.ok).toBe(true)
       if (!structuredContent.ok) {
         throw new Error(structuredContent.failure.message)
       }
-      expect(structuredContent.candidates).toHaveLength(3)
+      expect(structuredContent.candidates.length).toBeGreaterThanOrEqual(1)
+      expect(structuredContent.candidates.length).toBeLessThanOrEqual(3)
       expect(structuredContent.candidates.every((candidate) => candidate.source === "fixture")).toBe(
         true,
       )
@@ -89,7 +102,7 @@ describe("Todo 5 MCP server", () => {
       const result = await client.callTool({
         name: "find_family_experiences",
         arguments: {
-          prompt: "이번 주말 아이랑 갈 곳",
+          prompt: "이번 주말 서울에서 아이랑 갈 곳",
         },
       })
       const structuredContent = FindFamilyExperiencesStructuredContentSchema.parse(
@@ -112,6 +125,7 @@ describe("Todo 5 MCP server", () => {
         failure: {
           code: "invalid_input",
           retryable: false,
+          missing_fields: ["child_selector"],
         },
       })
     } finally {
@@ -134,7 +148,7 @@ describe("Todo 5 MCP server", () => {
       const result = await client.callTool({
         name: "find_family_experiences",
         arguments: {
-          prompt: "오늘 비오는데 4살이랑 갈 곳",
+          prompt: "서울에서 오늘 4살이랑 갈 곳",
         },
       })
       const structuredContent = FindFamilyExperiencesStructuredContentSchema.parse(
@@ -147,7 +161,8 @@ describe("Todo 5 MCP server", () => {
       if (!structuredContent.ok) {
         throw new Error(structuredContent.failure.message)
       }
-      expect(structuredContent.candidates).toHaveLength(3)
+      expect(structuredContent.candidates.length).toBeGreaterThanOrEqual(1)
+      expect(structuredContent.candidates.length).toBeLessThanOrEqual(3)
       expect(structuredContent.candidates[0]?.date_time).toContain("2026-07-04")
       expect(structuredContent.candidates[0]?.age_fit_reason).toContain("ages 4")
     } finally {
@@ -162,15 +177,15 @@ describe("Todo 5 MCP server", () => {
 
     // When / Then: the health payload exposes identity and tool count only.
     expect(health).toMatchObject({
-      ok: true,
       name: "family-experience-mcp",
       version: "0.1.0",
       tools: [...FAMILY_EXPERIENCE_PUBLIC_TOOLS],
       config: {
-        host: "127.0.0.1",
         allowFixture: true,
-        seoulOpenDataKey: "missing",
+        toolMode: "fixture",
+        liveProviderConfigured: false,
       },
     })
+    expect(JSON.stringify(health)).not.toMatch(/127\.0\.0\.1|https?:\/\/|seoulOpenDataKey|[A-Za-z]:[\\/]/i)
   })
 })

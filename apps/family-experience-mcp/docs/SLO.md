@@ -4,7 +4,7 @@ This document defines internal public-beta operating targets for `아이랑 어�
 and `find_family_experiences`. These targets are not a public SLA, do not
 promise user compensation, and do not claim PlayMCP review, public release, or
 contest submission. They are operator thresholds for deciding when to hold,
-rollback, refresh cache, rotate secrets, or narrow public copy.
+rollback, replace the bundled-cache image, rotate ETL secrets, or narrow public copy.
 
 Canonical references remain `RUNBOOK.md`, `DECISIONS.md`,
 `HOST_REQUIREMENTS_SOT.md`, `SOURCE_LEDGER.md`, and `QA_REPORT.md`. If this
@@ -16,8 +16,8 @@ and update this document later.
 | Item | Beta boundary |
 | --- | --- |
 | Service surface | HTTPS `/health` and MCP `/mcp` with one public tool, `find_family_experiences`. |
-| Data mode | Cache-first operation. Live provider calls belong in ETL proof, smoke, or cache generation. |
-| Source boundary | Official-source routes only: Seoul Open Data, Culture Portal, KTO TourAPI, and national culture festival standard data. |
+| Data mode | Static bundled KTO cache. Live provider calls belong only in external ETL proof and cache generation; refresh requires gate, image rebuild, and redeploy. |
+| Source boundary | `kto_tourapi` is the only production source. Seoul Open Data, Culture Portal, and national festival adapters remain registered but are not production fallbacks. |
 | Claim boundary | Source-grounded candidates only. No public SLA promise, no broad coverage promise, no reservation/open-now/safety-certification promise. |
 | Evidence home | `.omo/evidence/family-experience-market-ready-platform/`. |
 
@@ -29,7 +29,7 @@ and update this document later.
 | Tool-call latency | P95 `tool_call.latency_ms` from newline JSON logs, excluding invalid-input requests. | P95 under 3 seconds from cache. | SEV3 if P95 is 3 to 5 seconds for 30 minutes; SEV2 if P95 exceeds 5 seconds or cache reads time out. | `grep '"event":"tool_call"' <log> | jq '.latency_ms'`; `/health.operations.tool_calls.latency_ms`. |
 | Valid tool-call success | Successful valid `find_family_experiences` calls divided by valid calls. Invalid-input failures are tracked separately. | At least 98% valid tool-call success during a beta day. | SEV2 if valid success is below 98% for 30 minutes; SEV1 if every valid call fails for 15 minutes. | Runtime `tool_call` log outcomes and `/health.operations.tool_calls`. |
 | Cache freshness | `/health.cache.status`, `cache.age_seconds`, and configured `cache.ttl_hours`. | Cache age under 24 hours for tier3 copy; status must be `fresh` before broad beta copy. | SEV2 if cache is `stale`, `missing`, `invalid`, or `refreshing` for 15 minutes; hold tier3 copy immediately. | `curl -s http://127.0.0.1:3349/health | jq '.cache'`. |
-| Source ETL proof | Source-specific ETL dry-run or write-cache proof with redacted diagnostics. | At least one successful source ETL proof per launch day before beta traffic or demo copy. | SEV2 if no source ETL proof exists for the launch day; SEV3 if one source fails but another proven source can refresh cache. | `node --env-file-if-exists=.env --import tsx scripts/etl-nationwide.ts --dry-run --source <configured_source>`. |
+| Source ETL proof | KTO write-cache proof plus production-cache gate with redacted diagnostics. | A fresh gated KTO cache before image build and private smoke. | SEV2 if the KTO proof or production gate is absent/failing; hold deployment rather than switching sources implicitly. | `node --env-file-if-exists=.env --import tsx scripts/etl-nationwide.ts --live --write-cache --cache-dir data/family-experience-cache --source kto_tourapi`; `npm run qa:production-cache`. |
 | No-result anomaly | No-result outcomes divided by valid tool calls for the same source/cache window. | No-result spikes must be explained by request constraints, source scope, or cache freshness. | SEV3 if no-result rate doubles the previous beta-day baseline for 30 minutes; SEV2 if no-result is paired with source failure or stale cache. | Runtime `tool_call` logs with `outcome=no-result`; golden no-result behavior in `docs/GOLDEN_RESULTS.md`. |
 | Provider quota or failure | ETL failure codes, provider HTTP status, and `/health.cache.source_health`. | Provider quota and source failure must be isolated to the affected source and must not expose raw keys or keyed URLs. | SEV2 for provider quota exhaustion or repeated source failure; SEV1 if fallback serves unsupported claims or leaks diagnostics. | ETL stderr/stdout redacted proof; `/health.cache.source_health.failure_codes`. |
 | Secret-scan gate | `scan:secrets` result before sharing docs, evidence, or deployable artifacts. | zero raw-secret leak incidents; `scan:secrets` must pass before handoff. | SEV1 for any raw-secret, keyed URL, bearer token, or provider key in docs, logs, screenshots, evidence, or public copy. | `npm run scan:secrets`; `npm run scan:secrets -- --include <evidence-path>`. |
@@ -43,12 +43,12 @@ Run these from `apps/family-experience-mcp` unless a command uses the repo-root
 | Check | Frequency | Manual command or query | Expected beta result |
 | --- | --- | --- | --- |
 | Health readiness | Before launch, every 15 minutes during beta smoke, and after rollback. | `curl -s http://127.0.0.1:3349/health` | Service name is correct; cache is `fresh`; source failures are understood. |
-| MCP smoke | Before launch and after cache refresh or deploy changes. | `npm run smoke:mcp -- --cache-dir=data/family-experience-cache --skip-seed` | `called=find_family_experiences`, bounded candidate count, no raw keys, no source failure. |
+| MCP smoke | Before launch and after a replacement image or deploy change. | `npm run smoke:mcp -- --cache-dir=data/family-experience-cache --skip-seed` | `called=find_family_experiences`, bounded candidate count, no raw keys, no source failure. |
 | Latency P95 | Every 30 minutes during beta smoke. | `grep '"event":"tool_call"' <log> | jq -s 'map(.latency_ms) | sort | .[(length*0.95|floor)]'` | P95 under 3 seconds from cache. |
 | Cache freshness | Before any tier3 copy and hourly during beta. | `curl -s http://127.0.0.1:3349/health | jq '.cache.status,.cache.age_seconds,.cache.ttl_hours'` | `fresh`; age below 86400 seconds; TTL is aligned with 24 hours. |
-| Source ETL proof | Once per launch day and before broad copy. | `node --env-file-if-exists=.env --import tsx scripts/etl-nationwide.ts --dry-run --source <configured_source>` | `ok=true`, records greater than zero for the source proof, diagnostics redacted. |
+| Source ETL proof | Before a replacement image build. | `node --env-file-if-exists=.env --import tsx scripts/etl-nationwide.ts --live --write-cache --cache-dir data/family-experience-cache --source kto_tourapi`; then `npm run qa:production-cache` | KTO proof is redacted and the production cache gate passes before rebuild/redeploy. |
 | No-result anomaly | Every 30 minutes during beta smoke. | Count `tool_call` log outcomes for `no-result`, valid success, and source failure in the same window. | No-result rate is stable or explained by request constraints. |
-| Provider quota | After ETL failures and before retrying source-specific cache refresh. | Inspect ETL failure code and `/health.cache.source_health.failure_codes`. | Quota/failure is source-scoped and does not leak keyed URLs. |
+| Provider quota | After KTO ETL failures and before retrying external cache generation. | Inspect ETL failure code and `/health.cache.source_health.failure_codes`. | Quota/failure is source-scoped and does not leak keyed URLs. |
 | Secret, source, claim gates | Before handoff, before sharing evidence, and before PlayMCP information load. | `npm run scan:secrets && npm run scan:sources && npm run scan:claims` | All PASS. |
 
 ## Severity Levels
@@ -56,8 +56,8 @@ Run these from `apps/family-experience-mcp` unless a command uses the repo-root
 | Severity | Trigger | Owner action |
 | --- | --- | --- |
 | SEV1 | Raw-secret leak, keyed URL exposure, every valid MCP call failing, public unsupported claim already shared, or diagnostics exposing provider secrets. | Stop sharing artifacts; keep PlayMCP private; remove or redact the artifact; rotate affected provider keys; rerun `scan:secrets`, `scan:sources`, and `scan:claims`; record evidence before retrying. |
-| SEV2 | Availability below 99.0%, P95 over 5 seconds, cache stale/missing/invalid, no launch-day source ETL proof, repeated source failure, provider quota exhaustion, or failed source/claim gate. | Hold beta traffic and broad copy; refresh or rebuild cache from a proven source; rerun smoke and scans; narrow source claims to current proof. |
-| SEV3 | P95 between 3 and 5 seconds, no-result anomaly without source failure, one provider degraded while another proven source remains available, or scan warning requiring manual review. | Triage within the beta day; capture logs; compare against previous window; rerun source-specific ETL proof if needed. |
+| SEV2 | Availability below 99.0%, P95 over 5 seconds, cache stale/missing/invalid, no current KTO ETL proof, repeated source failure, provider quota exhaustion, or failed source/claim gate. | Hold beta traffic and broad copy; regenerate/gate the KTO cache externally, rebuild/redeploy, rerun smoke and scans, and keep claims within current proof. |
+| SEV3 | P95 between 3 and 5 seconds, no-result anomaly without source failure, a transient KTO ETL failure while the current gated bundle remains fresh, or scan warning requiring manual review. | Triage within the beta day; capture logs; compare against previous window; rerun the KTO ETL proof if needed. |
 | SEV4 | Documentation drift, stale evidence references, or non-blocking operator checklist gaps. | Fix docs or evidence before the next handoff; no user-facing copy change until scans pass. |
 
 ## Incident Steps
@@ -84,16 +84,24 @@ Run these from `apps/family-experience-mcp` unless a command uses the repo-root
 
 ### 3. Rollback Command
 
-Use the runbook rollback boundary: keep the entry private, return to a
-cache-safe proven source, and rerun smoke plus scans before retrying.
+Use the runbook rollback boundary: keep the entry private, regenerate the
+KTO-only cache outside the serving container, gate it, and build a replacement
+image before retrying.
 
 ```bash
-node --env-file-if-exists=.env --import tsx scripts/etl-nationwide.ts --live --write-cache --cache-dir data/family-experience-cache --source <configured_source>
+node --env-file-if-exists=.env --import tsx scripts/etl-nationwide.ts --live --write-cache --cache-dir data/family-experience-cache --source kto_tourapi
+npm run qa:production-cache
 npm run smoke:mcp -- --cache-dir=data/family-experience-cache --skip-seed
 npm run scan:secrets
 npm run scan:sources
 npm run scan:claims
+cd ../..
+docker build --pull --platform linux/amd64 -f Dockerfile -t <replacement-tag> .
 ```
+
+Redeploy that replacement image through the host flow in `RUNBOOK.md`, then run
+remote `/health` and `/mcp` smoke against the new endpoint. Do not try to repair
+or refresh cache files inside the old container.
 
 If the incident is a secret leak, the rollback command is not enough. Rotate
 the affected provider key first, remove the exposed artifact or replace it with
@@ -106,11 +114,12 @@ npm run scan:secrets
 
 ### 4. Recover
 
-1. For stale, missing, invalid, or refreshing cache, rerun the source-specific
-   cache refresh command from `RUNBOOK.md`, then confirm `/health.cache.status`
-   is `fresh`.
-2. For source failure or provider quota, switch only to a source with current
-   proof; do not broaden copy beyond that proof.
+1. For stale, missing, invalid, or refreshing cache, regenerate the KTO cache
+   outside the serving container, run the production-cache gate, rebuild and
+   redeploy the image, then confirm `/health.cache.status` is `fresh`.
+2. For KTO failure or provider quota, hold deployment. A different registered
+   source requires an explicit production source-set decision and a new gated
+   cache; it is not an automatic fallback.
 3. For P95 latency alerts, verify cache mode first. If cache is fresh and
    latency remains high, collect the 30-minute log window and hold beta traffic
    until the slow path is understood.
@@ -139,9 +148,8 @@ npm run scan:secrets
 | Availability | Check `/health`, endpoint path, and MCP smoke; keep PlayMCP private if smoke fails. | Rerun local verification and inspect redacted logs. |
 | P95 latency | Confirm cache mode and cache directory; compare tool-call log window. | Hold beta traffic if P95 remains above threshold. |
 | Valid tool-call success | Separate invalid input from valid failures; inspect failure code. | Rerun `npm run smoke:mcp` and the relevant golden/eval path if behavior changed. |
-| Cache freshness | Refresh cache from a currently proven source; verify `fresh` status and age. | Narrow copy when only one source has current proof. |
-| Source ETL proof | Run source-specific ETL dry-run or write-cache proof for available keys. | Record absent keys as blockers instead of switching to unofficial sources. |
+| Cache freshness | Regenerate/gate the KTO cache externally, rebuild/redeploy, and verify `fresh` status and age. | Keep PlayMCP private until the replacement endpoint passes smoke. |
+| Source ETL proof | Run KTO dry-run/write-cache proof and `qa:production-cache`. | Record absent keys or provider failure as blockers; do not switch production sources implicitly. |
 | No-result anomaly | Compare no-result rate to previous beta-day baseline and source/cache health. | Preserve safe no-result behavior; do not invent candidates. |
-| Provider quota or source failure | Isolate affected source; avoid retry storms; check provider approval/quota status. | Switch to another currently proven source only if claims remain accurate. |
+| Provider quota or source failure | Isolate KTO failure; avoid retry storms; check provider approval/quota status. | Hold deployment; any source-set change requires an explicit decision and new release proof. |
 | Secret-scan gate | Stop sharing; redact/remove artifact; rotate keys if exposure occurred. | Rerun `scan:secrets` on the specific artifact and default scan surface. |
-

@@ -261,7 +261,7 @@ function normalizeRow(
 
   const city = cityFromAddress(row.address)
   const stale = isStale(row.end_date, row.data_reference_date, retrievedAt)
-  const sourceUrl = row.homepage.length > 0 ? row.homepage : datasetUrl
+  const sourceUrl = /^https?:\/\//iu.test(row.homepage) ? row.homepage : datasetUrl
   const baseTags = ["standard_dataset", "fallback_authority", city, row.organization]
   const tags = stale ? [...baseTags, "stale"] : baseTags
 

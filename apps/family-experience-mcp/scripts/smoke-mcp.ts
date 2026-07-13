@@ -16,7 +16,7 @@ import { createFamilyExperienceMcpServer } from "../src/mcp.js"
 import { FindFamilyExperiencesStructuredContentSchema } from "../src/schemas.js"
 import { smokeRecords } from "./smoke-mcp-fixtures.js"
 
-const primaryToolName = "recommend_family_experiences"
+const primaryToolName = "find_family_experiences"
 
 const ArgumentsSchema = z.object({
   assertToolCount: z.coerce.number().int().positive().optional(),
@@ -103,9 +103,10 @@ async function runInMemorySmoke(args: z.infer<typeof ArgumentsSchema>): Promise<
     config: {
       host: DEFAULT_FAMILY_EXPERIENCE_HOST,
       port: DEFAULT_FAMILY_EXPERIENCE_PORT,
-      allowFixture: false,
+      allowFixture: !args.skipSeed,
       seoulOpenDataBaseUrl: DEFAULT_SEOUL_OPEN_DATA_BASE_URL,
       etlCacheDir: generatedCacheDir,
+      etlTtlHours: 24,
     },
   })
   const client = new Client({ name: "family-experience-mcp-smoke", version: "0.1.0" })
@@ -136,6 +137,7 @@ async function callAndReport(input: {
 }): Promise<void> {
   const tools = await input.client.listTools()
   const toolNames = tools.tools.map((tool) => tool.name)
+  const toolListCharacters = JSON.stringify(tools).length
 
   if (input.args.assertToolCount !== undefined && toolNames.length !== input.args.assertToolCount) {
     throw new Error(`Expected ${input.args.assertToolCount} tools, received ${toolNames.length}: ${toolNames.join(", ")}`)
@@ -145,6 +147,10 @@ async function callAndReport(input: {
     throw new Error(`Unexpected MCP tool list: ${toolNames.join(", ")}`)
   }
 
+  if (toolListCharacters > 4_500) {
+    throw new Error(`MCP tool list exceeds 4500 characters: ${toolListCharacters}`)
+  }
+
   const result = await input.client.callTool({
     name: primaryToolName,
     arguments: {
@@ -152,6 +158,11 @@ async function callAndReport(input: {
     },
   })
   const structuredContent = FindFamilyExperiencesStructuredContentSchema.parse(result.structuredContent)
+  const resultCharacters = JSON.stringify(result).length
+
+  if (structuredContent.ok && resultCharacters > 4_000) {
+    throw new Error(`Successful MCP result exceeds 4000 characters: ${resultCharacters}`)
+  }
 
   if (input.args.expectError && structuredContent.ok) {
     throw new Error("Expected MCP smoke error but received candidates.")
@@ -169,11 +180,13 @@ async function callAndReport(input: {
         endpoint: input.endpoint,
         cache_dir: input.cacheDir,
         tools: toolNames,
+        tool_list_characters: toolListCharacters,
         called: primaryToolName,
         prompt: input.args.prompt ?? "부산 이번 주말 4살 실내",
         result_ok: structuredContent.ok,
         mode: structuredContent.mode,
         candidate_count: structuredContent.ok ? structuredContent.candidates.length : 0,
+        result_characters: resultCharacters,
         first_source: structuredContent.ok ? structuredContent.candidates[0]?.source : undefined,
         failure_code: structuredContent.ok ? undefined : structuredContent.failure.code,
         text: firstContent?.type === "text" ? firstContent.text : "",

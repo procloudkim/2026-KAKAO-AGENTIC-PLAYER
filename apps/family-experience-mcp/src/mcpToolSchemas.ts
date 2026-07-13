@@ -38,9 +38,6 @@ export const ParseFamilyExperienceRequestResultSchema = z.discriminatedUnion("ok
     .strict(),
 ])
 
-export const SearchFamilyExperienceCandidatesInputSchema = FindFamilyExperiencesMcpInputSchema
-export const EvaluateFamilyRecommendationInputSchema = FindFamilyExperiencesMcpInputSchema
-
 export const FamilyExperienceSourceListInputSchema = z.object({}).strict()
 
 export const FamilyExperienceSourceListSchema = z

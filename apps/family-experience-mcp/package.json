@@ -7,6 +7,8 @@
     "node": ">=20.19.0"
   },
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/src/server.js",
     "dev:http": "node --import tsx src/server.ts",
     "dev:http:env": "node --env-file-if-exists=.env --import tsx src/server.ts",
     "test": "vitest",
@@ -20,7 +22,13 @@
     "eval:nationwide-prompts": "tsx scripts/eval-prompts.ts --fixtures-dir test/fixtures/eval-nationwide --cache-dir test/fixtures/eval-nationwide/cache --group nationwide --min-prompts 42 --expected-prompts 42 --require-nationwide-coverage --evidence-dir ../../.omo/evidence/family-experience-market-ready-platform/task-11-market-prompt-eval",
     "scan:secrets": "tsx scripts/scan-secrets.ts",
     "scan:claims": "tsx scripts/scan-claims.ts",
-    "scan:sources": "tsx scripts/scan-sources.ts"
+    "scan:sources": "tsx scripts/scan-sources.ts",
+    "qa:contract": "node --import tsx scripts/qa-submission.ts --mode contract --output ../../.omo/evidence/family-experience-submission-ready/c001-contract.json",
+    "qa:holdout": "node --import tsx scripts/qa-submission.ts --mode holdout --holdout test/fixtures/release-holdout/sealed-holdout.jsonl --output ../../.omo/evidence/family-experience-submission-ready/c003-release/holdout/holdout-results.json",
+    "qa:production-cache": "node --import tsx scripts/qa-production-cache.ts --cache-dir data/family-experience-cache --expected-source-set kto_tourapi --starter-doc docs/PLAYMCP_TEMP_REGISTRATION.md --output ../../.omo/evidence/family-experience-submission-ready/c002-production-cache/receipt.json",
+    "qa:compiled-http": "node --import tsx scripts/qa-compiled-http.ts --output ../../.omo/evidence/family-experience-submission-ready/c003-release/compiled-http/receipt.json",
+    "qa:container": "node --import tsx scripts/qa-container.ts --output ../../.omo/evidence/family-experience-submission-ready/c003-release/container/receipt.json",
+    "qa:submission": "node --import tsx scripts/qa-submission-gate.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/client": "2.0.0-beta.1",

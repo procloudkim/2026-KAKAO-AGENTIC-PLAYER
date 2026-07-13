@@ -90,6 +90,9 @@ If only one value can be registered, use:
 ```
 
 Apply these only in provider consoles that support IP allowlists. Do not put API keys or provider allowlist screenshots into public docs.
+The current static-cache serving image makes no provider request, so it needs no
+provider egress allowlist. These ranges apply only if a future, explicitly
+approved live-provider runtime performs upstream calls from PlayMCP-in-KC.
 
 ## PlayMCP-in-KC Deployment Modes
 
@@ -181,29 +184,36 @@ The extracted review policy adds these rejection risks:
 
 Organizer notice excerpt says that, as of the notice quoted in this workspace on 2026-07-07, PlayMCP-in-KC does not yet support environment variable or Secret injection. The notice says external environment variable injection is being prepared for July week 2.
 
-This conflicts with the repository's normal security rule: provider keys should be supplied through local `.env` or deployment secret managers and should not be baked into images.
+That limitation would conflict with the repository's normal security rule if a
+live-provider runtime were selected. The current static-cache release avoids the
+conflict because it has no runtime provider key and never bakes one into the image.
 
 Decision:
 
 - Default security rule remains: do not commit `.env`, raw keys, keyed URLs, cookies, bearer tokens, or provider secrets.
-- Local keys belong only in `apps/family-experience-mcp/.env`, copied from `.env.example`.
+- The current PlayMCP-in-KC release serves a validated static KTO cache and requires no provider key in the serving container. `KTO_TOURAPI_SERVICE_KEY` belongs only in the external cache-generation `.env`, copied from `.env.example`.
+- No provider key is pasted into PlayMCP, committed to Git, injected into the current runtime, or baked into its image.
 - For non-KC platforms, use platform secret/environment-variable support.
 - For KakaoCloud/PlayMCP-in-KC after env or Secret injection is available, use the same variable names from `.env.example` and inject provider keys as server-side secrets.
-- For PlayMCP-in-KC before secret injection exists, image-baked API keys are a host-specific temporary exception, not the default deployment pattern.
+- For a future live-provider runtime before secret injection exists, image-baked API keys are a host-specific temporary exception, not the default deployment pattern and not part of the current release.
 - The image-baked exception is `HUMAN_APPROVAL_REQUIRED` and cannot be selected by an agent or automated runbook default.
 - That exception requires explicit human approval, private GitHub repository or private Docker registry, no raw-key logs, post-submit key rotation plan, and removal once PlayMCP-in-KC env/Secret injection becomes available.
-- Do not edit `.env` or bake keys automatically from this runbook. A human operator must choose the secret strategy.
+- Do not edit `.env` or bake keys automatically from this runbook. The current static-cache release has no runtime secret choice; a human operator must approve any future change to live provider access.
 
-Secret placement matrix:
+Secret placement matrix for external ETL or a future live-provider runtime:
 
-| Key | Local `.env` | KakaoCloud/PlayMCP-in-KC preferred path | Non-Kakao preferred path | Image-baked exception |
+| Key | External ETL `.env` | Current serving runtime | Future live-provider runtime | Image-baked exception |
 | --- | --- | --- | --- | --- |
-| `SEOUL_OPEN_DATA_KEY` | Yes | Env or Secret injection when available | Secret manager env var | `HUMAN_APPROVAL_REQUIRED` only |
-| `CULTURE_PORTAL_SERVICE_KEY` | Yes | Env or Secret injection when available | Secret manager env var | `HUMAN_APPROVAL_REQUIRED` only |
-| `KTO_TOURAPI_SERVICE_KEY` | Yes | Env or Secret injection when available | Secret manager env var | `HUMAN_APPROVAL_REQUIRED` only |
-| `PUBLIC_DATA_STANDARD_SERVICE_KEY` | Optional for live standard-data endpoint only | Env or Secret injection when available | Secret manager env var | `HUMAN_APPROVAL_REQUIRED` only |
+| `SEOUL_OPEN_DATA_KEY` | Adapter proof only | Not used | Platform Secret injection after an explicit source/runtime decision | `HUMAN_APPROVAL_REQUIRED` only |
+| `CULTURE_PORTAL_SERVICE_KEY` | Adapter proof only | Not used | Platform Secret injection after an explicit source/runtime decision | `HUMAN_APPROVAL_REQUIRED` only |
+| `KTO_TOURAPI_SERVICE_KEY` | Production-cache generation | Not used | Platform Secret injection after an explicit live-runtime decision | `HUMAN_APPROVAL_REQUIRED` only |
+| `PUBLIC_DATA_STANDARD_SERVICE_KEY` | Optional adapter proof only | Not used | Platform Secret injection after an explicit source/runtime decision | `HUMAN_APPROVAL_REQUIRED` only |
 
-Non-secret runtime values such as `HOST`, `PORT`, base URLs, source set, cache directory, max pages, TTL, and CSV path can be configured as plain environment variables. Keep `HOST=0.0.0.0` for containers when the platform requires external ingress, and keep provider keys out of PlayMCP public copy fields.
+Current serving values such as `HOST`, `PORT`, source set, bundled cache directory,
+and TTL can be plain environment variables. Provider base URLs, ETL max pages,
+and CSV paths belong to external ETL/proof configuration for this release. Keep
+`HOST=0.0.0.0` for containers when the platform requires external ingress, and
+keep provider keys out of PlayMCP public copy fields.
 
 Temporary image-baked exception record:
 
@@ -246,8 +256,8 @@ Do not claim any of the following from this SOT:
 ## Operator Checklist
 
 1. Verify local docs and runtime.
-2. Confirm the current PlayMCP-in-KC secret injection status in the latest organizer notice or console.
-3. Choose the secret strategy. Prefer env/Secret injection if available; otherwise require explicit approval for the temporary private image workaround.
+2. Verify the bundled KTO cache is fresh, production-gated, and contains no secret material.
+3. Confirm that the serving image requires no provider key. Revisit host secret injection only if a human explicitly changes the release to live provider access.
 4. Deploy to KakaoCloud PlayMCP-in-KC.
 5. Smoke `/health` and `/mcp` on the deployed HTTPS endpoint.
 6. Update PlayMCP MCP information with the deployed `/mcp` endpoint.

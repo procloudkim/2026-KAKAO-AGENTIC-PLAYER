@@ -78,7 +78,7 @@ function queryCacheRecord(): FamilyExperienceSourceRecord {
     fee_text: "Confirm at the source before visiting.",
     tags: ["busan", "preschool"],
     suitability: "happy_prompt_match",
-    fixture_notice: "",
+    fixture_notice: "Synthetic ETL test fixture; not a live listing.",
   }
 }
 
@@ -564,6 +564,27 @@ describe("nationwide ETL cache runner", () => {
     }
   })
 
+  it("rejects a cache whose source set differs from runtime configuration", async () => {
+    const cacheDir = await tempCacheDir()
+
+    try {
+      await writeQueryableCache({ cacheDir })
+      const result = await queryNationwideCache({
+        cacheDir,
+        request: busanCacheRequest,
+        sourceSet: ["kto_tourapi"],
+        now: new Date("2026-07-07T01:00:00.000Z"),
+      })
+
+      expect(result).toMatchObject({
+        ok: false,
+        failure: { code: "upstream_invalid_response" },
+      })
+    } finally {
+      await rm(cacheDir, { recursive: true, force: true })
+    }
+  })
+
   it("reports live refresh guidance for stale cache without fixture rebuild instructions", async () => {
     // Given: public-beta live mode points at a cache older than its metadata TTL.
     const cacheDir = await tempCacheDir()
@@ -584,20 +605,19 @@ describe("nationwide ETL cache runner", () => {
         now: new Date("2026-07-07T01:00:00.000Z"),
       })
 
-      // Then: the operator guidance points to a source-specific live refresh only.
+      // Then: public guidance remains stable without exposing internal refresh commands.
       expect(result).toMatchObject({
         ok: false,
         failure: {
           code: "missing_configuration",
-          message: expect.stringContaining("--live --write-cache"),
+          message: expect.stringContaining("cache is refreshed"),
           retryable: false,
         },
       })
       if (result.ok) {
         throw new Error("expected stale cache failure")
       }
-      expect(result.failure.message).toContain("--source culture_portal")
-      expect(result.failure.message).not.toContain("--fixture")
+      expect(result.failure.message).not.toMatch(/--live|--write-cache|--source|--fixture/i)
     } finally {
       await rm(cacheDir, { recursive: true, force: true })
     }
@@ -733,11 +753,18 @@ describe("nationwide ETL cache runner", () => {
     // Given: CLI input contains malformed operator-controlled values.
     const invalidSource = () => parseNationwideEtlArgs({ args: ["--fixture", "--source", "scraper"] })
     const invalidMaxPages = () => parseNationwideEtlArgs({ args: ["--fixture", "--max-pages", "0"] })
+    const unsupportedMaxPages = () => parseNationwideEtlArgs({ args: ["--fixture", "--max-pages", "2"] })
+    const unsupportedConfiguredMaxPages = () => parseNationwideEtlArgs({
+      args: ["--fixture"],
+      env: { FAMILY_EXPERIENCE_ETL_MAX_PAGES: "2" },
+    })
     const invalidCacheDir = () => parseNationwideEtlArgs({ args: ["--fixture", "--cache-dir", ""] })
 
     // When/Then: every malformed value is rejected before any extraction or cache write.
     expect(invalidSource).toThrow(NationwideEtlInputError)
     expect(invalidMaxPages).toThrow(NationwideEtlInputError)
+    expect(unsupportedMaxPages).toThrow("until source pagination is implemented")
+    expect(unsupportedConfiguredMaxPages).toThrow("until source pagination is implemented")
     expect(invalidCacheDir).toThrow(NationwideEtlInputError)
   })
 

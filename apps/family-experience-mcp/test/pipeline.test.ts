@@ -6,9 +6,116 @@ import {
   fixtureFamilyExperienceRecords,
   happyPromptInput,
   loadPipeline,
+  officialRecord,
 } from "./pipelineTestHelpers.js"
 
 describe("Todo 4 family experience pipeline", () => {
+  it("keeps generic or unsupported keyword text from eliminating eligible candidates", async () => {
+    const { renderFamilyExperienceResponse } = await loadPipeline()
+
+    const response = renderFamilyExperienceResponse({
+      input: { ...happyPromptInput, keywords: ["체험", "공룡 탐험"] },
+      mode: "fixture",
+      source_records: [fixtureAt(0)],
+    })
+
+    expect(response.ok).toBe(true)
+    if (response.ok) {
+      expect(response.candidates).toHaveLength(1)
+    }
+  })
+
+  it("matches the Korean festival alias only from direct source evidence", async () => {
+    const { renderFamilyExperienceResponse } = await loadPipeline()
+    const festival = officialRecord({
+      id: "kto-tourapi-events:family-festival",
+      raw_snapshot_id: "kto-tourapi-events:raw:family-festival",
+      title: "부산 가족 축제",
+      tags: ["kto-tourapi"],
+      source: {
+        id: "kto-tourapi-events",
+        mode: "live",
+        url: "https://example.invalid/kto-tourapi-events/family-festival",
+        raw_snapshot_id: "kto-tourapi-events:raw:family-festival",
+      },
+    })
+
+    const response = renderFamilyExperienceResponse({
+      input: {
+        location: "Busan",
+        date_range: { start: "2026-08-01", end: "2026-08-01" },
+        child_stage: "preschool",
+        keywords: ["축제"],
+      },
+      mode: "live",
+      source_records: [festival],
+    })
+
+    expect(response.ok).toBe(true)
+    if (response.ok) {
+      expect(response.candidates[0]?.id).toBe("kto-tourapi-events:family-festival")
+    }
+  })
+
+  it("keeps explicit indoor and free constraints as evidence-backed negative filters", async () => {
+    const { renderFamilyExperienceResponse } = await loadPipeline()
+    const freeIndoor = officialRecord({
+      id: "culture-portal-oneview:free-indoor",
+      fee_text: "무료",
+      indoor_outdoor: "indoor",
+    })
+    const paidIndoor = officialRecord({
+      id: "culture-portal-oneview:paid-indoor",
+      fee_text: "10,000원",
+      indoor_outdoor: "indoor",
+    })
+    const freeOutdoor = officialRecord({
+      id: "culture-portal-oneview:free-outdoor",
+      fee_text: "무료",
+      indoor_outdoor: "outdoor",
+    })
+
+    const response = renderFamilyExperienceResponse({
+      input: {
+        location: "Busan",
+        date_range: { start: "2026-08-01", end: "2026-08-01" },
+        child_stage: "preschool",
+        indoor_outdoor_preference: "indoor",
+        keywords: ["무료"],
+      },
+      mode: "live",
+      source_records: [paidIndoor, freeOutdoor, freeIndoor],
+    })
+
+    expect(response.ok).toBe(true)
+    if (response.ok) {
+      expect(response.candidates.map((candidate) => candidate.id)).toEqual([
+        "culture-portal-oneview:free-indoor",
+      ])
+    }
+  })
+
+  it("PIN:HARD_CONSTRAINTS excludes unknown age and mismatched environment evidence", async () => {
+    // Given: one record has unknown age evidence and another is explicitly outdoor.
+    const unknownAge = {
+      ...fixtureAt(0),
+      confidence: { ...fixtureAt(0).confidence, age_fit: "unknown" },
+      target_age_text: "not source-stated",
+      program_text: "General family program.",
+    }
+    const outdoor = { ...fixtureAt(1), indoor_outdoor: "outdoor" as const }
+    const { renderFamilyExperienceResponse } = await loadPipeline()
+
+    // When: age and indoor constraints are explicit.
+    const response = renderFamilyExperienceResponse({
+      input: { ...happyPromptInput, indoor_outdoor_preference: "indoor" },
+      mode: "fixture",
+      source_records: [unknownAge, outdoor],
+    })
+
+    // Then: neither unknown nor contradictory evidence is eligible.
+    expect(response).toMatchObject({ ok: false, failure: { code: "no_results" } })
+  })
   it("returns exactly three ranked candidates when the happy prompt has three matches", async () => {
     // Given: the deterministic Todo 3 fixture has three Seoul indoor preschool matches.
     const { renderFamilyExperienceResponse } = await loadPipeline()
@@ -96,7 +203,7 @@ describe("Todo 4 family experience pipeline", () => {
         ...baseRecord.confidence,
         age_fit: "inferred",
       },
-      target_age_text: "",
+      target_age_text: "Family workshop for Ages 4-6 with a guardian.",
       program_text: "Family workshop for Ages 4-6 with a guardian.",
     }
     const { normalizeFamilyExperienceRecords } = await loadPipeline()

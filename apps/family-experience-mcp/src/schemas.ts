@@ -2,11 +2,88 @@ import * as z from "zod/v4"
 
 import { INDOOR_OUTDOOR_VALUES } from "./sources/types.js"
 import { CHILD_STAGES, FAMILY_EXPERIENCE_SOURCES, TOOL_MODES } from "./types.js"
+import { HttpUrlSchema } from "./httpUrl.js"
 
 const dateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/
 export const MAX_FAMILY_EXPERIENCE_PROMPT_LENGTH = 4_096
 
-export const DateOnlySchema = z.string().regex(dateOnlyPattern, "Expected date in YYYY-MM-DD format")
+export const FAMILY_EXPERIENCE_CANONICAL_KEYWORDS = [
+  "museum",
+  "performance",
+  "festival",
+  "craft",
+  "free",
+  "rainy_day",
+] as const
+
+export type FamilyExperienceCanonicalKeyword =
+  (typeof FAMILY_EXPERIENCE_CANONICAL_KEYWORDS)[number]
+
+const familyExperienceKeywordsDescription =
+  "Known source-evidenced keywords or synonyms only. Unsupported text is ignored for eligibility, never claimed as matched; use indoor_outdoor_preference for venue type."
+
+const FamilyExperienceKeywordInputSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(128)
+
+const FamilyExperienceKeywordsInputSchema = z
+  .array(FamilyExperienceKeywordInputSchema)
+  .max(8)
+  .describe(familyExperienceKeywordsDescription)
+
+export function canonicalFamilyExperienceKeyword(
+  keyword: string,
+): FamilyExperienceCanonicalKeyword | undefined {
+  switch (normalizeFamilyExperienceKeyword(keyword)) {
+    case "museum":
+    case "박물관":
+    case "미술관":
+    case "전시":
+      return "museum"
+    case "performance":
+    case "공연":
+    case "연극":
+    case "뮤지컬":
+      return "performance"
+    case "festival":
+    case "축제":
+    case "행사":
+      return "festival"
+    case "craft":
+    case "공예":
+    case "만들기":
+      return "craft"
+    case "free":
+    case "무료":
+      return "free"
+    case "rainy_day":
+    case "rainy day":
+    case "rainy-day":
+    case "비":
+    case "우천":
+      return "rainy_day"
+    default:
+      return undefined
+  }
+}
+
+function normalizeFamilyExperienceKeyword(keyword: string): string {
+  return keyword.normalize("NFKC").trim().toLowerCase().replace(/\s+/g, " ")
+}
+
+export const DateOnlySchema = z
+  .string()
+  .regex(dateOnlyPattern, "Expected date in YYYY-MM-DD format")
+  .refine((value) => {
+    const [yearText, monthText, dayText] = value.split("-")
+    const year = Number(yearText)
+    const month = Number(monthText)
+    const day = Number(dayText)
+    const parsed = new Date(Date.UTC(year, month - 1, day))
+    return parsed.getUTCFullYear() === year && parsed.getUTCMonth() === month - 1 && parsed.getUTCDate() === day
+  }, "Expected a valid calendar date")
 
 export const DateRangeSchema = z
   .object({
@@ -30,6 +107,8 @@ export const FindFamilyExperiencesStructuredInputSchema = z
     date_range: DateRangeSchema,
     child_age: z.number().int().min(0).max(17).optional(),
     child_stage: z.enum(CHILD_STAGES).optional(),
+    indoor_outdoor_preference: z.enum(INDOOR_OUTDOOR_VALUES).optional(),
+    keywords: FamilyExperienceKeywordsInputSchema.optional(),
   })
   .strict()
   .superRefine((input, context) => {
@@ -74,30 +153,24 @@ export const FindFamilyExperiencesMcpInputSchema = z
     child_age: z.number().int().min(0).max(17).optional(),
     child_stage: z.enum(CHILD_STAGES).optional(),
     indoor_outdoor_preference: z.enum(INDOOR_OUTDOOR_VALUES).optional(),
-    keywords: z.array(z.string().trim().min(1)).max(8).optional(),
+    keywords: FamilyExperienceKeywordsInputSchema.optional(),
   })
   .strict()
   .superRefine((input, context) => {
     const hasPrompt = input.prompt !== undefined
-    const hasStructuredCore = input.location !== undefined && input.date_range !== undefined
-    if (!hasPrompt && !hasStructuredCore) {
+    const hasAnyStructuredField =
+      input.location !== undefined ||
+      input.date_range !== undefined ||
+      input.child_age !== undefined ||
+      input.child_stage !== undefined ||
+      input.indoor_outdoor_preference !== undefined ||
+      input.keywords !== undefined
+    if (hasPrompt && hasAnyStructuredField) {
       context.addIssue({
         code: "custom",
-        message: "Provide prompt or structured location/date_range fields.",
+        message: "Provide prompt or structured fields, not both.",
         path: ["prompt"],
       })
-    }
-
-    if (hasStructuredCore) {
-      const selectorCount =
-        Number(input.child_age !== undefined) + Number(input.child_stage !== undefined)
-      if (selectorCount !== 1) {
-        context.addIssue({
-          code: "custom",
-          message: "Provide exactly one of child_age or child_stage.",
-          path: ["child_age"],
-        })
-      }
     }
   })
 
@@ -139,7 +212,7 @@ export const FamilyExperienceParentActionCardSchema = z
     indoor_outdoor: z.enum(["indoor", "outdoor", "mixed", "unknown"]),
     fee_text: z.string().trim().min(1),
     source_name: z.string().trim().min(1),
-    source_url: z.string().url(),
+    source_url: HttpUrlSchema,
     retrieved_at: z.string().trim().min(1),
     confidence: z.string().trim().min(1),
     mode: z.enum(TOOL_MODES),
@@ -163,7 +236,7 @@ export const FamilyExperienceCandidateSchema = z
     description: z.string().trim().min(1).optional(),
     max_child_age: z.number().int().min(0).max(17).optional(),
     min_child_age: z.number().int().min(0).max(17).optional(),
-    reservation_url: z.string().url().optional(),
+    reservation_url: HttpUrlSchema.optional(),
     contact: z.string().trim().min(1).optional(),
     ...FamilyExperienceParentActionCardSchema.shape,
   })
@@ -235,6 +308,7 @@ export const ToolFailureSchema = z
     code: z.enum(["invalid_input", "missing_configuration", "upstream_unavailable", "upstream_invalid_response", "no_results", "internal_error"]),
     message: z.string().trim().min(1),
     retryable: z.boolean(),
+    missing_fields: z.array(z.string().trim().min(1)).optional(),
   })
   .strict()
 

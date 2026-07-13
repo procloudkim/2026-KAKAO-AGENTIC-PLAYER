@@ -5,7 +5,6 @@ import type { FamilyExperienceSourceSetEntry } from "../config.js"
 import type { SourceAdapterRequest } from "../sources/types.js"
 import type { ToolFailure, ToolMode } from "../types.js"
 import { ETL_CACHE_FILES } from "./cache.js"
-import { buildCacheRecoverySentence } from "./cacheOperations.js"
 import { filterCacheRecordsForRequest, modeFor, scopeCacheRecords } from "./cacheRecordScope.js"
 import {
   type CacheMetadata,
@@ -14,11 +13,18 @@ import {
   parseCacheMetadata,
   validateCacheContract,
 } from "./cacheContract.js"
+import { assessCacheFreshness } from "./cacheFreshness.js"
 
-type CacheQueryFailure = { readonly ok: false; readonly mode: "live"; readonly failure: ToolFailure }
+type CacheQueryFailure = {
+  readonly ok: false
+  readonly mode: "live"
+  readonly failure: ToolFailure
+  readonly reason?: "fixture_not_allowed"
+}
 type CacheQueryContext = {
   readonly allowFixture: boolean
   readonly cacheDir: string
+  readonly expectedTtlHours?: number
   readonly sourceSet?: readonly FamilyExperienceSourceSetEntry[]
 }
 
@@ -26,37 +32,136 @@ export type CacheQueryResult =
   | { readonly ok: true; readonly mode: ToolMode; readonly records: readonly unknown[] }
   | CacheQueryFailure
 
+export type NationwideCacheSnapshotStore = {
+  readonly getOrLoad: <T>(
+    key: string,
+    load: () => Promise<T>,
+    shouldCache: (value: T) => boolean,
+  ) => Promise<T>
+}
+
+export function createNationwideCacheSnapshotStore(): NationwideCacheSnapshotStore {
+  const entries = new Map<string, Promise<unknown>>()
+
+  return {
+    getOrLoad: async <T>(key: string, load: () => Promise<T>, shouldCache: (value: T) => boolean) => {
+      const existing = entries.get(key) as Promise<T> | undefined
+      if (existing !== undefined) {
+        return existing
+      }
+
+      const pending = load()
+      entries.set(key, pending)
+      try {
+        const value = await pending
+        if (!shouldCache(value)) {
+          entries.delete(key)
+        }
+        return value
+      } catch (error: unknown) {
+        entries.delete(key)
+        throw error
+      }
+    },
+  }
+}
+
 export async function queryNationwideCache(input: {
   readonly allowFixture?: boolean
   readonly cacheDir: string
+  readonly expectedTtlHours?: number
   readonly request: SourceAdapterRequest
   readonly now?: Date
+  readonly snapshotStore?: NationwideCacheSnapshotStore
   readonly sourceSet?: readonly FamilyExperienceSourceSetEntry[]
 }): Promise<CacheQueryResult> {
   const context: CacheQueryContext = {
     allowFixture: input.allowFixture ?? false,
     cacheDir: input.cacheDir,
+    ...(input.expectedTtlHours === undefined ? {} : { expectedTtlHours: input.expectedTtlHours }),
     ...(input.sourceSet === undefined ? {} : { sourceSet: input.sourceSet }),
   }
   const metadataPath = resolve(input.cacheDir, ETL_CACHE_FILES.metadata)
   const recordsPath = resolve(input.cacheDir, ETL_CACHE_FILES.normalized)
   const rawSnapshotsPath = resolve(input.cacheDir, ETL_CACHE_FILES.rawSnapshots)
   const publishMarkerPath = resolve(input.cacheDir, ETL_CACHE_FILES.publishMarker)
-  const initialPublishState = await getPublishState(publishMarkerPath, context)
+  const loadBundle = async (): Promise<CacheBundleResult> => {
+    const initialPublishState = await getPublishState(publishMarkerPath, context)
 
-  if (!initialPublishState.ok) {
-    return initialPublishState
+    if (!initialPublishState.ok) {
+      return initialPublishState
+    }
+
+    const metadataResult = await readMetadata(metadataPath, context)
+
+    if (!metadataResult.ok) {
+      return metadataResult
+    }
+
+    const recordsResult = await readCacheRecords(recordsPath, context)
+
+    if (!recordsResult.ok) {
+      return recordsResult
+    }
+
+    const rawSnapshotsResult = await readFileSafely(rawSnapshotsPath, context)
+
+    if (!rawSnapshotsResult.ok) {
+      return rawSnapshotsResult
+    }
+
+    const finalPublishState = await getPublishState(publishMarkerPath, context)
+
+    if (!finalPublishState.ok) {
+      return finalPublishState
+    }
+
+    const contractResult = validateCacheContract({
+      metadata: metadataResult.metadata,
+      records: recordsResult.records,
+      recordsText: recordsResult.text,
+      rawSnapshotsText: rawSnapshotsResult.text,
+    })
+
+    if (!contractResult.ok) {
+      return invalidCacheFailure()
+    }
+
+    return {
+      ok: true,
+      metadata: metadataResult.metadata,
+      records: recordsResult.records,
+    }
+  }
+  const cacheKey = JSON.stringify([
+    resolve(input.cacheDir),
+    context.expectedTtlHours ?? null,
+    [...new Set(context.sourceSet ?? [])].sort(),
+  ])
+  const bundle = input.snapshotStore === undefined
+    ? await loadBundle()
+    : await input.snapshotStore.getOrLoad(cacheKey, loadBundle, (value) => value.ok)
+
+  if (!bundle.ok) {
+    return bundle
   }
 
-  const metadataResult = await readMetadata(metadataPath, context)
-
-  if (!metadataResult.ok) {
-    return metadataResult
+  if (bundle.metadata.fixture && !context.allowFixture) {
+    return {
+      ok: false,
+      mode: "live",
+      reason: "fixture_not_allowed",
+      failure: {
+        code: "missing_configuration",
+        message: "Nationwide fixture cache mode is unavailable in production.",
+        retryable: false,
+      },
+    }
   }
 
   const freshness = getCacheFreshness({
-    generatedAt: metadataResult.metadata.generated_at,
-    ttlHours: metadataResult.metadata.ttl_hours,
+    generatedAt: bundle.metadata.generated_at,
+    ttlHours: bundle.metadata.ttl_hours,
     now: input.now ?? new Date(),
     context,
   })
@@ -65,43 +170,15 @@ export async function queryNationwideCache(input: {
     return freshness
   }
 
-  const recordsResult = await readCacheRecords(recordsPath, context)
-
-  if (!recordsResult.ok) {
-    return recordsResult
-  }
-
-  const rawSnapshotsResult = await readFileSafely(rawSnapshotsPath, context)
-
-  if (!rawSnapshotsResult.ok) {
-    return rawSnapshotsResult
-  }
-
-  const finalPublishState = await getPublishState(publishMarkerPath, context)
-
-  if (!finalPublishState.ok) {
-    return finalPublishState
-  }
-
-  const contractResult = validateCacheContract({
-    metadata: metadataResult.metadata,
-    records: recordsResult.records,
-    recordsText: recordsResult.text,
-    rawSnapshotsText: rawSnapshotsResult.text,
-  })
-
-  if (!contractResult.ok) {
-    return invalidCacheFailure({
-      context,
-      message: `Nationwide cache provenance is invalid at ${input.cacheDir}: ${contractResult.message}.`,
-    })
-  }
-
-  const matchedRecords = filterCacheRecordsForRequest({ records: recordsResult.records, request: input.request })
-  const scopedRecords = scopeCacheRecords({ metadataFixture: metadataResult.metadata.fixture, records: matchedRecords })
+  const matchedRecords = filterCacheRecordsForRequest({ records: bundle.records, request: input.request })
+  const scopedRecords = scopeCacheRecords({ metadataFixture: bundle.metadata.fixture, records: matchedRecords })
 
   return { ok: true, mode: modeFor(scopedRecords), records: scopedRecords }
 }
+
+type CacheBundleResult =
+  | { readonly ok: true; readonly metadata: CacheMetadata; readonly records: readonly CacheRecord[] }
+  | CacheQueryFailure
 
 type MetadataReadResult = { readonly ok: true; readonly metadata: CacheMetadata } | CacheQueryFailure
 
@@ -117,23 +194,38 @@ async function readMetadata(path: string, context: CacheQueryContext): Promise<M
     const parsedMetadata = parseCacheMetadata(parsedJson)
 
     if (parsedMetadata === undefined) {
-      return invalidCacheFailure({
-        context,
-        message: `Nationwide cache metadata is malformed at ${path}.`,
-      })
+      return invalidCacheFailure()
+    }
+
+    if (!sourceSetsMatch(context.sourceSet, parsedMetadata.source_set)) {
+      return invalidCacheFailure()
+    }
+
+    if (
+      context.expectedTtlHours !== undefined &&
+      parsedMetadata.ttl_hours !== context.expectedTtlHours
+    ) {
+      return invalidCacheFailure()
     }
 
     return { ok: true, metadata: parsedMetadata }
   } catch (error: unknown) {
     if (error instanceof SyntaxError) {
-      return invalidCacheFailure({
-        context,
-        message: `Nationwide cache metadata is not valid JSON at ${path}.`,
-      })
+      return invalidCacheFailure()
     }
 
     throw error
   }
+}
+
+function sourceSetsMatch(
+  configured: readonly FamilyExperienceSourceSetEntry[] | undefined,
+  cached: readonly FamilyExperienceSourceSetEntry[],
+): boolean {
+  if (configured === undefined) {
+    return true
+  }
+  return [...new Set(configured)].sort().join("\0") === [...new Set(cached)].sort().join("\0")
 }
 
 type CacheRecordsReadResult =
@@ -150,25 +242,19 @@ async function readCacheRecords(path: string, context: CacheQueryContext): Promi
   const records: CacheRecord[] = []
   const lines = file.text.split(/\r?\n/).filter((line) => line.trim().length > 0)
 
-  for (const [index, line] of lines.entries()) {
+  for (const line of lines) {
     try {
       const parsedJson: unknown = JSON.parse(line)
       const parsedRecord = cacheRecordSchema.safeParse(parsedJson)
 
       if (!parsedRecord.success) {
-        return invalidCacheFailure({
-          context,
-          message: `Nationwide cache record ${index + 1} is malformed at ${path}.`,
-        })
+        return invalidCacheFailure()
       }
 
       records.push(parsedRecord.data)
     } catch (error: unknown) {
       if (error instanceof SyntaxError) {
-        return invalidCacheFailure({
-          context,
-          message: `Nationwide cache record ${index + 1} is not valid JSON at ${path}.`,
-        })
+        return invalidCacheFailure()
       }
 
       throw error
@@ -200,7 +286,7 @@ async function getPublishState(path: string, context: CacheQueryContext): Promis
       mode: "live",
       failure: {
         code: "missing_configuration",
-        message: `Nationwide cache refresh is in progress at ${context.cacheDir}. Retry after the ETL publish completes.`,
+        message: "Nationwide cache refresh is in progress. Retry shortly.",
         retryable: true,
       },
     }
@@ -219,24 +305,23 @@ function getCacheFreshness(input: {
   readonly now: Date
   readonly context: CacheQueryContext
 }): { readonly ok: true } | { readonly ok: false; readonly mode: "live"; readonly failure: ToolFailure } {
-  const generatedAtMs = Date.parse(input.generatedAt)
+  const freshness = assessCacheFreshness({
+    generatedAt: input.generatedAt,
+    now: input.now,
+    ttlHours: input.ttlHours,
+  })
 
-  if (!Number.isFinite(generatedAtMs)) {
-    return invalidCacheFailure({
-      context: input.context,
-      message: `Nationwide cache metadata has an invalid generated_at timestamp in ${input.context.cacheDir}.`,
-    })
+  if (freshness.status === "invalid") {
+    return invalidCacheFailure()
   }
 
-  const expiresAtMs = generatedAtMs + input.ttlHours * 60 * 60 * 1_000
-
-  if (expiresAtMs < input.now.getTime()) {
+  if (freshness.status === "stale") {
     return {
       ok: false,
       mode: "live",
       failure: {
         code: "missing_configuration",
-        message: `Nationwide cache is stale at ${input.context.cacheDir}. ${buildCacheRecoverySentence(input.context)}`,
+        message: "Nationwide cache is stale. Retry after the service cache is refreshed.",
         retryable: false,
       },
     }
@@ -245,25 +330,25 @@ function getCacheFreshness(input: {
   return { ok: true }
 }
 
-function missingCacheFailure(context: CacheQueryContext): CacheQueryFailure {
+function missingCacheFailure(_context: CacheQueryContext): CacheQueryFailure {
   return {
     ok: false,
     mode: "live",
     failure: {
       code: "missing_configuration",
-      message: `Nationwide cache is missing at ${context.cacheDir}. ${buildCacheRecoverySentence(context)}`,
+      message: "Nationwide cache is unavailable. Contact the service operator.",
       retryable: false,
     },
   }
 }
 
-function invalidCacheFailure(input: { readonly context: CacheQueryContext; readonly message: string }): CacheQueryFailure {
+function invalidCacheFailure(): CacheQueryFailure {
   return {
     ok: false,
     mode: "live",
     failure: {
       code: "upstream_invalid_response",
-      message: `${input.message} ${buildCacheRecoverySentence(input.context)}`,
+      message: "Nationwide cache failed integrity validation. Contact the service operator.",
       retryable: false,
     },
   }

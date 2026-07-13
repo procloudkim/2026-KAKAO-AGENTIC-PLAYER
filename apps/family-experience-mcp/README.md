@@ -8,7 +8,7 @@
 find_family_experiences
 ```
 
-The tool accepts child age, date or date window, region, indoor/outdoor preference, and optional interests or constraints. It returns compact candidates with source, age-fit basis, warnings, parent confirmation, and next action.
+Every request must provide a location, a date or date range, and exactly one child selector (`child_age` or `child_stage`). Indoor/outdoor preference, interests, and other constraints are optional. The server never invents a location/date default and never widens the requested date range. Missing or conflicting required fields return typed `invalid_input` with exact `missing_fields` and zero source access. Valid requests return compact candidates with source, age-fit basis, warnings, parent confirmation, and next action.
 
 ## Local Setup
 
@@ -19,6 +19,15 @@ npm run scan:secrets
 npm run scan:sources
 npm run scan:claims
 ```
+
+Production build and start:
+
+```bash
+npm run build
+npm run start
+```
+
+`npm run start` executes the compiled `dist/src/server.js`; `dev:http` is development-only.
 
 Fixture-mode local HTTP:
 
@@ -40,14 +49,29 @@ npm run smoke:mcp
 
 ## Environment
 
-Copy `.env.example` to `.env` only for local live-source proof. Do not commit `.env`.
+The production runtime uses the bundled `data/family-experience-cache` with
+`FAMILY_EXPERIENCE_SOURCE_SET=kto_tourapi`. It does not call providers or refresh
+the cache while serving chat requests. Generate a fresh KTO cache outside the
+runtime, run the production-cache gate, then rebuild and redeploy the image. The
+serving container therefore needs no provider key.
 
-Required only for the matching live provider:
+Copy `.env.example` to `.env` only for external live-source proof or cache
+generation. Do not commit `.env`. The production KTO refresh lane requires:
+
+```text
+KTO_TOURAPI_SERVICE_KEY
+```
+
+The KTO adapter reads festival listings from `searchFestival2` and enriches
+them from `detailIntro2`. An age claim is source-stated only when
+`detailIntro2` returns a parseable age limit; otherwise age remains unknown.
+
+The following keys are for registered adapter proof only and are not part of
+the current production source set:
 
 ```text
 SEOUL_OPEN_DATA_KEY
 CULTURE_PORTAL_SERVICE_KEY
-KTO_TOURAPI_SERVICE_KEY
 ```
 
 Optional for confirmed standard-data live endpoint mode:
@@ -57,6 +81,8 @@ PUBLIC_DATA_STANDARD_SERVICE_KEY
 ```
 
 The national culture festival source currently supports local CSV/cache fallback.
+Seoul Open Data remains outside the production path until its HTTPS transport is
+confirmed; production does not weaken the HTTPS-only source policy.
 
 ## Docker / PlayMCP in KC
 
@@ -70,12 +96,21 @@ container_port: 3349
 ```
 
 The container listens on `PORT`, defaulting to `3349`, and sets `HOST=0.0.0.0`.
+It exposes readiness at `/health` and Streamable HTTP MCP at `/mcp`.
+
+The default cache TTL is 24 hours. Provider-specific refresh cadence can be shorter or longer according to `docs/SOURCE_LEDGER.md`, but it does not change the runtime's fail-closed 24-hour default unless an operator explicitly configures the matching refresh schedule.
+
+Public `/health`, MCP errors, and logs expose only bounded status/codes. They do not expose filesystem paths, provider URLs, commands, keys, stack traces, or deployment topology.
 
 Local root-context build:
 
 ```bash
-docker build -f Dockerfile .
+docker build --pull --platform linux/amd64 -f Dockerfile -t <tag> .
 ```
+
+Run that command from the repository root. The container runs as the non-root
+`node` user with `node dist/src/server.js` as PID 1; there is no npm wrapper in
+the shutdown path.
 
 ## Canonical Docs
 

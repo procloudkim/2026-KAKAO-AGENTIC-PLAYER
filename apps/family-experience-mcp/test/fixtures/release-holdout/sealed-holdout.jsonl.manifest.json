@@ -1,0 +1,48 @@
+{
+  "holdout_sha256": "a87aee884bf9597715932f5a13bf0a8bc1841662655935874199511c06603995",
+  "expected_labels_sha256": "3123a8f8d2685e0a62425244b0b25a5a8cad69a82bb4d920ac5a1fbed7b3781e",
+  "author": "independent sealed-holdout curator /root/sealed_holdout_curator",
+  "provenance": "Independently authored synthetic adversarial cases after implementation and evaluator freeze; no implementation, adapters, parser, renderer, existing fixtures, tests, or prior holdouts inspected.",
+  "revealed_after_snapshot": "sha256:fff7d22d9708bce847bed943ac9208d67514c00857353c94a983d4cc58f3efba",
+  "training_ids": [
+    "culture-portal-oneview:starter-seoul-preschool-indoor",
+    "culture-portal-oneview:starter-seoul-infant-museum",
+    "kto-tourapi-events:starter-seoul-school-weekend",
+    "culture-portal-oneview:task-7-busan-weekend",
+    "kto-tourapi-events:task-7-jeju-school-free",
+    "holdout-record-h-pos-1",
+    "holdout-record-h-pos-2"
+  ],
+  "case_ids": [
+    "sealed-c003-p1-seoul-museum-craft",
+    "sealed-c003-p2-busan-school-festival",
+    "sealed-c003-n1-wrong-date-only",
+    "sealed-c003-n2-wrong-city-age",
+    "sealed-c003-n3-unknown-evidence",
+    "sealed-c003-e1-missing-location",
+    "sealed-c003-e2-missing-date",
+    "sealed-c003-e3-missing-child-selector"
+  ],
+  "source_record_ids": [
+    "sealed-c003-p1-match",
+    "sealed-c003-p1-wrong-date",
+    "sealed-c003-p1-wrong-city",
+    "sealed-c003-p1-wrong-age",
+    "sealed-c003-p1-wrong-env",
+    "sealed-c003-p1-wrong-keyword",
+    "sealed-c003-p2-match",
+    "sealed-c003-p2-wrong-date",
+    "sealed-c003-p2-wrong-city",
+    "sealed-c003-p2-wrong-age",
+    "sealed-c003-p2-wrong-env",
+    "sealed-c003-p2-wrong-keyword",
+    "sealed-c003-n1-date-a",
+    "sealed-c003-n1-date-b",
+    "sealed-c003-n2-city",
+    "sealed-c003-n2-age",
+    "sealed-c003-n3-unknown",
+    "sealed-c003-e1-sentinel",
+    "sealed-c003-e2-sentinel",
+    "sealed-c003-e3-sentinel"
+  ]
+}

@@ -1,55 +1,42 @@
 {
-  "generated_at": "2026-07-09T13:55:11.636Z",
+  "generated_at": "2026-07-13T13:44:26.517Z",
   "mode": "write-cache",
-  "fixture": true,
+  "fixture": false,
   "source_set": [
-    "culture_portal",
     "kto_tourapi"
   ],
   "source_ids": [
-    "culture-portal-oneview",
     "kto-tourapi-events"
   ],
   "ttl_hours": 24,
   "max_pages": 1,
   "counts": {
     "failures": 0,
-    "normalized_records": 5,
-    "raw_snapshots": 0
+    "normalized_records": 100,
+    "raw_snapshots": 12
   },
-  "raw_snapshots_present": false,
+  "raw_snapshots_present": true,
   "files": {
     "normalized_records": "normalized-records.jsonl",
     "raw_snapshots": "raw-snapshots.jsonl"
   },
   "source_provenance": [
     {
-      "source": "culture_portal",
-      "source_id": "culture-portal-oneview",
-      "generated_at": "2026-07-09T13:55:11.636Z",
-      "ttl_hours": 24,
-      "mode": "fixture",
-      "ok": true,
-      "records": 3,
-      "raw_snapshots": 0,
-      "raw_snapshot_present": false
-    },
-    {
       "source": "kto_tourapi",
       "source_id": "kto-tourapi-events",
-      "generated_at": "2026-07-09T13:55:11.636Z",
+      "generated_at": "2026-07-13T13:44:26.517Z",
       "ttl_hours": 24,
-      "mode": "fixture",
+      "mode": "live",
       "ok": true,
-      "records": 2,
-      "raw_snapshots": 0,
-      "raw_snapshot_present": false
+      "records": 100,
+      "raw_snapshots": 12,
+      "raw_snapshot_present": true
     }
   ],
   "schema_version": 2,
-  "publish_id": "cache-17396-1783605311637-226a1099-b28f-4803-9c54-18cd3f5bf740",
+  "publish_id": "cache-57136-1783950278063-2e8dda54-57df-4cc6-90a4-b19d1a9f20a6",
   "file_digests": {
-    "normalized_records_sha256": "b9f5c4a15bf03dc8496e396a3ca2a76377f26725379704b4cf3b349dd3be1be2",
-    "raw_snapshots_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "normalized_records_sha256": "b104a962e1555dd0f556567b94260bc1ad773b07c5162ecef112176806fba880",
+    "raw_snapshots_sha256": "19fcf80b656d323456f1d38394aceeb9a7c9bf66383a77e48c0d397cd764bed6"
   }
 }

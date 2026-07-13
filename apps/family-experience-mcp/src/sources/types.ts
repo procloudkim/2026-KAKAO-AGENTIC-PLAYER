@@ -42,6 +42,7 @@ export const SOURCE_CLAIMS = [
   "event_listing_presence",
   "event_date",
   "venue",
+  "age_target",
   "source_url",
   "source_freshness",
 ] as const
@@ -127,6 +128,7 @@ export type ParentCheck = {
 export type FamilyExperienceSourceRecord = {
   readonly id: string
   readonly raw_snapshot_id: string
+  readonly age_evidence_snapshot_id?: string
   readonly mode: ToolMode
   readonly title: string
   readonly city: string
@@ -164,6 +166,11 @@ export type RawSourceSnapshot = {
   readonly retrieved_at: string
   readonly request_hash: string
   readonly payload_ref: string
+  readonly response_sha256?: string
+  readonly evidence?: {
+    readonly content_id?: string
+    readonly age_limit?: string
+  }
 }
 
 export type SourceAdapterRequest = {

@@ -1,11 +1,11 @@
-import { mkdtemp, rm } from "node:fs/promises"
+import { mkdtemp, rm, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
 import { describe, expect, it } from "vitest"
 
 import type { FamilyExperienceConfig } from "../src/config.js"
-import { buildMetadata, writeCache } from "../src/etl/cache.js"
+import { buildMetadata, ETL_CACHE_FILES, writeCache } from "../src/etl/cache.js"
 import { getHealthStatus } from "../src/health.js"
 import type { FamilyExperienceSourceRecord } from "../src/sources/types.js"
 
@@ -54,7 +54,7 @@ function healthCacheRecord(): FamilyExperienceSourceRecord {
     fee_text: "Confirm at the source before visiting.",
     tags: ["busan", "preschool"],
     suitability: "happy_prompt_match",
-    fixture_notice: "",
+    fixture_notice: "Synthetic health test fixture; not a live listing.",
   }
 }
 
@@ -80,7 +80,7 @@ async function writeHealthCache(input: {
 }
 
 describe("family experience health cache status", () => {
-  it("reports stale live cache without fixture refresh guidance", async () => {
+  it("PIN:NO_INTERNAL_DISCLOSURE reports stale cache without operator internals", async () => {
     // Given: a cache exists but is older than its TTL.
     const cacheDir = await tempCacheDir()
 
@@ -94,14 +94,120 @@ describe("family experience health cache status", () => {
       // When: health is rendered for public-beta live configuration.
       const health = getHealthStatus({ ...liveConfig, etlCacheDir: cacheDir })
 
-      // Then: the cache status is stale and refresh guidance stays on live ETL.
-      expect(health.cache).toMatchObject({
-        status: "stale",
+      // Then: the public status is useful without revealing paths, topology, URLs, or commands.
+      expect(health.ok).toBe(false)
+      expect(health.cache).toMatchObject({ status: "stale" })
+      const publicHealth = JSON.stringify(health)
+      expect(publicHealth).not.toContain(cacheDir)
+      expect(publicHealth).not.toContain(liveConfig.seoulOpenDataBaseUrl)
+      expect(publicHealth).not.toMatch(/[A-Za-z]:[\\/]|--write-cache|refreshCommand|cacheDir/i)
+    } finally {
+      await rm(cacheDir, { recursive: true, force: true })
+    }
+  })
+
+  it("reports ready only for a fresh live cache", async () => {
+    // Given: a validated live cache is fresh and fixture mode is disabled.
+    const cacheDir = await tempCacheDir()
+
+    try {
+      await writeHealthCache({
         cacheDir,
-        refreshCommand: expect.stringContaining("--live --write-cache"),
+        generatedAt: new Date().toISOString(),
+        ttlHours: 24,
       })
-      expect(health.cache.refreshCommand).toContain("--source culture_portal")
-      expect(health.cache.refreshCommand).not.toContain("--fixture")
+
+      // When: health is rendered for the production cache.
+      const health = getHealthStatus({ ...liveConfig, etlCacheDir: cacheDir })
+
+      // Then: readiness is true because the actual tool data path is usable.
+      expect(health).toMatchObject({
+        ok: true,
+        cache: { status: "fresh", mode: "live" },
+      })
+    } finally {
+      await rm(cacheDir, { recursive: true, force: true })
+    }
+  })
+
+  it("reports invalid when runtime and cache source sets differ", async () => {
+    const cacheDir = await tempCacheDir()
+
+    try {
+      await writeHealthCache({
+        cacheDir,
+        generatedAt: new Date().toISOString(),
+        ttlHours: 24,
+      })
+
+      const health = getHealthStatus({
+        ...liveConfig,
+        etlCacheDir: cacheDir,
+        sourceSet: ["kto_tourapi"],
+      })
+
+      expect(health).toMatchObject({ ok: false, cache: { status: "invalid" } })
+    } finally {
+      await rm(cacheDir, { recursive: true, force: true })
+    }
+  })
+
+  it("reports invalid when generated_at exceeds the allowed future clock skew", async () => {
+    const cacheDir = await tempCacheDir()
+
+    try {
+      await writeHealthCache({
+        cacheDir,
+        generatedAt: new Date(Date.now() + 6 * 60 * 1_000).toISOString(),
+        ttlHours: 24,
+      })
+
+      const health = getHealthStatus({ ...liveConfig, etlCacheDir: cacheDir })
+
+      expect(health).toMatchObject({ ok: false, cache: { status: "invalid" } })
+    } finally {
+      await rm(cacheDir, { recursive: true, force: true })
+    }
+  })
+
+  it("reports invalid when cache TTL differs from the configured ETL TTL", async () => {
+    const cacheDir = await tempCacheDir()
+
+    try {
+      await writeHealthCache({
+        cacheDir,
+        generatedAt: new Date().toISOString(),
+        ttlHours: 48,
+      })
+
+      const health = getHealthStatus({ ...liveConfig, etlCacheDir: cacheDir, etlTtlHours: 24 })
+
+      expect(health).toMatchObject({ ok: false, cache: { status: "invalid" } })
+    } finally {
+      await rm(cacheDir, { recursive: true, force: true })
+    }
+  })
+
+  it("PIN:CORRUPT_CACHE_UNREADY reports unready when fresh metadata points at a corrupt cache", async () => {
+    // Given: fresh live metadata remains but the normalized cache fails its contract.
+    const cacheDir = await tempCacheDir()
+
+    try {
+      await writeHealthCache({
+        cacheDir,
+        generatedAt: new Date().toISOString(),
+        ttlHours: 24,
+      })
+      await writeFile(join(cacheDir, ETL_CACHE_FILES.normalized), "{}\n", "utf8")
+
+      // When: health validates the deployable cache boundary.
+      const health = getHealthStatus({ ...liveConfig, etlCacheDir: cacheDir })
+
+      // Then: corrupt data cannot be advertised as ready.
+      expect(health).toMatchObject({
+        ok: false,
+        cache: { status: "invalid" },
+      })
     } finally {
       await rm(cacheDir, { recursive: true, force: true })
     }

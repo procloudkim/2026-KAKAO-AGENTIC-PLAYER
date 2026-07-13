@@ -17,7 +17,7 @@ export function smokeRecords(): readonly FamilyExperienceSourceRecord[] {
       indoorOutdoor: "indoor",
       feeText: "Synthetic fixture fee text; confirm with the official source before visiting",
       programText: "Indoor museum atelier for preschool family visits.",
-      tags: ["seoul", "indoor", "museum", "preschool", "cache"],
+      tags: ["seoul", "indoor", "museum", "craft", "preschool", "cache"],
     }),
     smokeRecord({
       sourceId: "culture-portal-oneview",
@@ -32,7 +32,7 @@ export function smokeRecords(): readonly FamilyExperienceSourceRecord[] {
       indoorOutdoor: "indoor",
       feeText: "Synthetic fixture fee text; confirm with the official source before visiting",
       programText: "Indoor baby-friendly museum room for rainy-day family planning.",
-      tags: ["seoul", "indoor", "museum", "infant", "rain", "cache"],
+      tags: ["seoul", "indoor", "museum", "craft", "infant", "rainy_day", "cache"],
     }),
     smokeRecord({
       sourceId: "kto-tourapi-events",
@@ -47,7 +47,7 @@ export function smokeRecords(): readonly FamilyExperienceSourceRecord[] {
       indoorOutdoor: "mixed",
       feeText: "Synthetic fixture fee text; confirm with the official source before visiting",
       programText: "Weekend family experience fair for lower elementary school children.",
-      tags: ["seoul", "school_age", "weekend", "family", "cache"],
+      tags: ["seoul", "school_age", "weekend", "festival", "family", "cache"],
     }),
     smokeRecord({
       sourceId: "culture-portal-oneview",

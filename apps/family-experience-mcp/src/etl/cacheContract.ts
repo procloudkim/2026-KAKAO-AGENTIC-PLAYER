@@ -3,6 +3,7 @@ import { createHash } from "node:crypto"
 import * as z from "zod/v4"
 
 import { FAMILY_EXPERIENCE_SOURCE_SET_VALUES } from "../config.js"
+import { HttpUrlSchema } from "../httpUrl.js"
 import { SOURCE_IDS } from "../sources/types.js"
 import { sourceMap } from "./sourceLoaders.js"
 
@@ -69,6 +70,9 @@ const legacyCacheMetadataSchema = z
 
 export const cacheRecordSchema = z
   .object({
+    id: z.string().trim().min(1),
+    raw_snapshot_id: z.string().trim().min(1),
+    age_evidence_snapshot_id: z.string().trim().min(1).optional(),
     mode: sourceModeSchema,
     city: z.string().trim().min(1),
     date: z.object({ start: z.string().trim().min(1), end: z.string().trim().min(1) }).passthrough(),
@@ -77,15 +81,36 @@ export const cacheRecordSchema = z
     min_child_age: z.number().int().min(0).max(17),
     max_child_age: z.number().int().min(0).max(17),
     parent_check: z.object({ live_status: z.enum(["fixture_not_live", "source_timestamp_required"]) }).passthrough(),
+    confidence: z.object({ age_fit: z.enum(["source-stated", "inferred", "unknown"]) }).passthrough(),
+    target_age_text: z.string().max(512),
     source: z
       .object({
         id: z.enum(SOURCE_IDS),
         mode: sourceModeSchema,
-        url: z.string().url(),
+        url: HttpUrlSchema,
+        raw_snapshot_id: z.string().trim().min(1),
       })
       .passthrough(),
   })
   .passthrough()
+
+export const cacheRawSnapshotSchema = z
+  .object({
+    snapshot_id: z.string().trim().min(1).max(512),
+    source_id: z.enum(SOURCE_IDS),
+    retrieved_at: z.iso.datetime(),
+    request_hash: z.string().trim().min(1).max(128),
+    payload_ref: z.string().trim().min(1).max(128),
+    response_sha256: hexSha256Schema.optional(),
+    evidence: z
+      .object({
+        content_id: z.string().trim().min(1).max(128).optional(),
+        age_limit: z.string().trim().min(1).max(512).optional(),
+      })
+      .strict()
+      .optional(),
+  })
+  .strict()
 
 type LegacyFixtureCacheMetadata = {
   readonly schema_version?: undefined
@@ -113,6 +138,7 @@ type LegacyFixtureCacheMetadata = {
 
 export type CacheMetadata = z.infer<typeof cacheMetadataSchema> | LegacyFixtureCacheMetadata
 export type CacheRecord = z.infer<typeof cacheRecordSchema>
+export type CacheRawSnapshot = z.infer<typeof cacheRawSnapshotSchema>
 
 type CacheContractValidationResult = { readonly ok: true } | { readonly ok: false; readonly message: string }
 
@@ -167,6 +193,14 @@ export function validateCacheContract(input: {
   const recordCount = input.records.length
   const expectedRawSnapshotPresence = rawSnapshotCount > 0
 
+  if (input.metadata.files.normalized_records !== "normalized-records.jsonl") {
+    return contractFailure("metadata normalized records filename is invalid")
+  }
+
+  if (input.metadata.files.raw_snapshots !== "raw-snapshots.jsonl") {
+    return contractFailure("metadata raw snapshots filename is invalid")
+  }
+
   if (input.metadata.counts.normalized_records !== recordCount) {
     return contractFailure("metadata normalized record count does not match normalized-records.jsonl")
   }
@@ -182,6 +216,16 @@ export function validateCacheContract(input: {
     return contractFailure("metadata raw snapshot presence does not match raw-snapshots.jsonl")
   }
 
+  const rawSnapshotResult = parseRawSnapshots(input.rawSnapshotsText)
+  if (!rawSnapshotResult.ok) {
+    return rawSnapshotResult
+  }
+
+  const rawLinkResult = validateRawSnapshotLinks(input.records, rawSnapshotResult.snapshots)
+  if (!rawLinkResult.ok) {
+    return rawLinkResult
+  }
+
   const fileDigestResult = validateFileDigests(input)
   if (!fileDigestResult.ok) {
     return fileDigestResult
@@ -195,6 +239,95 @@ export function validateCacheContract(input: {
   const sourceResult = validateSourceContract(input.metadata)
   if (!sourceResult.ok) {
     return sourceResult
+  }
+
+  return { ok: true }
+}
+
+export function parseCacheRawSnapshots(text: string): readonly CacheRawSnapshot[] | undefined {
+  const parsed = parseRawSnapshots(text)
+  return parsed.ok ? parsed.snapshots : undefined
+}
+
+function parseRawSnapshots(text: string):
+  | { readonly ok: true; readonly snapshots: readonly CacheRawSnapshot[] }
+  | { readonly ok: false; readonly message: string } {
+  const snapshots: CacheRawSnapshot[] = []
+  for (const line of text.split(/\r?\n/u).filter((entry) => entry.trim().length > 0)) {
+    let rawSnapshot: unknown
+    try {
+      rawSnapshot = JSON.parse(line)
+    } catch {
+      return { ok: false, message: "raw-snapshots.jsonl contains invalid JSON" }
+    }
+    const parsed = cacheRawSnapshotSchema.safeParse(rawSnapshot)
+    if (!parsed.success) {
+      return { ok: false, message: "raw-snapshots.jsonl contains an invalid snapshot" }
+    }
+    snapshots.push(parsed.data)
+  }
+  if (new Set(snapshots.map((snapshot) => snapshot.snapshot_id)).size !== snapshots.length) {
+    return { ok: false, message: "raw-snapshots.jsonl contains duplicate snapshot ids" }
+  }
+  return { ok: true, snapshots }
+}
+
+function validateRawSnapshotLinks(
+  records: readonly CacheRecord[],
+  snapshots: readonly CacheRawSnapshot[],
+): CacheContractValidationResult {
+  const snapshotsById = new Map(snapshots.map((snapshot) => [snapshot.snapshot_id, snapshot]))
+  if (snapshots.length > 0) {
+    for (const record of records) {
+      if (record.raw_snapshot_id !== record.source.raw_snapshot_id) {
+        return contractFailure("cache record raw snapshot references are inconsistent")
+      }
+      const baseSnapshot = snapshotsById.get(record.raw_snapshot_id)
+      if (baseSnapshot === undefined || baseSnapshot.source_id !== record.source.id) {
+        return contractFailure("cache record points to a missing or wrong-source raw snapshot")
+      }
+    }
+  }
+
+  for (const snapshot of snapshots) {
+    if (snapshot.source_id !== "kto-tourapi-events") {
+      continue
+    }
+    if (snapshot.response_sha256 === undefined) {
+      return contractFailure("KTO raw snapshot response SHA-256 is required")
+    }
+    if (
+      snapshot.payload_ref === "detailIntro2" &&
+      (snapshot.evidence?.content_id === undefined || snapshot.evidence.age_limit === undefined)
+    ) {
+      return contractFailure("KTO detailIntro2 raw snapshot requires content and age evidence")
+    }
+  }
+
+  for (const record of records) {
+    if (
+      record.mode !== "live" ||
+      record.source.id !== "kto-tourapi-events" ||
+      record.confidence.age_fit !== "source-stated"
+    ) {
+      continue
+    }
+    const evidenceSnapshot = record.age_evidence_snapshot_id === undefined
+      ? undefined
+      : snapshotsById.get(record.age_evidence_snapshot_id)
+    const expectedContentId = record.id.startsWith("kto-tourapi-events:")
+      ? record.id.slice("kto-tourapi-events:".length)
+      : undefined
+    const evidence = evidenceSnapshot?.evidence
+    if (
+      evidenceSnapshot?.source_id !== "kto-tourapi-events" ||
+      evidenceSnapshot.payload_ref !== "detailIntro2" ||
+      evidenceSnapshot.response_sha256 === undefined ||
+      evidence?.content_id !== expectedContentId ||
+      evidence?.age_limit !== record.target_age_text
+    ) {
+      return contractFailure("KTO source-stated age record is not bound to matching detailIntro2 evidence")
+    }
   }
 
   return { ok: true }
@@ -251,6 +384,26 @@ function validateSourceContract(metadata: CacheMetadata): CacheContractValidatio
   const sourceRecordTotal = metadata.source_provenance.reduce((total, source) => total + source.records, 0)
   const sourceRawSnapshotTotal = metadata.source_provenance.reduce((total, source) => total + source.raw_snapshots, 0)
   const sourceFailureTotal = metadata.source_provenance.filter((source) => !source.ok).length
+  const expectedMode = metadata.fixture ? "fixture" : "live"
+
+  if (
+    metadata.source_provenance.some(
+      (source) =>
+        source.generated_at !== metadata.generated_at ||
+        source.ttl_hours !== metadata.ttl_hours ||
+        source.mode !== expectedMode,
+    )
+  ) {
+    return contractFailure("source-level provenance freshness or mode does not match metadata")
+  }
+
+  if (
+    metadata.source_provenance.some(
+      (source) => (source.ok && source.failure_code !== undefined) || (!source.ok && source.failure_code === undefined),
+    )
+  ) {
+    return contractFailure("source-level provenance failure status is inconsistent")
+  }
 
   if (sourceRecordTotal !== metadata.counts.normalized_records) return contractFailure("source-level record counts do not match metadata total")
 

@@ -1,7 +1,8 @@
 import type { CallToolResult } from "@modelcontextprotocol/server"
 
 import { loadFamilyExperienceConfig, type FamilyExperienceConfig } from "./config.js"
-import { loadSourceRecords, toSourceAdapterRequest, type SourceRecordsResult } from "./mcpSourceRecords.js"
+import type { NationwideCacheSnapshotStore } from "./etl/cacheQuery.js"
+import { loadSourceRecords, toSourceAdapterRequest } from "./mcpSourceRecords.js"
 import {
   recordToolCall,
   silentOperationalLogger,
@@ -9,7 +10,7 @@ import {
   type OperationalToolName,
 } from "./observability.js"
 import {
-  summarizeSuccess,
+  toBoundedToolSuccess,
   toKoreanFailureText,
   toToolError,
 } from "./findFamilyExperienceToolResponse.js"
@@ -18,15 +19,13 @@ import { parseLooseFamilyPrompt } from "./promptParser.js"
 import {
   FindFamilyExperiencesHandlerInputSchema,
   FindFamilyExperiencesInputSchema,
-  FindFamilyExperiencesStructuredContentSchema,
   type FindFamilyExperiencesInput,
 } from "./schemas.js"
 import type { FamilyExperienceSourceAdapter } from "./sources/types.js"
 import type { ToolFailure } from "./types.js"
 
-const noResultsExpandedDateEnd = "2026-08-31"
-
 export type FindFamilyExperiencesToolOptions = {
+  readonly cacheSnapshotStore?: NationwideCacheSnapshotStore
   readonly config?: FamilyExperienceConfig
   readonly logger?: OperationalLogger
   readonly toolName?: OperationalToolName
@@ -60,18 +59,19 @@ export async function callFindFamilyExperiences(
     return toToolError({
       mode: config.allowFixture ? "fixture" : "live",
       failure,
-      text: toKoreanFailureText({
-        code: "invalid_input",
-        message: "Provide exactly one of child_age or child_stage.",
-        retryable: false,
-      }),
+      text: toKoreanFailureText(failure),
     })
   }
 
   const normalizedInput = normalizeMcpInput(parsedMcpInput.data)
 
   if (!normalizedInput.ok) {
-    const failure: ToolFailure = { code: "invalid_input", message: normalizedInput.reason, retryable: false }
+    const failure: ToolFailure = {
+      code: "invalid_input",
+      message: normalizedInput.reason,
+      retryable: false,
+      ...(normalizedInput.missing_fields === undefined ? {} : { missing_fields: normalizedInput.missing_fields }),
+    }
     recordToolCall({
       logger,
       name: toolName,
@@ -83,32 +83,18 @@ export async function callFindFamilyExperiences(
     return toToolError({
       mode: config.allowFixture ? "fixture" : "live",
       failure,
-      text: toKoreanFailureText({ code: "invalid_input", message: normalizedInput.reason, retryable: false }),
+      text: toKoreanFailureText(failure),
     })
   }
 
-  let sourceResult = await loadSourceRecords({
+  const sourceResult = await loadSourceRecords({
     input: toSourceAdapterRequest(normalizedInput.input),
     config,
+    ...(options.cacheSnapshotStore === undefined
+      ? {}
+      : { cacheSnapshotStore: options.cacheSnapshotStore }),
     sourceAdapter: options.sourceAdapter,
   })
-  let renderInput = normalizedInput.input
-  let searchNotice: string | undefined
-
-  if (!sourceResult.ok) {
-    const expanded = await retryWithExpandedDateRange({
-      input: normalizedInput.input,
-      sourceResult,
-      config,
-      sourceAdapter: options.sourceAdapter,
-    })
-    if (expanded !== undefined) {
-      sourceResult = expanded.sourceResult
-      renderInput = expanded.input
-      searchNotice = expanded.notice
-    }
-  }
-
   if (!sourceResult.ok) {
     recordToolCall({
       logger,
@@ -126,10 +112,10 @@ export async function callFindFamilyExperiences(
   }
 
   const rendered = renderFamilyExperienceResponse({
-    input: renderInput,
+    input: normalizedInput.input,
     mode: sourceResult.mode,
     source_records: sourceResult.records,
-    indoor_outdoor_preference: "indoor",
+    indoor_outdoor_preference: normalizedInput.input.indoor_outdoor_preference,
   })
 
   if (!rendered.ok) {
@@ -148,123 +134,76 @@ export async function callFindFamilyExperiences(
     })
   }
 
-  const structuredContent = FindFamilyExperiencesStructuredContentSchema.parse({
-    ok: true,
-    mode: rendered.mode,
-    candidates: rendered.candidates.map((candidate) => ({
-      id: candidate.id,
-      title: candidate.title,
-      location: candidate.location,
-      date_time: candidate.date_time,
-      venue: candidate.venue,
-      address: candidate.address,
-      starts_at: candidate.starts_at,
-      source: candidate.source,
-      tags: [...candidate.tags],
-      age_fit_label: candidate.age_fit_label,
-      age_fit_reason: candidate.age_fit_reason,
-      indoor_outdoor: candidate.indoor_outdoor,
-      child_stages: [...candidate.child_stages],
-      description: candidate.description,
-      ends_at: candidate.ends_at,
-      fee_text: candidate.fee_text,
-      source_name: candidate.source_name,
-      source_url: candidate.source_url,
-      retrieved_at: candidate.retrieved_at,
-      confidence: candidate.confidence,
-      mode: candidate.mode,
-      warnings: candidate.warnings,
-      source_summary: candidate.source_summary,
-      parent_check: candidate.parent_check,
-      next_action: candidate.next_action,
-      max_child_age: candidate.max_child_age,
-      min_child_age: candidate.min_child_age,
-      ...(candidate.reservation_url === undefined
-        ? {}
-        : { reservation_url: candidate.reservation_url }),
-      ...(candidate.contact === undefined ? {} : { contact: candidate.contact }),
-    })),
-  })
+  const toolResponse = toBoundedToolSuccess(rendered)
+
+  if (!toolResponse.ok) {
+    recordToolCall({
+      logger,
+      name: toolName,
+      mode: rendered.mode,
+      latencyMs: Date.now() - startedAt,
+      candidateCount: 0,
+      failure: toolResponse.failure,
+    })
+    return toolResponse.result
+  }
 
   recordToolCall({
     logger,
     name: toolName,
     mode: rendered.mode,
     latencyMs: Date.now() - startedAt,
-    candidateCount: rendered.candidates.length,
+    candidateCount: toolResponse.candidateCount,
   })
 
-  return {
-    content: [{ type: "text", text: summarizeSuccess(rendered, searchNotice) }],
-    structuredContent,
-  }
-}
-
-type ExpandedDateRetryResult = {
-  readonly input: FindFamilyExperiencesInput
-  readonly sourceResult: SourceRecordsResult & { readonly ok: true }
-  readonly notice: string
-}
-
-async function retryWithExpandedDateRange(input: {
-  readonly input: FindFamilyExperiencesInput
-  readonly sourceResult: SourceRecordsResult
-  readonly config: FamilyExperienceConfig
-  readonly sourceAdapter: FamilyExperienceSourceAdapter | undefined
-}): Promise<ExpandedDateRetryResult | undefined> {
-  if (input.sourceResult.ok || input.sourceResult.failure.code !== "no_results") {
-    return undefined
-  }
-
-  if (input.input.date_range.end >= noResultsExpandedDateEnd) {
-    return undefined
-  }
-
-  const expandedInput = {
-    ...input.input,
-    date_range: {
-      start: input.input.date_range.start,
-      end: noResultsExpandedDateEnd,
-    },
-  }
-  const sourceResult = await loadSourceRecords({
-    input: toSourceAdapterRequest(expandedInput),
-    config: input.config,
-    sourceAdapter: input.sourceAdapter,
-  })
-
-  if (!sourceResult.ok) {
-    return undefined
-  }
-
-  return {
-    input: expandedInput,
-    sourceResult,
-    notice: `요청한 날짜 범위에서는 근거 있는 후보가 없어 ${noResultsExpandedDateEnd}까지 날짜 범위를 넓혀 찾았습니다.`,
-  }
+  return toolResponse.result
 }
 
 type NormalizeMcpInputResult =
   | { readonly ok: true; readonly input: FindFamilyExperiencesInput }
-  | { readonly ok: false; readonly reason: string }
+  | { readonly ok: false; readonly reason: string; readonly missing_fields?: readonly string[] }
 
 function normalizeMcpInput(input: ReturnType<typeof FindFamilyExperiencesHandlerInputSchema.parse>): NormalizeMcpInputResult {
   if ("prompt" in input && input.prompt !== undefined) {
     const parsedPrompt = parseLooseFamilyPrompt(input.prompt)
+    const missingFields = parsedPrompt.ok
+      ? undefined
+      : parsedPrompt.missing_fields ??
+        (parsedPrompt.reason === "missing_child_selector" ? ["child_selector"] : undefined)
     return parsedPrompt.ok
       ? { ok: true, input: parsedPrompt.input }
-      : { ok: false, reason: parsedPrompt.reason }
+      : {
+          ok: false,
+          reason: parsedPrompt.reason,
+          ...(missingFields === undefined ? {} : { missing_fields: missingFields }),
+        }
   }
 
-  if (!("location" in input) || !("date_range" in input)) {
-    return { ok: false, reason: "Provide prompt or structured location/date_range fields." }
+  const location = "location" in input ? input.location : undefined
+  const dateRange = "date_range" in input ? input.date_range : undefined
+  const childAge = "child_age" in input ? input.child_age : undefined
+  const childStage = "child_stage" in input ? input.child_stage : undefined
+  const missingFields = [
+    ...(location === undefined ? ["location"] : []),
+    ...(dateRange === undefined ? ["date_range"] : []),
+    ...(childAge === undefined && childStage === undefined ? ["child_selector"] : []),
+  ]
+  if (missingFields.length > 0) {
+    return {
+      ok: false,
+      reason: "Provide location, date_range, and exactly one child selector.",
+      missing_fields: missingFields,
+    }
   }
 
   const parsedStructuredInput = FindFamilyExperiencesInputSchema.safeParse({
-    location: input.location,
-    date_range: input.date_range,
-    child_age: input.child_age,
-    child_stage: input.child_stage,
+    location,
+    date_range: dateRange,
+    child_age: childAge,
+    child_stage: childStage,
+    indoor_outdoor_preference:
+      "indoor_outdoor_preference" in input ? input.indoor_outdoor_preference : undefined,
+    keywords: "keywords" in input ? input.keywords : undefined,
   })
   return parsedStructuredInput.success
     ? { ok: true, input: parsedStructuredInput.data }

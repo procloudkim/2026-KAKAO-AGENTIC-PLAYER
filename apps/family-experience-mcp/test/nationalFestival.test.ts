@@ -192,6 +192,9 @@ describe("National culture festival standard dataset adapter", () => {
     expect(record.city.length).toBeGreaterThan(0)
     expect(record.program_text.length).toBeGreaterThan(0)
     expect(record.source.url.length).toBeGreaterThan(0)
+    expect(
+      success.records.every((candidate) => /^https?:\/\//iu.test(candidate.source.url)),
+    ).toBe(true)
   })
 
   it("loads CSV rows for 2025~2026 nationwide search range", async () => {

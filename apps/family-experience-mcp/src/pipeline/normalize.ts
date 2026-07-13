@@ -69,6 +69,21 @@ export type NormalizeFamilyExperienceRecordsResult =
 export function normalizeFamilyExperienceRecords(
   request: NormalizeFamilyExperienceRecordsRequest,
 ): NormalizeFamilyExperienceRecordsResult {
+  const normalized = normalizeFamilyExperienceRecordCandidates(request)
+
+  if (!normalized.ok) {
+    return normalized
+  }
+
+  return {
+    ok: true,
+    candidates: dedupeFamilyExperienceCandidates(normalized.candidates),
+  }
+}
+
+export function normalizeFamilyExperienceRecordCandidates(
+  request: NormalizeFamilyExperienceRecordsRequest,
+): NormalizeFamilyExperienceRecordsResult {
   const candidates: NormalizedFamilyExperienceCandidate[] = []
 
   for (const [sourceOrder, rawRecord] of request.source_records.entries()) {
@@ -88,7 +103,7 @@ export function normalizeFamilyExperienceRecords(
 
   return {
     ok: true,
-    candidates: dedupeFamilyExperienceCandidates(candidates),
+    candidates,
   }
 }
 

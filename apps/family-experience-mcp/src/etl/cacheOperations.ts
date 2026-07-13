@@ -15,7 +15,7 @@ export function buildCacheRefreshCommand(input: CacheRefreshCommandInput): strin
 }
 
 export function buildCacheRecoverySentence(input: CacheRefreshCommandInput): string {
-  return `Run source-specific cache refresh: ${buildCacheRefreshCommand(input)}.`
+  return `Generate the cache outside the runtime container, then rebuild and redeploy: ${buildCacheRefreshCommand(input)}.`
 }
 
 function liveRefreshSource(

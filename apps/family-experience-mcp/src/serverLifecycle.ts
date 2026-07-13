@@ -3,12 +3,12 @@ import { existsSync } from "node:fs"
 import type { Server } from "node:http"
 
 const parentPollIntervalMs = 250
-const forceExitDelayMs = 1_000
 const windowsAncestorProbeTimeoutMs = 5_000
 const msysProbeTimeoutMs = 1_000
 const defaultGitPsPath = "C:\\Program Files\\Git\\usr\\bin\\ps.exe"
 
 type ShutdownReason = "SIGINT" | "SIGTERM" | "parent-exit"
+export type LifecycleMode = "signals_only" | "windows_ancestors"
 
 type MsysProcess = { readonly pid: number; readonly ppid: number; readonly winpid: number }
 
@@ -18,11 +18,86 @@ type AncestorWatchTarget = {
   readonly msysPids: readonly number[]
 }
 
-export function installLifecycleHandlers(server: Server): void {
-  const windowsPids = getWindowsAncestorPids(process.ppid)
-  const msysPids = getMsysAncestorPids(windowsPids)
+type ShutdownTimer = number | NodeJS.Timeout
+
+type GracefulShutdownDependencies = {
+  readonly graceMs: number
+  readonly close: (complete: (error?: Error) => void) => void
+  readonly drain?: () => Promise<void>
+  readonly forceClose: () => void
+  readonly exit: (code: number) => void
+  readonly schedule: (callback: () => void, delayMs: number) => ShutdownTimer
+  readonly cancel: (timer: ShutdownTimer) => void
+}
+
+export function createGracefulShutdown(
+  dependencies: GracefulShutdownDependencies,
+): () => void {
+  let completed = false
+
+  const complete = (forceTimer: ShutdownTimer, error?: Error): void => {
+    if (completed) return
+    completed = true
+    dependencies.cancel(forceTimer)
+    dependencies.exit(error === undefined ? 0 : 1)
+  }
+
+  return () => {
+    const forceTimer = dependencies.schedule(() => {
+      if (completed) return
+      completed = true
+      dependencies.forceClose()
+      dependencies.exit(1)
+    }, dependencies.graceMs)
+
+    dependencies.close((error) => {
+      if (error !== undefined || dependencies.drain === undefined) {
+        complete(forceTimer, error)
+        return
+      }
+
+      void dependencies.drain().then(
+        () => complete(forceTimer),
+        (drainError: unknown) => {
+          complete(
+            forceTimer,
+            drainError instanceof Error ? drainError : new Error("Server drain failed."),
+          )
+        },
+      )
+    })
+  }
+}
+
+export function lifecycleModeForPlatform(platform: NodeJS.Platform): LifecycleMode {
+  return platform === "win32" ? "windows_ancestors" : "signals_only"
+}
+
+export function installLifecycleHandlers(
+  server: Server,
+  graceMs: number,
+  drain?: () => Promise<void>,
+): void {
+  const lifecycleMode = lifecycleModeForPlatform(process.platform)
+  const windowsPids =
+    lifecycleMode === "windows_ancestors" ? getWindowsAncestorPids(process.ppid) : []
+  const msysPids =
+    lifecycleMode === "windows_ancestors" ? getMsysAncestorPids(windowsPids) : []
   let shutdownStarted = false
   let stopAncestorWatcher: () => void = () => {}
+  const gracefulShutdown = createGracefulShutdown({
+    graceMs,
+    close: (complete) => server.close(complete),
+    ...(drain === undefined ? {} : { drain }),
+    forceClose: () => server.closeAllConnections(),
+    exit: (code) => process.exit(code),
+    schedule: (callback, delayMs) => {
+      const timer = setTimeout(callback, delayMs)
+      timer.unref()
+      return timer
+    },
+    cancel: (timer) => clearTimeout(timer),
+  })
 
   const shutdown = (reason: ShutdownReason): void => {
     if (shutdownStarted) {
@@ -33,26 +108,17 @@ export function installLifecycleHandlers(server: Server): void {
     stopAncestorWatcher()
     console.log(`family-experience-mcp shutting down: ${reason}`)
 
-    const forceExitTimer = setTimeout(() => {
-      process.exit(process.exitCode ?? 0)
-    }, forceExitDelayMs)
-    forceExitTimer.unref()
-
-    server.close((error?: Error) => {
-      clearTimeout(forceExitTimer)
-
-      if (error !== undefined) {
-        console.error(`family-experience-mcp shutdown error: ${error.message}`)
-        process.exitCode = 1
-      }
-
-      process.exit(process.exitCode ?? 0)
-    })
+    gracefulShutdown()
   }
 
-  stopAncestorWatcher = watchAncestorProcesses({ seedWindowsPid: process.ppid, windowsPids, msysPids }, () => {
-    shutdown("parent-exit")
-  })
+  if (lifecycleMode === "windows_ancestors") {
+    stopAncestorWatcher = watchAncestorProcesses(
+      { seedWindowsPid: process.ppid, windowsPids, msysPids },
+      () => {
+        shutdown("parent-exit")
+      },
+    )
+  }
 
   const handleSigint = (): void => {
     shutdown("SIGINT")
@@ -68,19 +134,6 @@ export function installLifecycleHandlers(server: Server): void {
     process.off("SIGINT", handleSigint)
     process.off("SIGTERM", handleSigterm)
   })
-}
-
-function isProcessAlive(pid: number): boolean {
-  try {
-    process.kill(pid, 0)
-    return true
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return false
-    }
-
-    throw error
-  }
 }
 
 function getWindowsAncestorPids(pid: number): readonly number[] {
@@ -236,9 +289,7 @@ function watchAncestorProcesses(target: AncestorWatchTarget, onAncestorExit: () 
       msysPids = mergePids(msysPids, discoveredMsysPids)
     }
 
-    const windowsAncestorExited = process.platform !== "win32" && windowsPids.some((ancestorPid) => !isProcessAlive(ancestorPid))
-
-    if (windowsAncestorExited || hasDetachedMsysAncestor(msysPids)) {
+    if (hasDetachedMsysAncestor(msysPids)) {
       onAncestorExit()
     }
   }, parentPollIntervalMs)

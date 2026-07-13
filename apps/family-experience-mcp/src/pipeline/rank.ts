@@ -1,4 +1,8 @@
-import type { FindFamilyExperiencesInput } from "../schemas.js"
+import {
+  canonicalFamilyExperienceKeyword,
+  type FamilyExperienceCanonicalKeyword,
+  type FindFamilyExperiencesInput,
+} from "../schemas.js"
 import type { SourceId } from "../sources/types.js"
 import type { NormalizedFamilyExperienceCandidate } from "./normalize.js"
 
@@ -22,7 +26,9 @@ export function candidateMatchesFamilyRequest(request: CandidateRequestMatchRequ
       end: request.candidate.ends_at,
     }) &&
     getLocationRelevanceScore(request.input.location, request.candidate) > 0 &&
-    matchesChildSelector(request.input, request.candidate)
+    matchesChildSelector(request.input, request.candidate) &&
+    matchesPreference(request.input, request.candidate) &&
+    matchesKeywords(request.input, request.candidate)
   )
 }
 
@@ -51,6 +57,7 @@ function compareCandidates(request: CompareCandidatesRequest): number {
     compareNumber(getDateOverlapPriority(request.input, request.right), getDateOverlapPriority(request.input, request.left)) ||
     compareNumber(getLocationRelevanceScore(request.input.location, request.right), getLocationRelevanceScore(request.input.location, request.left)) ||
     compareNumber(getChildSelectorPriority(request.input, request.right), getChildSelectorPriority(request.input, request.left)) ||
+    compareNumber(getKeywordPriority(request.input, request.right), getKeywordPriority(request.input, request.left)) ||
     compareNumber(getAgeFitPriority(request.right), getAgeFitPriority(request.left)) ||
     compareNumber(getPreferencePriority(request.right, request.indoor_outdoor_preference), getPreferencePriority(request.left, request.indoor_outdoor_preference)) ||
     compareNumber(getSourceConfidenceScore(request.right), getSourceConfidenceScore(request.left)) ||
@@ -60,6 +67,14 @@ function compareCandidates(request: CompareCandidatesRequest): number {
     compareText(request.left.starts_at, request.right.starts_at) ||
     compareNumber(request.left.source_order, request.right.source_order)
   )
+}
+
+function getKeywordPriority(
+  input: FindFamilyExperiencesInput,
+  candidate: NormalizedFamilyExperienceCandidate,
+): number {
+  return supportedRequestedKeywords(input)
+    .filter((keyword) => candidateSupportsKeyword(candidate, keyword)).length
 }
 
 function getDateOverlapPriority(
@@ -93,28 +108,22 @@ function getLocationRelevanceScore(
   location: string,
   candidate: NormalizedFamilyExperienceCandidate,
 ): number {
-  const target = location.toLowerCase()
-  const sourceText =
-    `${candidate.city} ${candidate.venue_name} ${candidate.venue_address}`.toLowerCase()
-
-  if (candidate.venue_address.toLowerCase().includes(target)) {
-    return 4
+  const target = canonicalLocation(location)
+  const city = canonicalLocation(candidate.city)
+  if (target === undefined || city === undefined) {
+    return 0
   }
-
-  if (candidate.city.toLowerCase() === target || sourceText.includes(target)) {
-    return 3
-  }
-
-  return location
-    .toLowerCase()
-    .split(/[\s,]+/)
-    .filter((token) => token.length > 1 && sourceText.includes(token)).length
+  return target === city ? 3 : 0
 }
 
 function matchesChildSelector(
   input: FindFamilyExperiencesInput,
   candidate: NormalizedFamilyExperienceCandidate,
 ): boolean {
+  if (candidate.age_fit_label === "unknown") {
+    return false
+  }
+
   if (input.child_age !== undefined) {
     return input.child_age >= candidate.min_child_age && input.child_age <= candidate.max_child_age
   }
@@ -124,6 +133,105 @@ function matchesChildSelector(
   }
 
   return false
+}
+
+function matchesPreference(
+  input: FindFamilyExperiencesInput,
+  candidate: NormalizedFamilyExperienceCandidate,
+): boolean {
+  return input.indoor_outdoor_preference === undefined ||
+    candidate.indoor_outdoor === input.indoor_outdoor_preference
+}
+
+function matchesKeywords(
+  input: FindFamilyExperiencesInput,
+  candidate: NormalizedFamilyExperienceCandidate,
+): boolean {
+  return supportedRequestedKeywords(input)
+    .every((keyword) => candidateSupportsKeyword(candidate, keyword))
+}
+
+function supportedRequestedKeywords(
+  input: FindFamilyExperiencesInput,
+): readonly FamilyExperienceCanonicalKeyword[] {
+  return [
+    ...new Set(
+      (input.keywords ?? [])
+        .map(canonicalFamilyExperienceKeyword)
+        .filter((keyword) => keyword !== undefined),
+    ),
+  ]
+}
+
+function candidateSupportsKeyword(
+  candidate: NormalizedFamilyExperienceCandidate,
+  keyword: FamilyExperienceCanonicalKeyword,
+): boolean {
+  const taggedKeywords = new Set(
+    candidate.tags
+      .map(canonicalFamilyExperienceKeyword)
+      .filter((taggedKeyword) => taggedKeyword !== undefined),
+  )
+  if (taggedKeywords.has(keyword)) {
+    return true
+  }
+
+  if (
+    keyword === "festival" &&
+    (candidate.source_id === "kto-tourapi-events" ||
+      candidate.source_id === "national-culture-festival-standard")
+  ) {
+    return true
+  }
+
+  const sourceText = [
+    candidate.title,
+    candidate.program_text,
+    candidate.target_age_text,
+    ...candidate.tags,
+  ].join("\n")
+
+  switch (keyword) {
+    case "museum":
+      return /박물관|미술관|전시|\bmuseum\b/iu.test(sourceText)
+    case "performance":
+      return /공연|연극|뮤지컬|\bperformance\b/iu.test(sourceText)
+    case "festival":
+      return /축제|행사|페스타|\bfestival\b/iu.test(sourceText)
+    case "craft":
+      return /공예|만들기|\bcraft\b/iu.test(sourceText)
+    case "free":
+      return /무료|\bfree\b/iu.test(`${candidate.fee_text}\n${sourceText}`)
+    case "rainy_day":
+      return /우천|\brainy[ _-]?day\b/iu.test(sourceText)
+    default:
+      return assertNever(keyword)
+  }
+}
+
+function canonicalLocation(location: string): string | undefined {
+  switch (location.trim().toLowerCase()) {
+    case "seoul":
+    case "서울":
+      return "seoul"
+    case "busan":
+    case "부산":
+    case "busan haeundae":
+    case "부산 해운대":
+      return "busan"
+    case "daegu": case "대구": return "daegu"
+    case "daejeon": case "대전": return "daejeon"
+    case "gwangju": case "광주": return "gwangju"
+    case "incheon": case "인천": return "incheon"
+    case "gyeonggi": case "경기": case "경기도": return "gyeonggi"
+    case "gangwon": case "강원": case "강원도": return "gangwon"
+    case "chungcheong": case "충청": return "chungcheong"
+    case "jeolla": case "전라": case "전라도": return "jeolla"
+    case "gyeongsang": case "경상": case "경상권": return "gyeongsang"
+    case "jeju": case "제주": return "jeju"
+    case "ulsan": case "울산": return "ulsan"
+    default: return undefined
+  }
 }
 
 function getChildSelectorPriority(

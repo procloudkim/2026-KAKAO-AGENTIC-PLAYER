@@ -1,5 +1,8 @@
 import type { FamilyExperienceConfig } from "./config.js"
-import { queryNationwideCache } from "./etl/cacheQuery.js"
+import {
+  queryNationwideCache,
+  type NationwideCacheSnapshotStore,
+} from "./etl/cacheQuery.js"
 import type { FindFamilyExperiencesInput } from "./schemas.js"
 import { fixtureSourceAdapter } from "./sources/fixture.js"
 import { createSeoulCultureSourceAdapter } from "./sources/seoulCulture.js"
@@ -17,6 +20,7 @@ export type SourceRecordsResult =
 export type LoadSourceRecordsRequest = {
   readonly input: SourceAdapterRequest
   readonly config: FamilyExperienceConfig
+  readonly cacheSnapshotStore?: NationwideCacheSnapshotStore
   readonly sourceAdapter: FamilyExperienceSourceAdapter | undefined
 }
 
@@ -30,11 +34,17 @@ export function toSourceAdapterRequest(input: FindFamilyExperiencesInput): Sourc
 }
 
 export async function loadSourceRecords(request: LoadSourceRecordsRequest): Promise<SourceRecordsResult> {
-  if (!request.config.allowFixture && request.config.etlCacheDir !== undefined) {
+  if (request.config.etlCacheDir !== undefined) {
     const cacheResult = await queryNationwideCache({
       allowFixture: request.config.allowFixture,
       cacheDir: request.config.etlCacheDir,
+      ...(request.config.etlTtlHours === undefined
+        ? {}
+        : { expectedTtlHours: request.config.etlTtlHours }),
       request: request.input,
+      ...(request.cacheSnapshotStore === undefined
+        ? {}
+        : { snapshotStore: request.cacheSnapshotStore }),
       ...(request.config.sourceSet === undefined ? {} : { sourceSet: request.config.sourceSet }),
     })
 
@@ -44,6 +54,10 @@ export async function loadSourceRecords(request: LoadSourceRecordsRequest): Prom
         mode: cacheResult.mode,
         records: cacheResult.records,
       }
+    }
+
+    if (!cacheResult.ok && cacheResult.reason === "fixture_not_allowed") {
+      return cacheResult
     }
 
     if (cacheResult.ok && !canFallbackToLiveSource(request)) {
@@ -96,8 +110,16 @@ export async function loadSourceRecords(request: LoadSourceRecordsRequest): Prom
 }
 
 function canFallbackToLiveSource(request: LoadSourceRecordsRequest): boolean {
+  if (request.config.allowFixture) {
+    return true
+  }
+
   if (request.sourceAdapter !== undefined) {
     return true
+  }
+
+  if (!configuredSourceSetAllowsSeoul(request.config)) {
+    return false
   }
 
   if (request.config.seoulOpenDataKey === undefined) {
@@ -117,6 +139,10 @@ function selectSourceAdapter(request: LoadSourceRecordsRequest): FamilyExperienc
     return fixtureSourceAdapter
   }
 
+  if (!configuredSourceSetAllowsSeoul(request.config)) {
+    return undefined
+  }
+
   if (request.config.seoulOpenDataKey === undefined) {
     return undefined
   }
@@ -125,6 +151,10 @@ function selectSourceAdapter(request: LoadSourceRecordsRequest): FamilyExperienc
     baseUrl: request.config.seoulOpenDataBaseUrl,
     apiKey: request.config.seoulOpenDataKey,
   })
+}
+
+function configuredSourceSetAllowsSeoul(config: FamilyExperienceConfig): boolean {
+  return config.sourceSet === undefined || config.sourceSet.includes("seoul")
 }
 
 function toToolFailure(failure: SourceAdapterFailure): ToolFailure {

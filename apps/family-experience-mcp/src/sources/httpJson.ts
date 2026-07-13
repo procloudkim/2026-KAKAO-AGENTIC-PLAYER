@@ -22,7 +22,9 @@ export class SeoulCultureHttpError extends Error {
   }
 }
 
-const defaultTimeoutMs = 5_000
+export const PUBLIC_SOURCE_TOTAL_DEADLINE_MS = 2_500
+const maxProviderResponseBodyBytes = 1_024 * 1_024
+const loopbackHostnames = new Set(["127.0.0.1", "localhost", "[::1]", "::1"])
 
 export function requestSeoulCultureJson(
   request: BuiltSeoulCultureRequest,
@@ -30,17 +32,22 @@ export function requestSeoulCultureJson(
 ): Promise<unknown> {
   const url = new URL(request.url)
   const requester = selectRequester(url)
-  const timeoutMs = options.timeoutMs ?? defaultTimeoutMs
+  const timeoutMs = options.timeoutMs ?? PUBLIC_SOURCE_TOTAL_DEADLINE_MS
 
   if (requester === undefined) {
     return Promise.reject(
-      new SeoulCultureHttpError(`Unsupported protocol for ${request.diagnostics.redacted_url}`),
+      new SeoulCultureHttpError(
+        `HTTPS is required for non-loopback Seoul requests: ${request.diagnostics.redacted_url}`,
+      ),
     )
   }
 
   return new Promise((resolve, reject) => {
     let settled = false
     let clientRequest: ClientRequest | undefined
+    const deadline = setTimeout(() => {
+      fail(new SeoulCultureHttpError(`Seoul culture request timed out: ${request.diagnostics.redacted_url}`))
+    }, timeoutMs)
 
     const fail = (error: Error): void => {
       if (settled) {
@@ -48,6 +55,7 @@ export function requestSeoulCultureJson(
       }
 
       settled = true
+      clearTimeout(deadline)
       clientRequest?.destroy()
       reject(error)
     }
@@ -60,6 +68,7 @@ export function requestSeoulCultureJson(
           }
 
           settled = true
+          clearTimeout(deadline)
           const statusCode = response.statusCode ?? 0
           if (statusCode < 200 || statusCode >= 300) {
             reject(
@@ -78,9 +87,6 @@ export function requestSeoulCultureJson(
         })
     })
 
-    clientRequest.setTimeout(timeoutMs, () => {
-      fail(new SeoulCultureHttpError(`Seoul culture request timed out: ${request.diagnostics.redacted_url}`))
-    })
     clientRequest.on("error", fail)
     clientRequest.end()
   })
@@ -89,7 +95,7 @@ export function requestSeoulCultureJson(
 function selectRequester(url: URL): typeof requestHttp | typeof requestHttps | undefined {
   switch (url.protocol) {
     case "http:":
-      return requestHttp
+      return loopbackHostnames.has(url.hostname) ? requestHttp : undefined
     case "https:":
       return requestHttps
     default:
@@ -98,15 +104,48 @@ function selectRequester(url: URL): typeof requestHttp | typeof requestHttps | u
 }
 
 function readResponseBody(response: IncomingMessage): Promise<string> {
+  const contentLength = response.headers["content-length"]
+  const declaredLength = Number.parseInt(
+    Array.isArray(contentLength) ? (contentLength[0] ?? "") : (contentLength ?? ""),
+    10,
+  )
+  if (Number.isFinite(declaredLength) && declaredLength > maxProviderResponseBodyBytes) {
+    response.destroy()
+    return Promise.reject(new SeoulCultureHttpError("Provider response body is too large."))
+  }
+
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = []
+    let receivedBytes = 0
+    let settled = false
     response.on("data", (chunk: Buffer | string) => {
-      chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk)
+      if (settled) {
+        return
+      }
+
+      const buffer = typeof chunk === "string" ? Buffer.from(chunk) : chunk
+      receivedBytes += buffer.byteLength
+      if (receivedBytes > maxProviderResponseBodyBytes) {
+        settled = true
+        response.destroy()
+        reject(new SeoulCultureHttpError("Provider response body is too large."))
+        return
+      }
+
+      chunks.push(buffer)
     })
     response.on("end", () => {
+      if (settled) {
+        return
+      }
+      settled = true
       resolve(Buffer.concat(chunks).toString("utf8"))
     })
     response.on("error", (error: Error) => {
+      if (settled) {
+        return
+      }
+      settled = true
       reject(error)
     })
   })

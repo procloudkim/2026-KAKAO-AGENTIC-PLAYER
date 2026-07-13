@@ -1,8 +1,19 @@
-.git
-.omo
-.codex
-.agents
-.codegraph
+# The canonical Dockerfile copies only the application build/runtime inputs below.
+**
+!Dockerfile
+!.dockerignore
+!apps/
+!apps/family-experience-mcp/
+!apps/family-experience-mcp/package.json
+!apps/family-experience-mcp/package-lock.json
+!apps/family-experience-mcp/tsconfig.json
+!apps/family-experience-mcp/tsconfig.build.json
+!apps/family-experience-mcp/src/
+!apps/family-experience-mcp/src/**
+!apps/family-experience-mcp/data/
+!apps/family-experience-mcp/data/**
+
+# Never send local configuration, dependencies, build output, or partial cache files.
 **/.env
 **/.env.*
 **/.npmrc
@@ -11,3 +22,6 @@
 **/dist
 **/*.log
 **/npm-debug.log*
+**/.publish-in-progress
+**/*.tmp
+**/.tmp-*

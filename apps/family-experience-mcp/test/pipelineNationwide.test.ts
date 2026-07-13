@@ -8,6 +8,38 @@ import {
 } from "./pipelineTestHelpers.js"
 
 describe("Todo 6 nationwide family experience pipeline", () => {
+  it("PIN:ELIGIBILITY_BEFORE_DEDUPE keeps an eligible duplicate when the canonical primary is ineligible", async () => {
+    // Given: a higher-authority age-ineligible record collides with an eligible official record.
+    const { renderFamilyExperienceResponse } = await loadPipeline()
+    const eligibleRecord = officialRecord()
+    const ineligiblePrimary = officialRecord({
+      id: "seoul-culture-events:busan-child-stage",
+      raw_snapshot_id: "seoul-culture-events:raw:busan-stage",
+      source: sourceReference("seoul-culture-events", "seoul-culture-events:raw:busan-stage"),
+      child_stages: ["school_age"],
+      min_child_age: 8,
+      max_child_age: 12,
+      target_age_text: "School-age children",
+      program_text: "Program for children ages 8 to 12.",
+    })
+
+    // When: the canonical duplicates are rendered for a preschool request.
+    const response = renderFamilyExperienceResponse({
+      input: nationwidePromptInput,
+      mode: "live",
+      source_records: [eligibleRecord, ineligiblePrimary],
+    })
+
+    // Then: eligibility is resolved before canonical-source selection.
+    expect(response.ok).toBe(true)
+    if (!response.ok) {
+      throw new Error(response.failure.message)
+    }
+    expect(response.candidates.map((candidate) => candidate.id)).toEqual([
+      "culture-portal-oneview:busan-child-stage",
+    ])
+  })
+
   it("merges duplicate official records and retains every source reference", async () => {
     // Given: two official sources describe the same title, date, venue, and location.
     const { normalizeFamilyExperienceRecords } = await loadPipeline()
@@ -174,7 +206,7 @@ describe("Todo 6 nationwide family experience pipeline", () => {
         reservation: "confirmation_needed",
         live_status: "source_timestamp_required",
       },
-      target_age_text: "",
+      target_age_text: "Preschool workshop with guardian participation.",
       program_text: "Preschool workshop with guardian participation.",
     })
 

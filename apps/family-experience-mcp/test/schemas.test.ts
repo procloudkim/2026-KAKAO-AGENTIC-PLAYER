@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest"
+import * as z from "zod/v4"
 
-import { FamilyExperienceCandidateSchema, FindFamilyExperiencesInputSchema } from "../src/schemas.js"
+import {
+  DateRangeSchema,
+  FamilyExperienceCandidateSchema,
+  FindFamilyExperiencesHandlerInputSchema,
+  FindFamilyExperiencesInputSchema,
+  FindFamilyExperiencesMcpInputSchema,
+  canonicalFamilyExperienceKeyword,
+} from "../src/schemas.js"
 
 const validDateRange = {
   start: "2026-07-04",
@@ -8,6 +16,57 @@ const validDateRange = {
 }
 
 describe("FindFamilyExperiencesInputSchema", () => {
+  it("documents and accepts unsupported keyword text without treating it as canonical evidence", () => {
+    const parsed = FindFamilyExperiencesInputSchema.safeParse({
+      location: "Seoul",
+      date_range: validDateRange,
+      child_age: 4,
+      keywords: ["  공룡 탐험  "],
+    })
+    const keywordJsonSchema = z.toJSONSchema(FindFamilyExperiencesMcpInputSchema)
+      .properties?.["keywords"]
+
+    expect(parsed).toMatchObject({
+      success: true,
+      data: { keywords: ["공룡 탐험"] },
+    })
+    expect(canonicalFamilyExperienceKeyword("공룡 탐험")).toBeUndefined()
+    expect(keywordJsonSchema).toMatchObject({
+      description: expect.stringContaining("ignored for eligibility"),
+    })
+  })
+
+  it.each([
+    ["축제", "festival"],
+    [" 무료 ", "free"],
+    ["RAINY DAY", "rainy_day"],
+    ["체험", undefined],
+  ])("normalizes only evidence-backed keyword aliases: %s", (keyword, expected) => {
+    expect(canonicalFamilyExperienceKeyword(keyword)).toBe(expected)
+  })
+
+  it.each([
+    { date_range: validDateRange, child_age: 4 },
+    { location: "Seoul", child_age: 4 },
+    { location: "Seoul", date_range: validDateRange },
+    {},
+  ])("PIN:PARTIAL_STRUCTURED_SURFACE accepts incomplete structured input for typed handler errors", (input) => {
+    expect(FindFamilyExperiencesMcpInputSchema.safeParse(input).success).toBe(true)
+  })
+  it("PIN:NO_MIXED_INPUT_CONFUSION rejects prompt plus structured constraints", () => {
+    const parsed = FindFamilyExperiencesHandlerInputSchema.safeParse({
+      prompt: "서울 오늘 4살 체험",
+      location: "Busan",
+      date_range: validDateRange,
+      child_age: 4,
+    })
+    expect(parsed.success).toBe(false)
+  })
+
+  it("PIN:VALID_CALENDAR_DATE rejects impossible dates", () => {
+    const parsed = DateRangeSchema.safeParse({ start: "2026-02-30", end: "2026-02-30" })
+    expect(parsed.success).toBe(false)
+  })
   it("requires child_age or child_stage when both are missing", () => {
     // Given: the required location and date range are present.
     const input = {
@@ -182,5 +241,22 @@ describe("FamilyExperienceCandidateSchema", () => {
 
     // Then: the schema fails closed.
     expect(result.success).toBe(false)
+  })
+
+  it("rejects actionable URLs outside HTTP and HTTPS", () => {
+    // Given: a provider supplies syntactically valid active-content URL schemes.
+    const candidates = [
+      { ...baseCandidate, source: "culture_portal", source_url: "javascript:alert(1)" },
+      {
+        ...baseCandidate,
+        source: "culture_portal",
+        reservation_url: "data:text/html,unsafe",
+      },
+    ]
+
+    // When / Then: both URLs are rejected at the public output boundary.
+    for (const candidate of candidates) {
+      expect(FamilyExperienceCandidateSchema.safeParse(candidate).success).toBe(false)
+    }
   })
 })

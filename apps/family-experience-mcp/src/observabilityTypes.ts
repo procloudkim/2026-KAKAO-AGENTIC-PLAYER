@@ -3,15 +3,13 @@ import type { ToolFailureCode, ToolMode } from "./types.js"
 export const serviceName = "family-experience-mcp"
 export const serviceVersion = "0.1.0"
 
-export type OperationalOutcome = "success" | "failure"
+export type OperationalOutcome = "success" | "failure" | "rate_limited" | "concurrency_limited"
+export type HttpLimitation = "rate_limited" | "concurrency_limited"
 export type OperationalLogLevel = "info" | "warn" | "error"
 export type OperationalLogEvent = "server_start" | "http_request" | "tool_call"
 export type OperationalToolName =
-  | "recommend_family_experiences"
   | "parse_family_experience_request"
-  | "search_family_experience_candidates"
   | "list_family_experience_sources"
-  | "evaluate_family_recommendation_quality"
   | "find_family_experiences"
 
 export type OperationalFailureDiagnostics = {

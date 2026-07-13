@@ -4,19 +4,18 @@ import { resolve } from "node:path"
 import type { FamilyExperienceSourceSetEntry } from "../config.js"
 import { ETL_CACHE_FILES } from "./cache.js"
 import type { CacheMetadata } from "./cacheContract.js"
-import { buildCacheRefreshCommand } from "./cacheOperations.js"
-import { parseCacheMetadata } from "./cacheContract.js"
+import { cacheRecordSchema, parseCacheMetadata, validateCacheContract } from "./cacheContract.js"
+import { assessCacheFreshness } from "./cacheFreshness.js"
 
 type CacheStatusInput = {
   readonly allowFixture: boolean
   readonly cacheDir: string
+  readonly expectedTtlHours?: number
   readonly now?: Date
   readonly sourceSet?: readonly FamilyExperienceSourceSetEntry[]
 }
 
 type CacheStatusBase = {
-  readonly cacheDir: string
-  readonly refreshCommand: string
   readonly source_health: SourceHealthSummary
 }
 
@@ -44,12 +43,11 @@ export type CacheOperationalStatus =
     })
 
 export function getCacheOperationalStatus(input: CacheStatusInput): CacheOperationalStatus {
-  const refreshCommand = buildCacheRefreshCommand(input)
   const metadataPath = resolve(input.cacheDir, ETL_CACHE_FILES.metadata)
+  const normalizedPath = resolve(input.cacheDir, ETL_CACHE_FILES.normalized)
+  const rawSnapshotsPath = resolve(input.cacheDir, ETL_CACHE_FILES.rawSnapshots)
   const publishMarkerPath = resolve(input.cacheDir, ETL_CACHE_FILES.publishMarker)
   const baseStatus = {
-    cacheDir: input.cacheDir,
-    refreshCommand,
     source_health: emptySourceHealth(),
   }
 
@@ -68,28 +66,61 @@ export function getCacheOperationalStatus(input: CacheStatusInput): CacheOperati
       return emptyCacheStatus({ ...baseStatus, status: "invalid" })
     }
 
-    const generatedAtMs = Date.parse(metadata.generated_at)
-
-    if (!Number.isFinite(generatedAtMs)) {
+    if (!sourceSetsMatch(input.sourceSet, metadata.source_set)) {
       return emptyCacheStatus({ ...baseStatus, status: "invalid" })
     }
 
-    const expiresAtMs = generatedAtMs + metadata.ttl_hours * 60 * 60 * 1_000
-    const ageSeconds = Math.max(0, Math.floor(((input.now ?? new Date()).getTime() - generatedAtMs) / 1_000))
+    if (input.expectedTtlHours !== undefined && metadata.ttl_hours !== input.expectedTtlHours) {
+      return emptyCacheStatus({ ...baseStatus, status: "invalid" })
+    }
+
+    if (metadata.fixture && !input.allowFixture) {
+      return emptyCacheStatus({ ...baseStatus, status: "invalid" })
+    }
+
+    if (!existsSync(normalizedPath) || !existsSync(rawSnapshotsPath)) {
+      return emptyCacheStatus({ ...baseStatus, status: "invalid" })
+    }
+
+    const recordsText = readFileSync(normalizedPath, "utf8")
+    const rawSnapshotsText = readFileSync(rawSnapshotsPath, "utf8")
+    const records = recordsText
+      .split(/\r?\n/)
+      .filter((line) => line.trim().length > 0)
+      .map((line) => cacheRecordSchema.safeParse(JSON.parse(line)))
+
+    if (records.some((record) => !record.success)) {
+      return emptyCacheStatus({ ...baseStatus, status: "invalid" })
+    }
+
+    const parsedRecords = records.flatMap((record) => (record.success ? [record.data] : []))
+    const contract = validateCacheContract({ metadata, records: parsedRecords, recordsText, rawSnapshotsText })
+    if (!contract.ok) {
+      return emptyCacheStatus({ ...baseStatus, status: "invalid" })
+    }
+
+    const freshness = assessCacheFreshness({
+      generatedAt: metadata.generated_at,
+      now: input.now ?? new Date(),
+      ttlHours: metadata.ttl_hours,
+    })
+
+    if (freshness.status === "invalid") {
+      return emptyCacheStatus({ ...baseStatus, status: "invalid" })
+    }
+
     const mode: "fixture" | "live" = metadata.fixture ? "fixture" : "live"
     const freshnessBase = {
       ...baseStatus,
-      age_seconds: ageSeconds,
-      expiresAt: new Date(expiresAtMs).toISOString(),
+      age_seconds: freshness.ageSeconds,
+      expiresAt: new Date(freshness.expiresAtMs).toISOString(),
       generated_at: metadata.generated_at,
       mode,
       source_health: sourceHealthFromMetadata(metadata),
       ttl_hours: metadata.ttl_hours,
     }
 
-    return expiresAtMs < (input.now ?? new Date()).getTime()
-      ? { ...freshnessBase, status: "stale" }
-      : { ...freshnessBase, status: "fresh" }
+    return { ...freshnessBase, status: freshness.status }
   } catch (error: unknown) {
     if (error instanceof SyntaxError || error instanceof Error) {
       return emptyCacheStatus({ ...baseStatus, status: "invalid" })
@@ -97,6 +128,16 @@ export function getCacheOperationalStatus(input: CacheStatusInput): CacheOperati
 
     throw error
   }
+}
+
+function sourceSetsMatch(
+  configured: readonly FamilyExperienceSourceSetEntry[] | undefined,
+  cached: readonly FamilyExperienceSourceSetEntry[],
+): boolean {
+  if (configured === undefined) {
+    return true
+  }
+  return [...new Set(configured)].sort().join("\0") === [...new Set(cached)].sort().join("\0")
 }
 
 function emptyCacheStatus(

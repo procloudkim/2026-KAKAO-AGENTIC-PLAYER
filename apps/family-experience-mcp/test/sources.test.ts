@@ -185,6 +185,13 @@ describe("family experience source registry", () => {
     // When/Then: no current source is broad-market eligible by itself.
     expect(tier3Sources).toEqual([])
   })
+
+  it("allows age-target claims only for sources that return explicit age evidence", () => {
+    expect(canSourceSupportAuthorityClaim("seoul-culture-events", "age_target")).toBe(true)
+    expect(canSourceSupportAuthorityClaim("kto-tourapi-events", "age_target")).toBe(true)
+    expect(canSourceSupportAuthorityClaim("culture-portal-oneview", "age_target")).toBe(false)
+    expect(canSourceSupportAuthorityClaim("national-culture-festival-standard", "age_target")).toBe(false)
+  })
 })
 
 describe("fixture family experience source records", () => {

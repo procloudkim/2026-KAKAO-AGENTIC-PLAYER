@@ -51,7 +51,7 @@ function liveSourceResult(
 ): Promise<SourceAdapterResult> {
   const request: SourceAdapterRequest = {
     location: "",
-    date_range: { start: "2026-07-04", end: "2026-07-31" },
+    date_range: { start: "2026-01-01", end: "2026-12-31" },
     child_age: 6,
   }
 
@@ -199,11 +199,13 @@ function liveUnavailable(source: FamilyExperienceSourceSetEntry): SourceAdapterR
   }
 }
 
-async function requestText(url: string): Promise<string> {
+export const ETL_MAX_RESPONSE_BODY_BYTES = 8 * 1024 * 1024
+
+export async function requestText(url: string): Promise<string> {
   const requestUrl = new URL(url)
   const requester = selectRequester(requestUrl)
   if (requester === undefined) {
-    throw new Error(`Unsupported protocol for request: ${requestUrl.protocol}`)
+    throw new Error("Unsupported protocol for ETL source request.")
   }
 
   return new Promise<string>((resolve, reject) => {
@@ -221,8 +223,22 @@ async function requestText(url: string): Promise<string> {
 
     activeRequest = requester(requestUrl, { method: "GET" }, (response: IncomingMessage) => {
       const chunks: Buffer[] = []
+      let receivedBytes = 0
+      const contentLength = Number.parseInt(String(response.headers["content-length"] ?? ""), 10)
+      if (Number.isFinite(contentLength) && contentLength > ETL_MAX_RESPONSE_BODY_BYTES) {
+        response.destroy()
+        fail(new Error("ETL response body is too large."))
+        return
+      }
       response.on("data", (chunk: Buffer | string) => {
-        chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk)
+        const buffer = typeof chunk === "string" ? Buffer.from(chunk) : chunk
+        receivedBytes += buffer.byteLength
+        if (receivedBytes > ETL_MAX_RESPONSE_BODY_BYTES) {
+          response.destroy()
+          fail(new Error("ETL response body is too large."))
+          return
+        }
+        chunks.push(buffer)
       })
       response.on("end", () => {
         if (settled) {
@@ -231,7 +247,7 @@ async function requestText(url: string): Promise<string> {
         const statusCode = response.statusCode ?? 0
         const body = Buffer.concat(chunks).toString("utf8")
         if (statusCode < 200 || statusCode >= 300) {
-          fail(new Error(`request failed with HTTP ${statusCode}: ${requestUrl.href}`))
+          fail(new Error(`ETL source request failed with HTTP ${statusCode}.`))
           return
         }
 
@@ -244,7 +260,7 @@ async function requestText(url: string): Promise<string> {
     })
 
     activeRequest.setTimeout(20_000, () => {
-      fail(new Error(`request timeout after 20 seconds: ${requestUrl.href}`))
+      fail(new Error("ETL source request timed out after 20 seconds."))
     })
     activeRequest.on("error", fail)
     activeRequest.end()

@@ -3,8 +3,8 @@ import type { IncomingMessage } from "node:http"
 export const MCP_REQUEST_TIMEOUT_MS = 10_000
 
 const maxMcpRequestBodyBytes = 64 * 1_024
-const rateLimitWindowMs = 60_000
-const maxMcpRequestsPerWindow = 60
+const maxConcurrentMcpRequests = 32
+const maxRateLimitBuckets = 10_000
 
 type JsonRpcErrorCode = -32700 | -32000 | -32603
 
@@ -18,12 +18,28 @@ export type JsonRpcErrorBody = {
   readonly id: null
 }
 
+export type McpConcurrencyGate = {
+  readonly tryEnter: () => (() => void) | undefined
+}
+
+export type McpRateLimitResult =
+  | { readonly allowed: true }
+  | { readonly allowed: false; readonly retryAfterSeconds: number }
+
+export type McpRateLimiter = {
+  readonly consume: (key: string) => McpRateLimitResult
+}
+
 type RateLimitBucket = {
   readonly windowStartedAtMs: number
   readonly count: number
 }
 
-const rateLimitBuckets = new Map<string, RateLimitBucket>()
+type McpRateLimiterOptions = {
+  readonly limit: number
+  readonly windowMs: number
+  readonly now?: () => number
+}
 
 export class HttpResponseError extends Error {
   readonly statusCode: number
@@ -53,24 +69,60 @@ export function jsonRpcError(
   }
 }
 
-export function isRateLimited(request: IncomingMessage, nowMs: number): boolean {
-  const key = request.socket.remoteAddress ?? "unknown"
-  const current = rateLimitBuckets.get(key)
+export function createMcpConcurrencyGate(
+  limit: number = maxConcurrentMcpRequests,
+): McpConcurrencyGate {
+  let activeRequests = 0
 
-  if (current === undefined || nowMs - current.windowStartedAtMs >= rateLimitWindowMs) {
-    rateLimitBuckets.set(key, { windowStartedAtMs: nowMs, count: 1 })
-    return false
+  return {
+    tryEnter: () => {
+      if (activeRequests >= limit) {
+        return undefined
+      }
+
+      activeRequests += 1
+      let active = true
+      return () => {
+        if (!active) {
+          return
+        }
+        active = false
+        activeRequests -= 1
+      }
+    },
   }
+}
 
-  if (current.count >= maxMcpRequestsPerWindow) {
-    return true
+export function createMcpRateLimiter(options: McpRateLimiterOptions): McpRateLimiter {
+  const buckets = new Map<string, RateLimitBucket>()
+  const now = options.now ?? Date.now
+
+  return {
+    consume: (key) => {
+      const nowMs = now()
+      for (const [candidateKey, bucket] of buckets) {
+        if (nowMs - bucket.windowStartedAtMs >= options.windowMs) buckets.delete(candidateKey)
+      }
+
+      const current = buckets.get(key)
+      if (current === undefined) {
+        if (buckets.size >= maxRateLimitBuckets) {
+          const oldestKey = buckets.keys().next().value
+          if (typeof oldestKey === "string") buckets.delete(oldestKey)
+        }
+        buckets.set(key, { windowStartedAtMs: nowMs, count: 1 })
+        return { allowed: true }
+      }
+
+      if (current.count >= options.limit) {
+        const remainingMs = current.windowStartedAtMs + options.windowMs - nowMs
+        return { allowed: false, retryAfterSeconds: Math.max(1, Math.ceil(remainingMs / 1_000)) }
+      }
+
+      buckets.set(key, { windowStartedAtMs: current.windowStartedAtMs, count: current.count + 1 })
+      return { allowed: true }
+    },
   }
-
-  rateLimitBuckets.set(key, {
-    windowStartedAtMs: current.windowStartedAtMs,
-    count: current.count + 1,
-  })
-  return false
 }
 
 export function readLimitedJsonBody(request: IncomingMessage): Promise<unknown> {

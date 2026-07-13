@@ -2,7 +2,6 @@ import { z } from "zod/v4"
 
 import {
   DEFAULT_FAMILY_EXPERIENCE_ETL_CACHE_DIR,
-  getFamilyExperienceConfigDiagnostics,
   loadFamilyExperienceConfig,
   type FamilyExperienceConfig,
 } from "./config.js"
@@ -16,25 +15,20 @@ import {
 
 const HealthStatusSchema = z
   .object({
-    ok: z.literal(true),
+    ok: z.boolean(),
     name: z.literal("family-experience-mcp"),
     version: z.literal("0.1.0"),
     tools: z.array(z.enum(FAMILY_EXPERIENCE_PUBLIC_TOOLS)).length(FAMILY_EXPERIENCE_PUBLIC_TOOLS.length),
     config: z.object({
-      host: z.string().min(1),
-      port: z.number().int().min(1).max(65_535),
       allowFixture: z.boolean(),
       toolMode: z.enum(["fixture", "live"]),
-      seoulOpenDataBaseUrl: z.string().url(),
-      seoulOpenDataKey: z.enum(["missing", "redacted"]),
+      liveProviderConfigured: z.boolean(),
     }),
     cache: z.object({
       age_seconds: z.number().int().min(0).nullable(),
-      cacheDir: z.string().min(1),
       expiresAt: z.string().optional(),
       generated_at: z.string().nullable(),
       mode: z.enum(["fixture", "live"]).optional(),
-      refreshCommand: z.string().min(1),
       source_health: z.object({
         total_sources: z.number().int().min(0),
         ok_sources: z.number().int().min(0),
@@ -60,9 +54,11 @@ const HealthStatusSchema = z
       deployed_version: z.literal("0.1.0"),
       requests: z.object({
         total: z.number().int().min(0),
+        accepted: z.number().int().min(0),
         succeeded: z.number().int().min(0),
         failed: z.number().int().min(0),
         rate_limited: z.number().int().min(0),
+        concurrency_limited: z.number().int().min(0),
         latency_ms: z.object({
           last: z.number().int().min(0).nullable(),
           p95: z.number().int().min(0).nullable(),
@@ -87,17 +83,28 @@ const HealthStatusSchema = z
 export type HealthStatus = z.infer<typeof HealthStatusSchema>
 
 export function getHealthStatus(config: FamilyExperienceConfig = loadFamilyExperienceConfig()): HealthStatus {
+  const cache = getCacheOperationalStatus({
+    allowFixture: config.allowFixture,
+    cacheDir: config.etlCacheDir ?? DEFAULT_FAMILY_EXPERIENCE_ETL_CACHE_DIR,
+    ...(config.etlTtlHours === undefined ? {} : { expectedTtlHours: config.etlTtlHours }),
+    ...(config.sourceSet === undefined ? {} : { sourceSet: config.sourceSet }),
+  })
+  const ok =
+    cache.status === "fresh" &&
+    (config.allowFixture || cache.mode === "live") &&
+    cache.source_health.ok_sources > 0
+
   return HealthStatusSchema.parse({
-    ok: true,
+    ok,
     name: "family-experience-mcp",
     version: "0.1.0",
     tools: [...FAMILY_EXPERIENCE_PUBLIC_TOOLS],
-    config: getFamilyExperienceConfigDiagnostics(config),
-    cache: getCacheOperationalStatus({
+    config: {
       allowFixture: config.allowFixture,
-      cacheDir: config.etlCacheDir ?? DEFAULT_FAMILY_EXPERIENCE_ETL_CACHE_DIR,
-      ...(config.sourceSet === undefined ? {} : { sourceSet: config.sourceSet }),
-    }),
+      toolMode: config.allowFixture ? "fixture" : "live",
+      liveProviderConfigured: config.seoulOpenDataKey !== undefined,
+    },
+    cache,
     cache_metrics: getCacheOperationalSummary(config),
     operations: getOperationalSnapshot(),
   })

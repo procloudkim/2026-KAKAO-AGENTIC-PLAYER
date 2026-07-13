@@ -33,18 +33,31 @@ export function nextMonthRange(): DateRange {
 
 export function lateMonthRange(monthIndex: number): DateRange {
   const reference = referenceDate()
-  const year = resolveYearForMonth(monthIndex, reference)
+  const currentYearLastDay = new Date(Date.UTC(reference.getUTCFullYear(), monthIndex + 1, 0))
+  const year = currentYearLastDay < reference
+    ? reference.getUTCFullYear() + 1
+    : reference.getUTCFullYear()
   const lastDay = new Date(Date.UTC(year, monthIndex + 1, 0))
   return { start: formatDate(addDays(lastDay, -1)), end: formatDate(lastDay) }
 }
 
-export function monthDayRange(monthIndex: number, day: number): DateRange {
+export function yearMonthDayRange(year: number, monthIndex: number, day: number): DateRange | undefined {
+  const date = validCalendarDate(year, monthIndex, day)
+  return date === undefined ? undefined : singleDateRange(date)
+}
+
+export function monthDayRange(monthIndex: number, day: number): DateRange | undefined {
   const reference = referenceDate()
-  const date = new Date(Date.UTC(resolveYearForMonth(monthIndex, reference), monthIndex, day))
-  if (date.getUTCMonth() !== monthIndex || date.getUTCDate() !== day) {
-    return nextWeekendRange()
+  const referenceYear = reference.getUTCFullYear()
+
+  for (let yearOffset = 0; yearOffset <= 8; yearOffset += 1) {
+    const candidate = validCalendarDate(referenceYear + yearOffset, monthIndex, day)
+    if (candidate !== undefined && candidate >= reference) {
+      return singleDateRange(candidate)
+    }
   }
-  return singleDateRange(date)
+
+  return undefined
 }
 
 function referenceDate(): Date {
@@ -55,9 +68,27 @@ function referenceDate(): Date {
   return parseDateOnly(formatDate(new Date()))
 }
 
-function resolveYearForMonth(monthIndex: number, reference: Date): number {
-  const currentYearDate = new Date(Date.UTC(reference.getUTCFullYear(), monthIndex, 1))
-  return currentYearDate < reference ? reference.getUTCFullYear() + 1 : reference.getUTCFullYear()
+function validCalendarDate(year: number, monthIndex: number, day: number): Date | undefined {
+  if (
+    !Number.isInteger(year) ||
+    year < 1000 ||
+    year > 9999 ||
+    !Number.isInteger(monthIndex) ||
+    monthIndex < 0 ||
+    monthIndex > 11 ||
+    !Number.isInteger(day) ||
+    day < 1 ||
+    day > 31
+  ) {
+    return undefined
+  }
+
+  const date = new Date(Date.UTC(year, monthIndex, day))
+  if (date.getUTCFullYear() !== year || date.getUTCMonth() !== monthIndex || date.getUTCDate() !== day) {
+    return undefined
+  }
+
+  return date
 }
 
 function singleDateRange(date: Date): DateRange {

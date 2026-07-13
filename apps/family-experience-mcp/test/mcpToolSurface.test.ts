@@ -16,78 +16,6 @@ const fixtureConfig: FamilyExperienceConfig = {
 }
 
 describe("Family experience MCP tool surface", () => {
-  it("parses Korean family intent as a first-class MCP tool", async () => {
-    // Given: the MCP server exposes a parser tool for broad natural Korean requests.
-    const server = createFamilyExperienceMcpServer({ config: fixtureConfig })
-    const client = new Client({ name: "mcp-parser-test-client", version: "0.1.0" })
-    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair()
-
-    try {
-      await server.connect(serverTransport)
-      await client.connect(clientTransport)
-
-      // When: a parent asks with months, weather, region, and venue preference in one sentence.
-      const result = await client.callTool({
-        name: "parse_family_experience_request",
-        arguments: {
-          prompt: "내일 비가 오는데 서울에서 24개월 아이와 갈 수 있는 박물관",
-        },
-      })
-
-      // Then: the parser returns structured child, region, and indoor preference fields.
-      expect(result.isError).toBeUndefined()
-      expect(result.structuredContent).toMatchObject({
-        ok: true,
-        parsed: {
-          input: {
-            location: "Seoul",
-            child_age: 2,
-            indoor_outdoor_preference: "indoor",
-          },
-          keywords: expect.arrayContaining(["museum", "rainy_day"]),
-        },
-      })
-    } finally {
-      await client.close()
-      await server.close()
-    }
-  })
-
-  it("lists source boundaries as a first-class MCP tool", async () => {
-    // Given: source policy must be inspectable before trusting recommendations.
-    const server = createFamilyExperienceMcpServer({ config: fixtureConfig })
-    const client = new Client({ name: "mcp-source-list-test-client", version: "0.1.0" })
-    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair()
-
-    try {
-      await server.connect(serverTransport)
-      await client.connect(clientTransport)
-
-      // When: the source-list tool is called.
-      const result = await client.callTool({
-        name: "list_family_experience_sources",
-        arguments: {},
-      })
-
-      // Then: it exposes source coverage and unsupported claim boundaries.
-      expect(result.isError).toBeUndefined()
-      expect(result.structuredContent).toMatchObject({
-        sources: expect.arrayContaining([
-          expect.objectContaining({ id: "culture_portal" }),
-          expect.objectContaining({ id: "kto_tourapi" }),
-          expect.objectContaining({ id: "national_culture_festival" }),
-        ]),
-        unsupported_claims: expect.arrayContaining([
-          "booking availability is not asserted",
-          "coverage completeness is not asserted",
-        ]),
-      })
-    } finally {
-      await client.close()
-      await server.close()
-    }
-  })
-
   it("accepts structured recommendation arguments without the loose prompt wrapper", async () => {
     // Given: PlayMCP can call tools with extracted structured arguments.
     const server = createFamilyExperienceMcpServer({ config: fixtureConfig })
@@ -100,7 +28,7 @@ describe("Family experience MCP tool surface", () => {
 
       // When: the recommendation tool receives explicit fields.
       const result = await client.callTool({
-        name: "recommend_family_experiences",
+        name: "find_family_experiences",
         arguments: {
           location: "Seoul",
           date_range: { start: "2026-07-04", end: "2026-07-05" },

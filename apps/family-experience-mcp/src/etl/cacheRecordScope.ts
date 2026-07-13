@@ -45,23 +45,43 @@ function cacheRecordMatchesRequest(input: {
 }
 
 function locationMatches(location: string, record: CacheRecord): boolean {
-  const target = location.trim().toLowerCase()
-  const sourceText = `${record.city} ${record.venue.name} ${record.venue.address}`.toLowerCase()
-  const tokens = [target, ...locationAliases(target)]
-
-  return tokens.some((token) => token.length > 0 && sourceText.includes(token))
+  const target = canonicalLocation(location)
+  const city = canonicalLocation(record.city)
+  if (target === undefined || target !== city) {
+    return false
+  }
+  const districtAliases = districtLocationAliases(location)
+  if (districtAliases.length === 0) {
+    return true
+  }
+  const sourceText = `${record.venue.name} ${record.venue.address}`.toLowerCase()
+  return districtAliases.some((district) => sourceText.includes(district))
 }
 
-function locationAliases(location: string): readonly string[] {
-  switch (location) {
-    case "부산":
-      return ["busan"]
-    case "제주":
-      return ["jeju"]
-    case "서울":
-      return ["seoul"]
-    default:
-      return []
+function canonicalLocation(location: string): string | undefined {
+  const value = location.trim().toLowerCase()
+  const aliases: Readonly<Record<string, string>> = {
+    seoul: "seoul", "서울": "seoul", "jung-gu": "seoul", "jongno-gu": "seoul", "nowon-gu": "seoul",
+    "중구": "seoul", "종로구": "seoul", "노원구": "seoul", busan: "busan", "부산": "busan",
+    "busan haeundae": "busan", "부산 해운대": "busan",
+    daegu: "daegu", "대구": "daegu", daejeon: "daejeon", "대전": "daejeon",
+    gwangju: "gwangju", "광주": "gwangju", incheon: "incheon", "인천": "incheon",
+    gyeonggi: "gyeonggi", "경기": "gyeonggi", "경기도": "gyeonggi",
+    gangwon: "gangwon", "강원": "gangwon", "강원도": "gangwon",
+    chungcheong: "chungcheong", "충청": "chungcheong", "충북": "chungcheong", "충남": "chungcheong",
+    jeolla: "jeolla", "전라": "jeolla", "전남": "jeolla", "전북": "jeolla",
+    gyeongsang: "gyeongsang", "경상": "gyeongsang", jeju: "jeju", "제주": "jeju",
+    ulsan: "ulsan", "울산": "ulsan",
+  }
+  return aliases[value]
+}
+
+function districtLocationAliases(location: string): readonly string[] {
+  switch (location.trim().toLowerCase()) {
+    case "jung-gu": case "중구": return ["jung-gu", "중구"]
+    case "jongno-gu": case "종로구": return ["jongno-gu", "종로구"]
+    case "nowon-gu": case "노원구": return ["nowon-gu", "노원구"]
+    default: return []
   }
 }
 

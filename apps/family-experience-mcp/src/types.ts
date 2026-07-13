@@ -67,6 +67,7 @@ export type ToolFailure = {
   readonly code: ToolFailureCode
   readonly message: string
   readonly retryable: boolean
+  readonly missing_fields?: readonly string[]
 }
 
 export type FindFamilyExperiencesSuccess = {

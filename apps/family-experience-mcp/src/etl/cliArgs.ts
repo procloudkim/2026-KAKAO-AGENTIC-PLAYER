@@ -26,12 +26,16 @@ type FlagState = {
 export function parseNationwideEtlArgs(input: CliParseInput): NationwideEtlOptions {
   const config = loadFamilyExperienceConfig(input.env)
   const state = parseFlags(input.args)
-  const sourceSet = state.sourceSet ?? config.sourceSet ?? ["seoul", "culture_portal", "kto_tourapi", "national_festival"]
+  const sourceSet = state.sourceSet ?? config.sourceSet ?? ["kto_tourapi"]
+  const maxPages = state.maxPages ?? config.etlMaxPages ?? DEFAULT_FAMILY_EXPERIENCE_ETL_MAX_PAGES
+  if (maxPages !== 1) {
+    throw new NationwideEtlInputError("--max-pages must be 1 until source pagination is implemented")
+  }
 
   return {
     cacheDir: state.cacheDir ?? config.etlCacheDir ?? DEFAULT_FAMILY_EXPERIENCE_ETL_CACHE_DIR,
     fixture: state.fixture,
-    maxPages: state.maxPages ?? config.etlMaxPages ?? DEFAULT_FAMILY_EXPERIENCE_ETL_MAX_PAGES,
+    maxPages,
     mode: state.mode,
     sourceSet,
     ttlHours: state.ttlHours ?? config.etlTtlHours ?? DEFAULT_FAMILY_EXPERIENCE_ETL_TTL_HOURS,

@@ -7,10 +7,11 @@ import type {
 } from "../types.js"
 import type { SourceId } from "../sources/types.js"
 import {
-  normalizeFamilyExperienceRecords,
+  normalizeFamilyExperienceRecordCandidates,
   type AgeFitLabel,
   type NormalizedFamilyExperienceCandidate,
 } from "./normalize.js"
+import { dedupeFamilyExperienceCandidates } from "./dedupe.js"
 import {
   candidateMatchesFamilyRequest,
   rankFamilyExperienceCandidates,
@@ -89,7 +90,7 @@ export function renderFamilyExperienceResponse(
     }
   }
 
-  const normalized = normalizeFamilyExperienceRecords({
+  const normalized = normalizeFamilyExperienceRecordCandidates({
     input: parsedInput.data,
     source_records: request.source_records,
   })
@@ -102,8 +103,10 @@ export function renderFamilyExperienceResponse(
     }
   }
 
-  const eligibleCandidates = normalized.candidates.filter(
-    (candidate) => candidateMatchesFamilyRequest({ input: parsedInput.data, candidate }),
+  const eligibleCandidates = dedupeFamilyExperienceCandidates(
+    normalized.candidates.filter((candidate) =>
+      candidateMatchesFamilyRequest({ input: parsedInput.data, candidate }),
+    ),
   )
 
   if (eligibleCandidates.length === 0) {
@@ -148,7 +151,7 @@ function renderCandidate(
     age_fit_reason: candidate.age_fit_reason,
     indoor_outdoor: candidate.indoor_outdoor,
     child_stages: candidate.child_stages,
-    description: candidate.program_text,
+    description: `Untrusted provider data: ${candidate.program_text}`,
     ends_at: candidate.ends_at,
     fee_text: candidate.fee_text,
     source_name: candidate.source_name,

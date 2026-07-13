@@ -11,6 +11,7 @@ import { getHealthStatus } from "../src/health.js"
 import { callFindFamilyExperiences } from "../src/mcp.js"
 import {
   getOperationalSnapshot,
+  recordHttpRequest,
   resetOperationalMetrics,
   type OperationalLogEntry,
 } from "../src/observability.js"
@@ -71,14 +72,14 @@ function syntheticRecord(): FamilyExperienceSourceRecord {
   return {
     id: "culture-portal-oneview:observability",
     raw_snapshot_id: "culture-portal-oneview:raw:observability",
-    mode: "fixture",
+    mode: "live",
     title: "Observed Family Studio",
     city: "Busan",
-    date: { start: "2026-07-04", end: "2026-07-05", time_text: "10:00-12:00" },
+    date: { start: "2026-08-04", end: "2026-08-05", time_text: "10:00-12:00" },
     venue: { name: "Observed Center", address: "Busan indoor hall" },
     source: {
       id: "culture-portal-oneview",
-      mode: "fixture",
+      mode: "live",
       url: "https://example.invalid/culture-portal-oneview/observability",
       raw_snapshot_id: "culture-portal-oneview:raw:observability",
     },
@@ -108,7 +109,7 @@ async function writeObservedCache(cacheDir: string): Promise<void> {
   const records = [syntheticRecord()]
   const metadata = buildMetadata({
     generatedAt: new Date().toISOString(),
-    fixture: true,
+    fixture: false,
     maxPages: 1,
     mode: "write-cache",
     rawSnapshots: [],
@@ -129,7 +130,12 @@ describe("Todo 12 operational logs and metrics", () => {
 
     // When: the tool fails before any candidate is fabricated.
     const result = await callFindFamilyExperiences(
-      { prompt: `우리 4살 아이 이름 민준 ${rawSecret} 이번 주말 갈 곳` },
+      {
+        location: "Busan",
+        date_range: { start: "2026-08-04", end: "2026-08-05" },
+        child_age: 4,
+        keywords: [rawSecret],
+      },
       { config: noFixtureConfig, logger: (entry) => logs.push(entry) },
     )
 
@@ -163,10 +169,11 @@ describe("Todo 12 operational logs and metrics", () => {
     await writeObservedCache(cacheDir)
 
     try {
-      await callFindFamilyExperiences(
-        { location: "Busan", date_range: { start: "2026-07-04", end: "2026-07-05" }, child_age: 4 },
+      const result = await callFindFamilyExperiences(
+        { location: "Busan", date_range: { start: "2026-08-04", end: "2026-08-05" }, child_age: 4 },
         { config: { ...noFixtureConfig, etlCacheDir: cacheDir } },
       )
+      expect(result.isError).not.toBe(true)
 
       // When: health is requested for the same runtime config.
       const health = getHealthStatus({ ...fixtureConfig, etlCacheDir: cacheDir })
@@ -238,6 +245,49 @@ describe("Todo 12 operational logs and metrics", () => {
         total: 1,
         failed: 1,
       },
+    })
+  })
+
+  it("PIN:METRICS_ACCOUNTING separates admitted results from admission limits", () => {
+    // Given: one successful, one failed, and two admission-limited HTTP outcomes.
+    const logger = (): void => undefined
+
+    // When: each outcome is recorded through the operational boundary.
+    recordHttpRequest({ logger, method: "POST", path: "/mcp", statusCode: 200, latencyMs: 1 })
+    recordHttpRequest({ logger, method: "POST", path: "/mcp", statusCode: 400, latencyMs: 1 })
+    recordHttpRequest({
+      logger,
+      method: "POST",
+      path: "/mcp",
+      statusCode: 429,
+      latencyMs: 1,
+      limitation: "rate_limited",
+    })
+    recordHttpRequest({
+      logger,
+      method: "POST",
+      path: "/mcp",
+      statusCode: 429,
+      latencyMs: 1,
+      limitation: "concurrency_limited",
+    })
+
+    // Then: counters are mutually meaningful without resetting state behind assertions.
+    expect(getOperationalSnapshot().requests).toMatchObject({
+      total: 4,
+      accepted: 2,
+      succeeded: 1,
+      failed: 1,
+      rate_limited: 1,
+      concurrency_limited: 1,
+    })
+    expect(getHealthStatus(fixtureConfig).operations.requests).toMatchObject({
+      total: 4,
+      accepted: 2,
+      succeeded: 1,
+      failed: 1,
+      rate_limited: 1,
+      concurrency_limited: 1,
     })
   })
 })

@@ -32,6 +32,63 @@ const happyInput = FindFamilyExperiencesInputSchema.parse({
 })
 
 describe("Family experience MCP handler", () => {
+  it.each([
+    [{ date_range: { start: "2026-07-04", end: "2026-07-04" }, child_age: 4 }, ["location"], "지역"],
+    [{ location: "Seoul", child_age: 4 }, ["date_range"], "날짜 범위"],
+    [{ location: "Seoul", date_range: { start: "2026-07-04", end: "2026-07-04" } }, ["child_selector"], "아이 나이"],
+    [{}, ["location", "date_range", "child_selector"], "방문할 지역, 날짜 범위, 아이 나이 또는 발달 단계"],
+  ])("PIN:PARTIAL_STRUCTURED_TYPED_ERROR returns ordered missing fields without source access", async (input, missingFields, clarification) => {
+    let sourceCalls = 0
+    const sourceAdapter: FamilyExperienceSourceAdapter = {
+      source_id: "seoul-culture-events",
+      mode: "live",
+      list: async () => {
+        sourceCalls += 1
+        return { ok: false, source_id: "seoul-culture-events", mode: "live", failure: { code: "no_match", message: "not reached", retryable: false } }
+      },
+    }
+
+    const result = await callFindFamilyExperiences(input, { config: noFixtureConfig, sourceAdapter })
+    const structuredContent = FindFamilyExperiencesStructuredContentSchema.parse(result.structuredContent)
+
+    expect(sourceCalls).toBe(0)
+    expect(structuredContent).toMatchObject({ ok: false, failure: { code: "invalid_input", missing_fields: missingFields } })
+    expect(result.content[0]).toMatchObject({
+      type: "text",
+      text: expect.stringContaining(clarification),
+    })
+  })
+  it("PIN:ZERO_SOURCE_ACCESS returns exact missing fields before the source adapter", async () => {
+    // Given: a prompt has age and date but no location.
+    let sourceCalls = 0
+    const sourceAdapter: FamilyExperienceSourceAdapter = {
+      source_id: "seoul-culture-events",
+      mode: "live",
+      list: async () => {
+        sourceCalls += 1
+        return {
+          ok: false,
+          source_id: "seoul-culture-events",
+          mode: "live",
+          failure: { code: "no_match", message: "not reached", retryable: false },
+        }
+      },
+    }
+
+    // When: the tool receives the incomplete prompt.
+    const result = await callFindFamilyExperiences(
+      { prompt: "이번 주말 4살 아이와 갈 만한 체험" },
+      { config: noFixtureConfig, sourceAdapter },
+    )
+    const structuredContent = FindFamilyExperiencesStructuredContentSchema.parse(result.structuredContent)
+
+    // Then: validation fails without source access and reports only location.
+    expect(sourceCalls).toBe(0)
+    expect(structuredContent).toMatchObject({
+      ok: false,
+      failure: { code: "invalid_input", missing_fields: ["location"] },
+    })
+  })
   it("returns a safe tool error when live source is not configured and fixture mode is disabled", async () => {
     // Given: runtime config has no live key and does not allow fixture fallback.
     const result = await callFindFamilyExperiences(happyInput, { config: noFixtureConfig })
@@ -58,56 +115,19 @@ describe("Family experience MCP handler", () => {
     expect("candidates" in structuredContent).toBe(false)
   })
 
-  it("widens a narrow prompt date range when live source has no exact-date matches", async () => {
-    // Given: the live source has no exact weekend match but does have a later age-matched event.
+  it("PIN:NO_DATE_EXPANSION makes exactly one source request for the original range", async () => {
+    // Given: the live source has no exact weekend match.
     const requests: SourceAdapterRequest[] = []
     const sourceAdapter: FamilyExperienceSourceAdapter = {
       source_id: "seoul-culture-events",
       mode: "live",
       list: async (request) => {
         requests.push(request)
-        if (request.date_range.end !== "2026-08-31") {
-          return {
-            ok: false,
-            source_id: "seoul-culture-events",
-            mode: "live",
-            failure: {
-              code: "no_match",
-              message: "No exact-date source matches.",
-              retryable: false,
-            },
-          }
-        }
-
         return {
-          ok: true,
+          ok: false,
           source_id: "seoul-culture-events",
           mode: "live",
-          retrieved_at: "2026-07-09T00:00:00.000Z",
-          raw_snapshots: [],
-          records: [
-            officialRecord({
-              id: "seoul-culture-events:preschool-exhibition",
-              raw_snapshot_id: "seoul-culture-events:raw:preschool-exhibition",
-              title: "Seoul Preschool Indoor Exhibition",
-              city: "Seoul",
-              date: { start: "2026-08-03", end: "2026-08-03", time_text: "10:00-12:00" },
-              venue: { name: "Seoul Family Gallery", address: "Seoul Jung-gu indoor hall" },
-              source: sourceReference(
-                "seoul-culture-events",
-                "seoul-culture-events:raw:preschool-exhibition",
-              ),
-              parent_check: {
-                age_fit: "Official source states ages 4 and up with guardian participation.",
-                reservation: "confirmation_needed",
-                live_status: "source_timestamp_required",
-              },
-              min_child_age: 4,
-              max_child_age: 7,
-              indoor_outdoor: "indoor",
-              tags: ["seoul", "indoor", "preschool", "exhibition"],
-            }),
-          ],
+          failure: { code: "no_match", message: "No exact-date source matches.", retryable: false },
         }
       },
     }
@@ -121,32 +141,19 @@ describe("Family experience MCP handler", () => {
       result.structuredContent,
     )
 
-    // Then: the tool transparently widens the date range and returns the later source-backed option.
+    // Then: the original constraint is preserved and no retry/search note is emitted.
     expect(requests.map((request) => request.date_range)).toEqual([
       { start: "2026-07-04", end: "2026-07-05" },
-      { start: "2026-07-04", end: "2026-08-31" },
     ])
-    expect(result.isError).toBeUndefined()
-    expect(result.content[0]).toMatchObject({
-      type: "text",
-      text: expect.stringContaining("날짜 범위를"),
-    })
-    expect(structuredContent.ok).toBe(true)
-    if (!structuredContent.ok) {
-      throw new Error(structuredContent.failure.message)
-    }
-    expect(structuredContent.candidates[0]).toMatchObject({
-      title: "Seoul Preschool Indoor Exhibition",
-      source: "seoul_open_data",
-      starts_at: "2026-08-03",
-      min_child_age: 4,
-    })
+    expect(result.isError).toBe(true)
+    expect(result.content[0]).not.toMatchObject({ text: expect.stringContaining("search_note") })
+    expect(structuredContent).toMatchObject({ ok: false, failure: { code: "no_results" } })
   })
 
   it("clarifies loose Korean prompt input when child age or stage is missing", async () => {
     // Given: a compact Korean prompt omits the child selector.
     const result = await callFindFamilyExperiences(
-      { prompt: "이번 주말 아이랑 갈 곳" },
+      { prompt: "이번 주말 서울에서 아이랑 갈 곳" },
       { config: fixtureConfig },
     )
 
@@ -167,6 +174,7 @@ describe("Family experience MCP handler", () => {
       failure: {
         code: "invalid_input",
         retryable: false,
+        missing_fields: ["child_selector"],
       },
     })
   })

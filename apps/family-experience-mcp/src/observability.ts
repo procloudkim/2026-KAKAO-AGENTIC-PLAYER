@@ -7,6 +7,7 @@ import {
   type OperationalLogLevel,
   type OperationalLogger,
   type OperationalOutcome,
+  type HttpLimitation,
   type OperationalToolLog,
   type OperationalToolName,
 } from "./observabilityTypes.js"
@@ -22,6 +23,7 @@ export { redactOperationalText } from "./observabilityRedaction.js"
 export type {
   OperationalFailureDiagnostics,
   OperationalHttpLog,
+  HttpLimitation,
   OperationalLogEntry,
   OperationalLogEvent,
   OperationalLogger,
@@ -35,9 +37,11 @@ const maxLatencySamples = 200
 
 type MutableCounters = {
   requestsTotal: number
+  requestsAccepted: number
   requestsSucceeded: number
   requestsFailed: number
   requestsRateLimited: number
+  requestsConcurrencyLimited: number
   toolCallsTotal: number
   toolCallsSucceeded: number
   toolCallsFailed: number
@@ -50,9 +54,11 @@ type MutableCounters = {
 
 const counters: MutableCounters = {
   requestsTotal: 0,
+  requestsAccepted: 0,
   requestsSucceeded: 0,
   requestsFailed: 0,
   requestsRateLimited: 0,
+  requestsConcurrencyLimited: 0,
   toolCallsTotal: 0,
   toolCallsSucceeded: 0,
   toolCallsFailed: 0,
@@ -71,9 +77,11 @@ export const consoleOperationalLogger: OperationalLogger = (entry) => {
 
 export function resetOperationalMetrics(): void {
   counters.requestsTotal = 0
+  counters.requestsAccepted = 0
   counters.requestsSucceeded = 0
   counters.requestsFailed = 0
   counters.requestsRateLimited = 0
+  counters.requestsConcurrencyLimited = 0
   counters.toolCallsTotal = 0
   counters.toolCallsSucceeded = 0
   counters.toolCallsFailed = 0
@@ -89,9 +97,11 @@ export function getOperationalSnapshot() {
     deployed_version: serviceVersion,
     requests: {
       total: counters.requestsTotal,
+      accepted: counters.requestsAccepted,
       succeeded: counters.requestsSucceeded,
       failed: counters.requestsFailed,
       rate_limited: counters.requestsRateLimited,
+      concurrency_limited: counters.requestsConcurrencyLimited,
       latency_ms: latencySnapshot(counters.requestLatenciesMs),
     },
     tool_calls: {
@@ -127,13 +137,17 @@ export function recordHttpRequest(input: {
   readonly path: string
   readonly statusCode: number
   readonly latencyMs: number
+  readonly limitation?: HttpLimitation
 }): void {
-  const outcome: OperationalOutcome = input.statusCode >= 400 ? "failure" : "success"
+  const outcome: OperationalOutcome =
+    input.limitation ?? (input.statusCode >= 400 ? "failure" : "success")
   counters.requestsTotal += 1
   addLatency(counters.requestLatenciesMs, input.latencyMs)
+  if (input.limitation === undefined) counters.requestsAccepted += 1
   if (outcome === "success") counters.requestsSucceeded += 1
-  else counters.requestsFailed += 1
-  if (input.statusCode === 429) counters.requestsRateLimited += 1
+  if (outcome === "failure") counters.requestsFailed += 1
+  if (outcome === "rate_limited") counters.requestsRateLimited += 1
+  if (outcome === "concurrency_limited") counters.requestsConcurrencyLimited += 1
 
   input.logger({
     timestamp: new Date().toISOString(),

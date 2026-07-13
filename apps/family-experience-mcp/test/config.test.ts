@@ -17,7 +17,19 @@ describe("family experience config", () => {
     expect(config.host).toBe("127.0.0.1")
     expect(config.port).toBe(3345)
     expect(config.allowFixture).toBe(false)
-    expect(config.seoulOpenDataBaseUrl).toBe("http://openapi.seoul.go.kr:8088")
+    expect(config.seoulOpenDataBaseUrl).toBe("https://openapi.seoul.go.kr:8088")
+    expect(config.sourceSet).toEqual(["kto_tourapi"])
+  })
+
+  it("PIN:24_HOUR_TTL_DEFAULT uses the documented cache freshness window", () => {
+    // Given: no explicit cache TTL override is configured.
+    const env = {}
+
+    // When: config is loaded from the environment boundary.
+    const config = loadFamilyExperienceConfig(env)
+
+    // Then: bundled cache freshness defaults to 24 hours.
+    expect(config.etlTtlHours).toBe(24)
   })
 
   it("redacts SEOUL_OPEN_DATA_KEY from diagnostics", () => {
@@ -97,6 +109,7 @@ describe("family experience config", () => {
     // Given: invalid source-set, page, TTL, and URL values cross the config boundary.
     const invalidEnvs = [
       { CULTURE_PORTAL_BASE_URL: "not-a-url" },
+      { SEOUL_OPEN_DATA_BASE_URL: "http://openapi.seoul.go.kr:8088" },
       { FAMILY_EXPERIENCE_SOURCE_SET: "seoul,unofficial_scraper" },
       { FAMILY_EXPERIENCE_ETL_MAX_PAGES: "0" },
       { FAMILY_EXPERIENCE_ETL_TTL_HOURS: "-1" },
@@ -107,5 +120,30 @@ describe("family experience config", () => {
     for (const env of invalidEnvs) {
       expect(() => loadFamilyExperienceConfig(env)).toThrow()
     }
+  })
+
+  it("PIN:ORIGIN_403 parses exact normalized origins without exposing values in diagnostics", () => {
+    // Given: two explicit browser origins and HTTP-control thresholds are configured.
+    const firstOrigin = "https://family.example.test"
+    const secondOrigin = "https://app.example.test:8443"
+
+    // When: configuration crosses the environment boundary.
+    const config = loadFamilyExperienceConfig({
+      FAMILY_EXPERIENCE_ALLOWED_ORIGINS: `${firstOrigin}/, ${secondOrigin}`,
+      FAMILY_EXPERIENCE_MCP_RATE_LIMIT: "7",
+      FAMILY_EXPERIENCE_MCP_RATE_WINDOW_MS: "2000",
+      FAMILY_EXPERIENCE_MCP_MAX_CONCURRENCY: "3",
+      FAMILY_EXPERIENCE_SHUTDOWN_GRACE_MS: "15000",
+    })
+    const diagnostics = getFamilyExperienceConfigDiagnostics(config)
+
+    // Then: origins are normalized for exact matching and diagnostics disclose only count/state.
+    expect(config.allowedOrigins).toEqual([firstOrigin, secondOrigin])
+    expect(config.mcpRateLimit).toBe(7)
+    expect(config.mcpRateWindowMs).toBe(2_000)
+    expect(config.mcpMaxConcurrency).toBe(3)
+    expect(config.shutdownGraceMs).toBe(15_000)
+    expect(diagnostics).toMatchObject({ originsConfigured: true, allowedOriginCount: 2 })
+    expect(JSON.stringify(diagnostics)).not.toContain("example.test")
   })
 })
