@@ -511,7 +511,7 @@ describe("Todo 7 MCP nationwide cache routing", () => {
       )
 
       // Then: it reports no matching cache records, not a missing deployment configuration.
-      expect(result.isError).toBe(true)
+      expect(result.isError).toBeUndefined()
       expect(result.content[0]).toMatchObject({
         type: "text",
         text: expect.stringContaining("조건에 맞는 근거 있는 후보"),

@@ -404,6 +404,23 @@ export function toToolError(input: {
   }
 }
 
+export function toToolNoResults(input: {
+  readonly mode: "fixture" | "live"
+  readonly failure: ToolFailure
+  readonly text: string
+}): CallToolResult {
+  const structuredContent = FindFamilyExperiencesStructuredContentSchema.parse({
+    ok: false,
+    mode: input.mode,
+    failure: input.failure,
+  })
+
+  return {
+    content: [{ type: "text", text: input.text }],
+    structuredContent,
+  }
+}
+
 function summarizeSuccess(
   result: {
     readonly mode: "fixture" | "live"

@@ -215,7 +215,7 @@ describe("Family experience MCP handler", () => {
     expect(requests.map((request) => request.date_range)).toEqual([
       { start: "2026-07-04", end: "2026-07-05" },
     ])
-    expect(result.isError).toBe(true)
+    expect(result.isError).toBeUndefined()
     expect(result.content[0]).not.toMatchObject({ text: expect.stringContaining("search_note") })
     expect(structuredContent).toMatchObject({ ok: false, failure: { code: "no_results" } })
   })

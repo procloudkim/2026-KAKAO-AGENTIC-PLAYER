@@ -13,6 +13,7 @@ import {
 import {
   toBoundedToolSuccess,
   toKoreanFailureText,
+  toToolNoResults,
   toToolError,
 } from "./findFamilyExperienceToolResponse.js"
 import { renderFamilyExperienceResponse } from "./pipeline/render.js"
@@ -105,7 +106,10 @@ export async function callFindFamilyExperiences(
       candidateCount: 0,
       failure: sourceResult.failure,
     })
-    return toToolError({
+    const toolResult = sourceResult.failure.code === "no_results"
+      ? toToolNoResults
+      : toToolError
+    return toolResult({
       mode: sourceResult.mode,
       failure: sourceResult.failure,
       text: sourceResult.failure.code === "no_results"
@@ -131,7 +135,10 @@ export async function callFindFamilyExperiences(
       candidateCount: 0,
       failure: rendered.failure,
     })
-    return toToolError({
+    const toolResult = rendered.failure.code === "no_results"
+      ? toToolNoResults
+      : toToolError
+    return toolResult({
       mode: rendered.mode,
       failure: rendered.failure,
       text: toKoreanFailureText(rendered.failure, normalizedInput.input),

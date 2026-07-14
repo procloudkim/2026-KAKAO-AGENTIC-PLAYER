@@ -217,7 +217,7 @@ describe("loose family prompt constraints", () => {
       date_range: { start: "2026-09-01", end: "2026-09-01" },
       child_age: 2,
     }])
-    expect(result.isError).toBe(true)
+    expect(result.isError).toBeUndefined()
     expect(result.content[0]).toMatchObject({
       type: "text",
       text: expect.stringContaining("강남구 · 2026-09-01 · 2세"),
