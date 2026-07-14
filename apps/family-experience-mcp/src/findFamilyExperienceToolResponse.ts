@@ -19,6 +19,7 @@ import type { ToolFailure } from "./types.js"
 
 export const MAX_MCP_RESULT_CHARACTERS = 4_000
 const COMPACT_CARD_TITLE_CHARACTER_LIMITS = [96, 48, 28, 8] as const
+const CONTINUATION_CURSOR_MARKER = "family_experience_next_cursor"
 
 type BoundedToolSuccessResult =
   | { readonly ok: true; readonly candidateCount: number; readonly result: CallToolResult }
@@ -479,9 +480,13 @@ function summarizeSuccess(
         ]
   })
 
+  const continuationMarker = result.continuation.has_more && result.continuation.next_cursor !== undefined
+    ? `<!-- ${CONTINUATION_CURSOR_MARKER}: ${result.continuation.next_cursor} -->`
+    : undefined
   const nextSteps = result.continuation.has_more
     ? [
         '계속 보려면 "다른 추천 더 보기"라고 입력하세요.',
+        ...(continuationMarker === undefined ? [] : [continuationMarker]),
         "조건을 바꾸려면 새 지역·날짜·아이 나이를 알려 주세요.",
       ]
     : [

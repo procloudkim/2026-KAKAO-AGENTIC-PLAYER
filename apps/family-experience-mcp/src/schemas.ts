@@ -163,6 +163,7 @@ export const FindFamilyExperiencesMcpInputSchema = z
         MAX_FAMILY_EXPERIENCE_CURSOR_LENGTH,
         `cursor must be at most ${MAX_FAMILY_EXPERIENCE_CURSOR_LENGTH} characters`,
       )
+      .describe("Exact full value from the prior family_experience_next_cursor TextContent marker; send it alone and never use shown_count.")
       .optional(),
     prompt: z
       .string()
