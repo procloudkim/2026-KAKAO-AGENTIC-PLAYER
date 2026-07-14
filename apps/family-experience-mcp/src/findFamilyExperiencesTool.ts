@@ -21,7 +21,6 @@ import {
   FindFamilyExperiencesInputSchema,
   type FindFamilyExperiencesInput,
 } from "./schemas.js"
-import { stagesForAgeRange } from "./sources/ageTarget.js"
 import type { FamilyExperienceSourceAdapter } from "./sources/types.js"
 import type { ToolFailure } from "./types.js"
 
@@ -199,12 +198,11 @@ function normalizeMcpInput(input: ReturnType<typeof FindFamilyExperiencesHandler
 
   if (
     childAge !== undefined &&
-    childStage !== undefined &&
-    !stagesForAgeRange({ min: childAge, max: childAge }).includes(childStage)
+    childStage !== undefined
   ) {
     return {
       ok: false,
-      reason: "child_age and child_stage describe conflicting child selectors.",
+      reason: "Provide exactly one of child_age or child_stage.",
     }
   }
 

@@ -536,38 +536,53 @@ describe("KTO TourAPI event source adapter", () => {
     expect(success.raw_snapshots.filter((snapshot) => snapshot.payload_ref === "detailIntro2")).toHaveLength(2)
   })
 
-  it("keeps blank and failed detailIntro2 records age-unknown without leaking the key", async () => {
-    // Given: one detail response has no age and another transport failure includes the keyed URL.
+  it("keeps a blank detailIntro2 record age-unknown", async () => {
+    // Given: the provider returns a valid detail payload without usable age evidence.
     const rawKey = "KTO_DETAIL_RAW_SECRET"
-    const items = [
-      sampleSearchItem({ contentid: "blank-detail" }),
-      sampleSearchItem({ contentid: "failed-detail" }),
-    ]
     const adapter = createKtoTourApiSourceAdapter({
       baseUrl: "https://apis.example.test/KorService2",
       serviceKey: rawKey,
       requestText: async (request) => {
         if (request.url.includes("/searchFestival2?")) {
-          return ktoSearchPayload(items)
+          return ktoSearchPayload([sampleSearchItem({ contentid: "blank-detail" })])
         }
         const contentId = new URL(request.url).searchParams.get("contentId")
-        if (contentId === "blank-detail") {
-          return ktoDetailIntroPayload({ contentid: contentId, agelimit: "   " })
-        }
-        throw new Error(`detail transport failed for ${request.url}; serviceKey=${rawKey}`)
+        return ktoDetailIntroPayload({ contentid: contentId, agelimit: "   ", eventplace: "   " })
       },
     })
 
-    // When: enrichment cannot obtain parseable age evidence.
+    // When: enrichment cannot obtain parseable age evidence from a successful response.
     const success = expectSuccess(await adapter.list(sampleRequest))
 
-    // Then: both records preserve the conservative base contract and no error text escapes.
-    expect(success.records).toHaveLength(2)
-    expect(success.records.every((record) => record.confidence.age_fit === "unknown")).toBe(true)
-    expect(success.records.every((record) => record.target_age_text === "unknown")).toBe(true)
+    // Then: the record preserves the conservative base contract.
+    expect(success.records).toHaveLength(1)
+    expect(success.records[0]?.confidence.age_fit).toBe("unknown")
+    expect(success.records[0]?.target_age_text).toBe("unknown")
     expect(success.raw_snapshots).toHaveLength(1)
-    expect(JSON.stringify(success)).not.toContain(rawKey)
-    expect(JSON.stringify(success)).not.toContain(encodeURIComponent(rawKey))
+  })
+
+  it("fails the source atomically when detailIntro2 transport fails without leaking the key", async () => {
+    // Given: search succeeds but the required detail enrichment transport is rate limited.
+    const rawKey = "KTO_DETAIL_RAW_SECRET"
+    const adapter = createKtoTourApiSourceAdapter({
+      baseUrl: "https://apis.example.test/KorService2",
+      serviceKey: rawKey,
+      requestText: async (request) => {
+        if (request.url.includes("/searchFestival2?")) {
+          return ktoSearchPayload([sampleSearchItem({ contentid: "rate-limited-detail" })])
+        }
+        throw new Error(`ETL source request failed with HTTP 429 for ${request.url}; serviceKey=${rawKey}`)
+      },
+    })
+
+    // When: detail enrichment cannot complete.
+    const failure = expectFailure(await adapter.list(sampleRequest))
+
+    // Then: the source fails closed so the ETL cannot publish a degraded replacement cache.
+    expect(failure.failure).toMatchObject({ code: "source_failure", retryable: true })
+    expect(failure.failure.diagnostics?.detail).toContain("HTTP 429")
+    expect(JSON.stringify(failure)).not.toContain(rawKey)
+    expect(JSON.stringify(failure)).not.toContain(encodeURIComponent(rawKey))
   })
 
   it("bounds concurrent detailIntro2 fan-out", async () => {

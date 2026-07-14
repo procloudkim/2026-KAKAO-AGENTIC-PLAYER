@@ -402,6 +402,9 @@ function summarizeSuccess(
 export function toKoreanFailureText(failure: ToolFailure): string {
   switch (failure.code) {
     case "invalid_input": {
+      if (failure.message === "Provide exactly one of child_age or child_stage.") {
+        return "아이 나이 또는 발달 단계 중 하나만 입력해 주세요."
+      }
       const missingFieldLabels = (failure.missing_fields ?? []).flatMap((field) => {
         switch (field) {
           case "location":

@@ -362,13 +362,15 @@ async function enrichKtoTourApiRecord(input: {
   }
 
   let payload: unknown
-  let evidence: KtoDetailIntroEvidence | undefined
   try {
     payload = await input.requestText(built)
-    evidence = parseKtoTourApiDetailIntroPayload(payload, identity.contentId)
-  } catch {
-    return { record: input.record, rawSnapshots: [] }
+  } catch (error) {
+    const detail = error instanceof Error
+      ? redact(error.message, built, input.serviceKey)
+      : "request loader threw a non-Error value"
+    throw new Error(`KTO detailIntro2 request failed: ${detail}`)
   }
+  const evidence = parseKtoTourApiDetailIntroPayload(payload, identity.contentId)
   if (evidence === undefined) {
     return { record: input.record, rawSnapshots: [] }
   }

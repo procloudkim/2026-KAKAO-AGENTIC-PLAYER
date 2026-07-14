@@ -7,7 +7,6 @@ import {
   FindFamilyExperiencesStructuredContentSchema,
 } from "../src/schemas.js"
 import type { FamilyExperienceSourceAdapter, SourceAdapterRequest } from "../src/sources/types.js"
-import { officialRecord, sourceReference } from "./pipelineTestHelpers.js"
 
 process.env["FAMILY_EXPERIENCE_REFERENCE_DATE"] = "2026-07-04"
 
@@ -32,20 +31,18 @@ const happyInput = FindFamilyExperiencesInputSchema.parse({
 })
 
 describe("Family experience MCP handler", () => {
-  it("PIN:PLAYMCP_REDUNDANT_CHILD_SELECTOR keeps a consistent host-generated pair as precise age", async () => {
-    const requests: SourceAdapterRequest[] = []
+  it("PIN:EXACTLY_ONE_CHILD_SELECTOR rejects a redundant host-generated pair without source access", async () => {
+    let sourceCalls = 0
     const sourceAdapter: FamilyExperienceSourceAdapter = {
       source_id: "seoul-culture-events",
       mode: "live",
-      list: async (request) => {
-        requests.push(request)
+      list: async () => {
+        sourceCalls += 1
         return {
-          ok: true,
+          ok: false,
           source_id: "seoul-culture-events",
           mode: "live",
-          retrieved_at: "2026-07-14T00:00:00.000Z",
-          raw_snapshots: [],
-          records: [officialRecord({ city: "Seoul" })],
+          failure: { code: "no_match", message: "not reached", retryable: false },
         }
       },
     }
@@ -61,12 +58,15 @@ describe("Family experience MCP handler", () => {
     )
     const structuredContent = FindFamilyExperiencesStructuredContentSchema.parse(result.structuredContent)
 
-    expect(structuredContent.ok).toBe(true)
-    expect(requests).toEqual([{
-      location: "서울",
-      date_range: { start: "2026-08-01", end: "2026-08-01" },
-      child_age: 4,
-    }])
+    expect(sourceCalls).toBe(0)
+    expect(result.content[0]).toMatchObject({
+      type: "text",
+      text: expect.stringContaining("아이 나이 또는 발달 단계 중 하나만"),
+    })
+    expect(structuredContent).toMatchObject({
+      ok: false,
+      failure: { code: "invalid_input", retryable: false },
+    })
   })
 
   it("rejects a conflicting host-generated age and stage pair without source access", async () => {
@@ -92,6 +92,10 @@ describe("Family experience MCP handler", () => {
     const structuredContent = FindFamilyExperiencesStructuredContentSchema.parse(result.structuredContent)
 
     expect(sourceCalls).toBe(0)
+    expect(result.content[0]).toMatchObject({
+      type: "text",
+      text: expect.stringContaining("아이 나이 또는 발달 단계 중 하나만"),
+    })
     expect(structuredContent).toMatchObject({
       ok: false,
       failure: { code: "invalid_input", retryable: false },
