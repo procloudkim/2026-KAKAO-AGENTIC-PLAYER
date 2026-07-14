@@ -1,4 +1,7 @@
-import { FindFamilyExperiencesInputSchema } from "../schemas.js"
+import {
+  FindFamilyExperiencesInputSchema,
+  type FindFamilyExperiencesInput,
+} from "../schemas.js"
 import type {
   ChildStage,
   FamilyExperienceSource,
@@ -56,6 +59,8 @@ export type RenderedFamilyExperienceCandidate = {
 export type RenderFamilyExperienceSuccess = {
   readonly ok: true
   readonly mode: ToolMode
+  readonly input: FindFamilyExperiencesInput
+  readonly offset: number
   readonly candidates: readonly RenderedFamilyExperienceCandidate[]
   readonly eligible_count: number
 }
@@ -74,6 +79,7 @@ export type RenderFamilyExperienceResponseRequest = {
   readonly input: unknown
   readonly mode: ToolMode
   readonly source_records: readonly unknown[]
+  readonly offset?: number | undefined
   readonly indoor_outdoor_preference?: IndoorOutdoorPreference | undefined
 }
 
@@ -81,14 +87,17 @@ export function renderFamilyExperienceResponse(
   request: RenderFamilyExperienceResponseRequest,
 ): RenderFamilyExperienceResult {
   const parsedInput = FindFamilyExperiencesInputSchema.safeParse(request.input)
+  const offset = request.offset ?? 0
 
-  if (!parsedInput.success) {
+  if (!parsedInput.success || !Number.isSafeInteger(offset) || offset < 0) {
     return {
       ok: false,
       mode: request.mode,
       failure: {
         code: "invalid_input",
-        message: parsedInput.error.issues.map((issue) => issue.message).join("; "),
+        message: parsedInput.success
+          ? "invalid_cursor"
+          : parsedInput.error.issues.map((issue) => issue.message).join("; "),
         retryable: false,
       },
     }
@@ -130,12 +139,33 @@ export function renderFamilyExperienceResponse(
     candidates: eligibleCandidates,
     indoor_outdoor_preference: request.indoor_outdoor_preference,
   })
+  if (offset >= rankedCandidates.length) {
+    return {
+      ok: false,
+      mode: request.mode,
+      failure: {
+        code: "invalid_input",
+        message: "invalid_cursor",
+        retryable: false,
+      },
+    }
+  }
+
+  const firstPage = selectDiverseFamilyExperienceCandidates(rankedCandidates, 3)
+  const firstPageSet = new Set(firstPage)
+  const orderedCandidates = [
+    ...firstPage,
+    ...rankedCandidates.filter((candidate) => !firstPageSet.has(candidate)),
+  ]
 
   return {
     ok: true,
     mode: request.mode,
+    input: parsedInput.data,
+    offset,
     eligible_count: eligibleCandidates.length,
-    candidates: selectDiverseFamilyExperienceCandidates(rankedCandidates, 3)
+    candidates: orderedCandidates
+      .slice(offset, offset + 3)
       .map(renderCandidate),
   }
 }

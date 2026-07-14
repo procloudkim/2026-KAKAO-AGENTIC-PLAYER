@@ -11,6 +11,7 @@ import { NAVIGABLE_PLACE_EVIDENCE_STATUSES } from "./placeResolution.js"
 
 const dateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/
 export const MAX_FAMILY_EXPERIENCE_PROMPT_LENGTH = 4_096
+export const MAX_FAMILY_EXPERIENCE_CURSOR_LENGTH = 1_024
 
 export const FAMILY_EXPERIENCE_CANONICAL_KEYWORDS = [
   "museum",
@@ -154,6 +155,15 @@ export const FindFamilyExperiencesLoosePromptInputSchema = z
 
 export const FindFamilyExperiencesMcpInputSchema = z
   .object({
+    cursor: z
+      .string()
+      .trim()
+      .min(1, "cursor is required for continuation")
+      .max(
+        MAX_FAMILY_EXPERIENCE_CURSOR_LENGTH,
+        `cursor must be at most ${MAX_FAMILY_EXPERIENCE_CURSOR_LENGTH} characters`,
+      )
+      .optional(),
     prompt: z
       .string()
       .trim()
@@ -173,6 +183,7 @@ export const FindFamilyExperiencesMcpInputSchema = z
   })
   .strict()
   .superRefine((input, context) => {
+    const hasCursor = input.cursor !== undefined
     const hasPrompt = input.prompt !== undefined
     const hasAnyStructuredField =
       input.location !== undefined ||
@@ -182,6 +193,13 @@ export const FindFamilyExperiencesMcpInputSchema = z
       input.time_of_day !== undefined ||
       input.indoor_outdoor_preference !== undefined ||
       input.keywords !== undefined
+    if (hasCursor && (hasPrompt || hasAnyStructuredField)) {
+      context.addIssue({
+        code: "custom",
+        message: "Provide cursor by itself for continuation.",
+        path: ["cursor"],
+      })
+    }
     if (hasPrompt && hasAnyStructuredField) {
       context.addIssue({
         code: "custom",
@@ -459,6 +477,19 @@ export const FindFamilyExperiencesResultSchema = z.discriminatedUnion("ok", [
           data_notice: z.string().trim().min(1).optional(),
         })
         .strict(),
+      continuation: z
+        .object({
+          has_more: z.boolean(),
+          shown_count: z.number().int().min(1),
+          next_cursor: z
+            .string()
+            .trim()
+            .min(1)
+            .max(MAX_FAMILY_EXPERIENCE_CURSOR_LENGTH)
+            .optional(),
+        })
+        .strict()
+        .optional(),
     })
     .strict(),
   z
@@ -485,6 +516,54 @@ export const FindFamilyExperiencesResultSchema = z.discriminatedUnion("ok", [
       message: "eligible_count must be at least returned_count",
       path: ["result_summary", "eligible_count"],
     })
+  }
+
+  const continuation = result.continuation
+  if (continuation !== undefined) {
+    const offset = continuation.shown_count - summary.returned_count
+    if (offset < 0 || continuation.shown_count > summary.eligible_count) {
+      context.addIssue({
+        code: "custom",
+        message: "continuation shown_count is inconsistent with the current page",
+        path: ["continuation", "shown_count"],
+      })
+    }
+
+    const expectedHasMore = continuation.shown_count < summary.eligible_count
+    if (continuation.has_more !== expectedHasMore) {
+      context.addIssue({
+        code: "custom",
+        message: "continuation has_more does not match shown_count and eligible_count",
+        path: ["continuation", "has_more"],
+      })
+    }
+    if ((continuation.next_cursor !== undefined) !== continuation.has_more) {
+      context.addIssue({
+        code: "custom",
+        message: "next_cursor must exist exactly when has_more is true",
+        path: ["continuation", "next_cursor"],
+      })
+    }
+
+    const availableOnPage = summary.eligible_count - Math.max(0, offset)
+    const validPagedReason =
+      (summary.reason === "complete" &&
+        (summary.returned_count === 3 || (!continuation.has_more && offset > 0))) ||
+      (summary.reason === "insufficient_eligible_candidates" &&
+        !continuation.has_more &&
+        offset === 0 &&
+        summary.returned_count < 3) ||
+      (summary.reason === "response_budget" &&
+        continuation.has_more &&
+        summary.returned_count < Math.min(3, availableOnPage))
+    if (!validPagedReason) {
+      context.addIssue({
+        code: "custom",
+        message: "result_summary reason does not match paged continuation state",
+        path: ["result_summary", "reason"],
+      })
+    }
+    return
   }
 
   const validReason =

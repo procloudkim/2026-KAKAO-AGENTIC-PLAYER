@@ -34,5 +34,13 @@ export function encodeKakaoDestinationLabel(value: string): string {
 }
 
 export function escapeMarkdownLinkLabel(value: string): string {
-  return normalizeKakaoDestinationLabel(value).replace(/[\\\[\]]/gu, "\\$&")
+  return escapeMarkdownText(normalizeKakaoDestinationLabel(value))
+}
+
+export function escapeMarkdownText(value: string): string {
+  return value
+    .replace(/[\p{Cc}\p{Cf}]+/gu, " ")
+    .replace(/\s+/gu, " ")
+    .trim()
+    .replace(/[\\`*_{}\[\]<>|]/gu, "\\$&")
 }

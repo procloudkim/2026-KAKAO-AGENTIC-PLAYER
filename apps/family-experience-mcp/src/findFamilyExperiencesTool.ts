@@ -1,6 +1,7 @@
 import type { CallToolResult } from "@modelcontextprotocol/server"
 
 import { loadFamilyExperienceConfig, type FamilyExperienceConfig } from "./config.js"
+import { decodeFamilyExperienceCursor } from "./continuationCursor.js"
 import type { NationwideCacheSnapshotStore } from "./etl/cacheQuery.js"
 import { loadSourceRecords, toSourceAdapterRequest } from "./mcpSourceRecords.js"
 import {
@@ -115,6 +116,7 @@ export async function callFindFamilyExperiences(
 
   const rendered = renderFamilyExperienceResponse({
     input: normalizedInput.input,
+    offset: normalizedInput.offset,
     mode: sourceResult.mode,
     source_records: sourceResult.records,
     indoor_outdoor_preference: normalizedInput.input.indoor_outdoor_preference,
@@ -162,10 +164,21 @@ export async function callFindFamilyExperiences(
 }
 
 type NormalizeMcpInputResult =
-  | { readonly ok: true; readonly input: FindFamilyExperiencesInput }
+  | { readonly ok: true; readonly input: FindFamilyExperiencesInput; readonly offset: number }
   | { readonly ok: false; readonly reason: string; readonly missing_fields?: readonly string[] }
 
 function normalizeMcpInput(input: ReturnType<typeof FindFamilyExperiencesHandlerInputSchema.parse>): NormalizeMcpInputResult {
+  if ("cursor" in input && input.cursor !== undefined) {
+    const decoded = decodeFamilyExperienceCursor(input.cursor)
+    return decoded.ok
+      ? {
+          ok: true,
+          input: decoded.continuation.input,
+          offset: decoded.continuation.offset,
+        }
+      : { ok: false, reason: "invalid_cursor" }
+  }
+
   if ("prompt" in input && input.prompt !== undefined) {
     const parsedPrompt = parseLooseFamilyPrompt(input.prompt)
     const missingFields = parsedPrompt.ok
@@ -173,7 +186,7 @@ function normalizeMcpInput(input: ReturnType<typeof FindFamilyExperiencesHandler
       : parsedPrompt.missing_fields ??
         (parsedPrompt.reason === "missing_child_selector" ? ["child_selector"] : undefined)
     return parsedPrompt.ok
-      ? { ok: true, input: parsedPrompt.input }
+      ? { ok: true, input: parsedPrompt.input, offset: 0 }
       : {
           ok: false,
           reason: parsedPrompt.reason,
@@ -219,6 +232,6 @@ function normalizeMcpInput(input: ReturnType<typeof FindFamilyExperiencesHandler
     keywords: "keywords" in input ? input.keywords : undefined,
   })
   return parsedStructuredInput.success
-    ? { ok: true, input: parsedStructuredInput.data }
+    ? { ok: true, input: parsedStructuredInput.data, offset: 0 }
     : { ok: false, reason: parsedStructuredInput.error.issues.map((issue) => issue.message).join("; ") }
 }

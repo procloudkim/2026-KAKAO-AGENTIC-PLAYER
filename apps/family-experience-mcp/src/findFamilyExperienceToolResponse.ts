@@ -1,11 +1,12 @@
 import type { CallToolResult } from "@modelcontextprotocol/server"
 
+import { encodeFamilyExperienceCursor } from "./continuationCursor.js"
 import {
   canonicalFamilyExperienceRegion,
   canonicalSeoulDistrict,
   familyExperienceLocationLabel,
 } from "./location.js"
-import { escapeMarkdownLinkLabel } from "./placeLabels.js"
+import { escapeMarkdownLinkLabel, escapeMarkdownText } from "./placeLabels.js"
 import type {
   RenderedFamilyExperienceCandidate,
   RenderFamilyExperienceSuccess,
@@ -17,7 +18,7 @@ import {
 import type { ToolFailure } from "./types.js"
 
 export const MAX_MCP_RESULT_CHARACTERS = 4_000
-const COMPACT_CARD_TITLE_CHARACTER_LIMITS = [28, 8] as const
+const COMPACT_CARD_TITLE_CHARACTER_LIMITS = [96, 48, 28, 8] as const
 
 type BoundedToolSuccessResult =
   | { readonly ok: true; readonly candidateCount: number; readonly result: CallToolResult }
@@ -32,11 +33,14 @@ export function toBoundedToolSuccess(
   const initialSummary = resultSummary({
     eligibleCount: rendered.eligible_count,
     returnedCount: maximumCandidateCount,
+    offset: rendered.offset,
     responseBudgetReduced: false,
     ...(searchNotice === undefined ? {} : { searchNotice }),
   })
+  const initialContinuation = resultContinuation(rendered, maximumCandidateCount)
+  if (initialContinuation === undefined) return continuationEncodingFailure(rendered.mode)
   const parsedAllCandidates = FindFamilyExperiencesStructuredContentSchema.safeParse(
-    structuredSuccess(rendered.mode, allCandidates, initialSummary, false),
+    structuredSuccess(rendered.mode, allCandidates, initialSummary, initialContinuation, false),
   )
 
   if (!parsedAllCandidates.success) {
@@ -56,9 +60,12 @@ export function toBoundedToolSuccess(
     const summary = resultSummary({
       eligibleCount: rendered.eligible_count,
       returnedCount: candidateCount,
+      offset: rendered.offset,
       responseBudgetReduced: candidateCount < maximumCandidateCount,
       ...(searchNotice === undefined ? {} : { searchNotice }),
     })
+    const continuation = resultContinuation(rendered, candidateCount)
+    if (continuation === undefined) return continuationEncodingFailure(rendered.mode)
     const variants = [
       {
         structuredCandidates: candidates,
@@ -82,6 +89,7 @@ export function toBoundedToolSuccess(
           rendered.mode,
           variant.structuredCandidates,
           summary,
+          continuation,
           variant.compact,
         ),
       )
@@ -98,6 +106,7 @@ export function toBoundedToolSuccess(
               mode: rendered.mode,
               candidates: variant.textCandidates,
               summary,
+              continuation,
               compact: variant.compact,
             }),
           },
@@ -131,6 +140,7 @@ function structuredSuccess(
   mode: "fixture" | "live",
   candidates: readonly RenderedFamilyExperienceCandidate[],
   summary: ResultSummary,
+  continuation: ResultContinuation,
   compact: boolean,
 ) {
   return {
@@ -170,6 +180,7 @@ function structuredSuccess(
       ...(candidate.navigation === undefined ? {} : { navigation: candidate.navigation }),
     })),
     result_summary: summary,
+    continuation,
   }
 }
 
@@ -182,22 +193,49 @@ type ResultSummary = {
   readonly data_notice?: string
 }
 
+type ResultContinuation = {
+  readonly has_more: boolean
+  readonly shown_count: number
+  readonly next_cursor?: string
+}
+
+function resultContinuation(
+  rendered: RenderFamilyExperienceSuccess,
+  returnedCount: number,
+): ResultContinuation | undefined {
+  const shownCount = rendered.offset + returnedCount
+  const hasMore = shownCount < rendered.eligible_count
+  if (!hasMore) {
+    return { has_more: false, shown_count: shownCount }
+  }
+
+  const nextCursor = encodeFamilyExperienceCursor(rendered.input, shownCount)
+  return nextCursor === undefined
+    ? undefined
+    : { has_more: true, shown_count: shownCount, next_cursor: nextCursor }
+}
+
 function resultSummary(input: {
   readonly eligibleCount: number
   readonly returnedCount: number
+  readonly offset: number
   readonly responseBudgetReduced: boolean
   readonly searchNotice?: string
 }): ResultSummary {
+  const shownCount = input.offset + input.returnedCount
+  const hasMore = shownCount < input.eligibleCount
   const reason = input.responseBudgetReduced
     ? "response_budget" as const
-    : input.eligibleCount < 3
+    : input.offset === 0 && input.returnedCount < 3 && !hasMore
       ? "insufficient_eligible_candidates" as const
       : "complete" as const
   const message = reason === "response_budget"
-    ? `4,000자 한도로 ${input.returnedCount}개만 제공했습니다.`
+    ? `4,000자 한도로 이번에는 ${input.returnedCount}개만 제공했습니다.`
     : reason === "insufficient_eligible_candidates"
-      ? `요청 조건과 근거를 충족한 후보가 ${input.returnedCount}개뿐입니다.`
-      : "요청 조건과 근거를 충족한 후보 3개를 제공했습니다."
+      ? `요청 조건과 근거를 충족한 후보가 ${input.eligibleCount}개뿐입니다.`
+      : hasMore
+        ? `총 ${input.eligibleCount}개 중 ${input.offset + 1}~${shownCount}번 후보입니다.`
+        : `요청 조건과 근거를 충족한 후보 ${input.eligibleCount}개를 모두 보여드렸습니다.`
   return {
     target_count: 3,
     eligible_count: input.eligibleCount,
@@ -205,6 +243,19 @@ function resultSummary(input: {
     reason,
     message,
     ...(input.searchNotice === undefined ? {} : { data_notice: input.searchNotice }),
+  }
+}
+
+function continuationEncodingFailure(mode: "fixture" | "live"): BoundedToolSuccessResult {
+  const failure: ToolFailure = {
+    code: "upstream_invalid_response",
+    message: "Continuation state exceeds its validated transport bounds.",
+    retryable: false,
+  }
+  return {
+    ok: false,
+    failure,
+    result: toToolError({ mode, failure, text: toKoreanFailureText(failure) }),
   }
 }
 
@@ -358,13 +409,20 @@ function summarizeSuccess(
     readonly mode: "fixture" | "live"
     readonly candidates: readonly RenderedFamilyExperienceCandidate[]
     readonly summary: ResultSummary
+    readonly continuation: ResultContinuation
     readonly compact: boolean
   },
 ): string {
-  const modeNotice = result.mode === "fixture" ? "fixture/demo 기준" : "공식 데이터 기준"
+  const modeNotice = result.mode === "fixture" ? "fixture/demo" : "공식 데이터"
+  const isSingleCompletePage =
+    result.summary.reason === "complete" &&
+    !result.continuation.has_more &&
+    result.continuation.shown_count === result.candidates.length
   const notices = [
-    `- 결과: ${result.summary.message}`,
-    ...(result.summary.data_notice === undefined ? [] : [`- 데이터: ${result.summary.data_notice}`]),
+    ...(isSingleCompletePage ? [] : [`- 결과: ${result.summary.message}`]),
+    ...(result.summary.data_notice === undefined
+      ? []
+      : [`- 데이터: ${escapeMarkdownText(result.summary.data_notice)}`]),
   ]
   const venueCounts = result.candidates.reduce((counts, candidate) => {
     const key = candidate.venue.normalize("NFKC").trim().toLowerCase()
@@ -375,36 +433,51 @@ function summarizeSuccess(
     const venueLabel = escapeMarkdownLinkLabel(candidate.venue)
     const venueKey = candidate.venue.normalize("NFKC").trim().toLowerCase()
     const venueDetails = (venueCounts.get(venueKey) ?? 0) > 1
-      ? `${compactText(candidate.venue, 36)} · ${compactText(candidate.address, result.compact ? 28 : 44)}`
-      : compactText(candidate.venue, 56)
+      ? `${escapeMarkdownText(compactText(candidate.venue, 36))} · ${escapeMarkdownText(compactText(candidate.address, result.compact ? 28 : 44))}`
+      : escapeMarkdownText(compactText(candidate.venue, 56))
     const navigation = candidate.navigation === undefined
       ? candidate.reservation_url !== undefined
         ? [`   공식 확인: ${candidate.reservation_url}`]
         : candidate.source_url === undefined
-          ? [`   확인: ${candidate.next_action}`]
+          ? [`   확인: ${escapeMarkdownText(candidate.next_action)}`]
           : [`   공식 확인: ${candidate.source_url}`]
       : [
-          `   지도(${candidate.navigation.place_evidence_status}): [${venueLabel} 지도 보기](${candidate.navigation.map_url})`,
+          `   지도: [${venueLabel} 지도 보기](${candidate.navigation.map_url})`,
           `   길찾기: [${venueLabel} 길찾기](${candidate.navigation.directions_url})`,
         ]
     return result.compact
       ? [
-          `${index + 1}. ${candidate.title}`,
-          `   날짜·장소: ${compactText(candidate.date_time, 28)} | ${venueDetails}`,
-          `   비용·연령: ${compactText(candidate.fee_text, 48)} | ${candidate.age_fit_label} · ${compactAgeEvidence(candidate.age_fit_reason)}`,
-          `   출처: ${compactText(candidate.source_name, 18)}·${candidate.retrieved_at.slice(0, 10)} | 주의: ${compactText(candidate.warnings, 32)}`,
+          `${result.continuation.shown_count - result.candidates.length + index + 1}. ${escapeMarkdownText(candidate.title)}`,
+          `   날짜·장소: ${escapeMarkdownText(compactText(candidate.date_time, 28))} | ${venueDetails}`,
+          `   비용·연령: ${escapeMarkdownText(compactText(candidate.fee_text, 48))} | ${candidate.age_fit_label} · ${escapeMarkdownText(compactAgeEvidence(candidate.age_fit_reason))}`,
+          `   출처: ${escapeMarkdownText(compactText(candidate.source_name, 18))}·${candidate.retrieved_at.slice(0, 10)} | 주의: ${escapeMarkdownText(compactText(candidate.warnings, 32))}`,
           ...navigation,
         ]
       : [
-          `${index + 1}. ${candidate.title}`,
-          `   날짜·장소: ${compactText(candidate.date_time, 56)} | ${venueDetails}`,
-          `   비용·연령: ${compactText(candidate.fee_text, 48)} | ${candidate.age_fit_label} · ${compactAgeEvidence(candidate.age_fit_reason)}`,
-          `   출처: ${candidate.source_name}·${candidate.retrieved_at.slice(0, 10)} | 주의: ${compactText(candidate.warnings, 32)}`,
+          `${result.continuation.shown_count - result.candidates.length + index + 1}. ${escapeMarkdownText(candidate.title)}`,
+          `   날짜·장소: ${escapeMarkdownText(compactText(candidate.date_time, 56))} | ${venueDetails}`,
+          `   비용·연령: ${escapeMarkdownText(compactText(candidate.fee_text, 48))} | ${candidate.age_fit_label} · ${escapeMarkdownText(compactAgeEvidence(candidate.age_fit_reason))}`,
+          `   출처: ${escapeMarkdownText(candidate.source_name)}·${candidate.retrieved_at.slice(0, 10)} | 주의: ${escapeMarkdownText(compactText(candidate.warnings, 32))}`,
           ...navigation,
         ]
   })
 
-  return [`${modeNotice}으로 후보 ${result.candidates.length}개를 찾았어요.`, ...notices, ...cards].join("\n")
+  const nextSteps = result.continuation.has_more
+    ? [
+        '계속 보려면 "다른 추천 더 보기"라고 입력하세요.',
+        "조건을 바꾸려면 새 지역·날짜·아이 나이를 알려 주세요.",
+      ]
+    : [
+        "조건에 맞는 추천을 모두 보여드렸어요.",
+        "다른 조건으로 찾으려면 새 지역·날짜·아이 나이를 알려 주세요.",
+      ]
+
+  return [
+    `${modeNotice} 기준 · 후보 ${result.candidates.length}개`,
+    ...notices,
+    ...cards,
+    ...nextSteps,
+  ].join("\n")
 }
 
 export function toKoreanFailureText(
@@ -413,6 +486,9 @@ export function toKoreanFailureText(
 ): string {
   switch (failure.code) {
     case "invalid_input": {
+      if (failure.message.includes("cursor")) {
+        return "이전 검색을 안전하게 이어갈 수 없어요. 원래 조건으로 다시 검색해 주세요."
+      }
       if (failure.message === "Provide exactly one of child_age or child_stage.") {
         return "아이 나이 또는 발달 단계 중 하나만 입력해 주세요."
       }

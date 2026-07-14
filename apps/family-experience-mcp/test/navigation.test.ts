@@ -91,7 +91,7 @@ describe("Kakao navigation actions", () => {
     if (text?.type !== "text") throw new Error("Expected text content")
     expect(text.text).toContain(`[${venueName} 지도 보기](`)
     expect(text.text).toContain(`[${venueName} 길찾기](`)
-    expect(text.text).toContain("지도(source_backed)")
+    expect(text.text).not.toContain("source_backed")
     expect(text.text).not.toContain("지도: https://")
     expect(text.text).not.toContain("길찾기: https://")
     const visibleText = text.text.replace(/\]\([^)]+\)/gu, "]")
