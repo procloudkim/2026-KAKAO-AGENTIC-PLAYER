@@ -1,5 +1,6 @@
 import type { SourceAdapterRequest } from "../sources/types.js"
 import type { ToolMode } from "../types.js"
+import { familyExperienceRegionMatches } from "../location.js"
 import type { CacheRecord } from "./cacheContract.js"
 
 export function filterCacheRecordsForRequest(input: {
@@ -45,9 +46,11 @@ function cacheRecordMatchesRequest(input: {
 }
 
 function locationMatches(location: string, record: CacheRecord): boolean {
-  const target = canonicalLocation(location)
-  const city = canonicalLocation(record.city)
-  if (target === undefined || target !== city) {
+  if (!familyExperienceRegionMatches({
+    requestedLocation: location,
+    recordCity: record.city,
+    recordAddress: record.venue.address,
+  })) {
     return false
   }
   const districtAliases = districtLocationAliases(location)
@@ -56,24 +59,6 @@ function locationMatches(location: string, record: CacheRecord): boolean {
   }
   const sourceText = `${record.venue.name} ${record.venue.address}`.toLowerCase()
   return districtAliases.some((district) => sourceText.includes(district))
-}
-
-function canonicalLocation(location: string): string | undefined {
-  const value = location.trim().toLowerCase()
-  const aliases: Readonly<Record<string, string>> = {
-    seoul: "seoul", "서울": "seoul", "jung-gu": "seoul", "jongno-gu": "seoul", "nowon-gu": "seoul",
-    "중구": "seoul", "종로구": "seoul", "노원구": "seoul", busan: "busan", "부산": "busan",
-    "busan haeundae": "busan", "부산 해운대": "busan",
-    daegu: "daegu", "대구": "daegu", daejeon: "daejeon", "대전": "daejeon",
-    gwangju: "gwangju", "광주": "gwangju", incheon: "incheon", "인천": "incheon",
-    gyeonggi: "gyeonggi", "경기": "gyeonggi", "경기도": "gyeonggi",
-    gangwon: "gangwon", "강원": "gangwon", "강원도": "gangwon",
-    chungcheong: "chungcheong", "충청": "chungcheong", "충북": "chungcheong", "충남": "chungcheong",
-    jeolla: "jeolla", "전라": "jeolla", "전남": "jeolla", "전북": "jeolla",
-    gyeongsang: "gyeongsang", "경상": "gyeongsang", jeju: "jeju", "제주": "jeju",
-    ulsan: "ulsan", "울산": "ulsan",
-  }
-  return aliases[value]
 }
 
 function districtLocationAliases(location: string): readonly string[] {

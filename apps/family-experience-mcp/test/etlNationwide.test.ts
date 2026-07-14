@@ -2,8 +2,9 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs"
 import { mkdtemp, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
-import { join, resolve } from "node:path"
+import { dirname, join, resolve } from "node:path"
 import { spawnSync } from "node:child_process"
+import { fileURLToPath } from "node:url"
 
 import { describe, expect, it } from "vitest"
 
@@ -232,6 +233,57 @@ describe("nationwide ETL cache runner", () => {
         ok: false,
         published: false,
         sources: [{ ok: false, failure_code: "missing_key" }],
+      })
+      expect(readFileSync(metadataPath, "utf8")).toBe(before.metadata)
+      expect(readFileSync(normalizedPath, "utf8")).toBe(before.normalized)
+      expect(readFileSync(rawSnapshotsPath, "utf8")).toBe(before.rawSnapshots)
+    } finally {
+      await rm(cacheDir, { recursive: true, force: true })
+    }
+  })
+
+  it("preserves the last-known-good publish when any configured ETL source fails", async () => {
+    const cacheDir = await tempCacheDir()
+
+    try {
+      await writeQueryableCache({
+        cacheDir,
+        generatedAt: "2026-07-07T00:00:00.000Z",
+      })
+      const metadataPath = resolve(cacheDir, ETL_CACHE_FILES.metadata)
+      const normalizedPath = resolve(cacheDir, ETL_CACHE_FILES.normalized)
+      const rawSnapshotsPath = resolve(cacheDir, ETL_CACHE_FILES.rawSnapshots)
+      const before = {
+        metadata: readFileSync(metadataPath, "utf8"),
+        normalized: readFileSync(normalizedPath, "utf8"),
+        rawSnapshots: readFileSync(rawSnapshotsPath, "utf8"),
+      }
+      const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..", "..")
+
+      const report = await runNationwideEtl({
+        cacheDir,
+        env: {
+          NATIONAL_CULTURE_FESTIVAL_CSV_PATH: resolve(
+            repoRoot,
+            "공공데이터-관련",
+            "전국문화축제표준데이터.csv",
+          ),
+        },
+        fixture: false,
+        maxPages: 1,
+        mode: "write-cache",
+        nowIso: () => "2026-07-08T00:00:00.000Z",
+        sourceSet: ["national_festival", "culture_portal"],
+        ttlHours: 24,
+      })
+
+      expect(report).toMatchObject({
+        ok: false,
+        published: false,
+        sources: [
+          { source: "national_festival", ok: true },
+          { source: "culture_portal", ok: false, failure_code: "missing_key" },
+        ],
       })
       expect(readFileSync(metadataPath, "utf8")).toBe(before.metadata)
       expect(readFileSync(normalizedPath, "utf8")).toBe(before.normalized)

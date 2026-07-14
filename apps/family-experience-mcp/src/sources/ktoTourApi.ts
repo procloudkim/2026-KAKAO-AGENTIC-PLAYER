@@ -589,9 +589,9 @@ function sourceUrlFor(sourceUrl: string, contentId: string, contentTypeId: strin
 
 function cityFrom(areaCode: string | undefined, address: string): string {
   const cities: Readonly<Record<string, string>> = {
-    "1": "Seoul", "2": "Incheon", "3": "Daejeon", "4": "Daegu", "5": "Gwangju", "6": "Busan", "7": "Ulsan",
-    "31": "Gyeonggi", "32": "Gangwon", "33": "Chungcheong", "34": "Chungcheong", "35": "Gyeongsang",
-    "36": "Gyeongsang", "37": "Jeolla", "38": "Jeolla", "39": "Jeju",
+    "1": "Seoul", "2": "Incheon", "3": "Daejeon", "4": "Daegu", "5": "Gwangju", "6": "Busan", "7": "Ulsan", "8": "Sejong",
+    "31": "Gyeonggi", "32": "Gangwon", "33": "Chungbuk", "34": "Chungnam", "35": "Gyeongbuk",
+    "36": "Gyeongnam", "37": "Jeonbuk", "38": "Jeonnam", "39": "Jeju",
   }
   const cityFromCode = areaCode === undefined ? undefined : cities[areaCode]
   if (cityFromCode !== undefined) {
@@ -601,7 +601,7 @@ function cityFrom(areaCode: string | undefined, address: string): string {
     const administrativeUnit = address.trim().split(/\s+/u)[1]
     return administrativeUnit !== undefined && ["\ub3d9\uad6c", "\uc11c\uad6c", "\ub0a8\uad6c", "\ubd81\uad6c", "\uad11\uc0b0\uad6c"].includes(administrativeUnit)
       ? "Gwangju"
-      : "Jeolla"
+      : "Jeonnam"
   }
   const addressRules: readonly (readonly [RegExp, string])[] = [
     [/^\uc11c\uc6b8(?:\ud2b9\ubcc4\uc2dc)?(?:\s|$)/u, "Seoul"],
@@ -611,12 +611,15 @@ function cityFrom(areaCode: string | undefined, address: string): string {
     [/^\uad11\uc8fc(?:\uad11\uc5ed\uc2dc)?(?:\s|$)/u, "Gwangju"],
     [/^\uc778\ucc9c(?:\uad11\uc5ed\uc2dc)?(?:\s|$)/u, "Incheon"],
     [/^\uc6b8\uc0b0(?:\uad11\uc5ed\uc2dc)?(?:\s|$)/u, "Ulsan"],
+    [/^세종(?:특별자치시|시)?(?:\s|$)/u, "Sejong"],
     [/^\uacbd\uae30\ub3c4(?:\s|$)/u, "Gyeonggi"],
     [/^\uac15\uc6d0(?:\ud2b9\ubcc4\uc790\uce58\ub3c4|\ub3c4)(?:\s|$)/u, "Gangwon"],
-    [/^\ucda9\uccad(?:\ubd81\ub3c4|\ub0a8\ub3c4)(?:\s|$)/u, "Chungcheong"],
-    [/^\ucda9\ubd81(?:\s|$)/u, "Chungcheong"],
-    [/^(?:\uc804\ubd81\ud2b9\ubcc4\uc790\uce58\ub3c4|\uc804\ub77c\ubd81\ub3c4|\uc804\ub77c\ub0a8\ub3c4)(?:\s|$)/u, "Jeolla"],
-    [/^\uacbd\uc0c1(?:\ubd81\ub3c4|\ub0a8\ub3c4)(?:\s|$)/u, "Gyeongsang"],
+    [/^(?:\ucda9\uccad\ubd81\ub3c4|\ucda9\ubd81)(?:\s|$)/u, "Chungbuk"],
+    [/^(?:\ucda9\uccad\ub0a8\ub3c4|\ucda9\ub0a8)(?:\s|$)/u, "Chungnam"],
+    [/^(?:\uc804\ubd81\ud2b9\ubcc4\uc790\uce58\ub3c4|\uc804\ub77c\ubd81\ub3c4|\uc804\ubd81)(?:\s|$)/u, "Jeonbuk"],
+    [/^(?:\uc804\ub77c\ub0a8\ub3c4|\uc804\ub0a8)(?:\s|$)/u, "Jeonnam"],
+    [/^(?:\uacbd\uc0c1\ubd81\ub3c4|\uacbd\ubd81)(?:\s|$)/u, "Gyeongbuk"],
+    [/^(?:\uacbd\uc0c1\ub0a8\ub3c4|\uacbd\ub0a8)(?:\s|$)/u, "Gyeongnam"],
     [/^\uc81c\uc8fc(?:\ud2b9\ubcc4\uc790\uce58\ub3c4|\ub3c4)(?:\s|$)/u, "Jeju"],
   ]
   const matchingRule = addressRules.find(([pattern]) => pattern.test(address))

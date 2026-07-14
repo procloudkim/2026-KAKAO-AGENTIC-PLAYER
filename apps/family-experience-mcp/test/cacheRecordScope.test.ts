@@ -24,6 +24,36 @@ const seoulRecord = {
   },
 } as const satisfies CacheRecord
 
+const sejongRecord = {
+  ...seoulRecord,
+  id: "kto-tourapi-events:sejong-test",
+  city: "세종특별자치시",
+  venue: {
+    name: "세종 가족문화관",
+    address: "세종특별자치시 다솜로 1",
+  },
+} as const satisfies CacheRecord
+
+const chungbukRecord = {
+  ...seoulRecord,
+  id: "kto-tourapi-events:chungbuk-test",
+  city: "Chungcheong",
+  venue: {
+    name: "충북 가족문화관",
+    address: "충청북도 청주시 상당로 1",
+  },
+} as const satisfies CacheRecord
+
+const chungnamRecord = {
+  ...seoulRecord,
+  id: "kto-tourapi-events:chungnam-test",
+  city: "Chungcheong",
+  venue: {
+    name: "충남 가족문화관",
+    address: "충청남도 천안시 문화로 1",
+  },
+} as const satisfies CacheRecord
+
 describe("cache location scope", () => {
   it.each(["Seoul", "\uc11c\uc6b8", "Jongno-gu", "\uc885\ub85c\uad6c"])("matches supported Seoul location %s", (location) => {
     expect(filterCacheRecordsForRequest({
@@ -37,5 +67,35 @@ describe("cache location scope", () => {
       records: [seoulRecord],
       request: { location, date_range: { start: "2026-08-01", end: "2026-08-01" }, child_age: 4 },
     })).toHaveLength(0)
+  })
+
+  it.each(["Sejong", "세종", "세종시", "세종특별자치시"])(
+    "matches canonical Sejong alias %s",
+    (location) => {
+      expect(filterCacheRecordsForRequest({
+        records: [sejongRecord],
+        request: {
+          location,
+          date_range: { start: "2026-08-01", end: "2026-08-01" },
+          child_age: 4,
+        },
+      })).toHaveLength(1)
+    },
+  )
+
+  it("does not broaden a Chungbuk request to Chungnam while retaining explicit Chungcheong scope", () => {
+    const request = {
+      date_range: { start: "2026-08-01", end: "2026-08-01" },
+      child_age: 4,
+    } as const
+
+    expect(filterCacheRecordsForRequest({
+      records: [chungbukRecord, chungnamRecord],
+      request: { ...request, location: "충북" },
+    })).toEqual([chungbukRecord])
+    expect(filterCacheRecordsForRequest({
+      records: [chungbukRecord, chungnamRecord],
+      request: { ...request, location: "충청" },
+    })).toEqual([chungbukRecord, chungnamRecord])
   })
 })

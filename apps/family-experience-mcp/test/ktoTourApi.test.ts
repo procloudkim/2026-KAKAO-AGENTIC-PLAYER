@@ -223,14 +223,15 @@ describe("KTO TourAPI event source adapter", () => {
 
   it.each([
     ["\uc11c\uc6b8\ud2b9\ubcc4\uc2dc \uc885\ub85c\uad6c \uc0bc\uccad\ub85c 1", "Seoul"],
+    ["세종특별자치시 다솜로 1", "Sejong"],
     ["\uc81c\uc8fc\ud2b9\ubcc4\uc790\uce58\ub3c4 \uc81c\uc8fc\uc2dc \ucca8\ub2e8\ub85c 1", "Jeju"],
     ["\uac15\uc6d0\ud2b9\ubcc4\uc790\uce58\ub3c4 \ucd98\ucc9c\uc2dc \uc911\uc559\ub85c 1", "Gangwon"],
-    ["\ucda9\uccad\ub0a8\ub3c4 \ucc9c\uc548\uc2dc \ubb38\ud654\ub85c 1", "Chungcheong"],
-    ["\ucda9\ubd81 \ub2e8\uc591\uad70 \ub300\uac15\uba74 \ub450\uc74c\ub9ac 1", "Chungcheong"],
-    ["\uc804\ubd81\ud2b9\ubcc4\uc790\uce58\ub3c4 \uc804\uc8fc\uc2dc \ud55c\uc625\ub9c8\uc744 1", "Jeolla"],
-    ["\uc804\ub0a8\uad11\uc8fc\ud1b5\ud569\ud2b9\ubcc4\uc2dc \uac15\uc9c4\uad70 \uace0\uc131\uae38 1", "Jeolla"],
+    ["\ucda9\uccad\ub0a8\ub3c4 \ucc9c\uc548\uc2dc \ubb38\ud654\ub85c 1", "Chungnam"],
+    ["\ucda9\ubd81 \ub2e8\uc591\uad70 \ub300\uac15\uba74 \ub450\uc74c\ub9ac 1", "Chungbuk"],
+    ["\uc804\ubd81\ud2b9\ubcc4\uc790\uce58\ub3c4 \uc804\uc8fc\uc2dc \ud55c\uc625\ub9c8\uc744 1", "Jeonbuk"],
+    ["\uc804\ub0a8\uad11\uc8fc\ud1b5\ud569\ud2b9\ubcc4\uc2dc \uac15\uc9c4\uad70 \uace0\uc131\uae38 1", "Jeonnam"],
     ["\uc804\ub0a8\uad11\uc8fc\ud1b5\ud569\ud2b9\ubcc4\uc2dc \ub3d9\uad6c \ubb38\ud654\uc804\ub2f9\ub85c 1", "Gwangju"],
-    ["\uacbd\uc0c1\ub0a8\ub3c4 \ucc3d\uc6d0\uc2dc \uc911\uc559\ub300\ub85c 1", "Gyeongsang"],
+    ["\uacbd\uc0c1\ub0a8\ub3c4 \ucc3d\uc6d0\uc2dc \uc911\uc559\ub300\ub85c 1", "Gyeongnam"],
   ])("normalizes Korean address prefix %s to canonical city %s", (address, expectedCity) => {
     // Given: a live record omits areacode but retains an official Korean address.
     const payload = ktoSearchPayload([

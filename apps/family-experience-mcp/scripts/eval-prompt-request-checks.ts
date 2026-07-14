@@ -4,6 +4,7 @@ import {
   FamilyExperienceCandidateSchema,
   FindFamilyExperiencesInputSchema,
 } from "../src/schemas.js"
+import { parseSeoulAgeTarget, stagesForAgeRange } from "../src/sources/ageTarget.js"
 
 const locationAliasEntries = [
   ["seoul", ["서울"]],
@@ -65,21 +66,37 @@ export function childSelectorRespected(
 
   if (parsedRequest.data.child_age !== undefined) {
     return candidates.every(
-      (candidate) =>
-        candidate.min_child_age !== undefined &&
-        candidate.max_child_age !== undefined &&
-        parsedRequest.data.child_age !== undefined &&
-        parsedRequest.data.child_age >= candidate.min_child_age &&
-        parsedRequest.data.child_age <= candidate.max_child_age,
+      (candidate) => {
+        const range = candidateAgeRange(candidate)
+        return range !== undefined &&
+          parsedRequest.data.child_age !== undefined &&
+          parsedRequest.data.child_age >= range.min &&
+          parsedRequest.data.child_age <= range.max
+      },
     )
   }
 
   if (parsedRequest.data.child_stage !== undefined) {
     const childStage = parsedRequest.data.child_stage
-    return candidates.every((candidate) => candidate.child_stages?.includes(childStage) === true)
+    return candidates.every((candidate) => {
+      if (candidate.child_stages !== undefined) {
+        return candidate.child_stages.includes(childStage)
+      }
+      const range = candidateAgeRange(candidate)
+      return range !== undefined && stagesForAgeRange(range).includes(childStage)
+    })
   }
 
   return false
+}
+
+function candidateAgeRange(
+  candidate: EvalCandidate,
+): { readonly min: number; readonly max: number } | undefined {
+  if (candidate.min_child_age !== undefined && candidate.max_child_age !== undefined) {
+    return { min: candidate.min_child_age, max: candidate.max_child_age }
+  }
+  return parseSeoulAgeTarget(candidate.age_fit_reason)
 }
 
 function locationAliases(location: string): readonly string[] {

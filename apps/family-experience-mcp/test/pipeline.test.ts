@@ -269,6 +269,180 @@ describe("Todo 4 family experience pipeline", () => {
     ])
   })
 
+  it("keeps the three-result limit when distinct canonical events reuse the same source id", async () => {
+    const records = ["첫 행사", "둘째 행사", "셋째 행사", "넷째 행사"].map((title, index) =>
+      officialRecord({
+        id: "culture-portal-oneview:reused-id",
+        title,
+        program_text: title,
+        venue: {
+          name: `${title} 장소`,
+          address: `부산광역시 테스트로 ${index + 1}`,
+        },
+        tags: ["family"],
+      }),
+    )
+    const { renderFamilyExperienceResponse } = await loadPipeline()
+
+    const response = renderFamilyExperienceResponse({
+      input: {
+        location: "Busan",
+        date_range: { start: "2026-08-01", end: "2026-08-01" },
+        child_age: 4,
+      },
+      mode: "live",
+      source_records: records,
+    })
+
+    expect(response.ok).toBe(true)
+    if (!response.ok) {
+      throw new Error(response.failure.message)
+    }
+    expect(response.eligible_count).toBe(4)
+    expect(response.candidates).toHaveLength(3)
+    expect(new Set(response.candidates.map((candidate) => candidate.title)).size).toBe(3)
+  })
+
+  it("uses address before KTO-style title-as-venue when measuring venue diversity", async () => {
+    const records = [
+      officialRecord({
+        id: "kto-tourapi-events:shared-address-top",
+        title: "첫 가족 프로그램",
+        program_text: "첫 가족 프로그램",
+        venue: { name: "첫 가족 프로그램", address: "부산광역시 공유로 1" },
+        tags: ["family"],
+      }),
+      officialRecord({
+        id: "kto-tourapi-events:shared-address-second",
+        title: "둘째 가족 프로그램",
+        program_text: "둘째 가족 프로그램",
+        venue: { name: "둘째 가족 프로그램", address: "부산광역시 공유로 1" },
+        tags: ["family"],
+      }),
+      officialRecord({
+        id: "kto-tourapi-events:new-address-third",
+        title: "셋째 가족 프로그램",
+        program_text: "셋째 가족 프로그램",
+        venue: { name: "셋째 가족 프로그램", address: "부산광역시 새로 2" },
+        tags: ["family"],
+      }),
+    ]
+    const {
+      normalizeFamilyExperienceRecords,
+      selectDiverseFamilyExperienceCandidates,
+    } = await loadPipeline()
+    const normalized = normalizeFamilyExperienceRecords({
+      input: {
+        location: "Busan",
+        date_range: { start: "2026-08-01", end: "2026-08-01" },
+        child_age: 4,
+      },
+      source_records: records,
+    })
+    if (!normalized.ok) {
+      throw new Error(normalized.failure.message)
+    }
+
+    expect(
+      selectDiverseFamilyExperienceCandidates(normalized.candidates, 2).map(
+        (candidate) => candidate.id,
+      ),
+    ).toEqual([
+      "kto-tourapi-events:shared-address-top",
+      "kto-tourapi-events:new-address-third",
+    ])
+  })
+
+  it("PIN:KOREAN_DIVERSITY reranks the real Korean title pattern through the full render seam", async () => {
+    const titles = [
+      "국악공연 진연",
+      "서울 왕궁수문장 교대의식",
+      "의정부지 상설 전통문화행사",
+      "문화가 흐르는 서울광장",
+      "아시아프 (ASYAAF 100)",
+    ]
+    const records = titles.map((title, index) => {
+      const rawSnapshotId = `kto-tourapi-events:raw:diversity-${index}`
+      return officialRecord({
+        id: `kto-tourapi-events:diversity-${index}`,
+        raw_snapshot_id: rawSnapshotId,
+        title,
+        program_text: title,
+        tags: ["kto-tourapi"],
+        city: "Seoul",
+        venue: {
+          name: `${title} 행사장`,
+          address: `서울특별시 테스트로 ${index + 1}`,
+        },
+        source: {
+          id: "kto-tourapi-events",
+          mode: "live",
+          url: `https://example.invalid/kto/${index}`,
+          raw_snapshot_id: rawSnapshotId,
+        },
+      })
+    })
+    const { renderFamilyExperienceResponse } = await loadPipeline()
+
+    const response = renderFamilyExperienceResponse({
+      input: {
+        location: "Seoul",
+        date_range: { start: "2026-08-01", end: "2026-08-01" },
+        child_age: 4,
+      },
+      mode: "live",
+      source_records: records,
+    })
+
+    expect(response.ok).toBe(true)
+    if (!response.ok) {
+      throw new Error(response.failure.message)
+    }
+    expect(response.eligible_count).toBe(5)
+    expect(response.candidates.map((candidate) => candidate.title)).toEqual([
+      "국악공연 진연",
+      "문화가 흐르는 서울광장",
+      "아시아프 (ASYAAF 100)",
+    ])
+  })
+
+  it("backfills the original rank when every eligible candidate has the same activity and topics", async () => {
+    const records = ["첫 번째 국악공연", "두 번째 국악공연", "세 번째 국악공연", "네 번째 국악공연"]
+      .map((title, index) =>
+        officialRecord({
+          id: `culture-portal-oneview:same-theme-${index}`,
+          title,
+          program_text: title,
+          venue: {
+            name: `국악 공연장 ${index + 1}`,
+            address: `부산광역시 테스트로 ${index + 1}`,
+          },
+          tags: ["performance", "traditional"],
+        }),
+      )
+    const { renderFamilyExperienceResponse } = await loadPipeline()
+
+    const response = renderFamilyExperienceResponse({
+      input: {
+        location: "Busan",
+        date_range: { start: "2026-08-01", end: "2026-08-01" },
+        child_age: 4,
+      },
+      mode: "live",
+      source_records: records,
+    })
+
+    expect(response.ok).toBe(true)
+    if (!response.ok) {
+      throw new Error(response.failure.message)
+    }
+    expect(response.candidates.map((candidate) => candidate.title)).toEqual([
+      "첫 번째 국악공연",
+      "두 번째 국악공연",
+      "세 번째 국악공연",
+    ])
+  })
+
   it("returns exactly three ranked candidates when the happy prompt has three matches", async () => {
     // Given: the deterministic Todo 3 fixture has three Seoul indoor preschool matches.
     const { renderFamilyExperienceResponse } = await loadPipeline()

@@ -3,7 +3,12 @@ import {
   type FamilyExperienceCanonicalKeyword,
   type FindFamilyExperiencesInput,
 } from "../schemas.js"
+import { familyExperienceRegionMatches } from "../location.js"
 import type { SourceId } from "../sources/types.js"
+import {
+  classifyFamilyExperienceCategory,
+  type FamilyExperienceCategory,
+} from "./category.js"
 import type { NormalizedFamilyExperienceCandidate } from "./normalize.js"
 import { evaluateScheduleEligibility } from "./scheduleEligibility.js"
 
@@ -65,58 +70,130 @@ export function selectDiverseFamilyExperienceCandidates(
 ): readonly NormalizedFamilyExperienceCandidate[] {
   if (limit <= 0 || rankedCandidates.length === 0) return []
 
-  const selected: NormalizedFamilyExperienceCandidate[] = [rankedCandidates[0]!]
-  const selectedIds = new Set([rankedCandidates[0]!.id])
-  const usedThemes = new Set([diversityTheme(rankedCandidates[0]!)])
-  const usedVenues = new Set([canonicalVenue(rankedCandidates[0]!)])
+  const windowSize = Math.max(limit, limit * 3)
+  const rerankWindow = rankedCandidates.slice(0, windowSize)
+  const first = rerankWindow[0]!
+  const selectedIndexes = new Set([0])
+  const usedActivities = new Set<string>()
+  const usedTopics = new Set<string>()
+  const usedVenues = new Set<string>()
 
-  const take = (candidate: NormalizedFamilyExperienceCandidate): void => {
-    if (selected.length >= limit || selectedIds.has(candidate.id)) return
-    selected.push(candidate)
-    selectedIds.add(candidate.id)
-    usedThemes.add(diversityTheme(candidate))
-    usedVenues.add(canonicalVenue(candidate))
+  recordDiversitySignals(first, usedActivities, usedTopics, usedVenues)
+
+  while (selectedIndexes.size < Math.min(limit, rerankWindow.length)) {
+    const next = rerankWindow
+      .map((candidate, rankIndex) => ({ candidate, rankIndex }))
+      .filter(({ rankIndex }) => !selectedIndexes.has(rankIndex))
+      .sort((left, right) =>
+        compareDiversityCandidate({
+          left,
+          right,
+          usedActivities,
+          usedTopics,
+          usedVenues,
+        }),
+      )[0]
+
+    if (next === undefined) break
+    selectedIndexes.add(next.rankIndex)
+    recordDiversitySignals(next.candidate, usedActivities, usedTopics, usedVenues)
   }
 
-  for (const candidate of rankedCandidates) {
-    if (
-      !usedThemes.has(diversityTheme(candidate)) &&
-      !usedVenues.has(canonicalVenue(candidate))
-    ) {
-      take(candidate)
-    }
-  }
-  for (const candidate of rankedCandidates) {
-    if (!usedThemes.has(diversityTheme(candidate))) take(candidate)
-  }
-  for (const candidate of rankedCandidates) {
-    if (!usedVenues.has(canonicalVenue(candidate))) take(candidate)
-  }
-  for (const candidate of rankedCandidates) take(candidate)
-
-  return selected
+  return rerankWindow.filter((_candidate, rankIndex) => selectedIndexes.has(rankIndex))
 }
 
-function diversityTheme(candidate: NormalizedFamilyExperienceCandidate): string {
-  const text = [candidate.title, candidate.program_text, ...candidate.tags]
-    .join("\n")
-    .normalize("NFKC")
-    .toLowerCase()
-  if (/국악|전통|한복|사물놀이|탈춤|판소리|heritage|traditional/iu.test(text)) return "traditional"
-  if (/과학|로봇|우주|천문|science|robot|space/iu.test(text)) return "science"
-  if (/박물관|미술관|전시|museum|gallery|exhibition/iu.test(text)) return "museum"
-  if (/공예|만들기|워크숍|체험|craft|maker|workshop|hands-on/iu.test(text)) return "hands_on"
-  if (/숲|공원|생태|자연|해양|forest|park|nature|ecology|marine/iu.test(text)) return "nature"
-  if (/공연|연극|뮤지컬|콘서트|극장|performance|theater|theatre|musical|concert/iu.test(text)) return "performance"
-  if (/축제|페스타|행사|festival|festa/iu.test(text)) return "festival"
-  return "unknown"
+type DiversityCandidate = {
+  readonly candidate: NormalizedFamilyExperienceCandidate
+  readonly rankIndex: number
+}
+
+function compareDiversityCandidate(input: {
+  readonly left: DiversityCandidate
+  readonly right: DiversityCandidate
+  readonly usedActivities: ReadonlySet<string>
+  readonly usedTopics: ReadonlySet<string>
+  readonly usedVenues: ReadonlySet<string>
+}): number {
+  const leftTier = diversityNoveltyTier(
+    input.left.candidate,
+    input.usedActivities,
+    input.usedTopics,
+    input.usedVenues,
+  )
+  const rightTier = diversityNoveltyTier(
+    input.right.candidate,
+    input.usedActivities,
+    input.usedTopics,
+    input.usedVenues,
+  )
+
+  return (
+    compareNumber(leftTier, rightTier) ||
+    compareNumber(input.left.rankIndex, input.right.rankIndex) ||
+    compareText(input.left.candidate.id, input.right.candidate.id)
+  )
+}
+
+function diversityNoveltyTier(
+  candidate: NormalizedFamilyExperienceCandidate,
+  usedActivities: ReadonlySet<string>,
+  usedTopics: ReadonlySet<string>,
+  usedVenues: ReadonlySet<string>,
+): number {
+  const category = categoryFor(candidate)
+  const venueIsNew = !usedVenues.has(canonicalVenue(candidate))
+  const activityIsKnown = category.activity_type !== "other"
+  const activityIsNew = activityIsKnown && !usedActivities.has(category.activity_type)
+  const newTopics = category.topic_tags.filter((topic) => !usedTopics.has(topic))
+  const overlapsTopic = category.topic_tags.some((topic) => usedTopics.has(topic))
+
+  if (activityIsNew && venueIsNew) return 0
+  if (activityIsNew) return 1
+  if (newTopics.length > 0 && !overlapsTopic && venueIsNew) return 2
+  if (category.category_basis === "unknown" && venueIsNew) return 3
+  if (newTopics.length > 0 && venueIsNew) return 4
+  if (venueIsNew) return 5
+  return 6
+}
+
+function recordDiversitySignals(
+  candidate: NormalizedFamilyExperienceCandidate,
+  usedActivities: Set<string>,
+  usedTopics: Set<string>,
+  usedVenues: Set<string>,
+): void {
+  const category = categoryFor(candidate)
+  if (category.activity_type !== "other") {
+    usedActivities.add(category.activity_type)
+  }
+  for (const topic of category.topic_tags) usedTopics.add(topic)
+  usedVenues.add(canonicalVenue(candidate))
+}
+
+function categoryFor(
+  candidate: NormalizedFamilyExperienceCandidate,
+): FamilyExperienceCategory {
+  return classifyFamilyExperienceCategory({
+    title: candidate.title,
+    program_text: candidate.program_text,
+    tags: candidate.tags,
+  })
 }
 
 function canonicalVenue(candidate: NormalizedFamilyExperienceCandidate): string {
-  return `${candidate.venue_name}\n${candidate.venue_address}`
-    .normalize("NFKC")
-    .trim()
-    .toLowerCase()
+  const address = canonicalDiversityText(candidate.venue_address)
+  const city = canonicalDiversityText(candidate.city)
+  if (address.length > 0 && address !== "unknown" && address !== city) {
+    return `address:${address}`
+  }
+  if (candidate.coordinates !== undefined) {
+    return `coordinates:${candidate.coordinates.latitude.toFixed(5)},${candidate.coordinates.longitude.toFixed(5)}`
+  }
+  return `name:${canonicalDiversityText(candidate.venue_name)}`
+}
+
+function canonicalDiversityText(value: string): string {
+  return value.normalize("NFKC").replace(/\s+/gu, " ").trim().toLowerCase()
 }
 
 type CompareCandidatesRequest = {
@@ -182,12 +259,11 @@ function getLocationRelevanceScore(
   location: string,
   candidate: NormalizedFamilyExperienceCandidate,
 ): number {
-  const target = canonicalLocation(location)
-  const city = canonicalLocation(candidate.city)
-  if (target === undefined || city === undefined) {
-    return 0
-  }
-  return target === city ? 3 : 0
+  return familyExperienceRegionMatches({
+    requestedLocation: location,
+    recordCity: candidate.city,
+    recordAddress: candidate.venue_address,
+  }) ? 3 : 0
 }
 
 function matchesChildSelector(
@@ -280,31 +356,6 @@ function candidateSupportsKeyword(
       return /우천|\brainy[ _-]?day\b/iu.test(sourceText)
     default:
       return assertNever(keyword)
-  }
-}
-
-function canonicalLocation(location: string): string | undefined {
-  switch (location.trim().toLowerCase()) {
-    case "seoul":
-    case "서울":
-      return "seoul"
-    case "busan":
-    case "부산":
-    case "busan haeundae":
-    case "부산 해운대":
-      return "busan"
-    case "daegu": case "대구": return "daegu"
-    case "daejeon": case "대전": return "daejeon"
-    case "gwangju": case "광주": return "gwangju"
-    case "incheon": case "인천": return "incheon"
-    case "gyeonggi": case "경기": case "경기도": return "gyeonggi"
-    case "gangwon": case "강원": case "강원도": return "gangwon"
-    case "chungcheong": case "충청": return "chungcheong"
-    case "jeolla": case "전라": case "전라도": return "jeolla"
-    case "gyeongsang": case "경상": case "경상권": return "gyeongsang"
-    case "jeju": case "제주": return "jeju"
-    case "ulsan": case "울산": return "ulsan"
-    default: return undefined
   }
 }
 

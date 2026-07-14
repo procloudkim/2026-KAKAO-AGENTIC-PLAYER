@@ -18,13 +18,20 @@ const locationMatchers = [
   { pattern: /대전/u, location: "Daejeon" },
   { pattern: /광주/u, location: "Gwangju" },
   { pattern: /인천/u, location: "Incheon" },
-  { pattern: /경기|경기도/u, location: "Gyeonggi" },
-  { pattern: /강원/u, location: "Gangwon" },
-  { pattern: /충청/u, location: "Chungcheong" },
-  { pattern: /전라|전라도/u, location: "Jeolla" },
-  { pattern: /경상|경상권/u, location: "Gyeongsang" },
-  { pattern: /제주/u, location: "Jeju" },
   { pattern: /울산/u, location: "Ulsan" },
+  { pattern: /세종/u, location: "Sejong" },
+  { pattern: /경기도|경기/u, location: "Gyeonggi" },
+  { pattern: /강원/u, location: "Gangwon" },
+  { pattern: /충청북도|충북/u, location: "Chungbuk" },
+  { pattern: /충청남도|충남/u, location: "Chungnam" },
+  { pattern: /충청/u, location: "Chungcheong" },
+  { pattern: /전북특별자치도|전라북도|전북/u, location: "Jeonbuk" },
+  { pattern: /전남광주통합특별시|전라남도|전남/u, location: "Jeonnam" },
+  { pattern: /전라도|전라/u, location: "Jeolla" },
+  { pattern: /경상북도|경북/u, location: "Gyeongbuk" },
+  { pattern: /경상남도|경남/u, location: "Gyeongnam" },
+  { pattern: /경상권|경상/u, location: "Gyeongsang" },
+  { pattern: /제주/u, location: "Jeju" },
 ] as const
 
 const koreanYearMonthDayPattern = /(\d{4})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일/u
@@ -284,7 +291,7 @@ function parseAssumptions(prompt: string): string[] {
     assumptions.push("‘체험’은 일반 요청어로 해석해 키워드 일치 조건에서 제외했습니다.")
   }
 
-  if (!/(서울|부산|대구|대전|광주|인천|경기|강원|충청|전라|경상|제주|울산|중구|종로구|노원구)/u.test(prompt)) {
+  if (!/(서울|부산|대구|대전|광주|인천|울산|세종|경기|강원|충청|충북|충남|전라|전북|전남|경상|경북|경남|제주|중구|종로구|노원구)/u.test(prompt)) {
     assumptions.push("지역이 없으면 서울 기준으로 시작합니다.")
   }
 

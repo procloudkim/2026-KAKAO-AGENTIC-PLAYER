@@ -8,11 +8,12 @@ This is the canonical verification summary for the current Family Experience MCP
 
 | Area | Status | Evidence |
 | --- | --- | --- |
-| P0 local implementation | PASS on the current tree: typecheck, 41 Vitest files / 355 deterministic tests, and all four golden scenarios. This covers weekday/time eligibility, diverse default-three selection with typed shortage reasons, evidence-rich cards, Kakao navigation links, bounded stale/LKG behavior, request-limit cleanup, and fail-closed privacy publication. | `npm run verify`; `npm run smoke:golden` |
-| Integrated release gate | PASS on the current P0 tree: typecheck, 41/355 Vitest tests, three scanners, production cache, contract, sealed holdout, compiled HTTP, and root-context `linux/amd64` container. The receipt binds identical start/finish release-tree hashes. | `npm run qa:submission`; newest PASS run under `.omo/evidence/family-experience-submission-ready/c003-release/runs/` |
-| Secret scan | PASS on the current tree: 217 files. | `npm run scan:secrets` |
-| Source scan | PASS on the current tree: 165 files, including scoped HTTPS policy references and exact Kakao navigation-link exceptions with negative tests. | `npm run scan:sources`; `test/scanSources.test.ts` |
-| Claim scan | PASS on the current tree: 198 files. | `npm run scan:claims` |
+| P0 local implementation | PASS on the current tree: typecheck, 43 Vitest files / 397 deterministic tests, and all four golden scenarios. This covers weekday/time eligibility, 17-region leaf matching, bounded activity/topic/venue diversity with Korean-title, duplicate-ID, shared-address, and sparse-backfill regressions, typed shortage reasons, evidence-rich cards, Kakao navigation links, all-source atomic cache publication, bounded stale/LKG behavior, request-limit cleanup, and fail-closed privacy publication. | `npm run verify`; `npm run smoke:golden` |
+| Nationwide prompt eval | PASS on the current tree: 42/42 scenarios and both structured and public loose-prompt surfaces, with 84 evaluated surfaces, zero unsupported-claim failures, and 12/12 expected no-result surfaces returning no fabricated candidates. | `npm run eval:nationwide-prompts`; `.omo/evidence/family-experience-market-ready-platform/task-11-market-prompt-eval/summary.json` |
+| Integrated release gate | PASS on the current P0 tree: typecheck, 43/397 Vitest tests, three scanners, production cache, contract, sealed holdout, compiled HTTP, and root-context `linux/amd64` container. The receipt binds identical start/finish release-tree hashes. | `npm run qa:submission`; newest PASS run under `.omo/evidence/family-experience-submission-ready/c003-release/runs/` |
+| Secret scan | PASS on the current tree. | `npm run scan:secrets` |
+| Source scan | PASS on the current tree, including scoped HTTPS policy references and exact Kakao navigation-link exceptions with negative tests. | `npm run scan:sources`; `test/scanSources.test.ts` |
+| Claim scan | PASS on the current tree. | `npm run scan:claims` |
 | Production cache | PASS on the current cache: schema v2, KTO TourAPI only, 299 normalized records, 35 integrity-bound raw snapshots, 32 eligible records, zero source failures, and exact PlayMCP starter results of Seoul 3, Jeju 1, and Gangwon 1. Sub-three responses carry a structured shortage reason. | `npm run qa:production-cache`; `.omo/evidence/family-experience-submission-ready/c002-production-cache/receipt.json` |
 | Submission contract | PASS on the current tree. | `npm run qa:contract`; `.omo/evidence/family-experience-submission-ready/c001-contract.json` |
 | Sealed holdout | PASS on the current tree: 8/8 cases with dataset and expected-label hash binding. | `npm run qa:holdout`; `.omo/evidence/family-experience-submission-ready/c003-release/holdout/holdout-results.json` |
@@ -27,7 +28,7 @@ This is the canonical verification summary for the current Family Experience MCP
 
 - The bundled cache was generated at `2026-07-13T14:46:02.053Z` with a 24-hour TTL. Freshness expires at `2026-07-14T14:46:02.053Z`; with the default 24-hour grace, degraded serving ends at `2026-07-15T14:46:02.053Z`.
 - `fresh` is required for broad release proof. `stale_servable` is a bounded continuity mode that must disclose degraded freshness; `expired`, missing, corrupt, fixture, or source-mismatched cache state fails closed.
-- The runtime image serves the bundled static cache and does not refresh it in place. Refresh requires external ETL, production-cache validation, a new image build, and redeployment. An all-source ETL failure preserves the last validated snapshot instead of publishing an empty replacement.
+- The runtime image serves the bundled static cache and does not refresh it in place. Refresh requires external ETL, production-cache validation, a new image build, and redeployment. Any configured-source ETL failure preserves the last validated snapshot instead of publishing a partial or empty replacement.
 - A validated in-process snapshot is reused for at most one second to keep cache-hit latency within the host target. After that bounded interval the files and integrity contract are checked again; concurrent callers share only the same validation work.
 - KTO `searchFestival2` supplies festival records. `detailIntro2` enriches age, place, duration, and fee fields only when the returned content ID matches; otherwise unsupported evidence remains unknown.
 - Seoul is not in the production source set because a verified HTTPS transport is not currently available. Plain non-loopback HTTP is not enabled as a workaround.
@@ -35,6 +36,7 @@ This is the canonical verification summary for the current Family Experience MCP
 ## Residual Risks
 
 - The KTO cache is a bounded snapshot, not proof of complete national coverage, real-time availability, reservation availability, current opening state, indoor/outdoor status, or guaranteed child suitability.
+- Diversity reranking improves selection within the top-nine relevance window; it does not create supply, prove category completeness, or justify promoting a source with no net-new hard-eligible yield.
 - Source-stated age text is evidence to show parents, not a safety certification. Parents must confirm dates, fees, access, and participation conditions at the official source.
 - The technical privacy notice does not substitute for operator confirmation or legal review. KakaoCloud/PlayMCP platform-log retention remains outside this repository's verified boundary.
 - Current local source, test, compiled-HTTP, and container proof does not establish KakaoCloud or PlayMCP compatibility. Those claims require a rebuilt deployment and private remote smoke.

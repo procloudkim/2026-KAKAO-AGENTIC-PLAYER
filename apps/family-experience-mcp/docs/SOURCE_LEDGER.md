@@ -1,6 +1,6 @@
 # Source Ledger
 
-Date: 2026-07-08
+Date: 2026-07-14
 
 This is the canonical launch source inventory for `find_family_experiences`.
 
@@ -23,13 +23,28 @@ system, open-now oracle, or child-safety certifier.
 | `tier2-multi-source-cross-region` | Multiple registered official sources have current redacted proof across more than one region. | Regional breadth copy only, with caveats. |
 | `tier3-market-claim-eligible` | Current multi-source proof, freshness, redaction, and launch scans support broad public claims. | Only this tier may appear in broad public copy. No current source is tier3. |
 
+## Production Source Promotion Gate
+
+A registered source enters the production source set only when all of these pass:
+
+1. Official-source identity, applicable terms, and consumer-safe detail-link use are documented.
+2. Non-loopback HTTPS transport, requester policy, credential redaction, and bounded timeouts pass with current proof.
+3. Normalization, raw-snapshot provenance, source confidence, cache integrity, atomic publication, and fail-closed behavior pass deterministic tests. A production source-set refresh publishes only if every configured source succeeds; any partial failure preserves the last-known-good publish.
+4. The source produces net-new hard-eligible candidates after requested date, canonical region, and child-age/stage gates on the target prompt suite, and measurably reduces a region or category shortage. Raw record count alone is not promotion evidence.
+5. Source-stated and inferred fields remain separate. Description-derived age parsing, when explicitly bounded and parseable, is labeled `inferred`, never `source-stated`.
+6. The complete production source set passes fresh contract, holdout, compiled HTTP, container, secret, source, and claim gates.
+
+The current expansion evaluation did not establish promotable net-new
+age-qualified yield from the registered non-production sources. They therefore
+remain adapter/proof routes and do not change the KTO-only serving set.
+
 ## Inventory
 
 | source | institution | ingestion auth | freshness | license/terms pointer | allowed claims | unsupported claims | cache TTL | proof command | launch tier | url |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `fixture-family-experience-v1` | Local deterministic fixture dataset | none | Fixture/demo only; deterministic and not live. | Synthetic demo data; no live source license. | schema smoke test; demo candidate shape; raw snapshot audit | live freshness; source-returned availability; complete national coverage; open-now status; reservation availability; child safety certification | 0 seconds | `npm --prefix apps/family-experience-mcp run verify` | `tier0-fixture-only` | https://example.invalid/family-experience/fixture-v1 |
 | `seoul-culture-events` | Seoul Metropolitan Government Open Data Plaza | `SEOUL_OPEN_DATA_KEY`; optional `SEOUL_OPEN_DATA_BASE_URL` | Event listings refreshed within 6 to 24 hours when the live adapter is enabled. | Seoul Open Data Plaza public API terms. | registered adapter fields after an HTTPS proof | production availability before HTTPS transport proof; complete national coverage; real-time freshness; open-now status; reservation availability; child safety certification | 21600 seconds | `npm --prefix apps/family-experience-mcp run scan:sources` | `registered-not-production` | https://data.seoul.go.kr/ |
-| `culture-portal-oneview` | Korea Culture Information Service Agency Culture Portal | `CULTURE_PORTAL_SERVICE_KEY`; optional `CULTURE_PORTAL_BASE_URL` | Nationwide culture portal event listings refreshed by the official API provider. | Public Data Portal OpenAPI terms. | event listing presence; event date; venue; source URL; source freshness; raw snapshot audit | current production responses; complete national coverage; real-time freshness; open-now status; reservation availability; child safety certification | 86400 seconds | `npm --prefix apps/family-experience-mcp run scan:sources` | `registered-not-production` | https://www.culture.go.kr/portal/main/contents.do?menuNo=200155 |
+| `culture-portal-oneview` | Korea Culture Information Service Agency Culture Portal | `CULTURE_PORTAL_SERVICE_KEY`; optional `CULTURE_PORTAL_BASE_URL` | Nationwide culture portal event listings refreshed by the official API provider. | Public Data Portal OpenAPI terms. | event listing presence; event date; venue; source URL; source freshness; raw snapshot audit; bounded `inferred` age range only when the description contains an explicit parseable audience-age cue | current production responses; source-stated age fit from description inference; complete national coverage; real-time freshness; open-now status; reservation availability; child safety certification | 86400 seconds | `npm --prefix apps/family-experience-mcp run scan:sources` | `registered-not-production` | https://www.culture.go.kr/portal/main/contents.do?menuNo=200155 |
 | `kto-tourapi-events` | Korea Tourism Organization TourAPI | `KTO_TOURAPI_SERVICE_KEY`; optional `KTO_TOURAPI_BASE_URL` | Nationwide tourism and event listings refreshed by the official TourAPI provider. | Public Data Portal OpenAPI terms. | `searchFestival2` listing presence/date/place/source fields; `detailIntro2` source-stated age text when `agelimit` is parseable; source freshness; raw snapshot audit | complete national coverage; real-time freshness; indoor/weather/booking status; open-now status; guaranteed age suitability; child safety certification | 86400 seconds | `npm --prefix apps/family-experience-mcp run scan:sources` | `tier1-source-proven-single-source` | https://www.data.go.kr/data/15101578/openapi.do |
 | `national-culture-festival-standard` | Ministry of Culture, Sports and Tourism national culture festival standard data | `NATIONAL_CULTURE_FESTIVAL_CSV_PATH`; `PUBLIC_DATA_STANDARD_SERVICE_KEY` only for confirmed live endpoint mode | Quarterly standard dataset refresh published through the Public Data Portal. | Public Data Portal standard data terms. | event listing presence; event date; venue; source URL; source freshness; raw snapshot audit | current production responses; complete national coverage; same-day freshness; active event status after publication date; open-now status; reservation availability; child safety certification | 86400 seconds | `npm --prefix apps/family-experience-mcp run scan:sources` | `registered-not-production` | https://www.data.go.kr/data/15013104/standard.do |
 

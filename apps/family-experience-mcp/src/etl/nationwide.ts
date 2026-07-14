@@ -67,8 +67,7 @@ export async function runNationwideEtl(options: NationwideEtlOptions): Promise<N
     ttlHours: options.ttlHours,
   })
   const allSourcesOk = sourceSummaries.length > 0 && sourceSummaries.every((source) => source.ok)
-  const hasSuccessfulSource = sourceSummaries.some((source) => source.ok)
-  const published = options.mode === "write-cache" && hasSuccessfulSource
+  const published = options.mode === "write-cache" && allSourcesOk
 
   if (published) {
     await writeCache({ cacheDir: options.cacheDir, metadata, rawSnapshots, records })

@@ -3,7 +3,12 @@ import { resolve } from "node:path"
 
 import * as z from "zod/v4"
 
-import type { FamilyExperienceConfig } from "../src/config.js"
+import type {
+  FamilyExperienceConfig,
+  FamilyExperienceSourceSetEntry,
+} from "../src/config.js"
+import { ETL_CACHE_FILES } from "../src/etl/cache.js"
+import { parseCacheMetadata } from "../src/etl/cacheContract.js"
 import { callFindFamilyExperiences } from "../src/mcp.js"
 import { fixtureSourceAdapter } from "../src/sources/fixture.js"
 import type { FamilyExperienceSourceAdapter } from "../src/sources/types.js"
@@ -51,6 +56,10 @@ type EvalResult = {
 }
 type EvalRuntime = {
   readonly cacheDir?: string
+  readonly fixture?: boolean
+  readonly referenceDate?: string
+  readonly sourceSet?: readonly FamilyExperienceSourceSetEntry[]
+  readonly ttlHours?: number
 }
 type EvalCallOptions = {
   readonly config: FamilyExperienceConfig
@@ -96,9 +105,25 @@ function directPromptFixture(): EvalFixture | undefined {
   }
 }
 
-function evalRuntime(): EvalRuntime {
+async function evalRuntime(): Promise<EvalRuntime> {
   const cacheDir = argValue("--cache-dir")
-  return cacheDir === undefined ? {} : { cacheDir: resolve(process.cwd(), cacheDir) }
+  if (cacheDir === undefined) return {}
+
+  const resolvedCacheDir = resolve(process.cwd(), cacheDir)
+  const rawMetadata: unknown = JSON.parse(
+    await readFile(resolve(resolvedCacheDir, ETL_CACHE_FILES.metadata), "utf8"),
+  )
+  const metadata = parseCacheMetadata(rawMetadata)
+  if (metadata === undefined) {
+    throw new Error("Eval cache metadata is invalid")
+  }
+  return {
+    cacheDir: resolvedCacheDir,
+    fixture: metadata.fixture,
+    referenceDate: metadata.generated_at.slice(0, 10),
+    sourceSet: metadata.source_set,
+    ttlHours: metadata.ttl_hours,
+  }
 }
 
 async function evaluateFixture(fixture: EvalFixture, runtime: EvalRuntime): Promise<EvalResult> {
@@ -170,8 +195,10 @@ function evalCallOptions(fixture: EvalFixture, runtime: EvalRuntime): EvalCallOp
     return {
       config: {
         ...baseConfig,
-        allowFixture: false,
+        allowFixture: runtime.fixture ?? false,
         etlCacheDir: runtime.cacheDir,
+        ...(runtime.sourceSet === undefined ? {} : { sourceSet: runtime.sourceSet }),
+        ...(runtime.ttlHours === undefined ? {} : { etlTtlHours: runtime.ttlHours }),
       },
     }
   }
@@ -197,7 +224,13 @@ function evalCallOptions(fixture: EvalFixture, runtime: EvalRuntime): EvalCallOp
 async function main(): Promise<void> {
   const directFixture = directPromptFixture()
   const group = argValue("--group")
-  const runtime = evalRuntime()
+  const runtime = await evalRuntime()
+  if (
+    runtime.referenceDate !== undefined &&
+    process.env["FAMILY_EXPERIENCE_REFERENCE_DATE"] === undefined
+  ) {
+    process.env["FAMILY_EXPERIENCE_REFERENCE_DATE"] = runtime.referenceDate
+  }
   const minimumPrompts = positiveIntArg("--min-prompts")
   const exactPrompts = positiveIntArg("--expected-prompts")
   const fixtures =

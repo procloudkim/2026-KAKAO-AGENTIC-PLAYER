@@ -49,9 +49,9 @@ The current product is a read-only official-data shortlist, not a family trust n
 | Capability | Current evidence | Gap |
 | --- | --- | --- |
 | Public MCP | One read-only `find_family_experiences` tool (`src/mcp.ts`) | No account or write loop |
-| Input | Location, date range, child age/stage, venue preference, keywords (`src/schemas.ts`) | No persistent family preference or visit history |
+| Input | Date range, child age/stage, venue preference, keywords, and 17-region leaf matching with explicit broad-region groups (`src/schemas.ts`, `src/location.ts`) | No persistent family preference or visit history |
 | Data | Current production set is KTO only; bundled cache has a 24-hour TTL (`PRODUCT_PRD_SOT.md`) | Sparse coverage and expiry risk |
-| Ranking | Date-range overlap, broad location, age, keyword, source confidence (`src/pipeline/rank.ts`) | No closed-day/time gate, distance, practical-risk, or diversity lane |
+| Ranking | Hard date/day/time/location/age eligibility, base relevance, and deterministic top-nine diversity by activity type, topic, and venue (`src/pipeline/rank.ts`) | No distance, practical-risk, personalized/community lane, or measured real-inventory diversity lift |
 | Output | Up to three results; TextContent shows title/date/venue only (`findFamilyExperienceToolResponse.ts`) | Trust evidence and action fields may be invisible to the host answer |
 | Account/UGC | Login, booking, and account are current non-goals | Original private and community feedback loop is absent |
 | Widget | Mapping note only (`KAKAO_TOOLS_READINESS.md`) | Widget schema and runtime are not implemented or confirmed |
@@ -92,7 +92,7 @@ Required:
 
 - hard eligibility for exact requested date, closed weekdays, operating time, child selector, location, and explicit time-of-day
 - automatic or durable cache refresh; stale upstream data degrades by source, not by killing the entire service
-- diverse top three when at least three eligible themes exist
+- diverse top three when at least two known activity types exist in the bounded top-nine rerank window, while preserving top one and backfilling sparse inventory
 - KTO coordinates promoted to typed fields
 - Kakao Map place and directions URLs as navigation CTAs, not event-detail evidence
 - source, age basis, uncertainty, shortage reason, and next action in TextContent
@@ -415,7 +415,7 @@ Use ordered gates, not one blended popularity score.
 3. `practical risk`: late finish, uncertain hours, stale source, missing official link, content intensity
 4. `private family fit`: explicit preferences and that account's past feedback only
 5. `community support`: privacy-gated accepted-QR aggregate used as supporting evidence or tie-breaker, never to override hard facts
-6. `diversity rerank`: prefer distinct themes/venues among top three, then backfill if inventory is sparse
+6. `diversity rerank`: preserve top one, then prefer distinct activity types, topics, and venues inside the top-nine relevance window; backfill deterministically if inventory is sparse
 7. `explanation`: emit the winning reasons and unresolved checks
 
 Initial weights, if needed, are configuration for evaluation and not a public truth score. Promotion requires offline holdout and real PlayMCP/PWA journey tests.
@@ -598,7 +598,7 @@ The local PlayMCP guide requires standard OAuth or custom headers for authentica
 
 ### Operational dashboards
 
-- source freshness, record coverage, age-evidence coverage, schedule completeness
+- source freshness, raw record coverage, net-new hard-eligible yield, age-evidence coverage, schedule completeness
 - no-result and shortage rates by region/date, without raw user queries
 - category diversity and duplicate-theme rate
 - MCP latency/error/timeout and host-visible answer completeness
@@ -640,12 +640,13 @@ Do not claim personalization success before a holdout comparison with real careg
 
 1. `2026년 8월 3일 월요일 서울에서 4살...` never returns an event whose source says Monday closed.
 2. A morning request never returns a night-only event.
-3. If at least three eligible themes exist, top three contain at least two themes.
+3. If at least two known activity types exist in the top-nine relevance window, top three contain at least two activity types without changing the base-ranked top one.
 4. If fewer than three eligible candidates exist, TextContent states the exact shortage and does not fabricate.
 5. Every card in TextContent includes age basis, official source/freshness, warning, and safe CTA.
 6. KTO coordinates create valid Kakao Map and directions CTAs without exposing an authenticated provider API URL.
 7. Cache expiration does not make the entire endpoint unusable when a safe source or last-known-good policy remains available.
 8. Logs contain no prompt, age, region, IP, token, or provider secret.
+9. A leaf-province request never returns its sibling province; only an explicitly broad regional request expands to both.
 
 ### P1 private-loop gates
 
@@ -680,9 +681,10 @@ Do not claim personalization success before a holdout comparison with real careg
 1. Correct schedule/time eligibility and add falsifying regression tests.
 2. Replace static-expiry failure with a durable ETL/last-known-good freshness policy.
 3. Put the full decision evidence in host-visible TextContent.
-4. Add diversity reranking.
+4. Validate and tune deterministic diversity reranking against real Korean titles, unknown categories, and sparse same-category backfill.
 5. Promote KTO coordinates and add Kakao Map/directions CTAs.
 6. Publish privacy notice and fix code-enforced IP rate-key TTL.
+7. Promote another official source only after transport, provenance, freshness, and net-new hard-eligible-yield gates pass.
 
 ### Conditional finals window
 

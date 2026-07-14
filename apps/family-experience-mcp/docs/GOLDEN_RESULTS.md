@@ -1,6 +1,6 @@
 # Golden Results
 
-Date: 2026-07-07
+Date: 2026-07-14
 
 The golden smoke suite drives the public MCP HTTP surface with fixture mode enabled, except the source-failure case which starts a temporary local server with fixture disabled and no live key. It writes evidence to `.omo/evidence/golden-family-experience-*.json`.
 
@@ -31,6 +31,8 @@ The nationwide prompt eval is a fixture/cache golden coverage gate, not a live c
 Required coverage buckets are 42 prompts, 12 regions, all child-stage groups, free/paid, indoor/outdoor, no-result, unsupported-claim prompts, and prompt-injection prompts. Evidence is written under `.omo/evidence/family-experience-market-ready-platform/task-11-market-prompt-eval/`.
 
 The eval must fail if the selected nationwide fixture count is not exactly 42. It must also fail if prompt text is replaced with unrelated malicious text while the structured request is preserved, because prompt-path checks require the actual public loose path result to match the fixture's observable result contract.
+
+The evaluator reads fixture mode, configured source set, cache TTL, and reference date from the fixture cache metadata. This keeps relative or yearless date parsing deterministic without weakening the production cache contract. The current fixture run passes 42/42 scenarios across 84 structured and public loose-prompt surfaces.
 
 ## Market Prompt Eval Metrics
 

@@ -109,6 +109,25 @@ describe("loose family prompt constraints", () => {
   })
 
   it.each([
+    ["세종", "Sejong"],
+    ["충북", "Chungbuk"],
+    ["충남", "Chungnam"],
+    ["전북", "Jeonbuk"],
+    ["전남", "Jeonnam"],
+    ["경북", "Gyeongbuk"],
+    ["경남", "Gyeongnam"],
+  ] as const)("normalizes supported regional alias %s", (locationText, expected) => {
+    const parsed = parseLooseFamilyPromptDetails(
+      `${locationText} 2026년 8월 1일 4살 아이 체험`,
+    )
+
+    expect(parsed.ok).toBe(true)
+    if (parsed.ok) {
+      expect(parsed.input.location).toBe(expected)
+    }
+  })
+
+  it.each([
     ["오전", "morning"],
     ["오후", "afternoon"],
     ["저녁", "evening"],

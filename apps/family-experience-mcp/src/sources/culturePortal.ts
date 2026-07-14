@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto"
 
 import type { FamilyExperienceSourceAdapter, FamilyExperienceSourceRecord, RawSourceSnapshot, SourceAdapterFailure, SourceAdapterRequest, SourceAdapterResult } from "./types.js"
+import { parseSeoulAgeTarget, stagesForAgeRange, type AgeRange } from "./ageTarget.js"
 
 export type BuiltCulturePortalRequest = { readonly url: string; readonly diagnostics: { readonly redacted_url: string } }
 type RequestOptions = { readonly baseUrl: string; readonly serviceKey: string; readonly from: string; readonly to: string; readonly page: number; readonly rows: number; readonly place?: string; readonly keyword?: string }
@@ -188,6 +189,7 @@ function tagText(xml: string, tag: string): string {
 
 function normalizeRow(row: Row, context: NormalizeContext, rawSnapshotId: string): FamilyExperienceSourceRecord {
   const sourceUrl = row.url.trim().length > 0 ? row.url : officialEndpoint
+  const ageEvidence = sourceAgeEvidence(row)
   const tags = [
     "culture-portal",
     row.area,
@@ -200,13 +202,52 @@ function normalizeRow(row: Row, context: NormalizeContext, rawSnapshotId: string
     mode, title: row.title, city: row.area.trim().length > 0 ? row.area : context.request.location,
     date: { start: row.startDate, end: row.endDate, time_text: `${row.startDate} - ${row.endDate}` }, venue: { name: row.place, address: row.area },
     source: { id: sourceId, mode, url: sourceUrl, raw_snapshot_id: rawSnapshotId }, retrieved_at: context.retrievedAt,
-    confidence: { date: "api-returned", venue: "api-returned", age_fit: "unknown", reservation: "unknown" },
-    parent_check: { age_fit: "unknown", reservation: "confirmation_needed", live_status: "source_timestamp_required" },
-    child_stages: broadChildStages, min_child_age: 0, max_child_age: 17, indoor_outdoor: "unknown", target_age_text: "unknown",
+    confidence: { date: "api-returned", venue: "api-returned", age_fit: ageEvidence === undefined ? "unknown" : "inferred", reservation: "unknown" },
+    parent_check: { age_fit: ageEvidence === undefined ? "unknown" : `Culture Portal description contains an explicit audience-age cue; inferred range from: ${ageEvidence.text}`, reservation: "confirmation_needed", live_status: "source_timestamp_required" },
+    child_stages: ageEvidence === undefined ? broadChildStages : stagesForAgeRange(ageEvidence.range),
+    min_child_age: ageEvidence?.range.min ?? 0,
+    max_child_age: ageEvidence?.range.max ?? 17,
+    indoor_outdoor: "unknown",
+    target_age_text: ageEvidence?.text ?? "unknown",
     program_text: row.description.trim().length > 0 ? row.description : row.title, reservation_url: null, contact: null,
     fee_text: row.price, tags, suitability: "happy_prompt_match",
     fixture_notice: "Live Culture Portal candidate; verify schedule, price, and age fit before use.",
   }
+}
+
+function sourceAgeEvidence(row: Row): { readonly text: string; readonly range: AgeRange } | undefined {
+  const normalized = row.description.normalize("NFKC").replace(/\s+/gu, " ").trim()
+  if (!hasExplicitAudienceAgeCue(normalized)) {
+    return undefined
+  }
+  const range = parseSeoulAgeTarget(normalized)
+  if (range !== undefined) {
+    return { text: normalized, range }
+  }
+  return undefined
+}
+
+function hasExplicitAudienceAgeCue(text: string): boolean {
+  if (/전\s*연령|전체\s*관람/iu.test(text)) {
+    return true
+  }
+  if (/\bages?\s*\d{1,2}\b/iu.test(text) && !hasPriceCue(text)) {
+    return true
+  }
+
+  const ageExpression = String.raw`(?:(?:만\s*)?\d{1,2}\s*세|\d{1,3}\s*개월|(?:초등학교|초등|중학교|중|고등학교|고등|고)\s*\d+\s*(?:[~-]\s*\d+\s*)?학년)`
+  const audienceCue = String.raw`(?:(?:관람|참여|입장)\s*(?:가능|대상|권장|연령)|(?:대상|권장)(?:\s*연령)?)`
+  const patterns = [
+    new RegExp(`${ageExpression}.{0,24}${audienceCue}`, "giu"),
+    new RegExp(`${audienceCue}.{0,24}${ageExpression}`, "giu"),
+  ]
+  return patterns.some((pattern) =>
+    [...text.matchAll(pattern)].some((match) => !hasPriceCue(match[0])),
+  )
+}
+
+function hasPriceCue(text: string): boolean {
+  return /무료|유료|요금|가격|입장료|할인|티켓|\b(?:free|fee|price|discount|ticket)\b/iu.test(text)
 }
 
 function normalizeDate(value: string): string {
