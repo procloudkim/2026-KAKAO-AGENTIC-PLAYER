@@ -6,8 +6,10 @@ import type {
   RenderFamilyExperienceSuccess,
 } from "./pipeline/render.js"
 import type { ToolFailure } from "./types.js"
+import { escapeMarkdownLinkLabel } from "./placeLabels.js"
 
 export const MAX_MCP_RESULT_CHARACTERS = 4_000
+const COMPACT_CARD_TITLE_CHARACTER_LIMITS = [28, 8] as const
 
 type BoundedToolSuccessResult =
   | { readonly ok: true; readonly candidateCount: number; readonly result: CallToolResult }
@@ -50,13 +52,30 @@ export function toBoundedToolSuccess(
       ...(searchNotice === undefined ? {} : { searchNotice }),
     })
     const variants = [
-      { candidates, compact: false },
-      { candidates: candidates.map(compactCandidateForTransport), compact: true },
+      {
+        structuredCandidates: candidates,
+        textCandidates: candidates,
+        compact: false,
+      },
+      ...COMPACT_CARD_TITLE_CHARACTER_LIMITS.map((maximumTitleCharacters) => ({
+        structuredCandidates: candidates.map((candidate) =>
+          compactCandidateForTransport(candidate, "structured", maximumTitleCharacters),
+        ),
+        textCandidates: candidates.map((candidate) =>
+          compactCandidateForTransport(candidate, "text", maximumTitleCharacters),
+        ),
+        compact: true,
+      })),
     ] as const
 
     for (const variant of variants) {
       const parsedStructuredContent = FindFamilyExperiencesStructuredContentSchema.safeParse(
-        structuredSuccess(rendered.mode, variant.candidates, summary, variant.compact),
+        structuredSuccess(
+          rendered.mode,
+          variant.structuredCandidates,
+          summary,
+          variant.compact,
+        ),
       )
 
       if (!parsedStructuredContent.success) {
@@ -67,7 +86,12 @@ export function toBoundedToolSuccess(
         content: [
           {
             type: "text",
-            text: summarizeSuccess({ mode: rendered.mode, candidates: variant.candidates, summary }),
+            text: summarizeSuccess({
+              mode: rendered.mode,
+              candidates: variant.textCandidates,
+              summary,
+              compact: variant.compact,
+            }),
           },
         ],
         structuredContent: parsedStructuredContent.data,
@@ -178,23 +202,58 @@ function resultSummary(input: {
 
 function compactCandidateForTransport(
   candidate: RenderedFamilyExperienceCandidate,
+  target: "structured" | "text",
+  maximumTitleCharacters: number,
 ): RenderedFamilyExperienceCandidate {
+  if (hasOversizedCandidateText(candidate)) return candidate
+
+  const compactStructured = target === "structured"
+  const navigation = candidate.navigation
   return {
     ...candidate,
+    title: compactText(candidate.title, maximumTitleCharacters),
+    ...(compactStructured
+      ? {
+          location: compactText(candidate.location, 6),
+          date_time: compactStructuredDateTime(candidate.date_time),
+          address: compactText(candidate.address, 12),
+          age_fit_reason: compactStructuredAgeEvidence(candidate.age_fit_reason),
+          fee_text: "출처 확인",
+          source_name: compactText(candidate.source_name, 3),
+          retrieved_at: candidate.retrieved_at.slice(0, 10),
+          confidence: "근거",
+        }
+      : {
+          age_fit_reason: compactAgeEvidence(candidate.age_fit_reason),
+          confidence: compactConfidence(candidate.confidence),
+        }),
     tags: [],
-    age_fit_reason: compactAgeEvidence(candidate.age_fit_reason),
-    confidence: compactConfidence(candidate.confidence),
-    warnings: candidate.mode === "fixture"
-      ? "fixture/demo · 운영 아님."
-      : "방문 전 재확인.",
-    source_summary: "출처·수집일 참조.",
-    parent_check: "공식 확인 필요.",
-    next_action: candidate.navigation !== undefined
-      ? "지도·길찾기 확인."
+    warnings: compactStructured
+      ? candidate.mode === "fixture" ? "demo." : "재확인"
+      : candidate.mode === "fixture" ? "fixture/demo · 운영 아님." : "방문 전 재확인.",
+    source_summary: compactStructured ? "출처" : "출처·수집일 참조.",
+    parent_check: compactStructured ? "확인" : "공식 확인 필요.",
+    next_action: navigation !== undefined
+      ? compactStructured ? "지도" : "지도·길찾기 확인."
       : candidate.source_url === undefined && candidate.contact !== undefined
-        ? `운영처 ${compactText(candidate.contact, 24)} 확인.`
-        : "공식 링크 확인.",
+        ? compactStructured ? "운영처" : `운영처 ${compactText(candidate.contact, 24)} 확인.`
+        : compactStructured ? "출처" : "공식 링크 확인.",
   }
+}
+
+function hasOversizedCandidateText(candidate: RenderedFamilyExperienceCandidate): boolean {
+  const fieldLimits: Readonly<Record<string, number>> = {
+    title: 96,
+    location: 128,
+    venue: 96,
+    address: 256,
+    age_fit_reason: 256,
+    fee_text: 256,
+  }
+  return Object.entries(candidate).some(([field, value]) => {
+    if (field === "navigation" || typeof value !== "string") return false
+    return value.length > (fieldLimits[field] ?? 512)
+  })
 }
 
 function compactText(value: string, maximumLength: number): string {
@@ -208,6 +267,25 @@ function compactAgeEvidence(value: string): string {
   return ktoAgeLimit === undefined
     ? compactText(value, 48)
     : `KTO 연령표기: ${compactText(ktoAgeLimit, 32)}`
+}
+
+function compactStructuredDateTime(value: string): string {
+  return /^\d{4}-\d{2}-\d{2}/u.test(value)
+    ? value.slice(0, 10)
+    : compactText(value, 16)
+}
+
+function compactStructuredAgeEvidence(value: string): string {
+  const ktoAgeLimit = /KTO TourAPI detailIntro2 source-stated age limit:\s*(.+)$/u.exec(value)?.[1]
+  if (ktoAgeLimit !== undefined) return `KTO: ${compactText(ktoAgeLimit, 20)}`
+
+  const agePhrase = /\bages?\s+\d+(?:\s*(?:to|-)\s*\d+)?/iu.exec(value)?.[0]
+  if (agePhrase !== undefined) return `source: ${agePhrase}`
+
+  const sourceStated = /^Official source states\s+(.+)$/iu.exec(value)?.[1]
+  return sourceStated === undefined
+    ? compactText(value, 28)
+    : `source: ${sourceStated.split(/\s+/u)[0] ?? "stated"}`
 }
 
 function compactConfidence(value: string): string {
@@ -272,6 +350,7 @@ function summarizeSuccess(
     readonly mode: "fixture" | "live"
     readonly candidates: readonly RenderedFamilyExperienceCandidate[]
     readonly summary: ResultSummary
+    readonly compact: boolean
   },
 ): string {
   const modeNotice = result.mode === "fixture" ? "fixture/demo 기준" : "공식 데이터 기준"
@@ -279,7 +358,17 @@ function summarizeSuccess(
     `- 결과: ${result.summary.message}`,
     ...(result.summary.data_notice === undefined ? [] : [`- 데이터: ${result.summary.data_notice}`]),
   ]
+  const venueCounts = result.candidates.reduce((counts, candidate) => {
+    const key = candidate.venue.normalize("NFKC").trim().toLowerCase()
+    counts.set(key, (counts.get(key) ?? 0) + 1)
+    return counts
+  }, new Map<string, number>())
   const cards = result.candidates.flatMap((candidate, index) => {
+    const venueLabel = escapeMarkdownLinkLabel(candidate.venue)
+    const venueKey = candidate.venue.normalize("NFKC").trim().toLowerCase()
+    const venueDetails = (venueCounts.get(venueKey) ?? 0) > 1
+      ? `${compactText(candidate.venue, 36)} · ${compactText(candidate.address, result.compact ? 28 : 44)}`
+      : compactText(candidate.venue, 56)
     const navigation = candidate.navigation === undefined
       ? candidate.reservation_url !== undefined
         ? [`   공식 확인: ${candidate.reservation_url}`]
@@ -287,16 +376,24 @@ function summarizeSuccess(
           ? [`   확인: ${candidate.next_action}`]
           : [`   공식 확인: ${candidate.source_url}`]
       : [
-          `   지도: ${candidate.navigation.map_url}`,
-          `   길찾기: ${candidate.navigation.directions_url}`,
+          `   지도(${candidate.navigation.place_evidence_status}): [${venueLabel} 지도 보기](${candidate.navigation.map_url})`,
+          `   길찾기: [${venueLabel} 길찾기](${candidate.navigation.directions_url})`,
         ]
-    return [
-      `${index + 1}. ${candidate.title}`,
-      `   날짜·장소: ${compactText(candidate.date_time, 56)} | ${compactText(candidate.venue, 56)}`,
-      `   비용·연령: ${compactText(candidate.fee_text, 48)} | ${candidate.age_fit_label} · ${compactAgeEvidence(candidate.age_fit_reason)}`,
-      `   출처: ${candidate.source_name}·${candidate.retrieved_at.slice(0, 10)} | 주의: ${compactText(candidate.warnings, 32)}`,
-      ...navigation,
-    ]
+    return result.compact
+      ? [
+          `${index + 1}. ${candidate.title}`,
+          `   날짜·장소: ${compactText(candidate.date_time, 28)} | ${venueDetails}`,
+          `   비용·연령: ${compactText(candidate.fee_text, 48)} | ${candidate.age_fit_label} · ${compactAgeEvidence(candidate.age_fit_reason)}`,
+          `   출처: ${compactText(candidate.source_name, 18)}·${candidate.retrieved_at.slice(0, 10)} | 주의: ${compactText(candidate.warnings, 32)}`,
+          ...navigation,
+        ]
+      : [
+          `${index + 1}. ${candidate.title}`,
+          `   날짜·장소: ${compactText(candidate.date_time, 56)} | ${venueDetails}`,
+          `   비용·연령: ${compactText(candidate.fee_text, 48)} | ${candidate.age_fit_label} · ${compactAgeEvidence(candidate.age_fit_reason)}`,
+          `   출처: ${candidate.source_name}·${candidate.retrieved_at.slice(0, 10)} | 주의: ${compactText(candidate.warnings, 32)}`,
+          ...navigation,
+        ]
   })
 
   return [`${modeNotice}으로 후보 ${result.candidates.length}개를 찾았어요.`, ...notices, ...cards].join("\n")

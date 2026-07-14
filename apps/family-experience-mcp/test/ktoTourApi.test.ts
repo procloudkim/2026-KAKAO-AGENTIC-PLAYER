@@ -4,6 +4,7 @@ import ktoTourApiEmptyPayload from "./fixtures/kto-tourapi-empty.json" with { ty
 import ktoTourApiEventPayload from "./fixtures/kto-tourapi-event.json" with { type: "json" }
 import {
   KTO_DETAIL_INTRO_MAX_CONCURRENCY,
+  buildKtoTourApiDetailCommonRequest,
   buildKtoTourApiDetailIntroRequest,
   buildKtoTourApiRequest,
   createKtoTourApiSourceAdapter,
@@ -44,6 +45,19 @@ function ktoDetailIntroPayload(overrides: Record<string, unknown> = {}): unknown
       body: {
         items: {
           item: [{ contentid: "3012345", contenttypeid: "15", ...overrides }],
+        },
+      },
+    },
+  }
+}
+
+function ktoDetailCommonPayload(overrides: Record<string, unknown> = {}): unknown {
+  return {
+    response: {
+      header: { resultCode: "0000", resultMsg: "OK" },
+      body: {
+        items: {
+          item: [{ contentid: "3012345", ...overrides }],
         },
       },
     },
@@ -141,6 +155,32 @@ describe("KTO TourAPI event source adapter", () => {
     ).toThrow("requires HTTPS")
   })
 
+  it("builds an HTTPS detailCommon2 request without contentTypeId and redacts diagnostics", () => {
+    const rawKey = "KTO_COMMON_RAW_SECRET"
+    const request = buildKtoTourApiDetailCommonRequest({
+      baseUrl: "https://apis.example.test/KorService2/",
+      serviceKey: rawKey,
+      contentId: "3012345",
+    })
+    const operationalUrl = new URL(request.url)
+    const diagnosticsUrl = new URL(request.diagnostics.redacted_url)
+
+    expect(operationalUrl.protocol).toBe("https:")
+    expect(operationalUrl.pathname).toBe("/KorService2/detailCommon2")
+    expect(operationalUrl.searchParams.get("contentId")).toBe("3012345")
+    expect(operationalUrl.searchParams.has("contentTypeId")).toBe(false)
+    expect(operationalUrl.searchParams.get("serviceKey")).toBe(rawKey)
+    expect(diagnosticsUrl.searchParams.get("serviceKey")).toBe("<redacted>")
+    expect(JSON.stringify(request.diagnostics)).not.toContain(rawKey)
+    expect(() =>
+      buildKtoTourApiDetailCommonRequest({
+        baseUrl: "http://apis.example.test/KorService2",
+        serviceKey: rawKey,
+        contentId: "3012345",
+      }),
+    ).toThrow("requires HTTPS")
+  })
+
   it("normalizes a saved KTO event fixture into a source-backed candidate", () => {
     // Given: a saved KTO TourAPI JSON event fixture with source-returned URLs and coordinates.
     const samplePayload = ktoTourApiEventPayload
@@ -164,7 +204,7 @@ describe("KTO TourAPI event source adapter", () => {
     expect(record.id).toContain("3012345")
     expect(record.source.id).toBe("kto-tourapi-events")
     expect(record.source.url).toBe(
-      "https://apis.example.test/detailCommon2?contentId=3012345&contentTypeId=15",
+      "https://apis.example.test/detailCommon2?contentId=3012345",
     )
     expect(record.title).toBe("Jeju Family Sea Festival")
     expect(record.city).toBe("Jeju")
@@ -266,7 +306,7 @@ describe("KTO TourAPI event source adapter", () => {
           ? ktoTourApiEventPayload
           : ktoDetailIntroPayload({
               agelimit: "\ub9cc 7\uc138 \uc774\uc0c1",
-              eventplace: "\uc81c\uc8fc\ubb38\ud654\uad11\uc7a5",
+              eventplace: "\uc81c\uc8fc\ubb38\ud654  \uad11\uc7a5",
               playtime: "10:00~18:00",
               usetimefestival: "\ubb34\ub8cc",
             })
@@ -289,17 +329,179 @@ describe("KTO TourAPI event source adapter", () => {
     expect(record.child_stages).toEqual(["school_age", "teen"])
     expect(record.target_age_text).toBe("\ub9cc 7\uc138 \uc774\uc0c1")
     expect(record.parent_check.age_fit).toContain("\ub9cc 7\uc138 \uc774\uc0c1")
-    expect(record.venue.name).toBe("\uc81c\uc8fc\ubb38\ud654\uad11\uc7a5")
+    expect(record.venue.name).toBe("\uc81c\uc8fc\ubb38\ud654 \uad11\uc7a5")
     expect(record.date.time_text).toBe("10:00~18:00")
     expect(record.fee_text).toBe("\ubb34\ub8cc")
     expect(record.suitability).toBe("happy_prompt_match")
     const detailSnapshot = success.raw_snapshots.find((snapshot) => snapshot.payload_ref === "detailIntro2")
     expect(detailSnapshot).toMatchObject({
       response_sha256: expect.stringMatching(/^[a-f0-9]{64}$/u),
-      evidence: { content_id: "3012345", age_limit: "\ub9cc 7\uc138 \uc774\uc0c1" },
+      evidence: {
+        content_id: "3012345",
+        age_limit: "\ub9cc 7\uc138 \uc774\uc0c1",
+        event_place: "\uc81c\uc8fc\ubb38\ud654 \uad11\uc7a5",
+        play_time: "10:00~18:00",
+        fee_text: "\ubb34\ub8cc",
+      },
     })
+    expect(record.detail_evidence_snapshot_id).toBe(detailSnapshot?.snapshot_id)
     expect(record.age_evidence_snapshot_id).toBe(detailSnapshot?.snapshot_id)
+    expect(record.venue_identity).toEqual({
+      basis: "provider_event_place",
+      evidence_snapshot_id: detailSnapshot?.snapshot_id,
+    })
     expect(JSON.stringify(success)).not.toContain(rawKey)
+  })
+
+  it("uses a meaningful sanitized detailCommon2 addr2 only when detailIntro2 has no eventplace", async () => {
+    const rawKey = "KTO_COMMON_RAW_SECRET"
+    const requestedUrls: string[] = []
+    const adapter = createKtoTourApiSourceAdapter({
+      baseUrl: "https://apis.example.test/KorService2",
+      serviceKey: rawKey,
+      nowIso: () => "2026-07-04T00:00:00.000Z",
+      requestText: async (request) => {
+        requestedUrls.push(request.url)
+        if (request.url.includes("/searchFestival2?")) {
+          return ktoTourApiEventPayload
+        }
+        if (request.url.includes("/detailIntro2?")) {
+          return ktoDetailIntroPayload({ agelimit: "만 7세 이상", eventplace: "   " })
+        }
+        return ktoDetailCommonPayload({ addr2: "제주문화\u0000  광장" })
+      },
+    })
+
+    const success = expectSuccess(await adapter.list(sampleRequest))
+    const record = success.records.at(0)
+    if (record === undefined) throw new Error("expected address-detail enriched record")
+    const introSnapshot = success.raw_snapshots.find(
+      (snapshot) => snapshot.payload_ref === "detailIntro2",
+    )
+    const commonSnapshot = success.raw_snapshots.find(
+      (snapshot) => snapshot.payload_ref === "detailCommon2",
+    )
+
+    expect(requestedUrls).toHaveLength(3)
+    const commonUrl = new URL(requestedUrls[2] ?? "")
+    expect(commonUrl.pathname).toBe("/KorService2/detailCommon2")
+    expect(commonUrl.searchParams.get("contentId")).toBe("3012345")
+    expect(commonUrl.searchParams.has("contentTypeId")).toBe(false)
+    expect(record.venue.name).toBe("제주문화 광장")
+    expect(record.detail_evidence_snapshot_id).toBe(introSnapshot?.snapshot_id)
+    expect(record.age_evidence_snapshot_id).toBe(introSnapshot?.snapshot_id)
+    expect(record.venue_identity).toEqual({
+      basis: "provider_address_detail",
+      evidence_snapshot_id: commonSnapshot?.snapshot_id,
+    })
+    expect(commonSnapshot).toMatchObject({
+      response_sha256: expect.stringMatching(/^[a-f0-9]{64}$/u),
+      evidence: {
+        content_id: "3012345",
+        address_detail: "제주문화 광장",
+      },
+    })
+    expect(commonSnapshot?.snapshot_id).not.toBe(introSnapshot?.snapshot_id)
+    expect(JSON.stringify(success)).not.toContain(rawKey)
+  })
+
+  it("keeps blank, title-equal, and failed detailCommon2 fallbacks on title_fallback HOLD", async () => {
+    const rawKey = "KTO_COMMON_RAW_SECRET"
+    const items = [
+      sampleSearchItem({ contentid: "401001" }),
+      sampleSearchItem({ contentid: "401002" }),
+      sampleSearchItem({ contentid: "401003" }),
+    ]
+    const requestedCommonIds: string[] = []
+    const adapter = createKtoTourApiSourceAdapter({
+      baseUrl: "https://apis.example.test/KorService2",
+      serviceKey: rawKey,
+      requestText: async (request) => {
+        if (request.url.includes("/searchFestival2?")) {
+          return ktoSearchPayload(items)
+        }
+        const url = new URL(request.url)
+        const contentId = url.searchParams.get("contentId") ?? ""
+        if (request.url.includes("/detailIntro2?")) {
+          return ktoDetailIntroPayload({ contentid: contentId, eventplace: "" })
+        }
+        requestedCommonIds.push(contentId)
+        if (contentId === "401001") {
+          return ktoDetailCommonPayload({ contentid: contentId, addr2: "   " })
+        }
+        if (contentId === "401002") {
+          return ktoDetailCommonPayload({
+            contentid: contentId,
+            addr2: " ( Jeju Family Sea Festival ) ",
+          })
+        }
+        throw new Error(`detailCommon2 failed for ${request.url}; serviceKey=${rawKey}`)
+      },
+    })
+
+    const success = expectSuccess(await adapter.list(sampleRequest))
+
+    expect(requestedCommonIds).toEqual(["401001", "401002", "401003"])
+    expect(success.records).toHaveLength(3)
+    expect(success.records.every((record) => record.venue.name === record.title)).toBe(true)
+    expect(
+      success.records.every((record) => record.venue_identity?.basis === "title_fallback"),
+    ).toBe(true)
+    expect(success.raw_snapshots.map((snapshot) => snapshot.payload_ref)).toEqual([
+      "searchFestival2",
+    ])
+    expect(JSON.stringify(success)).not.toContain(rawKey)
+    expect(JSON.stringify(success)).not.toContain(encodeURIComponent(rawKey))
+  })
+
+  it("promotes exactly three of four title fallbacks with independent addr2 evidence", async () => {
+    const contentIds = ["501001", "501002", "501003", "501004"] as const
+    const addressDetailByContentId: Readonly<Record<string, string>> = {
+      "501001": "제주문화예술회관",
+      "501002": "서귀포시민광장",
+      "501003": "중문가족체험관",
+      "501004": "   ",
+    }
+    const adapter = createKtoTourApiSourceAdapter({
+      baseUrl: "https://apis.example.test/KorService2",
+      serviceKey: ["four", "to", "three", "fixture"].join("-"),
+      requestText: async (request) => {
+        if (request.url.includes("/searchFestival2?")) {
+          return ktoSearchPayload(
+            contentIds.map((contentId, index) =>
+              sampleSearchItem({
+                contentid: contentId,
+                title: `제주 가족 행사 ${index + 1}`,
+              }),
+            ),
+          )
+        }
+        const contentId = new URL(request.url).searchParams.get("contentId") ?? ""
+        if (request.url.includes("/detailIntro2?")) {
+          return ktoDetailIntroPayload({ contentid: contentId, eventplace: "" })
+        }
+        return ktoDetailCommonPayload({
+          contentid: contentId,
+          addr2: addressDetailByContentId[contentId] ?? "",
+        })
+      },
+    })
+
+    const success = expectSuccess(await adapter.list(sampleRequest))
+    const promoted = success.records.filter(
+      (record) => record.venue_identity?.basis === "provider_address_detail",
+    )
+    const held = success.records.filter(
+      (record) => record.venue_identity?.basis === "title_fallback",
+    )
+
+    expect(success.records).toHaveLength(4)
+    expect(promoted).toHaveLength(3)
+    expect(held).toHaveLength(1)
+    expect(held[0]?.id).toBe("kto-tourapi-events:501004")
+    expect(
+      success.raw_snapshots.filter((snapshot) => snapshot.payload_ref === "detailCommon2"),
+    ).toHaveLength(3)
   })
 
   it("loads and merges the configured number of searchFestival2 pages", async () => {

@@ -264,9 +264,12 @@ function normalizeRow(
   const sourceUrl = /^https?:\/\//iu.test(row.homepage) ? row.homepage : datasetUrl
   const baseTags = ["standard_dataset", "fallback_authority", city, row.organization]
   const tags = stale ? [...baseTags, "stale"] : baseTags
+  const derivedIdentityKey = hash(`${row.festival_name}|${row.place}|${row.start_date}|${row.address}`)
 
   return {
-    id: `${sourceId}:${hash(`${row.festival_name}|${row.place}|${row.start_date}|${row.address}`)}`,
+    id: `${sourceId}:${derivedIdentityKey}`,
+    source_identity: { key: derivedIdentityKey, basis: "derived_v1" },
+    venue_identity: { basis: "source_stated" },
     raw_snapshot_id: rawSnapshotId,
     mode,
     title: row.festival_name,

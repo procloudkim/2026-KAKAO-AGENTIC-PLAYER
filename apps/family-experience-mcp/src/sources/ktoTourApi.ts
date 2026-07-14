@@ -2,6 +2,7 @@ import { createHash } from "node:crypto"
 
 import * as z from "zod/v4"
 
+import { sanitizeProviderText } from "../pipeline/sourceRecord.js"
 import {
   ageRangeMatchesChildAge,
   parseSeoulAgeTarget,
@@ -18,6 +19,7 @@ const successCode = "0000"
 const childStages = ["infant", "toddler", "preschool", "school_age", "teen"] as const
 const searchItemFields = ["addr1", "addr2", "areacode", "contentid", "contenttypeid", "eventenddate", "eventstartdate", "firstimage", "firstimage2", "homepage", "mapx", "mapy", "modifiedtime", "sigungucode", "tel", "title"] as const
 const detailIntroItemFields = ["agelimit", "contentid", "contenttypeid", "eventplace", "playtime", "usetimefestival"] as const
+const detailCommonItemFields = ["addr2", "contentid"] as const
 const xmlItemFields = [...searchItemFields, ...detailIntroItemFields] as const
 
 export const KTO_DETAIL_INTRO_MAX_CONCURRENCY = 4
@@ -47,9 +49,24 @@ const detailIntroPayloadSchema = z.object({
     body: z.object({ items: detailIntroItemsSchema.optional() }).passthrough(),
   }),
 })
+const detailCommonItemSchema = z
+  .object(Object.fromEntries(detailCommonItemFields.map((field) => [field, stringValueSchema.optional()])))
+  .passthrough()
+const detailCommonItemsSchema = z.union([
+  z.object({ item: z.union([detailCommonItemSchema, z.array(detailCommonItemSchema)]).optional() }).passthrough(),
+  z.literal(""),
+  z.null(),
+])
+const detailCommonPayloadSchema = z.object({
+  response: z.object({
+    header: z.object({ resultCode: stringValueSchema, resultMsg: stringValueSchema }),
+    body: z.object({ items: detailCommonItemsSchema.optional() }).passthrough(),
+  }),
+})
 
 type KtoTourApiItem = z.infer<typeof itemSchema>
 type KtoTourApiDetailIntroItem = z.infer<typeof detailIntroItemSchema>
+type KtoTourApiDetailCommonItem = z.infer<typeof detailCommonItemSchema>
 type KtoTourApiNormalizeContext = { readonly request: SourceAdapterRequest; readonly retrievedAt: string; readonly redactedUrl: string; readonly sourceUrl: string }
 type ParsedExternalPayload = { readonly ok: true; readonly payload: unknown } | { readonly ok: false; readonly detail: string }
 type KtoDetailIntroEvidence = {
@@ -61,7 +78,7 @@ type KtoDetailIntroEvidence = {
 }
 type KtoDetailEnrichment = {
   readonly record: FamilyExperienceSourceRecord
-  readonly rawSnapshot?: RawSourceSnapshot
+  readonly rawSnapshots: readonly RawSourceSnapshot[]
 }
 
 export type BuiltKtoTourApiRequest = { readonly url: string; readonly diagnostics: { readonly redacted_url: string } }
@@ -94,6 +111,31 @@ export function buildKtoTourApiDetailIntroRequest(options: {
     _type: "json",
     contentId: options.contentId,
     contentTypeId: options.contentTypeId,
+    serviceKey: options.serviceKey,
+  })
+  const redactedParams = new URLSearchParams(params)
+  redactedParams.set("serviceKey", "<redacted>")
+  return {
+    url: `${endpoint.toString()}?${params.toString()}`,
+    diagnostics: { redacted_url: `${endpoint.toString()}?${redactedParams.toString()}` },
+  }
+}
+
+export function buildKtoTourApiDetailCommonRequest(options: {
+  readonly baseUrl: string
+  readonly serviceKey: string
+  readonly contentId: string
+}): BuiltKtoTourApiRequest {
+  const baseUrl = options.baseUrl.replace(/\/+$/, "")
+  const endpoint = new URL(`${baseUrl}/detailCommon2`)
+  if (endpoint.protocol !== "https:") {
+    throw new TypeError("KTO TourAPI detailCommon2 requires HTTPS.")
+  }
+  const params = new URLSearchParams({
+    MobileOS: "ETC",
+    MobileApp: mobileApp,
+    _type: "json",
+    contentId: options.contentId,
     serviceKey: options.serviceKey,
   })
   const redactedParams = new URLSearchParams(params)
@@ -290,9 +332,7 @@ async function enrichKtoTourApiRecords(input: {
     records: enrichments.map((enrichment) => enrichment.record),
     raw_snapshots: [
       ...input.result.raw_snapshots,
-      ...enrichments.flatMap((enrichment) =>
-        enrichment.rawSnapshot === undefined ? [] : [enrichment.rawSnapshot],
-      ),
+      ...enrichments.flatMap((enrichment) => enrichment.rawSnapshots),
     ],
   }
 }
@@ -307,7 +347,7 @@ async function enrichKtoTourApiRecord(input: {
 }): Promise<KtoDetailEnrichment> {
   const identity = detailIdentity(input.record)
   if (identity === undefined) {
-    return { record: input.record }
+    return { record: input.record, rawSnapshots: [] }
   }
 
   let built: BuiltKtoTourApiRequest
@@ -318,39 +358,151 @@ async function enrichKtoTourApiRecord(input: {
       ...identity,
     })
   } catch {
-    return { record: input.record }
+    return { record: input.record, rawSnapshots: [] }
+  }
+
+  let payload: unknown
+  let evidence: KtoDetailIntroEvidence | undefined
+  try {
+    payload = await input.requestText(built)
+    evidence = parseKtoTourApiDetailIntroPayload(payload, identity.contentId)
+  } catch {
+    return { record: input.record, rawSnapshots: [] }
+  }
+  if (evidence === undefined) {
+    return { record: input.record, rawSnapshots: [] }
+  }
+
+  const introSnapshot = hasPersistedDetailIntroEvidence(evidence)
+    ? detailIntroSnapshot({
+        built,
+        contentId: identity.contentId,
+        evidence,
+        payload,
+        retrievedAt: input.retrievedAt,
+      })
+    : undefined
+  const introRecord = introSnapshot === undefined
+    ? input.record
+    : mergeKtoDetailIntroEvidence(
+        input.record,
+        evidence,
+        input.request,
+        introSnapshot.snapshot_id,
+      )
+  if (evidence.eventPlace !== undefined) {
+    return {
+      record: introRecord,
+      rawSnapshots: introSnapshot === undefined ? [] : [introSnapshot],
+    }
+  }
+
+  const commonEnrichment = await enrichKtoAddressDetail({
+    baseUrl: input.baseUrl,
+    contentId: identity.contentId,
+    record: introRecord,
+    requestText: input.requestText,
+    retrievedAt: input.retrievedAt,
+    serviceKey: input.serviceKey,
+  })
+  return {
+    record: commonEnrichment.record,
+    rawSnapshots: [
+      ...(introSnapshot === undefined ? [] : [introSnapshot]),
+      ...commonEnrichment.rawSnapshots,
+    ],
+  }
+}
+
+function detailIntroSnapshot(input: {
+  readonly built: BuiltKtoTourApiRequest
+  readonly contentId: string
+  readonly evidence: KtoDetailIntroEvidence
+  readonly payload: unknown
+  readonly retrievedAt: string
+}): RawSourceSnapshot {
+  const requestHash = hash(input.built.diagnostics.redacted_url)
+  return {
+    snapshot_id: `${sourceId}:detail:${input.contentId}:${requestHash}`,
+    source_id: sourceId,
+    retrieved_at: input.retrievedAt,
+    request_hash: requestHash,
+    payload_ref: "detailIntro2",
+    response_sha256: responseSha256(input.payload),
+    evidence: {
+      content_id: input.contentId,
+      ...(input.evidence.ageText === undefined ? {} : { age_limit: input.evidence.ageText }),
+      ...(input.evidence.eventPlace === undefined ? {} : { event_place: input.evidence.eventPlace }),
+      ...(input.evidence.playTime === undefined ? {} : { play_time: input.evidence.playTime }),
+      ...(input.evidence.feeText === undefined ? {} : { fee_text: input.evidence.feeText }),
+    },
+  }
+}
+
+function hasPersistedDetailIntroEvidence(evidence: KtoDetailIntroEvidence): boolean {
+  return (
+    evidence.ageText !== undefined ||
+    evidence.eventPlace !== undefined ||
+    evidence.playTime !== undefined ||
+    evidence.feeText !== undefined
+  )
+}
+
+async function enrichKtoAddressDetail(input: {
+  readonly baseUrl: string
+  readonly contentId: string
+  readonly record: FamilyExperienceSourceRecord
+  readonly requestText: (request: BuiltKtoTourApiRequest) => Promise<unknown>
+  readonly retrievedAt: string
+  readonly serviceKey: string
+}): Promise<KtoDetailEnrichment> {
+  let built: BuiltKtoTourApiRequest
+  try {
+    built = buildKtoTourApiDetailCommonRequest({
+      baseUrl: input.baseUrl,
+      serviceKey: input.serviceKey,
+      contentId: input.contentId,
+    })
+  } catch {
+    return { record: input.record, rawSnapshots: [] }
   }
 
   try {
     const payload = await input.requestText(built)
-    const evidence = parseKtoTourApiDetailIntroPayload(payload, identity.contentId)
-    if (evidence === undefined) {
-      return { record: input.record }
+    const addressDetail = parseKtoTourApiDetailCommonPayload(
+      payload,
+      input.contentId,
+      input.record.title,
+    )
+    if (addressDetail === undefined) {
+      return { record: input.record, rawSnapshots: [] }
     }
     const requestHash = hash(built.diagnostics.redacted_url)
     const rawSnapshot: RawSourceSnapshot = {
-      snapshot_id: `${sourceId}:detail:${identity.contentId}:${requestHash}`,
+      snapshot_id: `${sourceId}:detail-common:${input.contentId}:${requestHash}`,
       source_id: sourceId,
       retrieved_at: input.retrievedAt,
       request_hash: requestHash,
-      payload_ref: "detailIntro2",
+      payload_ref: "detailCommon2",
       response_sha256: responseSha256(payload),
       evidence: {
-        content_id: identity.contentId,
-        ...(evidence.ageText === undefined ? {} : { age_limit: evidence.ageText }),
+        content_id: input.contentId,
+        address_detail: addressDetail,
       },
     }
     return {
-      record: mergeKtoDetailIntroEvidence(
-        input.record,
-        evidence,
-        input.request,
-        rawSnapshot.snapshot_id,
-      ),
-      rawSnapshot,
+      record: {
+        ...input.record,
+        venue: { ...input.record.venue, name: addressDetail },
+        venue_identity: {
+          basis: "provider_address_detail",
+          evidence_snapshot_id: rawSnapshot.snapshot_id,
+        },
+      },
+      rawSnapshots: [rawSnapshot],
     }
   } catch {
-    return { record: input.record }
+    return { record: input.record, rawSnapshots: [] }
   }
 }
 
@@ -370,24 +522,76 @@ function parseKtoTourApiDetailIntroPayload(
   const item = items.find(
     (candidate) => clean(candidate["contentid"]) === expectedContentId,
   )
-  const ageText = item === undefined ? undefined : clean(item["agelimit"])
+  const ageText = item === undefined ? undefined : cleanDetailEvidence(item["agelimit"])
   const ageRange = ageText === undefined ? undefined : parseSeoulAgeTarget(ageText)
   if (item === undefined) {
     return undefined
   }
-  const eventPlace = clean(item["eventplace"])
-  const feeText = clean(item["usetimefestival"])
-  const playTime = clean(item["playtime"])
+  const eventPlace = cleanDetailEvidence(item["eventplace"])
+  const feeText = cleanDetailEvidence(item["usetimefestival"])
+  const playTime = cleanDetailEvidence(item["playtime"])
   const hasAgeEvidence = ageText !== undefined && ageText.length <= 512 && ageRange !== undefined
-  if (!hasAgeEvidence && eventPlace === undefined && feeText === undefined && playTime === undefined) {
-    return undefined
-  }
   return {
     ...(hasAgeEvidence ? { ageRange, ageText } : {}),
     ...(eventPlace === undefined ? {} : { eventPlace }),
     ...(feeText === undefined ? {} : { feeText }),
     ...(playTime === undefined ? {} : { playTime }),
   }
+}
+
+function parseKtoTourApiDetailCommonPayload(
+  payload: unknown,
+  expectedContentId: string,
+  eventTitle: string,
+): string | undefined {
+  const externalPayload = parseExternalPayload(payload)
+  if (!externalPayload.ok) {
+    return undefined
+  }
+  const parsed = detailCommonPayloadSchema.safeParse(externalPayload.payload)
+  if (!parsed.success || parsed.data.response.header.resultCode !== successCode) {
+    return undefined
+  }
+  const item = detailCommonItemsFrom(parsed.data.response.body.items).find(
+    (candidate) => clean(candidate["contentid"]) === expectedContentId,
+  )
+  return item === undefined
+    ? undefined
+    : meaningfulAddressDetail(item["addr2"], eventTitle)
+}
+
+function meaningfulAddressDetail(
+  value: string | undefined,
+  eventTitle: string,
+): string | undefined {
+  const addressDetail = cleanDetailEvidence(value)
+  if (addressDetail === undefined || addressDetail.length > 512) {
+    return undefined
+  }
+  const canonicalAddressDetail = canonicalVenueEvidenceText(addressDetail)
+  const canonicalTitle = canonicalVenueEvidenceText(eventTitle)
+  if (
+    canonicalAddressDetail.length < 2 ||
+    canonicalAddressDetail === canonicalTitle ||
+    ["없음", "해당없음", "미정", "unknown", "none"].includes(canonicalAddressDetail)
+  ) {
+    return undefined
+  }
+  return addressDetail
+}
+
+function canonicalVenueEvidenceText(value: string): string {
+  return value
+    .normalize("NFKC")
+    .toLocaleLowerCase("ko-KR")
+    .replace(/[\p{P}\p{S}\s]+/gu, "")
+}
+
+function cleanDetailEvidence(value: string | undefined): string | undefined {
+  const cleaned = clean(value)
+  if (cleaned === undefined) return undefined
+  const sanitized = sanitizeProviderText(cleaned)
+  return sanitized.length === 0 ? undefined : sanitized
 }
 
 function mergeKtoDetailIntroEvidence(
@@ -403,6 +607,7 @@ function mergeKtoDetailIntroEvidence(
       stagesMatchChildStage(recordStages, request.child_stage)
   return {
     ...record,
+    detail_evidence_snapshot_id: ageEvidenceSnapshotId,
     ...(evidence.ageRange === undefined || evidence.ageText === undefined || recordStages === undefined
       ? {}
       : {
@@ -420,7 +625,13 @@ function mergeKtoDetailIntroEvidence(
         }),
     ...(evidence.eventPlace === undefined
       ? {}
-      : { venue: { ...record.venue, name: evidence.eventPlace } }),
+      : {
+          venue: { ...record.venue, name: evidence.eventPlace },
+          venue_identity: {
+            basis: "provider_event_place" as const,
+            evidence_snapshot_id: ageEvidenceSnapshotId,
+          },
+        }),
     ...(evidence.playTime === undefined
       ? {}
       : { date: { ...record.date, time_text: evidence.playTime } }),
@@ -475,6 +686,8 @@ function normalizeItem(item: KtoTourApiItem, context: KtoTourApiNormalizeContext
   const address = [item["addr1"], item["addr2"]].map(clean).filter(isString).join(" ")
   return {
     id: `${sourceId}:${contentId}`,
+    source_identity: { key: contentId, basis: "provider_native" },
+    venue_identity: { basis: "title_fallback" },
     raw_snapshot_id: rawSnapshotId,
     mode,
     title,
@@ -482,7 +695,7 @@ function normalizeItem(item: KtoTourApiItem, context: KtoTourApiNormalizeContext
     date: { start, end, time_text: `${start} - ${end}` },
     venue: { name: title, address: address.length > 0 ? address : cityFrom(clean(item["areacode"]), "") },
     ...optionalCoordinates(item),
-    source: { id: sourceId, mode, url: sourceUrlFor(context.sourceUrl, contentId, clean(item["contenttypeid"])), raw_snapshot_id: rawSnapshotId },
+    source: { id: sourceId, mode, url: sourceUrlFor(context.sourceUrl, contentId), raw_snapshot_id: rawSnapshotId },
     retrieved_at: context.retrievedAt,
     confidence: { date: "api-returned", venue: "api-returned", age_fit: "unknown", reservation: "unknown" },
     parent_check: { age_fit: "KTO TourAPI event listing does not state child-specific age fit.", reservation: "confirmation_needed", live_status: "source_timestamp_required" },
@@ -550,6 +763,15 @@ function detailIntroItemsFrom(
   return items.item === undefined ? [] : Array.isArray(items.item) ? items.item : [items.item]
 }
 
+function detailCommonItemsFrom(
+  items: z.infer<typeof detailCommonItemsSchema> | undefined,
+): readonly KtoTourApiDetailCommonItem[] {
+  if (items === undefined || items === null || items === "") {
+    return []
+  }
+  return items.item === undefined ? [] : Array.isArray(items.item) ? items.item : [items.item]
+}
+
 function matchesRequest(record: FamilyExperienceSourceRecord, request: SourceAdapterRequest): boolean {
   const locationText = `${record.city} ${record.venue.name} ${record.venue.address}`.toLowerCase()
   return record.date.start <= request.date_range.end && record.date.end >= request.date_range.start && locationText.includes(request.location.trim().toLowerCase())
@@ -578,12 +800,10 @@ function optionalCoordinates(
   return { coordinates: { latitude, longitude } }
 }
 
-function sourceUrlFor(sourceUrl: string, contentId: string, contentTypeId: string | undefined): string {
+function sourceUrlFor(sourceUrl: string, contentId: string): string {
   const url = new URL(sourceUrl)
   url.searchParams.set("contentId", contentId)
-  if (contentTypeId !== undefined) {
-    url.searchParams.set("contentTypeId", contentTypeId)
-  }
+  url.searchParams.delete("contentTypeId")
   return url.toString()
 }
 

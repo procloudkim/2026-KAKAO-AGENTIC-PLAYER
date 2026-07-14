@@ -166,8 +166,11 @@ function normalizeRow(
   const childStages = stagesForAgeRange(ageRange)
   const sourceUrl = [row.HMPG_ADDR, row.ORG_LINK, datasetUrl].find((value) => value.trim().length > 0)
   const programText = [row.PROGRAM, row.ETC_DESC, row.TITLE].find((value) => value.trim().length > 0)
+  const derivedIdentityKey = hash(`${row.HMPG_ADDR}|${row.ORG_LINK}|${row.TITLE}|${row.STRTDATE}`)
   return {
-    id: `${sourceId}:${hash(`${row.HMPG_ADDR}|${row.ORG_LINK}|${row.TITLE}|${row.STRTDATE}`)}`,
+    id: `${sourceId}:${derivedIdentityKey}`,
+    source_identity: { key: derivedIdentityKey, basis: "derived_v1" },
+    venue_identity: { basis: "source_stated" },
     raw_snapshot_id: rawSnapshotId,
     mode,
     title: row.TITLE,

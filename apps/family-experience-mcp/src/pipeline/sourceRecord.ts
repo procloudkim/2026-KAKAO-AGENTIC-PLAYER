@@ -6,8 +6,10 @@ import { CHILD_STAGES, TOOL_MODES } from "../types.js"
 import {
   INDOOR_OUTDOOR_VALUES,
   SOURCE_CONFIDENCE_LABELS,
+  SOURCE_IDENTITY_BASES,
   SOURCE_IDS,
   SUITABILITY_LABELS,
+  VENUE_EVIDENCE_BASES,
 } from "../sources/types.js"
 
 export const AGE_FIT_LABELS = ["source-stated", "inferred", "unknown"] as const
@@ -40,11 +42,31 @@ function providerTextSchema(maximumLength: number) {
 const providerShortTextSchema = providerTextSchema(512)
 const providerLongTextSchema = providerTextSchema(2_048)
 const providerTagSchema = providerTextSchema(128)
+const providerProgramTextSchema = z
+  .string()
+  .max(2_048)
+  .transform(sanitizeProviderText)
+  .pipe(z.string().max(2_048))
 
 export const SourceRecordSchema = z
   .object({
     id: providerShortTextSchema,
+    source_identity: z
+      .object({
+        key: providerShortTextSchema,
+        basis: z.enum(SOURCE_IDENTITY_BASES),
+      })
+      .strict()
+      .optional(),
+    venue_identity: z
+      .object({
+        basis: z.enum(VENUE_EVIDENCE_BASES),
+        evidence_snapshot_id: providerShortTextSchema.optional(),
+      })
+      .strict()
+      .optional(),
     raw_snapshot_id: providerShortTextSchema,
+    detail_evidence_snapshot_id: providerShortTextSchema.optional(),
     age_evidence_snapshot_id: providerShortTextSchema.optional(),
     mode: z.enum(TOOL_MODES),
     title: providerShortTextSchema,
@@ -98,7 +120,7 @@ export const SourceRecordSchema = z
     max_child_age: z.number().int().min(0).max(17),
     indoor_outdoor: z.enum(INDOOR_OUTDOOR_VALUES),
     target_age_text: providerShortTextSchema,
-    program_text: providerLongTextSchema,
+    program_text: providerProgramTextSchema,
     reservation_url: HttpUrlSchema.nullable(),
     contact: providerShortTextSchema.nullable(),
     fee_text: providerShortTextSchema,
@@ -107,6 +129,10 @@ export const SourceRecordSchema = z
     fixture_notice: providerLongTextSchema,
   })
   .strict()
+  .transform((record) => ({
+    ...record,
+    program_text: record.program_text.length > 0 ? record.program_text : record.title,
+  }))
   .superRefine((record, context) => {
     if (record.date.end < record.date.start) {
       context.addIssue({
@@ -121,6 +147,137 @@ export const SourceRecordSchema = z
         code: "custom",
         message: "max_child_age must be greater than or equal to min_child_age",
         path: ["max_child_age"],
+      })
+    }
+
+    if (record.mode !== record.source.mode) {
+      context.addIssue({
+        code: "custom",
+        message: "record mode must match source mode",
+        path: ["source", "mode"],
+      })
+    }
+
+    if (record.raw_snapshot_id !== record.source.raw_snapshot_id) {
+      context.addIssue({
+        code: "custom",
+        message: "record raw snapshot must match source raw snapshot",
+        path: ["source", "raw_snapshot_id"],
+      })
+    }
+
+    if (
+      record.detail_evidence_snapshot_id !== undefined &&
+      (record.source.id !== "kto-tourapi-events" || record.mode !== "live")
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "detail evidence snapshot is KTO live-only",
+        path: ["detail_evidence_snapshot_id"],
+      })
+    }
+
+    if (
+      record.detail_evidence_snapshot_id !== undefined &&
+      record.age_evidence_snapshot_id !== undefined &&
+      record.detail_evidence_snapshot_id !== record.age_evidence_snapshot_id
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "age evidence must use the record detail snapshot",
+        path: ["age_evidence_snapshot_id"],
+      })
+    }
+
+    if (record.source_identity !== undefined) {
+      const expectedRecordId = `${record.source.id}:${record.source_identity.key}`
+      if (record.id !== expectedRecordId) {
+        context.addIssue({
+          code: "custom",
+          message: "record id must be bound to source identity",
+          path: ["source_identity", "key"],
+        })
+      }
+
+      if (
+        record.source_identity.basis === "fixture_stable" &&
+        record.mode !== "fixture"
+      ) {
+        context.addIssue({
+          code: "custom",
+          message: "fixture_stable identity requires fixture mode",
+          path: ["source_identity", "basis"],
+        })
+      }
+
+      if (
+        record.source_identity.basis !== "fixture_stable" &&
+        record.mode !== "live"
+      ) {
+        context.addIssue({
+          code: "custom",
+          message: "live identity basis requires live mode",
+          path: ["source_identity", "basis"],
+        })
+      }
+
+      if (
+        record.source.id === "kto-tourapi-events" &&
+        record.source_identity.basis === "provider_native" &&
+        !/^\d+$/u.test(record.source_identity.key)
+      ) {
+        context.addIssue({
+          code: "custom",
+          message: "KTO provider-native identity must be a numeric content ID",
+          path: ["source_identity", "key"],
+        })
+      }
+
+      if (
+        record.source_identity.basis === "provider_native" &&
+        record.source.id !== "kto-tourapi-events"
+      ) {
+        context.addIssue({
+          code: "custom",
+          message: "provider-native identity is not registered for this source",
+          path: ["source_identity", "basis"],
+        })
+      }
+    }
+
+    if (
+      record.venue_identity?.basis === "provider_event_place" ||
+      record.venue_identity?.basis === "provider_address_detail"
+    ) {
+      if (record.source.id !== "kto-tourapi-events" || record.mode !== "live") {
+        context.addIssue({
+          code: "custom",
+          message: "provider venue evidence is KTO live-only",
+          path: ["venue_identity", "basis"],
+        })
+      }
+      if (record.venue_identity.evidence_snapshot_id === undefined) {
+        context.addIssue({
+          code: "custom",
+          message: "provider venue evidence requires an evidence snapshot",
+          path: ["venue_identity", "evidence_snapshot_id"],
+        })
+      } else if (
+        record.venue_identity.basis === "provider_event_place" &&
+        record.detail_evidence_snapshot_id !== undefined &&
+        record.venue_identity.evidence_snapshot_id !== record.detail_evidence_snapshot_id
+      ) {
+        context.addIssue({
+          code: "custom",
+          message: "venue evidence must use the record detail snapshot",
+          path: ["venue_identity", "evidence_snapshot_id"],
+        })
+      }
+    } else if (record.venue_identity?.evidence_snapshot_id !== undefined) {
+      context.addIssue({
+        code: "custom",
+        message: "venue evidence snapshot is allowed only for registered provider venue evidence",
+        path: ["venue_identity", "evidence_snapshot_id"],
       })
     }
   })

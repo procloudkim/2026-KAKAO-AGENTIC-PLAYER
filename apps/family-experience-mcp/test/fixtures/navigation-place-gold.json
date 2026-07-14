@@ -1,0 +1,102 @@
+[
+  {
+    "id": "seoul-national-museum",
+    "city": "Seoul",
+    "venue_name": "국립중앙박물관",
+    "address": "서울특별시 용산구 서빙고로 137",
+    "coordinates": { "latitude": 37.52385, "longitude": 126.98047 },
+    "expected_status": "source_backed",
+    "expected_destination": "국립중앙박물관",
+    "expect_navigation": true
+  },
+  {
+    "id": "seoul-parentheses",
+    "city": "Seoul",
+    "venue_name": "서울상상나라 (어린이대공원)",
+    "address": "서울특별시 광진구 능동로 216",
+    "coordinates": { "latitude": 37.5494, "longitude": 127.0861 },
+    "expected_status": "source_backed",
+    "expected_destination": "서울상상나라 (어린이대공원)",
+    "expect_navigation": true
+  },
+  {
+    "id": "busan-comma",
+    "city": "Busan",
+    "venue_name": "영화의전당, 야외극장",
+    "address": "부산광역시 해운대구 수영강변대로 120",
+    "coordinates": { "latitude": 35.1712, "longitude": 129.127 },
+    "expected_status": "source_backed",
+    "expected_destination": "영화의전당, 야외극장",
+    "expect_navigation": true
+  },
+  {
+    "id": "jeju-slash",
+    "city": "Jeju",
+    "venue_name": "제주민속촌/공연장",
+    "address": "제주특별자치도 서귀포시 표선면 민속해안로 631-34",
+    "coordinates": { "latitude": 33.3214, "longitude": 126.8414 },
+    "expected_status": "source_backed",
+    "expected_destination": "제주민속촌/공연장",
+    "expect_navigation": true
+  },
+  {
+    "id": "seoul-nfkc",
+    "city": "Seoul",
+    "venue_name": "ＤＤＰ 어린이 라운지",
+    "address": "서울특별시 중구 을지로 281",
+    "coordinates": { "latitude": 37.5669, "longitude": 127.0094 },
+    "expected_status": "source_backed",
+    "expected_destination": "DDP 어린이 라운지",
+    "expect_navigation": true
+  },
+  {
+    "id": "incheon-spaces",
+    "city": "Incheon",
+    "venue_name": "영종 씨사이드파크",
+    "address": "인천광역시 중구 하늘달빛로2번길 6",
+    "coordinates": { "latitude": 37.481753, "longitude": 126.565812 },
+    "expected_status": "source_backed",
+    "expected_destination": "영종 씨사이드파크",
+    "expect_navigation": true
+  },
+  {
+    "id": "gangwon-source-place",
+    "city": "Gangwon",
+    "venue_name": "강릉단오제전수교육관",
+    "address": "강원특별자치도 강릉시 단오장길 1",
+    "coordinates": { "latitude": 37.748158, "longitude": 128.894988 },
+    "expected_status": "source_backed",
+    "expected_destination": "강릉단오제전수교육관",
+    "expect_navigation": true
+  },
+  {
+    "id": "gyeongnam-mountain",
+    "city": "Gyeongsang",
+    "venue_name": "감악산 정상",
+    "address": "경상남도 거창군 신원면 덕산리 산57",
+    "coordinates": { "latitude": 35.591266, "longitude": 127.916414 },
+    "expected_status": "source_backed",
+    "expected_destination": "감악산 정상",
+    "expect_navigation": true
+  },
+  {
+    "id": "generic-name",
+    "city": "Seoul",
+    "venue_name": "행사장",
+    "address": "서울특별시 용산구 서빙고로 137",
+    "coordinates": { "latitude": 37.52385, "longitude": 126.98047 },
+    "expected_status": "unresolved",
+    "expected_destination": "행사장",
+    "expect_navigation": false
+  },
+  {
+    "id": "region-conflict",
+    "city": "Seoul",
+    "venue_name": "서울어린이대공원",
+    "address": "서울특별시 광진구 능동로 216",
+    "coordinates": { "latitude": 35.1796, "longitude": 129.0756 },
+    "expected_status": "conflict",
+    "expected_destination": "서울어린이대공원",
+    "expect_navigation": false
+  }
+]

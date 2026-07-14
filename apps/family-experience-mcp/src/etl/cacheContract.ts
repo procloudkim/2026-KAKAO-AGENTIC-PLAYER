@@ -3,7 +3,7 @@ import { createHash } from "node:crypto"
 import * as z from "zod/v4"
 
 import { FAMILY_EXPERIENCE_SOURCE_SET_VALUES } from "../config.js"
-import { HttpUrlSchema } from "../httpUrl.js"
+import { SourceRecordSchema } from "../pipeline/sourceRecord.js"
 import { SOURCE_IDS } from "../sources/types.js"
 import { sourceMap } from "./sourceLoaders.js"
 
@@ -20,37 +20,45 @@ export const cacheMetadataSchema = z
     source_ids: z.array(z.enum(SOURCE_IDS)).min(1),
     ttl_hours: z.number().int().min(1),
     max_pages: z.number().int().min(1),
-    counts: z.object({
-      failures: z.number().int().min(0),
-      normalized_records: z.number().int().min(0),
-      raw_snapshots: z.number().int().min(0),
-    }),
-    files: z.object({
-      normalized_records: z.string().trim().min(1),
-      raw_snapshots: z.string().trim().min(1),
-    }),
+    counts: z
+      .object({
+        failures: z.number().int().min(0),
+        normalized_records: z.number().int().min(0),
+        raw_snapshots: z.number().int().min(0),
+      })
+      .strict(),
+    files: z
+      .object({
+        normalized_records: z.string().trim().min(1),
+        raw_snapshots: z.string().trim().min(1),
+      })
+      .strict(),
     publish_id: z.string().trim().min(1),
     raw_snapshots_present: z.boolean().optional(),
-    file_digests: z.object({
-      normalized_records_sha256: hexSha256Schema,
-      raw_snapshots_sha256: hexSha256Schema,
-    }),
+    file_digests: z
+      .object({
+        normalized_records_sha256: hexSha256Schema,
+        raw_snapshots_sha256: hexSha256Schema,
+      })
+      .strict(),
     source_provenance: z.array(
-      z.object({
-        source: z.enum(FAMILY_EXPERIENCE_SOURCE_SET_VALUES),
-        source_id: z.enum(SOURCE_IDS),
-        generated_at: z.iso.datetime(),
-        ttl_hours: z.number().int().min(1),
-        mode: sourceModeSchema,
-        ok: z.boolean(),
-        records: z.number().int().min(0),
-        raw_snapshots: z.number().int().min(0),
-        raw_snapshot_present: z.boolean(),
-        failure_code: z.string().trim().min(1).optional(),
-      }),
+      z
+        .object({
+          source: z.enum(FAMILY_EXPERIENCE_SOURCE_SET_VALUES),
+          source_id: z.enum(SOURCE_IDS),
+          generated_at: z.iso.datetime(),
+          ttl_hours: z.number().int().min(1),
+          mode: sourceModeSchema,
+          ok: z.boolean(),
+          records: z.number().int().min(0),
+          raw_snapshots: z.number().int().min(0),
+          raw_snapshot_present: z.boolean(),
+          failure_code: z.string().trim().min(1).optional(),
+        })
+        .strict(),
     ),
   })
-  .passthrough()
+  .strict()
 
 const legacyCacheMetadataSchema = z
   .object({
@@ -58,7 +66,7 @@ const legacyCacheMetadataSchema = z
     fixture: z.literal(true),
     ttl_hours: z.number().int().min(1),
   })
-  .passthrough()
+  .strict()
   .refine(
     (metadata) =>
       metadata.fixture &&
@@ -68,31 +76,10 @@ const legacyCacheMetadataSchema = z
       !("files" in metadata),
   )
 
-export const cacheRecordSchema = z
-  .object({
-    id: z.string().trim().min(1),
-    raw_snapshot_id: z.string().trim().min(1),
-    age_evidence_snapshot_id: z.string().trim().min(1).optional(),
-    mode: sourceModeSchema,
-    city: z.string().trim().min(1),
-    date: z.object({ start: z.string().trim().min(1), end: z.string().trim().min(1) }).passthrough(),
-    venue: z.object({ name: z.string().trim().min(1), address: z.string().trim().min(1) }).passthrough(),
-    child_stages: z.array(z.enum(["infant", "toddler", "preschool", "school_age", "teen"])),
-    min_child_age: z.number().int().min(0).max(17),
-    max_child_age: z.number().int().min(0).max(17),
-    parent_check: z.object({ live_status: z.enum(["fixture_not_live", "source_timestamp_required"]) }).passthrough(),
-    confidence: z.object({ age_fit: z.enum(["source-stated", "inferred", "unknown"]) }).passthrough(),
-    target_age_text: z.string().max(512),
-    source: z
-      .object({
-        id: z.enum(SOURCE_IDS),
-        mode: sourceModeSchema,
-        url: HttpUrlSchema,
-        raw_snapshot_id: z.string().trim().min(1),
-      })
-      .passthrough(),
-  })
-  .passthrough()
+// Cache rows are an official-source persistence boundary. Reuse the complete,
+// strict runtime schema so account, feedback, or provider-derived fields cannot
+// hitchhike in normalized-records.jsonl.
+export const cacheRecordSchema = SourceRecordSchema
 
 export const cacheRawSnapshotSchema = z
   .object({
@@ -106,6 +93,10 @@ export const cacheRawSnapshotSchema = z
       .object({
         content_id: z.string().trim().min(1).max(128).optional(),
         age_limit: z.string().trim().min(1).max(512).optional(),
+        event_place: z.string().trim().min(1).max(512).optional(),
+        address_detail: z.string().trim().min(1).max(512).optional(),
+        play_time: z.string().trim().min(1).max(512).optional(),
+        fee_text: z.string().trim().min(1).max(512).optional(),
       })
       .strict()
       .optional(),
@@ -241,6 +232,15 @@ export function validateCacheContract(input: {
     return sourceResult
   }
 
+  const sourceContentResult = validateSourceContentContract(
+    input.metadata,
+    input.records,
+    rawSnapshotResult.snapshots,
+  )
+  if (!sourceContentResult.ok) {
+    return sourceContentResult
+  }
+
   return { ok: true }
 }
 
@@ -296,11 +296,62 @@ function validateRawSnapshotLinks(
     if (snapshot.response_sha256 === undefined) {
       return contractFailure("KTO raw snapshot response SHA-256 is required")
     }
+    if (snapshot.payload_ref === "detailIntro2") {
+      if (snapshot.evidence?.content_id === undefined) {
+        return contractFailure("KTO detailIntro2 raw snapshot requires content identity evidence")
+      }
+      if (
+        snapshot.evidence.age_limit === undefined &&
+        snapshot.evidence.event_place === undefined &&
+        snapshot.evidence.play_time === undefined &&
+        snapshot.evidence.fee_text === undefined
+      ) {
+        return contractFailure("KTO detailIntro2 raw snapshot requires persisted detail evidence")
+      }
+      if (snapshot.evidence.address_detail !== undefined) {
+        return contractFailure("KTO detailIntro2 raw snapshot cannot assert address-detail evidence")
+      }
+    }
+    if (snapshot.payload_ref === "detailCommon2") {
+      if (
+        snapshot.evidence?.content_id === undefined ||
+        snapshot.evidence.address_detail === undefined
+      ) {
+        return contractFailure("KTO detailCommon2 raw snapshot requires content and address-detail evidence")
+      }
+      if (
+        snapshot.evidence.age_limit !== undefined ||
+        snapshot.evidence.event_place !== undefined ||
+        snapshot.evidence.play_time !== undefined ||
+        snapshot.evidence.fee_text !== undefined
+      ) {
+        return contractFailure("KTO detailCommon2 raw snapshot contains unrelated detail evidence")
+      }
+    }
+  }
+
+  for (const record of records) {
     if (
-      snapshot.payload_ref === "detailIntro2" &&
-      (snapshot.evidence?.content_id === undefined || snapshot.evidence.age_limit === undefined)
+      record.mode !== "live" ||
+      record.source.id !== "kto-tourapi-events" ||
+      record.detail_evidence_snapshot_id === undefined
     ) {
-      return contractFailure("KTO detailIntro2 raw snapshot requires content and age evidence")
+      continue
+    }
+    const evidenceSnapshot = snapshotsById.get(record.detail_evidence_snapshot_id)
+    const expectedContentId = record.source_identity?.basis === "provider_native"
+      ? record.source_identity.key
+      : undefined
+    const evidence = evidenceSnapshot?.evidence
+    if (
+      evidenceSnapshot?.source_id !== "kto-tourapi-events" ||
+      evidenceSnapshot.payload_ref !== "detailIntro2" ||
+      evidenceSnapshot.response_sha256 === undefined ||
+      evidence?.content_id !== expectedContentId ||
+      (evidence?.play_time !== undefined && evidence.play_time !== record.date.time_text) ||
+      (evidence?.fee_text !== undefined && evidence.fee_text !== record.fee_text)
+    ) {
+      return contractFailure("KTO record detail fields are not bound to matching detailIntro2 evidence")
     }
   }
 
@@ -327,6 +378,58 @@ function validateRawSnapshotLinks(
       evidence?.age_limit !== record.target_age_text
     ) {
       return contractFailure("KTO source-stated age record is not bound to matching detailIntro2 evidence")
+    }
+  }
+
+  for (const record of records) {
+    if (
+      record.mode !== "live" ||
+      record.source.id !== "kto-tourapi-events" ||
+      record.venue_identity?.basis !== "provider_event_place"
+    ) {
+      continue
+    }
+    const evidenceSnapshot = record.venue_identity.evidence_snapshot_id === undefined
+      ? undefined
+      : snapshotsById.get(record.venue_identity.evidence_snapshot_id)
+    const expectedContentId = record.source_identity?.basis === "provider_native"
+      ? record.source_identity.key
+      : undefined
+    const evidence = evidenceSnapshot?.evidence
+    if (
+      evidenceSnapshot?.source_id !== "kto-tourapi-events" ||
+      evidenceSnapshot.payload_ref !== "detailIntro2" ||
+      evidenceSnapshot.response_sha256 === undefined ||
+      evidence?.content_id !== expectedContentId ||
+      evidence?.event_place !== record.venue.name
+    ) {
+      return contractFailure("KTO provider event place is not bound to matching detailIntro2 evidence")
+    }
+  }
+
+  for (const record of records) {
+    if (
+      record.mode !== "live" ||
+      record.source.id !== "kto-tourapi-events" ||
+      record.venue_identity?.basis !== "provider_address_detail"
+    ) {
+      continue
+    }
+    const evidenceSnapshot = record.venue_identity.evidence_snapshot_id === undefined
+      ? undefined
+      : snapshotsById.get(record.venue_identity.evidence_snapshot_id)
+    const expectedContentId = record.source_identity?.basis === "provider_native"
+      ? record.source_identity.key
+      : undefined
+    const evidence = evidenceSnapshot?.evidence
+    if (
+      evidenceSnapshot?.source_id !== "kto-tourapi-events" ||
+      evidenceSnapshot.payload_ref !== "detailCommon2" ||
+      evidenceSnapshot.response_sha256 === undefined ||
+      evidence?.content_id !== expectedContentId ||
+      evidence?.address_detail !== record.venue.name
+    ) {
+      return contractFailure("KTO provider address detail is not bound to matching detailCommon2 evidence")
     }
   }
 
@@ -379,6 +482,19 @@ function validateSourceContract(metadata: CacheMetadata): CacheContractValidatio
     return metadata.schema_version === undefined
       ? { ok: true }
       : contractFailure("source-level provenance is required")
+  }
+
+  if (new Set(metadata.source_set).size !== metadata.source_set.length) {
+    return contractFailure("source_set contains duplicates")
+  }
+  if (new Set(metadata.source_ids).size !== metadata.source_ids.length) {
+    return contractFailure("source_ids contains duplicates")
+  }
+  if (new Set(metadata.source_provenance.map((source) => source.source)).size !== metadata.source_provenance.length) {
+    return contractFailure("source-level provenance contains duplicate sources")
+  }
+  if (new Set(metadata.source_provenance.map((source) => source.source_id)).size !== metadata.source_provenance.length) {
+    return contractFailure("source-level provenance contains duplicate source ids")
   }
 
   const sourceRecordTotal = metadata.source_provenance.reduce((total, source) => total + source.records, 0)
@@ -436,6 +552,36 @@ function validateSourceContract(metadata: CacheMetadata): CacheContractValidatio
   const rawSnapshotMismatch = metadata.source_provenance.find((source) => source.raw_snapshot_present !== (source.raw_snapshots > 0))
   if (rawSnapshotMismatch !== undefined) {
     return contractFailure("source-level raw snapshot presence does not match source counts")
+  }
+
+  return { ok: true }
+}
+
+function validateSourceContentContract(
+  metadata: CacheMetadata,
+  records: readonly CacheRecord[],
+  snapshots: readonly CacheRawSnapshot[],
+): CacheContractValidationResult {
+  if (metadata.source_provenance === undefined) {
+    return metadata.schema_version === undefined
+      ? { ok: true }
+      : contractFailure("source-level provenance is required")
+  }
+
+  for (const provenance of metadata.source_provenance) {
+    const actualRecordCount = records.filter(
+      (record) => record.source.id === provenance.source_id,
+    ).length
+    if (actualRecordCount !== provenance.records) {
+      return contractFailure("source-level record count does not match actual records")
+    }
+
+    const actualRawSnapshotCount = snapshots.filter(
+      (snapshot) => snapshot.source_id === provenance.source_id,
+    ).length
+    if (actualRawSnapshotCount !== provenance.raw_snapshots) {
+      return contractFailure("source-level raw snapshot count does not match actual snapshots")
+    }
   }
 
   return { ok: true }

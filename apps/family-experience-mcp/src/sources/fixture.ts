@@ -52,6 +52,8 @@ export const fixtureRawSnapshots: readonly RawSourceSnapshot[] = [
 export const fixtureFamilyExperienceRecords: readonly FixtureFamilyExperienceRecord[] = [
   {
     id: "fixture-family-experience-v1:kids-makers-studio",
+    source_identity: { key: "kids-makers-studio", basis: "fixture_stable" },
+    venue_identity: { basis: "fixture_stable" },
     raw_snapshot_id: "fixture-family-experience-v1:raw:kids-makers-2026-07-04",
     mode: "fixture",
     title: "Demo Seoul Kids Makers Studio",
@@ -93,6 +95,8 @@ export const fixtureFamilyExperienceRecords: readonly FixtureFamilyExperienceRec
   },
   {
     id: "fixture-family-experience-v1:rainy-day-story-theater",
+    source_identity: { key: "rainy-day-story-theater", basis: "fixture_stable" },
+    venue_identity: { basis: "fixture_stable" },
     raw_snapshot_id: "fixture-family-experience-v1:raw:story-theater-2026-07-04",
     mode: "fixture",
     title: "Demo Rainy Day Story Theater",
@@ -134,6 +138,8 @@ export const fixtureFamilyExperienceRecords: readonly FixtureFamilyExperienceRec
   },
   {
     id: "fixture-family-experience-v1:family-science-light-lab",
+    source_identity: { key: "family-science-light-lab", basis: "fixture_stable" },
+    venue_identity: { basis: "fixture_stable" },
     raw_snapshot_id: "fixture-family-experience-v1:raw:science-light-lab-2026-07-04",
     mode: "fixture",
     title: "Demo Family Science Light Lab",
@@ -175,6 +181,8 @@ export const fixtureFamilyExperienceRecords: readonly FixtureFamilyExperienceRec
   },
   {
     id: "fixture-family-experience-v1:late-night-media-edge",
+    source_identity: { key: "late-night-media-edge", basis: "fixture_stable" },
+    venue_identity: { basis: "fixture_stable" },
     raw_snapshot_id: "fixture-family-experience-v1:raw:late-night-media-2026-07-04",
     mode: "fixture",
     title: "Demo Late Night Media Concert Edge Case",

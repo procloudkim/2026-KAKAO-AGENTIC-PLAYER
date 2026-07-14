@@ -243,6 +243,20 @@ describe("FamilyExperienceCandidateSchema", () => {
     expect(result.success).toBe(false)
   })
 
+  it("rejects navigation whose destination does not match the candidate venue", () => {
+    const result = FamilyExperienceCandidateSchema.safeParse({
+      ...baseCandidate,
+      source: "kto_tourapi",
+      navigation: {
+        place_evidence_status: "source_backed",
+        map_url: "https://" + "map.kakao.com/link/map/Seoul%20Museum,37.5,127",
+        directions_url: "https://" + "map.kakao.com/link/to/Seoul%20Museum,37.5,127",
+      },
+    })
+
+    expect(result.success).toBe(false)
+  })
+
   it("rejects actionable URLs outside HTTP and HTTPS", () => {
     // Given: a provider supplies syntactically valid active-content URL schemes.
     const candidates = [

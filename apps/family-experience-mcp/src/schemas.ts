@@ -3,6 +3,11 @@ import * as z from "zod/v4"
 import { INDOOR_OUTDOOR_VALUES } from "./sources/types.js"
 import { CHILD_STAGES, FAMILY_EXPERIENCE_SOURCES, TOOL_MODES } from "./types.js"
 import { HttpUrlSchema } from "./httpUrl.js"
+import {
+  isMeaningfulPlaceLabel,
+  normalizeKakaoDestinationLabel,
+} from "./placeLabels.js"
+import { NAVIGABLE_PLACE_EVIDENCE_STATUSES } from "./placeResolution.js"
 
 const dateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/
 export const MAX_FAMILY_EXPERIENCE_PROMPT_LENGTH = 4_096
@@ -234,7 +239,7 @@ const KakaoMapLinkBaseSchema = HttpUrlSchema.refine((value) => {
 
 const KakaoMapLinkSchema = KakaoMapLinkBaseSchema.refine((value) => {
   const pathname = new URL(value).pathname
-  return /^\/link\/map\/(?:[^/,]+,)?-?\d+(?:\.\d+)?,-?\d+(?:\.\d+)?\/?$/u.test(pathname)
+  return /^\/link\/map\/[^/,]+,-?\d+(?:\.\d+)?,-?\d+(?:\.\d+)?\/?$/u.test(pathname)
 }, "Expected an official Kakao map link")
 
 const KakaoDirectionsLinkSchema = KakaoMapLinkBaseSchema.refine((value) => {
@@ -244,10 +249,74 @@ const KakaoDirectionsLinkSchema = KakaoMapLinkBaseSchema.refine((value) => {
 
 export const FamilyExperienceNavigationSchema = z
   .object({
+    place_evidence_status: z.enum(NAVIGABLE_PLACE_EVIDENCE_STATUSES),
     map_url: KakaoMapLinkSchema,
     directions_url: KakaoDirectionsLinkSchema,
   })
   .strict()
+  .superRefine((navigation, context) => {
+    const map = parseKakaoNavigationLink(navigation.map_url, "map")
+    const directions = parseKakaoNavigationLink(navigation.directions_url, "to")
+    if (map === undefined || directions === undefined) return
+
+    if (!isMeaningfulPlaceLabel(map.destination)) {
+      context.addIssue({
+        code: "custom",
+        message: "Kakao navigation destination must be a meaningful place name",
+        path: ["map_url"],
+      })
+    }
+    if (
+      map.destination !== directions.destination ||
+      map.latitude !== directions.latitude ||
+      map.longitude !== directions.longitude
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "Kakao map and directions links must use the same destination and coordinates",
+        path: ["directions_url"],
+      })
+    }
+    const latitude = Number(map.latitude)
+    const longitude = Number(map.longitude)
+    if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+      context.addIssue({
+        code: "custom",
+        message: "Kakao navigation coordinates must be valid latitude and longitude",
+        path: ["map_url"],
+      })
+    }
+  })
+
+function parseKakaoNavigationLink(
+  value: string,
+  kind: "map" | "to",
+): { readonly destination: string; readonly latitude: string; readonly longitude: string } | undefined {
+  const match = new RegExp(
+    `^/link/${kind}/([^/,]+),(-?\\d+(?:\\.\\d+)?),(-?\\d+(?:\\.\\d+)?)/?$`,
+    "u",
+  ).exec(new URL(value).pathname)
+  if (match === null) return undefined
+
+  const [, encodedDestination, latitude, longitude] = match
+  if (
+    encodedDestination === undefined ||
+    latitude === undefined ||
+    longitude === undefined
+  ) {
+    return undefined
+  }
+
+  try {
+    return {
+      destination: decodeURIComponent(encodedDestination),
+      latitude,
+      longitude,
+    }
+  } catch {
+    return undefined
+  }
+}
 
 export const FamilyExperienceParentActionCardSchema = z
   .object({
@@ -348,6 +417,20 @@ export const FamilyExperienceCandidateSchema = z
         message: "reservation_url requires public copy to say confirm at source",
         path: ["reservation_url"],
       })
+    }
+
+    if (candidate.navigation !== undefined) {
+      const map = parseKakaoNavigationLink(candidate.navigation.map_url, "map")
+      if (
+        map !== undefined &&
+        map.destination !== normalizeKakaoDestinationLabel(candidate.venue)
+      ) {
+        context.addIssue({
+          code: "custom",
+          message: "Kakao navigation destination must match candidate venue",
+          path: ["navigation", "map_url"],
+        })
+      }
     }
   })
 

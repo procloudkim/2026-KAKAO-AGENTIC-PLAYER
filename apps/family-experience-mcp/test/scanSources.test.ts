@@ -98,12 +98,14 @@ describe("source scanner", () => {
     const text = [
       "Kakao Login: https://" + "developers.kakao.com/docs/ko/kakaologin/common",
       "Map samples: https://" + "apis.map.kakao.com/web/sample/",
+      "Kakao policy: https://" + "devtalk.kakao.com/t/local-api/149619",
       "Privacy authority: https://" + "m.pipc.go.kr/np/cop/bbs/selectBoardArticle.do?bbsId=BS217",
       "Statute: https://" + "www.law.go.kr/LSW/lsInfoP.do?lsiSeq=277359",
     ].join("\n")
 
     // When: the same references appear in the scoped PRD and in a generic event-source document.
     const scoped = scanText("docs/TRUSTED_FAMILY_NETWORK_PRD_VNEXT.md", text)
+    const plan = scanText("docs/TRUSTED_FAMILY_NETWORK_IMPLEMENTATION_PLAN.md", text)
     const unscoped = scanText("docs/unregistered-event-source.md", text)
     const insecure = scanText(
       "docs/TRUSTED_FAMILY_NETWORK_PRD_VNEXT.md",
@@ -112,7 +114,8 @@ describe("source scanner", () => {
 
     // Then: only HTTPS policy references in their non-runtime documentation surface are accepted.
     expect(scoped).toEqual([])
-    expect(unscoped).toHaveLength(4)
+    expect(plan).toEqual([])
+    expect(unscoped).toHaveLength(5)
     expect(unscoped.every((finding) => finding.rule === "unregistered-event-source-url")).toBe(true)
     expect(insecure).toHaveLength(1)
   })
@@ -140,6 +143,21 @@ describe("source scanner", () => {
     expect(unscoped).toHaveLength(2)
     expect(wrongPath).toHaveLength(1)
     expect(unsafeVariants).toHaveLength(4)
+  })
+
+  it("allows exact Kakao place references only in resolver persistence surfaces", () => {
+    const placeUrl = "https://" + "place.map.kakao.com/123456789"
+    const rawProviderUrl = "http://" + "place.map.kakao.com/123456789"
+
+    expect(scanText("test/placeResolution.test.ts", placeUrl)).toEqual([])
+    expect(scanText("test/catalogPersistence.test.ts", placeUrl)).toEqual([])
+    expect(scanText("src/catalog/placeEvaluation.ts", rawProviderUrl)).toEqual([])
+    expect(scanText("test/placeResolution.test.ts", rawProviderUrl)).toEqual([])
+    expect(scanText("docs/unregistered-event-source.md", placeUrl)).toHaveLength(1)
+    expect(scanText("docs/unregistered-event-source.md", rawProviderUrl)).toHaveLength(1)
+    expect(
+      scanText("test/placeResolution.test.ts", "https://" + "place.map.kakao.com/search?q=venue"),
+    ).toHaveLength(1)
   })
 
   it("rejects malformed included temporary source docs through the CLI", async () => {

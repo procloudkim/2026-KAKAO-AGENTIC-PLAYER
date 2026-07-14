@@ -526,6 +526,10 @@ describe("Todo 4 family experience pipeline", () => {
     const inferredRecord = {
       ...baseRecord,
       id: "fixture-family-experience-v1:inferred-preschool-workshop",
+      source_identity: {
+        key: "inferred-preschool-workshop",
+        basis: "fixture_stable" as const,
+      },
       confidence: {
         ...baseRecord.confidence,
         age_fit: "inferred",

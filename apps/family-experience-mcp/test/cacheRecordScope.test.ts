@@ -1,58 +1,49 @@
 import { describe, expect, it } from "vitest"
 
 import { filterCacheRecordsForRequest } from "../src/etl/cacheRecordScope.js"
-import type { CacheRecord } from "../src/etl/cacheContract.js"
+import { cacheRecordSchema } from "../src/etl/cacheContract.js"
+import { officialRecord } from "./pipelineTestHelpers.js"
 
-const seoulRecord = {
+const seoulRecord = cacheRecordSchema.parse(officialRecord({
   id: "kto-tourapi-events:jongno-test",
-  raw_snapshot_id: "kto-tourapi-events:raw:jongno-test",
-  mode: "live",
   city: "Seoul",
-  date: { start: "2026-08-01", end: "2026-08-01" },
+  date: { start: "2026-08-01", end: "2026-08-01", time_text: "10:00-12:00" },
   venue: { name: "\uc885\ub85c \uac00\uc871\ubb38\ud654\uad00", address: "\uc11c\uc6b8\ud2b9\ubcc4\uc2dc \uc885\ub85c\uad6c \uc0bc\uccad\ub85c 1" },
   child_stages: ["preschool"],
   min_child_age: 3,
   max_child_age: 6,
-  parent_check: { live_status: "source_timestamp_required" },
-  confidence: { age_fit: "source-stated" },
   target_age_text: "\ub9cc 3~6\uc138",
-  source: {
-    id: "kto-tourapi-events",
-    mode: "live",
-    url: "https://example.test/kto/jongno-test",
-    raw_snapshot_id: "kto-tourapi-events:raw:jongno-test",
-  },
-} as const satisfies CacheRecord
+}))
 
-const sejongRecord = {
-  ...seoulRecord,
+const sejongRecord = cacheRecordSchema.parse(officialRecord({
   id: "kto-tourapi-events:sejong-test",
   city: "세종특별자치시",
+  date: seoulRecord.date,
   venue: {
     name: "세종 가족문화관",
     address: "세종특별자치시 다솜로 1",
   },
-} as const satisfies CacheRecord
+}))
 
-const chungbukRecord = {
-  ...seoulRecord,
+const chungbukRecord = cacheRecordSchema.parse(officialRecord({
   id: "kto-tourapi-events:chungbuk-test",
   city: "Chungcheong",
+  date: seoulRecord.date,
   venue: {
     name: "충북 가족문화관",
     address: "충청북도 청주시 상당로 1",
   },
-} as const satisfies CacheRecord
+}))
 
-const chungnamRecord = {
-  ...seoulRecord,
+const chungnamRecord = cacheRecordSchema.parse(officialRecord({
   id: "kto-tourapi-events:chungnam-test",
   city: "Chungcheong",
+  date: seoulRecord.date,
   venue: {
     name: "충남 가족문화관",
     address: "충청남도 천안시 문화로 1",
   },
-} as const satisfies CacheRecord
+}))
 
 describe("cache location scope", () => {
   it.each(["Seoul", "\uc11c\uc6b8", "Jongno-gu", "\uc885\ub85c\uad6c"])("matches supported Seoul location %s", (location) => {

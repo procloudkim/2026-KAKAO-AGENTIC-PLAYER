@@ -197,8 +197,12 @@ function normalizeRow(row: Row, context: NormalizeContext, rawSnapshotId: string
     ...(row.gpsX.trim().length > 0 && row.gpsY.trim().length > 0 ? ["coordinates_source_provided", `source_gpsX:${row.gpsX}`, `source_gpsY:${row.gpsY}`] : []),
     ...(row.thumbnail.trim().length > 0 ? ["thumbnail_source_provided", `source_thumbnail:${row.thumbnail}`] : []),
   ].filter(hasText)
+  const derivedIdentityKey = hash(`${row.seq}|${row.url}|${row.title}|${row.startDate}|${row.place}`)
   return {
-    id: `${sourceId}:${hash(`${row.seq}|${row.url}|${row.title}|${row.startDate}|${row.place}`)}`, raw_snapshot_id: rawSnapshotId,
+    id: `${sourceId}:${derivedIdentityKey}`,
+    source_identity: { key: derivedIdentityKey, basis: "derived_v1" },
+    venue_identity: { basis: "source_stated" },
+    raw_snapshot_id: rawSnapshotId,
     mode, title: row.title, city: row.area.trim().length > 0 ? row.area : context.request.location,
     date: { start: row.startDate, end: row.endDate, time_text: `${row.startDate} - ${row.endDate}` }, venue: { name: row.place, address: row.area },
     source: { id: sourceId, mode, url: sourceUrl, raw_snapshot_id: rawSnapshotId }, retrieved_at: context.retrievedAt,

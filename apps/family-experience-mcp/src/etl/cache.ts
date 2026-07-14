@@ -3,6 +3,7 @@ import { mkdir, rename, rm, writeFile } from "node:fs/promises"
 import { resolve } from "node:path"
 
 import type { FamilyExperienceSourceSetEntry } from "../config.js"
+import { SourceRecordSchema } from "../pipeline/sourceRecord.js"
 import type { FamilyExperienceSourceRecord, RawSourceSnapshot, SourceId } from "../sources/types.js"
 import { sha256Hex } from "./cacheContract.js"
 import { sourceMap } from "./sourceLoaders.js"
@@ -113,7 +114,7 @@ export async function writeCache(input: {
   readonly records: readonly FamilyExperienceSourceRecord[]
 }): Promise<void> {
   const publishId = `cache-${process.pid}-${Date.now()}-${randomUUID()}`
-  const normalizedText = toJsonl(input.records)
+  const normalizedText = toJsonl(input.records.map((record) => SourceRecordSchema.parse(record)))
   const rawSnapshotsText = toJsonl(input.rawSnapshots)
   const metadata = publishedMetadata({
     metadata: input.metadata,

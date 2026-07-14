@@ -15,6 +15,7 @@ const allowedHosts = ["example.invalid", "127.0.0.1", "localhost", "openapi.exam
 const officialSourceHosts = ["apis.data.go.kr", "culture.go.kr", "data.go.kr", "b.kakao.com", "developers.notion.com", "docs.kakaocloud.com", "kko.to", "modelcontextprotocol.io", "playmcp.kakao.com", "playmcp.kakaocloud.io", "tech.kakao.com", "www.notion.com", "www.sejongpac.or.kr", "www.culture.go.kr", "www.kakaocorp.com", "www.data.go.kr"] as const
 const trustedNetworkReferenceHosts = [
   "apis.map.kakao.com",
+  "devtalk.kakao.com",
   "developers.kakao.com",
   "law.go.kr",
   "m.pipc.go.kr",
@@ -144,6 +145,9 @@ function isAllowedUrl(file: string, url: string): boolean {
   if (isKakaoNavigationLink(file, parsed)) {
     return true
   }
+  if (isKakaoPlaceReference(file, parsed)) {
+    return true
+  }
   if (isOrganizerGuideExtract(file)) {
     return true
   }
@@ -161,7 +165,10 @@ function isAllowedUrl(file: string, url: string): boolean {
 
 function isTrustedNetworkReference(file: string, url: URL): boolean {
   const normalizedFile = file.replaceAll("\\", "/")
-  return normalizedFile.endsWith("docs/TRUSTED_FAMILY_NETWORK_PRD_VNEXT.md") &&
+  const isTrustedNetworkDocument =
+    normalizedFile.endsWith("docs/TRUSTED_FAMILY_NETWORK_PRD_VNEXT.md") ||
+    normalizedFile.endsWith("docs/TRUSTED_FAMILY_NETWORK_IMPLEMENTATION_PLAN.md")
+  return isTrustedNetworkDocument &&
     url.protocol === "https:" &&
     url.username.length === 0 &&
     url.password.length === 0 &&
@@ -180,6 +187,29 @@ function isKakaoNavigationLink(file: string, url: URL): boolean {
     url.search.length === 0 &&
     url.hash.length === 0 &&
     (url.pathname.startsWith("/link/map/") || url.pathname.startsWith("/link/to/"))
+}
+
+function isKakaoPlaceReference(file: string, url: URL): boolean {
+  const normalizedFile = file.replaceAll("\\", "/")
+  const isPlaceReferenceSurface =
+    normalizedFile.endsWith("src/catalog/placeEvaluation.ts") ||
+    normalizedFile.endsWith("test/placeResolution.test.ts") ||
+    normalizedFile.endsWith("test/catalogPersistence.test.ts")
+  const isProviderInputSurface =
+    normalizedFile.endsWith("src/catalog/placeEvaluation.ts") ||
+    normalizedFile.endsWith("test/placeResolution.test.ts") ||
+    normalizedFile.endsWith("test/catalogPersistence.test.ts")
+  const isFixtureTemplate =
+    normalizedFile.endsWith("src/catalog/placeEvaluation.ts") &&
+    url.pathname === "/$%7BplaceId%7D"
+  return isPlaceReferenceSurface &&
+    (url.protocol === "https:" || (isProviderInputSurface && url.protocol === "http:")) &&
+    url.username.length === 0 &&
+    url.password.length === 0 &&
+    url.hostname === "place.map.kakao.com" &&
+    url.search.length === 0 &&
+    url.hash.length === 0 &&
+    (/^\/\d+\/?$/u.test(url.pathname) || isFixtureTemplate)
 }
 
 function isOrganizerGuideExtract(file: string): boolean {

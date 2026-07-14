@@ -86,6 +86,34 @@ export const SOURCE_CONFIDENCE_LABELS = [
 
 export type SourceConfidenceLabel = (typeof SOURCE_CONFIDENCE_LABELS)[number]
 
+export const SOURCE_IDENTITY_BASES = [
+  "provider_native",
+  "fixture_stable",
+  "derived_v1",
+] as const
+
+export type SourceIdentityBasis = (typeof SOURCE_IDENTITY_BASES)[number]
+
+export const VENUE_EVIDENCE_BASES = [
+  "provider_event_place",
+  "provider_address_detail",
+  "source_stated",
+  "fixture_stable",
+  "title_fallback",
+] as const
+
+export type VenueEvidenceBasis = (typeof VENUE_EVIDENCE_BASES)[number]
+
+export type SourceIdentity = {
+  readonly key: string
+  readonly basis: SourceIdentityBasis
+}
+
+export type VenueIdentityEvidence = {
+  readonly basis: VenueEvidenceBasis
+  readonly evidence_snapshot_id?: string
+}
+
 export const INDOOR_OUTDOOR_VALUES = ["indoor", "outdoor", "mixed", "unknown"] as const
 
 export type IndoorOutdoor = (typeof INDOOR_OUTDOOR_VALUES)[number]
@@ -132,7 +160,10 @@ export type ParentCheck = {
 
 export type FamilyExperienceSourceRecord = {
   readonly id: string
+  readonly source_identity?: SourceIdentity
+  readonly venue_identity?: VenueIdentityEvidence
   readonly raw_snapshot_id: string
+  readonly detail_evidence_snapshot_id?: string
   readonly age_evidence_snapshot_id?: string
   readonly mode: ToolMode
   readonly title: string
@@ -176,6 +207,10 @@ export type RawSourceSnapshot = {
   readonly evidence?: {
     readonly content_id?: string
     readonly age_limit?: string
+    readonly event_place?: string
+    readonly address_detail?: string
+    readonly play_time?: string
+    readonly fee_text?: string
   }
 }
 
