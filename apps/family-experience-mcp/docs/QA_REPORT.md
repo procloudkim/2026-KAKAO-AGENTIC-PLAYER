@@ -8,8 +8,8 @@ This is the canonical verification summary for the current Family Experience MCP
 
 | Area | Status | Evidence |
 | --- | --- | --- |
-| P0 local implementation | PASS on the current tree: typecheck, 41 Vitest files / 353 deterministic tests, and all four golden scenarios. This covers weekday/time eligibility, diverse default-three selection with typed shortage reasons, evidence-rich cards, Kakao navigation links, bounded stale/LKG behavior, request-limit cleanup, and fail-closed privacy publication. | `npm run verify`; `npm run smoke:golden` |
-| Integrated release gate | PASS on the current P0 tree: typecheck, 41/353 Vitest tests, three scanners, production cache, contract, sealed holdout, compiled HTTP, and root-context `linux/amd64` container. The receipt binds identical start/finish release-tree hashes. | `npm run qa:submission`; newest PASS run under `.omo/evidence/family-experience-submission-ready/c003-release/runs/` |
+| P0 local implementation | PASS on the current tree: typecheck, 41 Vitest files / 355 deterministic tests, and all four golden scenarios. This covers weekday/time eligibility, diverse default-three selection with typed shortage reasons, evidence-rich cards, Kakao navigation links, bounded stale/LKG behavior, request-limit cleanup, and fail-closed privacy publication. | `npm run verify`; `npm run smoke:golden` |
+| Integrated release gate | PASS on the current P0 tree: typecheck, 41/355 Vitest tests, three scanners, production cache, contract, sealed holdout, compiled HTTP, and root-context `linux/amd64` container. The receipt binds identical start/finish release-tree hashes. | `npm run qa:submission`; newest PASS run under `.omo/evidence/family-experience-submission-ready/c003-release/runs/` |
 | Secret scan | PASS on the current tree: 217 files. | `npm run scan:secrets` |
 | Source scan | PASS on the current tree: 165 files, including scoped HTTPS policy references and exact Kakao navigation-link exceptions with negative tests. | `npm run scan:sources`; `test/scanSources.test.ts` |
 | Claim scan | PASS on the current tree: 198 files. | `npm run scan:claims` |

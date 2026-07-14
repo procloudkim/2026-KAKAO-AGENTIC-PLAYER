@@ -21,7 +21,7 @@ export function createFamilyExperienceMcpServer(options: McpServerOptions = {}):
     {
       title: "Find family experiences / 가족 체험 찾기",
       description:
-        "Airang Where / 아이랑 어디가: Find up to three source-grounded family experiences by child age or stage, date, location, venue preference, and keywords. Returns evidence, caveats, and parent verification steps; it does not guarantee availability, safety, or suitability.",
+        "Airang Where / 아이랑 어디가: Find up to three source-grounded family experiences by child age or stage, date, location, venue preference, and keywords. For structured calls, send child_age or child_stage, not both. Returns evidence, caveats, and parent verification steps; it does not guarantee availability, safety, or suitability.",
       inputSchema: FindFamilyExperiencesMcpInputSchema,
       annotations: {
         title: "Find family experiences / 가족 체험 찾기",

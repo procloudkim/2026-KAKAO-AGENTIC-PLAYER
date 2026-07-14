@@ -21,6 +21,7 @@ import {
   FindFamilyExperiencesInputSchema,
   type FindFamilyExperiencesInput,
 } from "./schemas.js"
+import { stagesForAgeRange } from "./sources/ageTarget.js"
 import type { FamilyExperienceSourceAdapter } from "./sources/types.js"
 import type { ToolFailure } from "./types.js"
 
@@ -196,11 +197,22 @@ function normalizeMcpInput(input: ReturnType<typeof FindFamilyExperiencesHandler
     }
   }
 
+  if (
+    childAge !== undefined &&
+    childStage !== undefined &&
+    !stagesForAgeRange({ min: childAge, max: childAge }).includes(childStage)
+  ) {
+    return {
+      ok: false,
+      reason: "child_age and child_stage describe conflicting child selectors.",
+    }
+  }
+
   const parsedStructuredInput = FindFamilyExperiencesInputSchema.safeParse({
     location,
     date_range: dateRange,
-    child_age: childAge,
-    child_stage: childStage,
+    ...(childAge === undefined ? {} : { child_age: childAge }),
+    ...(childAge !== undefined || childStage === undefined ? {} : { child_stage: childStage }),
     time_of_day: "time_of_day" in input ? input.time_of_day : undefined,
     indoor_outdoor_preference:
       "indoor_outdoor_preference" in input ? input.indoor_outdoor_preference : undefined,
