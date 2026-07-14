@@ -25,6 +25,17 @@ const sejongRecord = cacheRecordSchema.parse(officialRecord({
   },
 }))
 
+const gangnamRecord = cacheRecordSchema.parse(officialRecord({
+  id: "kto-tourapi-events:gangnam-test",
+  city: "Seoul",
+  date: seoulRecord.date,
+  venue: { name: "강남 가족문화관", address: "서울특별시 강남구 테헤란로 1" },
+  child_stages: ["preschool"],
+  min_child_age: 3,
+  max_child_age: 6,
+  target_age_text: "만 3~6세",
+}))
+
 const chungbukRecord = cacheRecordSchema.parse(officialRecord({
   id: "kto-tourapi-events:chungbuk-test",
   city: "Chungcheong",
@@ -59,6 +70,16 @@ describe("cache location scope", () => {
       request: { location, date_range: { start: "2026-08-01", end: "2026-08-01" }, child_age: 4 },
     })).toHaveLength(0)
   })
+
+  it.each(["Gangnam-gu", "Gangnam", "강남구", "강남", "서울 강남", "서울특별시 강남구"])(
+    "filters Seoul cache records to Gangnam for alias %s",
+    (location) => {
+      expect(filterCacheRecordsForRequest({
+        records: [seoulRecord, gangnamRecord],
+        request: { location, date_range: { start: "2026-08-01", end: "2026-08-01" }, child_age: 4 },
+      })).toEqual([gangnamRecord])
+    },
+  )
 
   it.each(["Sejong", "세종", "세종시", "세종특별자치시"])(
     "matches canonical Sejong alias %s",

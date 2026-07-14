@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest"
 
 import {
+  canonicalSeoulDistrict,
   canonicalFamilyExperienceRegion,
   familyExperienceRegionMatches,
+  SEOUL_DISTRICT_DEFINITIONS,
 } from "../src/location.js"
 
 describe("family experience region canonicalization", () => {
@@ -27,6 +29,32 @@ describe("family experience region canonicalization", () => {
   it("does not silently broaden an unsupported location", () => {
     expect(canonicalFamilyExperienceRegion("대한민국 전체")).toBeUndefined()
   })
+
+  it("defines all 25 Seoul districts and maps every documented alias to Seoul", () => {
+    expect(SEOUL_DISTRICT_DEFINITIONS).toHaveLength(25)
+    for (const definition of SEOUL_DISTRICT_DEFINITIONS) {
+      for (const alias of definition.aliases) {
+        expect(canonicalSeoulDistrict(alias)).toBe(definition.value)
+        expect(canonicalFamilyExperienceRegion(alias)).toBe("seoul")
+      }
+    }
+  })
+
+  it.each(["Gangnam-gu", "Gangnam", "강남구", "강남", "서울 강남", "서울특별시 강남구"])(
+    "keeps Gangnam district query %s exact",
+    (requestedLocation) => {
+      expect(familyExperienceRegionMatches({
+        requestedLocation,
+        recordCity: "Seoul",
+        recordAddress: "서울특별시 강남구 테헤란로 1",
+      })).toBe(true)
+      expect(familyExperienceRegionMatches({
+        requestedLocation,
+        recordCity: "Seoul",
+        recordAddress: "서울특별시 종로구 삼청로 1",
+      })).toBe(false)
+    },
+  )
 
   it("keeps leaf provinces exact while an explicitly broad region matches both leaves", () => {
     const chungnamRecord = {

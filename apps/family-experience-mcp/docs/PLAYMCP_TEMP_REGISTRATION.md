@@ -17,17 +17,17 @@ Canonical scope:
 | Identifier | family |
 | Endpoint path | /mcp |
 | Privacy notice | `<deployed HTTPS base>/privacy`; valid for public use only after the real operator name and privacy contact are configured and the route returns HTTP 200. |
-| Description | 언제 어디서든 아이와 함께 갈 곳 정보를 큐레이션합니다. 아이 나이, 날짜, 지역, 실내외 조건을 바탕으로 가족 체험 후보를 최대 3개까지 정리해 주는 MCP입니다. 공식 출처 또는 검증된 캐시를 기반으로 장소, 일정, 나이 적합 근거, 출처, 보호자 확인사항, 다음 행동을 함께 제공합니다. 출처가 뒷받침하지 않는 예약 가능 여부, 운영 상태, 전국 모든 행사 포함, 아동 적합성 보장은 제공하지 않습니다. |
+| Description | 언제 어디서든 아이와 함께 갈 곳 정보를 큐레이션합니다. 아이 나이, 날짜, 지역, 실내외 조건을 바탕으로 가족 체험 후보를 최대 3개까지 정리해 주는 MCP입니다. 시·도와 서울 25개 구를 지원하며, `26-08-01 24개월 강남` 같은 축약형도 읽습니다. 공식 출처 또는 검증된 캐시를 기반으로 장소, 일정, 나이 적합 근거, 출처, 보호자 확인사항, 다음 행동을 함께 제공합니다. 출처가 뒷받침하지 않는 예약 가능 여부, 운영 상태, 전국 모든 행사 포함, 아동 적합성 보장은 제공하지 않습니다. |
 | Auth method | No auth for the current private static-cache runtime. The serving container needs no provider key; do not paste secrets into PlayMCP. |
 | Response visibility | Temporary/private testing only. Keep visibility limited to the operator until later approval and public-release gates are explicitly run. |
 
 ## Starter Messages
 
-1. 2026년 8월 1일 서울에서 4살 아이와 갈 만한 곳을 추천해줘.
+1. 26-08-01 24개월 강남
 2. 2026년 8월 1일 제주에서 4살 아이와 갈 만한 곳을 추천해줘.
-3. 2026년 8월 1일 강원에서 초등학교 저학년 아이와 갈 만한 곳을 추천해줘.
+3. 2026년 8월 1일 서울에서 4살 아이와 갈 만한 곳을 추천해줘.
 
-Each starter supplies location, an explicit calendar date, and exactly one child selector. The current production-cache gate proves three KTO TourAPI candidates for Seoul and one each for Jeju and Gangwon from source-stated age evidence. Returning fewer than the default target of three is allowed only with a structured shortage reason. Do not add indoor/outdoor, weather, booking, or keyword constraints unless the selected production source explicitly supports them. Missing required fields are an explicit negative-path demo: expect typed `invalid_input`, exact `missing_fields`, and zero source access.
+Each starter supplies location, an explicit calendar date, and exactly one child selector. The first starter demonstrates that two-digit ISO dates, ages in months, and Seoul district shorthand are accepted in any field order; all 25 Seoul districts accept Korean full or short names and English `-gu` aliases. The current production-cache gate proves one Gangnam candidate, one Jeju candidate, and three Seoul-wide candidates from source-stated age evidence. Returning fewer than the default target of three is allowed only with a structured shortage reason. Do not add indoor/outdoor, weather, booking, or keyword constraints unless the selected production source explicitly supports them. Missing required fields are an explicit negative-path demo: expect typed `invalid_input`, exact `missing_fields`, and zero source access.
 
 ## Endpoint Note
 

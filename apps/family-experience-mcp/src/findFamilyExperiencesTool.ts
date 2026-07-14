@@ -107,7 +107,9 @@ export async function callFindFamilyExperiences(
     return toToolError({
       mode: sourceResult.mode,
       failure: sourceResult.failure,
-      text: `${toKoreanFailureText(sourceResult.failure)} ${sourceResult.failure.message}`,
+      text: sourceResult.failure.code === "no_results"
+        ? toKoreanFailureText(sourceResult.failure, normalizedInput.input)
+        : `${toKoreanFailureText(sourceResult.failure)} ${sourceResult.failure.message}`,
     })
   }
 
@@ -130,7 +132,7 @@ export async function callFindFamilyExperiences(
     return toToolError({
       mode: rendered.mode,
       failure: rendered.failure,
-      text: toKoreanFailureText(rendered.failure),
+      text: toKoreanFailureText(rendered.failure, normalizedInput.input),
     })
   }
 

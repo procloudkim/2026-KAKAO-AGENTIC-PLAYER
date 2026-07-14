@@ -8,45 +8,67 @@ import {
   tomorrowDateRange,
   yearMonthDayRange,
 } from "./dateRange.js"
+import { seoulDistrictsInText } from "./location.js"
 import { FindFamilyExperiencesInputSchema, type FindFamilyExperiencesInput } from "./schemas.js"
 import type { IndoorOutdoor } from "./sources/types.js"
 
 const locationMatchers = [
-  { pattern: /서울/u, location: "Seoul" },
-  { pattern: /부산/u, location: "Busan" },
-  { pattern: /대구/u, location: "Daegu" },
-  { pattern: /대전/u, location: "Daejeon" },
-  { pattern: /광주/u, location: "Gwangju" },
-  { pattern: /인천/u, location: "Incheon" },
-  { pattern: /울산/u, location: "Ulsan" },
-  { pattern: /세종/u, location: "Sejong" },
-  { pattern: /경기도|경기/u, location: "Gyeonggi" },
-  { pattern: /강원/u, location: "Gangwon" },
-  { pattern: /충청북도|충북/u, location: "Chungbuk" },
-  { pattern: /충청남도|충남/u, location: "Chungnam" },
-  { pattern: /충청/u, location: "Chungcheong" },
-  { pattern: /전북특별자치도|전라북도|전북/u, location: "Jeonbuk" },
-  { pattern: /전남광주통합특별시|전라남도|전남/u, location: "Jeonnam" },
-  { pattern: /전라도|전라/u, location: "Jeolla" },
-  { pattern: /경상북도|경북/u, location: "Gyeongbuk" },
-  { pattern: /경상남도|경남/u, location: "Gyeongnam" },
-  { pattern: /경상권|경상/u, location: "Gyeongsang" },
-  { pattern: /제주/u, location: "Jeju" },
+  { pattern: /서울|\bseoul\b/iu, location: "Seoul" },
+  { pattern: /부산|\bbusan\b/iu, location: "Busan" },
+  { pattern: /대구|\bdaegu\b/iu, location: "Daegu" },
+  { pattern: /대전|\bdaejeon\b/iu, location: "Daejeon" },
+  { pattern: /광주|\bgwangju\b/iu, location: "Gwangju" },
+  { pattern: /인천|\bincheon\b/iu, location: "Incheon" },
+  { pattern: /울산|\bulsan\b/iu, location: "Ulsan" },
+  { pattern: /세종|\bsejong\b/iu, location: "Sejong" },
+  { pattern: /경기도|경기|\bgyeonggi\b/iu, location: "Gyeonggi" },
+  { pattern: /강원|\bgangwon\b/iu, location: "Gangwon" },
+  { pattern: /충청북도|충북|\bchungbuk\b/iu, location: "Chungbuk" },
+  { pattern: /충청남도|충남|\bchungnam\b/iu, location: "Chungnam" },
+  { pattern: /충청|\bchungcheong\b/iu, location: "Chungcheong" },
+  { pattern: /전북특별자치도|전라북도|전북|\bjeonbuk\b/iu, location: "Jeonbuk" },
+  { pattern: /전남광주통합특별시|전라남도|전남|\bjeonnam\b/iu, location: "Jeonnam" },
+  { pattern: /전라도|전라|\bjeolla\b/iu, location: "Jeolla" },
+  { pattern: /경상북도|경북|\bgyeongbuk\b/iu, location: "Gyeongbuk" },
+  { pattern: /경상남도|경남|\bgyeongnam\b/iu, location: "Gyeongnam" },
+  { pattern: /경상권|경상|\bgyeongsang\b/iu, location: "Gyeongsang" },
+  { pattern: /제주|\bjeju\b/iu, location: "Jeju" },
 ] as const
-
-const koreanYearMonthDayPattern = /(\d{4})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일/u
-const koreanMonthDayPattern = /(\d{1,2})\s*월\s*(\d{1,2})\s*일/u
 
 type ParseChildAgeResult =
   | { readonly status: "absent" }
+  | { readonly status: "ambiguous" }
   | { readonly status: "invalid" }
   | { readonly status: "valid"; readonly age: number }
+
+type ParseChildStageResult =
+  | { readonly status: "absent" }
+  | { readonly status: "ambiguous" }
+  | { readonly status: "valid"; readonly stage: NonNullable<FindFamilyExperiencesInput["child_stage"]> }
+
+type ParseLocationResult =
+  | { readonly status: "absent" }
+  | { readonly status: "ambiguous" }
+  | { readonly status: "valid"; readonly location: string }
+
+type ParseDateRangeResult =
+  | { readonly status: "absent" }
+  | { readonly status: "ambiguous" }
+  | { readonly status: "valid"; readonly dateRange: FindFamilyExperiencesInput["date_range"] }
+
+type LoosePromptFailureReason =
+  | "ambiguous_child_selector"
+  | "ambiguous_date"
+  | "ambiguous_location"
+  | "invalid_child_age"
+  | "missing_child_selector"
+  | "missing_fields"
 
 export type ParseLooseFamilyPromptResult =
   | { readonly ok: true; readonly input: FindFamilyExperiencesInput }
   | {
       readonly ok: false
-      readonly reason: "invalid_child_age" | "missing_child_selector" | "missing_fields"
+      readonly reason: LoosePromptFailureReason
       readonly missing_fields?: readonly string[]
     }
 
@@ -64,7 +86,7 @@ export type ParseLooseFamilyPromptDetailsResult =
     }
   | {
       readonly ok: false
-      readonly reason: "invalid_child_age" | "missing_child_selector" | "missing_fields"
+      readonly reason: LoosePromptFailureReason
       readonly missing_fields?: readonly string[]
     }
 
@@ -91,30 +113,53 @@ export function parseLooseFamilyPrompt(prompt: string): ParseLooseFamilyPromptRe
 }
 
 export function parseLooseFamilyPromptDetails(prompt: string): ParseLooseFamilyPromptDetailsResult {
-  const location = parseLocation(prompt)
-  const dateRange = parseDateRange(prompt)
-  const childAge = parseChildAge(prompt)
-  const childStage = childAge.status === "absent" ? parseChildStage(prompt) : undefined
+  const normalizedPrompt = prompt.normalize("NFKC")
+  const locationResult = parseLocation(normalizedPrompt)
+  const dateRangeResult = parseDateRange(normalizedPrompt)
+  const childAge = parseChildAge(normalizedPrompt)
+  const childStage = parseChildStage(normalizedPrompt)
+
+  if (locationResult.status === "ambiguous") {
+    return { ok: false, reason: "ambiguous_location" }
+  }
+  if (dateRangeResult.status === "ambiguous") {
+    return { ok: false, reason: "ambiguous_date" }
+  }
+  if (childAge.status === "invalid") {
+    return { ok: false, reason: "invalid_child_age" }
+  }
+  if (childAge.status === "ambiguous" || (childAge.status === "absent" && childStage.status === "ambiguous")) {
+    return { ok: false, reason: "ambiguous_child_selector" }
+  }
+  if (
+    childAge.status === "valid" &&
+    childStage.status !== "absent" &&
+    /둘\s*다|동시|\bboth\b/iu.test(normalizedPrompt)
+  ) {
+    return { ok: false, reason: "ambiguous_child_selector" }
+  }
+
+  const location = locationResult.status === "valid" ? locationResult.location : undefined
+  const dateRange = dateRangeResult.status === "valid" ? dateRangeResult.dateRange : undefined
+  const selectedChildStage = childAge.status === "absent" && childStage.status === "valid"
+    ? childStage.stage
+    : undefined
   const missingFields = [
     ...(location === undefined ? ["location"] : []),
     ...(dateRange === undefined ? ["date_range"] : []),
-    ...(childAge.status === "absent" && childStage === undefined ? ["child_selector"] : []),
+    ...(childAge.status === "absent" && selectedChildStage === undefined ? ["child_selector"] : []),
   ]
   if (
     location === undefined ||
     dateRange === undefined ||
-    (childAge.status === "absent" && childStage === undefined)
+    (childAge.status === "absent" && selectedChildStage === undefined)
   ) {
     return { ok: false, reason: "missing_fields", missing_fields: missingFields }
   }
 
-  if (childAge.status === "invalid") {
-    return { ok: false, reason: "invalid_child_age" }
-  }
-
-  const keywords = parseKeywords(prompt)
-  const indoorOutdoorPreference = parseIndoorOutdoorPreference(prompt)
-  const timeOfDay = parseTimeOfDay(prompt)
+  const keywords = parseKeywords(normalizedPrompt)
+  const indoorOutdoorPreference = parseIndoorOutdoorPreference(normalizedPrompt)
+  const timeOfDay = parseTimeOfDay(normalizedPrompt)
 
   return {
     ok: true,
@@ -122,12 +167,12 @@ export function parseLooseFamilyPromptDetails(prompt: string): ParseLooseFamilyP
       location,
       date_range: dateRange,
       ...(childAge.status === "valid" ? { child_age: childAge.age } : {}),
-      ...(childStage === undefined ? {} : { child_stage: childStage }),
+      ...(selectedChildStage === undefined ? {} : { child_stage: selectedChildStage }),
       ...(timeOfDay === undefined ? {} : { time_of_day: timeOfDay }),
       ...(indoorOutdoorPreference === undefined ? {} : { indoor_outdoor_preference: indoorOutdoorPreference }),
       ...(keywords.length === 0 ? {} : { keywords }),
     },
-    assumptions: parseAssumptions(prompt),
+    assumptions: parseAssumptions(normalizedPrompt),
     missing_fields: [],
     keywords,
   }
@@ -150,111 +195,173 @@ function parseTimeOfDay(prompt: string): FindFamilyExperiencesInput["time_of_day
 }
 
 function parseChildAge(prompt: string): ParseChildAgeResult {
-  const monthMatch = /(?<![\d.])(-?\d+(?:\.\d+)?)\s*개월/u.exec(prompt)
-  if (monthMatch !== null) {
-    const months = Number(monthMatch[1])
-    return Number.isSafeInteger(months) && months >= 0 && months <= 215
-      ? { status: "valid", age: Math.floor(months / 12) }
-      : { status: "invalid" }
+  const ages: number[] = []
+  let invalid = false
+  for (const match of prompt.matchAll(/(?<![\d.])(-?\d+(?:\.\d+)?)\s*개월/gu)) {
+    const months = Number(match[1])
+    if (!Number.isSafeInteger(months) || months < 0 || months > 215) invalid = true
+    else ages.push(Math.floor(months / 12))
   }
-
-  const ageMatch = /(?<![\d.])(-?\d+(?:\.\d+)?)\s*살/u.exec(prompt)
-  const yearAgeMatch = ageMatch ?? /(?<![\d.])(-?\d+(?:\.\d+)?)\s*세/u.exec(prompt)
-  if (yearAgeMatch === null) {
-    return { status: "absent" }
+  for (const match of prompt.matchAll(/(?<![\d.])(?:만\s*)?(-?\d+(?:\.\d+)?)\s*(?:살|세)/gu)) {
+    const age = Number(match[1])
+    if (!Number.isSafeInteger(age) || age < 0 || age > 17) invalid = true
+    else ages.push(age)
   }
-
-  const age = Number(yearAgeMatch[1])
-  return Number.isSafeInteger(age) && age >= 0 && age <= 17
-    ? { status: "valid", age }
-    : { status: "invalid" }
+  if (invalid) return { status: "invalid" }
+  const uniqueAges = [...new Set(ages)]
+  if (uniqueAges.length === 0) return { status: "absent" }
+  if (uniqueAges.length > 1) return { status: "ambiguous" }
+  return { status: "valid", age: uniqueAges[0] ?? 0 }
 }
 
-function parseChildStage(prompt: string): FindFamilyExperiencesInput["child_stage"] | undefined {
-  if (/신생아|영아|아기|개월/u.test(prompt)) {
-    return "infant"
-  }
-
-  if (/유아|미취학|어린이집/u.test(prompt)) {
-    return "preschool"
-  }
-
-  if (/초등|초등학생|저학년/u.test(prompt)) {
-    return "school_age"
-  }
-
-  if (/청소년|중학생|고등학생/u.test(prompt)) {
-    return "teen"
-  }
-
-  return undefined
+function parseChildStage(prompt: string): ParseChildStageResult {
+  const stages = [
+    ["infant", /신생아|영아|아기/u],
+    ["toddler", /걸음마|토들러/iu],
+    ["preschool", /유아|미취학|어린이집/u],
+    ["school_age", /초등|초등학생|저학년/u],
+    ["teen", /청소년|중학생|고등학생/u],
+  ] as const satisfies readonly (readonly [NonNullable<FindFamilyExperiencesInput["child_stage"]>, RegExp])[]
+  const matches = stages.filter(([, pattern]) => pattern.test(prompt)).map(([stage]) => stage)
+  if (matches.length === 0) return { status: "absent" }
+  if (matches.length > 1) return { status: "ambiguous" }
+  return { status: "valid", stage: matches[0] ?? "infant" }
 }
 
-function parseLocation(prompt: string): string | undefined {
-  for (const matcher of locationMatchers) {
-    if (matcher.pattern.test(prompt)) {
-      return matcher.location
+function parseLocation(prompt: string): ParseLocationResult {
+  const mergedProvince = /전남광주통합특별시(?:\s+([^\s]+))?/u.exec(prompt)
+  if (mergedProvince !== null) {
+    const administrativeUnit = mergedProvince[1]
+    return {
+      status: "valid",
+      location: administrativeUnit !== undefined && ["동구", "서구", "남구", "북구", "광산구"].includes(administrativeUnit)
+        ? "Gwangju"
+        : "Jeonnam",
     }
   }
 
-  const district = /(중구|종로구|노원구)/u.exec(prompt)?.[1]
-  if (district !== undefined) {
-    switch (district) {
-      case "중구":
-        return "Jung-gu"
-      case "종로구":
-        return "Jongno-gu"
-      case "노원구":
-        return "Nowon-gu"
-      default:
-        return undefined
-    }
-  }
+  const districts = [...new Set(seoulDistrictsInText(prompt))]
+  if (districts.length > 1) return { status: "ambiguous" }
 
-  return undefined
+  const regions = reduceBroadRegionParents(
+    [...new Set(locationMatchers.filter(({ pattern }) => pattern.test(prompt)).map(({ location }) => location))],
+  )
+  if (districts.length === 1) {
+    return regions.some((region) => region !== "Seoul")
+      ? { status: "ambiguous" }
+      : { status: "valid", location: districts[0] ?? "Seoul" }
+  }
+  if (regions.length === 0) return { status: "absent" }
+  if (regions.length > 1) return { status: "ambiguous" }
+  return { status: "valid", location: regions[0] ?? "Seoul" }
 }
 
-function parseDateRange(prompt: string): FindFamilyExperiencesInput["date_range"] | undefined {
-  const yearMonthDay = koreanYearMonthDayPattern.exec(prompt)
-  if (yearMonthDay !== null) {
-    const year = Number.parseInt(yearMonthDay[1] ?? "", 10)
-    const month = Number.parseInt(yearMonthDay[2] ?? "", 10)
-    const day = Number.parseInt(yearMonthDay[3] ?? "", 10)
-    return yearMonthDayRange(year, month - 1, day)
+function parseDateRange(prompt: string): ParseDateRangeResult {
+  const normalized = prompt.normalize("NFKC")
+  const fullDateTokens = [
+    ...[...normalized.matchAll(/(?<!\d)(\d{4}|\d{2})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일/gu)]
+      .map((match) => dateToken(match, dateRangeFromParts(match[1], match[2], match[3]))),
+    ...[...normalized.matchAll(/(?<!\d)(\d{4}|\d{2})\s*([./-])\s*(\d{1,2})\s*\2\s*(\d{1,2})(?!\d)/gu)]
+      .map((match) => dateToken(match, dateRangeFromParts(match[1], match[3], match[4]))),
+  ]
+  if (fullDateTokens.length > 0) {
+    return explicitDateTokenResult(normalized, fullDateTokens)
   }
 
-  const monthDay = koreanMonthDayPattern.exec(prompt)
-  if (monthDay !== null) {
-    const month = Number.parseInt(monthDay[1] ?? "", 10)
-    const day = Number.parseInt(monthDay[2] ?? "", 10)
-    return monthDayRange(month - 1, day)
+  const monthDayTokens = [
+    ...[...normalized.matchAll(/(\d{1,2})\s*월\s*(\d{1,2})\s*일/gu)]
+      .map((match) => dateToken(match, monthDayRange(numberAt(match, 1) - 1, numberAt(match, 2)))),
+    ...[...normalized.matchAll(/(?<![\d./])(\d{1,2})\s*([./])\s*(\d{1,2})(?!\s*\2\s*\d)/gu)]
+      .map((match) => dateToken(match, monthDayRange(numberAt(match, 1) - 1, numberAt(match, 3)))),
+  ]
+  if (monthDayTokens.length > 0) {
+    return explicitDateTokenResult(normalized, monthDayTokens)
   }
 
-  if (/오늘/u.test(prompt)) {
-    return currentDateRange()
-  }
+  const relativeRanges = [
+    ...(/오늘/u.test(normalized) ? [currentDateRange()] : []),
+    ...(/내일/u.test(normalized) ? [tomorrowDateRange()] : []),
+    ...(/주말/u.test(normalized) ? [nextWeekendRange()] : []),
+    ...(/이번 주/u.test(normalized) && !/이번 주말/u.test(normalized) ? [thisWeekRange()] : []),
+    ...(/다음 달/u.test(normalized) ? [nextMonthRange()] : []),
+    ...(/7월\s*말/u.test(normalized) ? [lateMonthRange(6)] : []),
+  ]
+  return relativeRanges.length === 0 ? { status: "absent" } : uniqueDateRangeResult(relativeRanges)
+}
 
-  if (/내일/u.test(prompt)) {
-    return tomorrowDateRange()
-  }
+type ParsedRegionLocation = (typeof locationMatchers)[number]["location"]
 
-  if (/주말/u.test(prompt)) {
-    return nextWeekendRange()
-  }
+function reduceBroadRegionParents(
+  regions: readonly ParsedRegionLocation[],
+): readonly ParsedRegionLocation[] {
+  const reduced = new Set(regions)
+  if (reduced.has("Chungbuk") || reduced.has("Chungnam")) reduced.delete("Chungcheong")
+  if (reduced.has("Jeonbuk") || reduced.has("Jeonnam")) reduced.delete("Jeolla")
+  if (reduced.has("Gyeongbuk") || reduced.has("Gyeongnam")) reduced.delete("Gyeongsang")
+  return [...reduced]
+}
 
-  if (/이번 주/u.test(prompt)) {
-    return thisWeekRange()
-  }
+function dateRangeFromParts(
+  yearText: string | undefined,
+  monthText: string | undefined,
+  dayText: string | undefined,
+): FindFamilyExperiencesInput["date_range"] | undefined {
+  const parsedYear = Number.parseInt(yearText ?? "", 10)
+  const year = yearText?.length === 2 ? 2_000 + parsedYear : parsedYear
+  return yearMonthDayRange(
+    year,
+    Number.parseInt(monthText ?? "", 10) - 1,
+    Number.parseInt(dayText ?? "", 10),
+  )
+}
 
-  if (/다음 달/u.test(prompt)) {
-    return nextMonthRange()
-  }
+type ParsedDateToken = {
+  readonly end: number
+  readonly index: number
+  readonly range: FindFamilyExperiencesInput["date_range"] | undefined
+}
 
-  if (/7월\s*말/u.test(prompt)) {
-    return lateMonthRange(6)
-  }
+function dateToken(
+  match: RegExpMatchArray,
+  range: FindFamilyExperiencesInput["date_range"] | undefined,
+): ParsedDateToken {
+  const index = match.index ?? 0
+  return { index, end: index + match[0].length, range }
+}
 
-  return undefined
+function explicitDateTokenResult(
+  prompt: string,
+  tokens: readonly ParsedDateToken[],
+): ParseDateRangeResult {
+  const sorted = [...tokens].sort((left, right) => left.index - right.index)
+  if (sorted.some((token) => token.range === undefined)) return { status: "absent" }
+  const first = sorted[0]
+  if (first?.range === undefined) return { status: "absent" }
+  if (sorted.length === 1) return { status: "valid", dateRange: first.range }
+  const second = sorted[1]
+  if (sorted.length !== 2 || second?.range === undefined) return { status: "ambiguous" }
+
+  const delimiter = prompt.slice(first.end, second.index)
+  if (!/^\s*(?:~|∼|〜|부터|–|—)\s*$/u.test(delimiter)) return { status: "ambiguous" }
+  if (second.range.end < first.range.start) return { status: "absent" }
+  return {
+    status: "valid",
+    dateRange: { start: first.range.start, end: second.range.end },
+  }
+}
+
+function uniqueDateRangeResult(
+  ranges: readonly FindFamilyExperiencesInput["date_range"][],
+): ParseDateRangeResult {
+  const unique = [...new Map(ranges.map((range) => [`${range.start}:${range.end}`, range])).values()]
+  const only = unique[0]
+  if (only === undefined) return { status: "absent" }
+  if (unique.length > 1) return { status: "ambiguous" }
+  return { status: "valid", dateRange: only }
+}
+
+function numberAt(match: RegExpMatchArray, index: number): number {
+  return Number.parseInt(match[index] ?? "", 10)
 }
 
 function parseIndoorOutdoorPreference(prompt: string): IndoorOutdoor | undefined {
@@ -291,15 +398,11 @@ function parseAssumptions(prompt: string): string[] {
     assumptions.push("‘체험’은 일반 요청어로 해석해 키워드 일치 조건에서 제외했습니다.")
   }
 
-  if (!/(서울|부산|대구|대전|광주|인천|울산|세종|경기|강원|충청|충북|충남|전라|전북|전남|경상|경북|경남|제주|중구|종로구|노원구)/u.test(prompt)) {
+  if (parseLocation(prompt).status === "absent") {
     assumptions.push("지역이 없으면 서울 기준으로 시작합니다.")
   }
 
-  if (
-    !/(오늘|내일|주말|이번 주|다음 달|7월\s*말)/u.test(prompt) &&
-    !koreanYearMonthDayPattern.test(prompt) &&
-    !koreanMonthDayPattern.test(prompt)
-  ) {
+  if (parseDateRange(prompt).status === "absent") {
     assumptions.push("날짜가 없으면 가까운 주말 기준으로 시작합니다.")
   }
 

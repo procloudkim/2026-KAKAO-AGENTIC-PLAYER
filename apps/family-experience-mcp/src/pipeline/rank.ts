@@ -263,6 +263,7 @@ function getLocationRelevanceScore(
     requestedLocation: location,
     recordCity: candidate.city,
     recordAddress: candidate.venue_address,
+    recordVenue: candidate.venue_name,
   }) ? 3 : 0
 }
 

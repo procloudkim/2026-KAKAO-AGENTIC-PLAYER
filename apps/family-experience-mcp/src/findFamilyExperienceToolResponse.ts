@@ -1,12 +1,20 @@
 import type { CallToolResult } from "@modelcontextprotocol/server"
 
-import { FindFamilyExperiencesStructuredContentSchema } from "./schemas.js"
+import {
+  canonicalFamilyExperienceRegion,
+  canonicalSeoulDistrict,
+  familyExperienceLocationLabel,
+} from "./location.js"
+import { escapeMarkdownLinkLabel } from "./placeLabels.js"
 import type {
   RenderedFamilyExperienceCandidate,
   RenderFamilyExperienceSuccess,
 } from "./pipeline/render.js"
+import {
+  FindFamilyExperiencesStructuredContentSchema,
+  type FindFamilyExperiencesInput,
+} from "./schemas.js"
 import type { ToolFailure } from "./types.js"
-import { escapeMarkdownLinkLabel } from "./placeLabels.js"
 
 export const MAX_MCP_RESULT_CHARACTERS = 4_000
 const COMPACT_CARD_TITLE_CHARACTER_LIMITS = [28, 8] as const
@@ -399,11 +407,26 @@ function summarizeSuccess(
   return [`${modeNotice}으로 후보 ${result.candidates.length}개를 찾았어요.`, ...notices, ...cards].join("\n")
 }
 
-export function toKoreanFailureText(failure: ToolFailure): string {
+export function toKoreanFailureText(
+  failure: ToolFailure,
+  request?: FindFamilyExperiencesInput,
+): string {
   switch (failure.code) {
     case "invalid_input": {
       if (failure.message === "Provide exactly one of child_age or child_stage.") {
         return "아이 나이 또는 발달 단계 중 하나만 입력해 주세요."
+      }
+      if (failure.message === "ambiguous_location") {
+        return "서로 다른 지역이 함께 인식됐어요. 시·도 또는 서울의 한 구만 남겨 주세요."
+      }
+      if (failure.message === "ambiguous_date") {
+        return "서로 다른 날짜가 함께 인식됐어요. 방문 날짜 하나 또는 명확한 날짜 범위만 알려 주세요."
+      }
+      if (failure.message === "ambiguous_child_selector") {
+        return "서로 다른 아이 연령 조건이 함께 인식됐어요. 나이 또는 발달 단계 하나만 알려 주세요."
+      }
+      if (failure.message === "invalid_child_age") {
+        return "아이 나이는 0~17세 또는 0~215개월 범위의 정수로 알려 주세요."
       }
       const missingFieldLabels = (failure.missing_fields ?? []).flatMap((field) => {
         switch (field) {
@@ -426,7 +449,9 @@ export function toKoreanFailureText(failure: ToolFailure): string {
         ? "현재 설정으로는 체험 후보를 확인할 수 없어요. 캐시를 새로고침하거나 공식 데이터 설정을 확인해 주세요."
         : "현재 설정으로는 체험 후보를 확인할 수 없어요. 공식 데이터 키를 설정하거나 fixture 모드를 켜 주세요."
     case "no_results":
-      return "조건에 맞는 근거 있는 후보를 찾지 못했어요. 후보를 임의로 만들지 않았습니다. 다음에는 날짜 범위 하나만 넓혀서 다시 요청해 주세요."
+      return request === undefined
+        ? "조건에 맞는 근거 있는 후보를 찾지 못했어요. 후보를 임의로 만들지 않았습니다. 다음에는 날짜 범위 하나만 넓혀서 다시 요청해 주세요."
+        : noResultsText(request)
     case "upstream_invalid_response":
     case "upstream_unavailable":
       return "공식 데이터 응답을 안전하게 확인하지 못했어요. 잠시 후 다시 시도해 주세요."
@@ -435,6 +460,37 @@ export function toKoreanFailureText(failure: ToolFailure): string {
     default:
       return assertNeverToolFailureCode(failure.code)
   }
+}
+
+function noResultsText(request: FindFamilyExperiencesInput): string {
+  const location = familyExperienceLocationLabel(request.location) ?? "요청 지역"
+  const date = request.date_range.start === request.date_range.end
+    ? request.date_range.start
+    : `${request.date_range.start}~${request.date_range.end}`
+  const child = request.child_age === undefined
+    ? childStageLabel(request.child_stage)
+    : `${request.child_age}세`
+  const retry = canonicalFamilyExperienceRegion(request.location) !== "seoul" ||
+    canonicalSeoulDistrict(request.location) === undefined
+    ? "날짜 범위 하나만 넓혀서 다시 요청해 주세요."
+    : "날짜 범위를 넓히거나 지역을 서울 전체로 바꿔 다시 요청해 주세요."
+  return `${location} · ${date} · ${child} 조건에 맞는 근거 있는 후보를 찾지 못했어요. 후보를 임의로 만들지 않았습니다. ${retry}`
+}
+
+function childStageLabel(stage: FindFamilyExperiencesInput["child_stage"]): string {
+  switch (stage) {
+    case "infant": return "영아"
+    case "toddler": return "걸음마기"
+    case "preschool": return "미취학"
+    case "school_age": return "초등 연령"
+    case "teen": return "청소년"
+    case undefined: return "아이 연령"
+    default: return assertNeverChildStage(stage)
+  }
+}
+
+function assertNeverChildStage(value: never): never {
+  throw new Error(`Unexpected child stage: ${JSON.stringify(value)}`)
 }
 
 function assertNeverToolFailureCode(value: never): never {

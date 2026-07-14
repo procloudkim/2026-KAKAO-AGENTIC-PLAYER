@@ -46,28 +46,12 @@ function cacheRecordMatchesRequest(input: {
 }
 
 function locationMatches(location: string, record: CacheRecord): boolean {
-  if (!familyExperienceRegionMatches({
+  return familyExperienceRegionMatches({
     requestedLocation: location,
     recordCity: record.city,
     recordAddress: record.venue.address,
-  })) {
-    return false
-  }
-  const districtAliases = districtLocationAliases(location)
-  if (districtAliases.length === 0) {
-    return true
-  }
-  const sourceText = `${record.venue.name} ${record.venue.address}`.toLowerCase()
-  return districtAliases.some((district) => sourceText.includes(district))
-}
-
-function districtLocationAliases(location: string): readonly string[] {
-  switch (location.trim().toLowerCase()) {
-    case "jung-gu": case "중구": return ["jung-gu", "중구"]
-    case "jongno-gu": case "종로구": return ["jongno-gu", "종로구"]
-    case "nowon-gu": case "노원구": return ["nowon-gu", "노원구"]
-    default: return []
-  }
+    recordVenue: record.venue.name,
+  })
 }
 
 function childSelectorMatches(request: SourceAdapterRequest, record: CacheRecord): boolean {
